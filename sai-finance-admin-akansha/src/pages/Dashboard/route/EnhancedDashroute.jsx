@@ -52,7 +52,7 @@ const EnhancedDashRoute = () => {
           path='/home'
           element={
             <motion.div {...pageTransition}>
-              <TestDashHome />
+              <FixedEnhancedDashHome />
             </motion.div>
           }
         />
