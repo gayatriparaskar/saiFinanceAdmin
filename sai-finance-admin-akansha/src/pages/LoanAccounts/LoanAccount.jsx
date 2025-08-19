@@ -295,7 +295,7 @@ function LoanAccount() {
     //   backgroundPosition: "center",
     // }}
     >
-      <section class=" md:p-1 ">
+      <section className=" md:p-1 ">
         <div class="py-6 ">
           <div class="flex  justify-between items-center">
             {/* <div>
