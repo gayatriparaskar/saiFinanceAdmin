@@ -401,7 +401,7 @@ function SavingAccount() {
         variants={itemVariants}
         className="flex-1 px-4 pb-4 overflow-hidden"
       >
-        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
+        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg shadow-2xl h-full flex flex-col border border-slate-600">
           <div className="p-4 border-b">
             <h3 className="text-xl font-bold text-gray-800">Saving Accounts</h3>
           </div>
