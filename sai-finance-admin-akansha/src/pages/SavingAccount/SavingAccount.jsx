@@ -452,7 +452,7 @@ function SavingAccount() {
             <Button variant="outline" mr={3} onClick={onClose2}>
               Cancel
             </Button>
-            <Button colorScheme="purple">Save</Button>
+            <Button colorScheme="blue">Save</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -491,37 +491,36 @@ function SavingAccount() {
           <DrawerCloseButton />
           <DrawerHeader>Edit Account</DrawerHeader>
           <DrawerBody>
-            <Input
-              placeholder="Account Holder Name"
-              value={editData?.account_holder_name || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, account_holder_name: e.target.value })
-              }
-              mb={3}
-            />
-            <Input
-              placeholder="Account Number"
-              value={editData?.account_number || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, account_number: e.target.value })
-              }
-              mb={3}
-            />
-            <Input
-              placeholder="Balance"
-              type="number"
-              value={editData?.balance || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, balance: parseFloat(e.target.value) })
-              }
-              mb={3}
-            />
+            <div className="space-y-4">
+              <Input
+                placeholder="Account Holder Name"
+                value={editData?.account_holder_name || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, account_holder_name: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Account Number"
+                value={editData?.account_number || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, account_number: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Balance"
+                type="number"
+                value={editData?.balance || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, balance: parseFloat(e.target.value) })
+                }
+              />
+            </div>
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
               Cancel
             </Button>
-            <Button colorScheme="purple" onClick={handleEditSave}>
+            <Button colorScheme="blue" onClick={handleEditSave}>
               Save
             </Button>
           </DrawerFooter>
