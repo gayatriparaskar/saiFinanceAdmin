@@ -214,13 +214,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-<<<<<<< HEAD
   cursor: none;
   background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 50%, #fff7ed 100%);
   min-height: 100vh;
-=======
-  background: #f8fafc;
->>>>>>> refs/remotes/origin/main
 }
 
 code {
