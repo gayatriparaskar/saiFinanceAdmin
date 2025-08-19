@@ -58,6 +58,21 @@ const DashHome = () => {
     });
   }, []);
 
+  // saving users
+  useEffect(() => {
+    axios.get("account/").then((res) => {
+      if (res?.data?.result && Array.isArray(res.data.result)) {
+        const activeSavingUsers = res.data.result.filter(user => user.status === 'active' || user.is_active === true);
+        setSavingUsers(activeSavingUsers.length);
+      } else {
+        setSavingUsers(0);
+      }
+    }).catch((error) => {
+      console.error("Error fetching saving users:", error);
+      setSavingUsers(0);
+    });
+  }, []);
+
   // monthly stats
   useEffect(() => {
     axios.get("/admins/totalCollectionsMonthlyStats").then((res) => {
