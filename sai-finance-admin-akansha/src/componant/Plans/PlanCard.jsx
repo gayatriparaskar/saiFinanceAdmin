@@ -88,7 +88,7 @@ function PlanCard() {
                               <img src={Info} alt="" />
                             </div>
                           </li>
-                          <hr class="h-px bg-midGray border-1 dark:bg-black" />
+                          <hr className="h-px bg-midGray border-1 dark:bg-black" />
                         </>
                       ))}
                     </ul>
