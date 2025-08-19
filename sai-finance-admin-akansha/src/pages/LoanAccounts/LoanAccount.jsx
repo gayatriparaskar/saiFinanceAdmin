@@ -280,31 +280,30 @@ function LoanAccount() {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col"
+      className="h-screen bg-primaryBg flex flex-col"
     >
       {/* Fixed Header Section */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
-        className="flex-shrink-0 pt-16 pb-2 px-3"
+        className="flex-shrink-0 pt-20 pb-4 px-4"
       >
         <section className="md:p-1">
-          <div className="py-3">
-            <motion.div 
+          <div className="py-6">
+            <motion.div
               variants={itemVariants}
-              className="flex justify-between items-center mb-4"
+              className="flex justify-between items-center mb-6"
             >
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
-                className="flex gap-3"
+                className="flex gap-2"
               >
                 <Menu>
                   <MenuButton
                     as={Button}
                     colorScheme="blue"
                     className="bg-primary hover:bg-primaryDark text-white"
-                    fontWeight={700}
-                    fontSize={16}
-                    size="sm"
+                    fontWeight={800}
+                    fontSize={18}
                   >
                     Total Collection : ₹ {totalLoanAmt.toLocaleString()}
                   </MenuButton>
@@ -314,9 +313,8 @@ function LoanAccount() {
                     as={Button}
                     colorScheme="purple"
                     className="bg-secondary hover:bg-secondaryDark text-white"
-                    fontWeight={700}
-                    fontSize={16}
-                    size="sm"
+                    fontWeight={800}
+                    fontSize={18}
                     ref={btnRef}
                     onClick={onOpen2}
                   >
@@ -325,31 +323,28 @@ function LoanAccount() {
                 </Menu>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
-                className="w-80"
+                className="w-96"
               >
                 <InputGroup borderRadius={5} size="sm">
                   <InputLeftElement pointerEvents="none" />
                   <Input
                     type="text"
                     placeholder="Search..."
-                    focusBorderColor="teal.500"
-                    border="1px solid #475569"
-                    bg="slate.700"
-                    color="white"
-                    _placeholder={{ color: 'gray.400' }}
+                    focusBorderColor="blue.500"
+                    border="1px solid #949494"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                   <InputRightAddon p={0} border="none">
                     <Button
-                      className="bg-primary hover:bg-primaryLight"
-                      colorScheme="teal"
+                      className="bg-primary hover:bg-primaryDark"
+                      colorScheme="blue"
                       size="sm"
                       borderLeftRadius={0}
                       borderRightRadius={3.3}
-                      border="1px solid #475569"
+                      border="1px solid #949494"
                     >
                       Search
                     </Button>
@@ -357,16 +352,15 @@ function LoanAccount() {
                 </InputGroup>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
-                className="flex gap-3"
+                className="flex gap-2"
               >
                 <Menu>
                   <MenuButton
                     as={Button}
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700"
-                    size="sm"
                   >
                     Sort By
                   </MenuButton>
@@ -384,7 +378,6 @@ function LoanAccount() {
                       as={Button}
                       colorScheme="blue"
                       className="bg-primary hover:bg-primaryDark"
-                      size="sm"
                     >
                       Add New User
                     </MenuButton>
@@ -397,36 +390,34 @@ function LoanAccount() {
       </motion.div>
 
       {/* Scrollable Table Section */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
-        className="flex-1 px-3 pb-3 overflow-hidden"
+        className="flex-1 px-4 pb-4 overflow-hidden"
       >
-        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg shadow-2xl h-full flex flex-col border border-slate-600">
-          <div className="p-3 border-b border-slate-600">
-            <h3 className="text-lg font-bold text-white">Loan Accounts</h3>
+        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
+          <div className="p-4 border-b">
+            <h3 className="text-xl font-bold text-gray-800">Loan Accounts</h3>
           </div>
-          
+
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
-            <Table 
-              data={paginatedData} 
-              columns={columns} 
-              className="bg-transparent"
+            <Table
+              data={paginatedData}
+              columns={columns}
             />
           </div>
 
           {/* Fixed Pagination */}
-          <div className="flex-shrink-0 flex justify-center p-3 border-t border-slate-600 gap-3 items-center bg-gradient-to-r from-slate-800 to-slate-700">
+          <div className="flex-shrink-0 flex justify-center p-4 border-t gap-4 items-center bg-gray-50">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               isDisabled={currentPage === 1}
               colorScheme="blue"
               variant="outline"
-              size="sm"
             >
               Previous
             </Button>
-            <span className="text-sm bg-primary text-white px-3 py-1 rounded-md font-medium">
+            <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} of {totalPages}
             </span>
             <Button
@@ -434,7 +425,6 @@ function LoanAccount() {
               isDisabled={currentPage === totalPages}
               colorScheme="blue"
               variant="outline"
-              size="sm"
             >
               Next
             </Button>
