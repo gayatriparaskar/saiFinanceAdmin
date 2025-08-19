@@ -2,8 +2,7 @@ import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import EnhancedMainroute from "./routes/EnhancedMainroute";
-import CursorTrail from "./components/CursorTrail/CursorTrail";
-import InteractiveCursor from "./components/InteractiveCursor/InteractiveCursor";
+import EnhancedCursor from "./components/EnhancedCursor/EnhancedCursor";
 
 function App() {
   const queryClient = new QueryClient();
@@ -16,8 +15,7 @@ function App() {
       transition={{ duration: 0.8 }}
     >
       <QueryClientProvider client={queryClient}>
-        <InteractiveCursor />
-        <CursorTrail />
+        <EnhancedCursor />
         <EnhancedMainroute/>
       </QueryClientProvider>
     </motion.div>
