@@ -31,9 +31,9 @@ const Table = ({
       >
         <table
           {...getTableProps()}
-          className="w-full table-auto border-collapse text-white bg-transparent"
+          className="w-full table-auto border-collapse text-black bg-transparent"
         >
-          <thead className="border-b border-slate-600">
+          <thead className="border-b border-gray-300">
             {headerGroups.map((headerGroup, gIdx) => {
               const { key: headerGroupKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
               return (
@@ -44,7 +44,7 @@ const Table = ({
                       <th
                         key={headerKey || cIdx}
                         {...headerProps}
-                        className="px-3 py-2 font-bold uppercase text-xs text-slate-300 sticky top-0 z-10 bg-gradient-to-r from-slate-800 to-slate-700 text-center border-r border-slate-600 last:border-r-0"
+                        className="px-3 py-2 font-bold uppercase text-xs text-gray-700 sticky top-0 z-10 bg-gray-100 text-center border-r border-gray-300 last:border-r-0"
                       >
                         {column.render("Header")}
                       </th>
@@ -69,7 +69,7 @@ const Table = ({
                   <tr
                     key={rowKey}
                     {...rowProps}
-                    className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors duration-200 text-slate-200"
+                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200 text-black"
                   >
                     {row.cells.map((cell, cIdx) => {
                       const { key: cellKey, ...cellProps } = cell.getCellProps();
@@ -77,7 +77,7 @@ const Table = ({
                         <td
                           key={cellKey || cIdx}
                           {...cellProps}
-                          className="px-3 py-2 text-sm text-center max-w-xs break-words text-slate-200 border-r border-slate-700 last:border-r-0"
+                          className="px-3 py-2 text-sm text-center max-w-xs break-words text-black border-r border-gray-200 last:border-r-0"
                         >
                           {cell.render("Cell", {
                             row: {
@@ -100,7 +100,7 @@ const Table = ({
               <tr>
                 <td 
                   colSpan={columns.length}
-                  className="px-4 py-8 text-center text-slate-400"
+                  className="px-4 py-8 text-center text-gray-500"
                 >
                   No data available
                 </td>
