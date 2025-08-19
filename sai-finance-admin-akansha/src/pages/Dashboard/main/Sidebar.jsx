@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import { MdDashboard, MdKeyboardArrowDown } from "react-icons/md";
 import { FaAward, FaWallet } from "react-icons/fa";
 import { IoNewspaperOutline } from "react-icons/io5";
@@ -17,6 +18,7 @@ import { GoDotFill } from "react-icons/go";
 import { FaUsers } from "react-icons/fa";
 import { FaBookOpenReader } from "react-icons/fa6";
 import { GiTakeMyMoney } from "react-icons/gi";
+
 const Sidebar = () => {
   const { data: user } = useUser();
   const navigate = useNavigate();
@@ -57,15 +59,57 @@ const Sidebar = () => {
 
   const getLinkClass = (path) => {
     return location.pathname === path
-      ? "flex items-center p-2 text-purple bg-purple-100 rounded-lg dark:text-purple-400 group"
-      : "flex items-center p-2 text-gray-900 rounded-lg dark:text-black group";
+      ? "flex items-center p-3 text-white bg-primary rounded-xl group font-semibold transition-all duration-300"
+      : "flex items-center p-3 text-gray-700 rounded-xl hover:bg-primary/10 hover:text-primary group font-semibold transition-all duration-300";
+  };
+
+  const getDropdownItemClass = (path) => {
+    return location.pathname === path
+      ? "flex items-center w-full pl-8 text-primary bg-primary/10 font-semibold py-2 rounded-lg cursor-pointer transition-all duration-300"
+      : "flex items-center w-full pl-8 text-gray-600 hover:text-primary hover:bg-primary/5 font-semibold py-2 rounded-lg cursor-pointer transition-all duration-300";
+  };
+
+  const sidebarVariants = {
+    hidden: { x: -300, opacity: 0 },
+    visible: { 
+      x: 0, 
+      opacity: 1,
+      transition: { 
+        duration: 0.4,
+        ease: "easeOut",
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.3 }
+    }
+  };
+
+  const dropdownVariants = {
+    hidden: { height: 0, opacity: 0 },
+    visible: { 
+      height: "auto", 
+      opacity: 1,
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    }
   };
 
   return (
     <>
-      <button
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={toggleSidebar}
-        className="p-2  mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden flex"
+        className="p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden flex hover:bg-gray-100 transition-colors duration-200"
       >
         <svg
           className="w-8 h-8"
@@ -80,20 +124,24 @@ const Sidebar = () => {
             d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
           ></path>
         </svg>
-        Button
-      </button>
+      </motion.button>
 
-      <aside
+      <motion.aside
+        initial="hidden"
+        animate="visible"
+        variants={sidebarVariants}
         id="sidebar-multi-level-sidebar"
         className={`fixed top-16 left-0 z-40 w-64 h-screen transition-transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full sm:translate-x-0"
         }`}
         aria-label="Sidebar"
       >
-        <div className="h-full  py-4 overflow-y-auto bg-gray-50 dark:bg-white-800 shadow-2xl">
-          <button
+        <div className="h-full py-4 overflow-y-auto bg-white shadow-2xl border-r border-gray-200">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={closeSidebar}
-            className="absolute top-2 right-2 p-2 text-gray-500 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 sm:hidden"
+            className="absolute top-2 right-2 p-2 text-gray-500 rounded-full hover:bg-gray-200 transition-colors duration-200 sm:hidden"
           >
             <svg
               className="w-6 h-6"
@@ -109,247 +157,229 @@ const Sidebar = () => {
                 d="M6 18L18 6M6 6l12 12"
               />
             </svg>
-          </button>
-          <ul className="space-y-2 font-medium font-oswald font-bold p-4">
-            <li>
+          </motion.button>
+          
+          <motion.ul 
+            variants={sidebarVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-3 font-medium p-4"
+          >
+            <motion.li variants={itemVariants}>
               <Link to="/dash/home" className={getLinkClass("/dash/home")}>
-                <MdDashboard className="w-7 h-7 text-bgBlue transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-black" />
-                <span className="ms-3 font-semibold">Home</span>
+                <MdDashboard className="w-6 h-6 transition duration-200" />
+                <span className="ms-3">Home</span>
               </Link>
-            </li>
-            <hr />
-            <li onClick={toggleDropdown}>
-              <div
-                className={`flex items-center justify-between p-2 rounded-lg cursor-pointer ${
-                  isOpen ? "bg-gray-100" : ""
+            </motion.li>
+            
+            <motion.div variants={itemVariants} className="border-t border-gray-200 pt-3"></motion.div>
+            
+            <motion.li variants={itemVariants}>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                onClick={toggleDropdown}
+                className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                  isOpen ? "bg-primary/10 text-primary" : "text-gray-700 hover:bg-primary/5 hover:text-primary"
                 }`}
               >
                 <div className="flex items-center">
-                  <FaUsers className="w-7 h-7 text-bgBlue transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-black" />
-                  <span className="ms-3  font-semibold">User Controls</span>
+                  <FaUsers className="w-6 h-6 transition duration-200" />
+                  <span className="ms-3 font-semibold">User Controls</span>
                 </div>
-                <MdKeyboardArrowDown className="text-end" size={24} />
-              </div>
-              <ul
-                id="dropdown-example"
-                className={`space-y-2 font-medium flex flex-col  mt-2 text-end ${
-                  isOpen ? "" : "hidden"
-                }`}
+                <motion.div
+                  animate={{ rotate: isOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <MdKeyboardArrowDown size={24} />
+                </motion.div>
+              </motion.div>
+              
+              <motion.ul
+                variants={dropdownVariants}
+                initial="hidden"
+                animate={isOpen ? "visible" : "hidden"}
+                className="space-y-1 mt-2 overflow-hidden"
               >
                 <Link to="/dash/demo-user">
-                  <li
-                    className="flex items-center  w-full pl-5  text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                  <li className={getDropdownItemClass("/dash/demo-user")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Demo Users
                   </li>
                 </Link>
                 <Link to="/dash/active-user">
-                  <li
-                    className="flex items-center  w-full pl-5   text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                  <li className={getDropdownItemClass("/dash/active-user")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Active Users
                   </li>
                 </Link>
-                <Link to="/dash/demo-user">
-                  <li
-                    className="flex items-center  w-full pl-5  text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                <Link to="/dash/daily-user">
+                  <li className={getDropdownItemClass("/dash/daily-user")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Daily Users
                   </li>
                 </Link>
-                <Link to="/dash/demo-user">
-                  <li
-                    className="flex items-center  w-full pl-5  text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                <Link to="/dash/hold-user">
+                  <li className={getDropdownItemClass("/dash/hold-user")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Hold Users
                   </li>
                 </Link>
-              </ul>
-            </li>
-            <hr />
-            <li onClick={toggleDropdown2}>
-              <div
-                className={`flex items-center justify-between p-2 rounded-lg cursor-pointer ${
-                  isOpen2 ? "bg-gray-100" : ""
+              </motion.ul>
+            </motion.li>
+            
+            <motion.div variants={itemVariants} className="border-t border-gray-200 pt-3"></motion.div>
+            
+            <motion.li variants={itemVariants}>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                onClick={toggleDropdown2}
+                className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                  isOpen2 ? "bg-primary/10 text-primary" : "text-gray-700 hover:bg-primary/5 hover:text-primary"
                 }`}
               >
                 <div className="flex items-center">
-                  <FaBookOpenReader className="w-7 h-7 text-bgBlue transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-black" />
-                  <span className="ms-3  font-semibold">Course Controls</span>
+                  <FaBookOpenReader className="w-6 h-6 transition duration-200" />
+                  <span className="ms-3 font-semibold">Course Controls</span>
                 </div>
-                <MdKeyboardArrowDown className="text-end" size={24} />
-              </div>
-              <ul
-                id="dropdown-example"
-                className={`space-y-2 font-medium flex flex-col  mt-2 text-end ${
-                  isOpen2 ? "" : "hidden"
-                }`}
+                <motion.div
+                  animate={{ rotate: isOpen2 ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <MdKeyboardArrowDown size={24} />
+                </motion.div>
+              </motion.div>
+              
+              <motion.ul
+                variants={dropdownVariants}
+                initial="hidden"
+                animate={isOpen2 ? "visible" : "hidden"}
+                className="space-y-1 mt-2 overflow-hidden"
               >
                 <Link to="/dash/view-course">
-                  <li
-                    className="flex items-center  w-full pl-5  text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                  <li className={getDropdownItemClass("/dash/view-course")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     View Course
                   </li>
                 </Link>
                 <Link to="/dash/create-course">
-                  <li
-                    className="flex items-center  w-full pl-5   text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                  <li className={getDropdownItemClass("/dash/create-course")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Create Course
                   </li>
                 </Link>
-              </ul>
-            </li>
-            <hr />
-            <li onClick={toggleDropdown4}>
-              <div
-                className={`flex items-center justify-between p-2 rounded-lg cursor-pointer ${
-                  isOpen4 ? "bg-gray-100" : ""
+              </motion.ul>
+            </motion.li>
+            
+            <motion.div variants={itemVariants} className="border-t border-gray-200 pt-3"></motion.div>
+            
+            <motion.li variants={itemVariants}>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                onClick={toggleDropdown4}
+                className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                  isOpen4 ? "bg-primary/10 text-primary" : "text-gray-700 hover:bg-primary/5 hover:text-primary"
                 }`}
               >
                 <div className="flex items-center">
-                  <FaAward className="w-7 h-7 text-bgBlue transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-black" />
-                  <span className="ms-3  font-semibold">Contest Controls</span>
+                  <FaAward className="w-6 h-6 transition duration-200" />
+                  <span className="ms-3 font-semibold">Contest Controls</span>
                 </div>
-                <MdKeyboardArrowDown className="text-end" size={24} />
-              </div>
-              <ul
-                id="dropdown-example"
-                className={`space-y-2 font-medium flex flex-col  mt-2 text-end ${
-                  isOpen4 ? "" : "hidden"
-                }`}
+                <motion.div
+                  animate={{ rotate: isOpen4 ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <MdKeyboardArrowDown size={24} />
+                </motion.div>
+              </motion.div>
+              
+              <motion.ul
+                variants={dropdownVariants}
+                initial="hidden"
+                animate={isOpen4 ? "visible" : "hidden"}
+                className="space-y-1 mt-2 overflow-hidden"
               >
                 <Link to="/dash/view-contest">
-                  <li
-                    className="flex items-center  w-full pl-5  text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                  <li className={getDropdownItemClass("/dash/view-contest")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     View Contest
                   </li>
                 </Link>
                 <Link to="/dash/add-contest">
-                  <li
-                    className="flex items-center  w-full pl-5   text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                  <li className={getDropdownItemClass("/dash/add-contest")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Add Contest
                   </li>
                 </Link>
-              </ul>
-            </li>
-            <hr />
-            <li onClick={toggleDropdown3}>
-              <div
-                className={`flex items-center justify-between p-2  rounded-lg cursor-pointer ${
-                  isOpen3 ? "bg-gray-100" : ""
+              </motion.ul>
+            </motion.li>
+            
+            <motion.div variants={itemVariants} className="border-t border-gray-200 pt-3"></motion.div>
+            
+            <motion.li variants={itemVariants}>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                onClick={toggleDropdown3}
+                className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                  isOpen3 ? "bg-primary/10 text-primary" : "text-gray-700 hover:bg-primary/5 hover:text-primary"
                 }`}
               >
-                <div className="flex items-center gap-0.5">
-                  <GiTakeMyMoney className="w-7 h-7 text-bgBlue transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-black" />
-                  <span className="  font-semibold">Payment Controls</span>
+                <div className="flex items-center">
+                  <GiTakeMyMoney className="w-6 h-6 transition duration-200" />
+                  <span className="ms-3 font-semibold">Payment Controls</span>
                 </div>
-                <MdKeyboardArrowDown className="text-end" size={24} />
-              </div>
-              <ul
-                id="dropdown-example"
-                className={`space-y-2 font-medium flex flex-col  mt-2 text-end ${
-                  isOpen3 ? "" : "hidden"
-                }`}
+                <motion.div
+                  animate={{ rotate: isOpen3 ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <MdKeyboardArrowDown size={24} />
+                </motion.div>
+              </motion.div>
+              
+              <motion.ul
+                variants={dropdownVariants}
+                initial="hidden"
+                animate={isOpen3 ? "visible" : "hidden"}
+                className="space-y-1 mt-2 overflow-hidden"
               >
-                <Link to="/dash/demo-user">
-                  <li
-                    className="flex items-center  w-full pl-5  text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                <Link to="/dash/payment">
+                  <li className={getDropdownItemClass("/dash/payment")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Payment
                   </li>
                 </Link>
                 <Link to="/dash/payment-request">
-                  <li
-                    className="flex items-center  w-full pl-5   text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                  <li className={getDropdownItemClass("/dash/payment-request")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Payment Request
                   </li>
                 </Link>
-                <Link to="/dash/demo-user">
-                  <li
-                    className="flex items-center  w-full pl-5  text-bgBlue font-bold   cursor-pointer"
-                    onClick={() => changeLanguage("hi")}
-                  >
-                    <MdOutlineKeyboardDoubleArrowRight
-                      className="text-purple mr-2"
-                      size={25}
-                    />{" "}
+                <Link to="/dash/payment-history">
+                  <li className={getDropdownItemClass("/dash/payment-history")}>
+                    <MdOutlineKeyboardDoubleArrowRight className="text-primary mr-3" size={20} />
                     Payment History
                   </li>
                 </Link>
-              </ul>
-            </li>
-            <hr />
+              </motion.ul>
+            </motion.li>
+            
+            <motion.div variants={itemVariants} className="border-t border-gray-200 pt-3"></motion.div>
 
-            <li
+            <motion.li
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
               onClick={() => {
                 localStorage.removeItem("token");
                 navigate("/login");
               }}
             >
-              <Link className={getLinkClass("/logout")}>
-                <LuLogOut className="w-7 h-7 text-bgBlue transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-black" />
-                <span className="ms-3  font-semibold">Logout</span>
-              </Link>
-            </li>
-            <hr />
-          </ul>
+              <div className="flex items-center p-3 text-red-600 rounded-xl hover:bg-red-50 group font-semibold cursor-pointer transition-all duration-300">
+                <LuLogOut className="w-6 h-6 transition duration-200" />
+                <span className="ms-3">Logout</span>
+              </div>
+            </motion.li>
+          </motion.ul>
         </div>
-      </aside>
+      </motion.aside>
 
       <div className="sm:ml-64 lg:py-8 h-full bg-bgWhite">
         <Layout />
