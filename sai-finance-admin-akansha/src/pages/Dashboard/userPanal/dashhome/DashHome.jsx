@@ -281,7 +281,7 @@ const DashHome = () => {
         transition={{ delay: 1.5, duration: 0.5, type: "spring" }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-primary to-primaryDark text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center text-xl z-50 transition-all duration-300"
+        className="fixed bottom-8 right-8 w-14 h-14 bg-primary hover:bg-primaryDark text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center text-xl z-50 transition-all duration-300"
       >
         📊
       </motion.button>
