@@ -285,20 +285,20 @@ function SavingAccount() {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col"
+      className="h-screen bg-primaryBg flex flex-col"
     >
       {/* Fixed Header Section */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         className="flex-shrink-0 pt-20 pb-4 px-4"
       >
         <section className="md:p-1">
           <div className="py-6">
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="flex justify-between items-center mb-6"
             >
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="flex gap-2"
               >
@@ -328,7 +328,7 @@ function SavingAccount() {
                 </Menu>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="w-96"
               >
@@ -339,15 +339,15 @@ function SavingAccount() {
                   <Input
                     type="text"
                     placeholder="Search accounts..."
-                    focusBorderColor="purple.500"
+                    focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                   <InputRightAddon p={0} border="none">
                     <Button
-                      className="bg-secondary hover:bg-secondaryDark"
-                      colorScheme="purple"
+                      className="bg-primary hover:bg-primaryDark"
+                      colorScheme="blue"
                       size="sm"
                       borderLeftRadius={0}
                       borderRightRadius={3.3}
@@ -359,7 +359,7 @@ function SavingAccount() {
                 </InputGroup>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="flex gap-2"
               >
@@ -383,8 +383,8 @@ function SavingAccount() {
                   <Link to={`/dash/create-saving-account`}>
                     <MenuButton
                       as={Button}
-                      colorScheme="purple"
-                      className="bg-secondary hover:bg-secondaryDark"
+                      colorScheme="blue"
+                      className="bg-primary hover:bg-primaryDark"
                     >
                       Add New Account
                     </MenuButton>
@@ -397,33 +397,33 @@ function SavingAccount() {
       </motion.div>
 
       {/* Scrollable Table Section */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         className="flex-1 px-4 pb-4 overflow-hidden"
       >
-        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg shadow-2xl h-full flex flex-col border border-slate-600">
+        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
             <Table data={paginatedData} columns={columns} />
           </div>
 
           {/* Fixed Pagination */}
-          <div className="flex-shrink-0 flex justify-center p-3 border-t border-slate-600 gap-3 items-center bg-gradient-to-r from-slate-800 to-slate-700">
+          <div className="flex-shrink-0 flex justify-center p-4 border-t gap-4 items-center bg-gray-50">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               isDisabled={currentPage === 1}
-              colorScheme="purple"
+              colorScheme="blue"
               variant="outline"
             >
               Previous
             </Button>
-            <span className="text-sm bg-secondary text-white px-4 py-2 rounded-md font-medium">
+            <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} of {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               isDisabled={currentPage === totalPages}
-              colorScheme="purple"
+              colorScheme="blue"
               variant="outline"
             >
               Next
