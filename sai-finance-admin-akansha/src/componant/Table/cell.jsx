@@ -1,19 +1,19 @@
 import React from "react";
 import classNames from "classnames";
 
-const Cell = ({
-  text = "",
-  subtext = "",
+const Cell = ({ 
+  text = "", 
+  subtext = "", 
   onClick,
-  bold = "normal"
+  bold = "normal" 
 }) => {
   return (
     <div
       onClick={onClick}
       className={classNames({ "cursor-pointer": onClick })}
     >
-      <div className={`font-${bold} text-black`}>{text}</div>
-      <div className="text-gray-500 text-sm">{subtext}</div>
+      <div className={`font-${bold} text-slate-200`}>{text}</div>
+      {subtext && <div className="text-slate-400 text-xs">{subtext}</div>}
     </div>
   );
 };
