@@ -160,6 +160,13 @@ const DashHome = () => {
       icon: "👥",
     },
     {
+      title: "Active Saving Users",
+      total: savingUsers.toLocaleString(),
+      rate: "+8.4%",
+      levelUp: true,
+      icon: "💸",
+    },
+    {
       title: "Total Outgoing",
       total: `₹ ${totalLoanAmt.toLocaleString()}`,
       rate: "+1.8%",
