@@ -285,7 +285,7 @@ function SavingAccount() {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="h-screen bg-primaryBg flex flex-col"
+      className="h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col"
     >
       {/* Fixed Header Section */}
       <motion.div 
