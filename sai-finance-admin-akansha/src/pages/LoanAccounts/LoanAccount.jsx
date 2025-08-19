@@ -2,7 +2,6 @@ import React from "react";
 import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 
 import axios from "../../axios";
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -50,7 +49,6 @@ function LoanAccount() {
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
   const [totalLoanAmt, setTotalLoanAmt] = useState(0);
-  // console.log(data);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,12 +68,10 @@ function LoanAccount() {
   useEffect(() => {
     async function fetchData() {
       axios.get("users/").then((response) => {
-        // 
         if (response?.data) {
           setData(response?.data?.result);
           console.log(response?.data?.result);
           setFilteredData(response?.data?.result);
-          // localStorage.setItem("plans", JSON.stringify(response?.data?.result));
         }
         const sum = response.data.result.reduce((acc, item) => {
           return acc + (item.active_loan_id?.total_amount || 0);
@@ -105,19 +101,16 @@ function LoanAccount() {
       .delete(`users/${newID}`)
       .then((res) => {
         if (res.data) {
-          // console.log(res.data);
           toast({
             title: `Success! User has been deleted successfully`,
-
             status: "success",
             duration: 4000,
             isClosable: true,
             position: "top"
           });
-          // Update state without reload
           setData((prev) => prev.filter((item) => item._id !== newID));
           setFilteredData((prev) => prev.filter((item) => item._id !== newID));
-          onClose(); // Close the alert dialog
+          onClose();
         }
       })
       .catch((err) => {
@@ -142,7 +135,6 @@ function LoanAccount() {
           isClosable: true,
           position: "top"
         });
-        // Update state without reload
         setData((prev) =>
           prev.map((item) =>
             item._id === editData._id ? { ...item, ...editData } : item
@@ -164,6 +156,7 @@ function LoanAccount() {
       });
     }
   };
+
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * usersPerPage;
     return filteredData.slice(startIndex, startIndex + usersPerPage);
@@ -182,32 +175,23 @@ function LoanAccount() {
         Header: "Name",
         accessor: "full_name",
         Cell: ({ value, row: { original } }) => (
-          <>
-            <Cell text={`${original?.full_name}`} bold={"bold"} />
-          </>
+          <Cell text={`${original?.full_name}`} bold={"bold"} />
         ),
       },
-
       {
         Header: "Loan Amount",
         accessor: "loan_amount",
         Cell: ({ value, row: { original } }) => (
-          <>
-            {/* {console.log(original)} */}
-            <Cell text={`Rs. ${original?.active_loan_id?.loan_amount}`} />
-          </>
+          <Cell text={`Rs. ${original?.active_loan_id?.loan_amount}`} />
         ),
       },
       {
         Header: "Total Pay Amount",
         accessor: "total_amount",
         Cell: ({ value, row: { original } }) => (
-          <>
-            <Cell text={`Rs. ${original?.active_loan_id?.total_amount}`} />
-          </>
+          <Cell text={`Rs. ${original?.active_loan_id?.total_amount}`} />
         ),
       },
-
       {
         Header: "Total EMI/Day",
         accessor: "emi_day",
@@ -223,7 +207,6 @@ function LoanAccount() {
         accessor: "total_due_amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.total_due_amount}`} />,
       },
-
       {
         Header: "Date",
         accessor: "created_on",
@@ -238,91 +221,50 @@ function LoanAccount() {
           <Cell text={`${Math.ceil(value)}`} />
         ),
       },
-
       {
         Header: "Action",
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
-            <>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  className="bg-primary hover:bg-primaryDark"
-                  colorScheme="blue"
-                  onClick={() => setNewID(original._id)}
-                >
-                  Actions
-                </MenuButton>
-                <MenuList>
-                  <Link to={`/dash/view-user-details/${original?.active_loan_id?.user_id}`}>
-                    <MenuItem >
-                      {" "}
-                      <HiStatusOnline className="mr-4" /> View User
-                    </MenuItem></Link>
-
-                  {/* <Link to={`/dash/edit-course/${original._id}`}> */}
-                  <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                    <MdEdit className="mr-4" /> Edit
+            <Menu>
+              <MenuButton
+                as={Button}
+                className="bg-purple "
+                colorScheme="bgBlue hover:bg-secondaryLight"
+                onClick={() => setNewID(original._id)}
+              >
+                Actions
+              </MenuButton>
+              <MenuList>
+                <Link to={`/dash/view-user-details/${original?.active_loan_id?.user_id}`}>
+                  <MenuItem >
+                    <HiStatusOnline className="mr-4" /> View User
                   </MenuItem>
-                  {/* </Link> */}
-
-                  <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
-                    {" "}
-                    <MdDelete className="mr-4" />
-                    Delete
-                  </MenuItem>
-                  <MenuItem onClick={onOpen2}>
-                    {" "}
-                    <HiStatusOnline className="mr-4" /> Status
-                  </MenuItem>
-                </MenuList>
-              </Menu>
-            </>
+                </Link>
+                <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
+                  <MdEdit className="mr-4" /> Edit
+                </MenuItem>
+                <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
+                  <MdDelete className="mr-4" />
+                  Delete
+                </MenuItem>
+                <MenuItem onClick={onOpen2}>
+                  <HiStatusOnline className="mr-4" /> Status
+                </MenuItem>
+              </MenuList>
+            </Menu>
           );
         },
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, currentPage]
   );
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 }
-    }
-  };
-
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      className="h-screen bg-primaryBg flex flex-col"
-    >
-<<<<<<< HEAD
+    <div className="lg:py-8 py-4 bg-primaryBg overflow-y-scroll scrollbar-hide">
       <section className=" md:p-1 ">
         <div className="py-6 ">
           <div className="flex  justify-between items-center">
-            {/* <div>
-              <h2 class="text-xl font-bold  mb-4 text-purple text-oswald">
-                Demo User
-              </h2>
-            </div> */}
-
             <div className="flex gap-2">
               <Menu>
                 <MenuButton
@@ -355,16 +297,13 @@ function LoanAccount() {
             </div>
             <div className=" w-96">
               <InputGroup borderRadius={5} size="sm">
-                <InputLeftElement
-                  pointerEvents="none"
-                // children={<Search2Icon color="gray.600" />}
-                />
+                <InputLeftElement pointerEvents="none" />
                 <Input
                   type="text"
                   placeholder="Search..."
                   focusBorderColor="teal.500"
                   border="1px solid #949494 "
-                  value={searchTerm} // bind value
+                  value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <InputRightAddon p={0} border="none">
@@ -375,7 +314,6 @@ function LoanAccount() {
                     borderLeftRadius={0}
                     borderRightRadius={3.3}
                     border="1px solid #949494"
-                  // onClick={handleSearch}
                   >
                     Search
                   </Button>
@@ -404,182 +342,59 @@ function LoanAccount() {
 
               <Menu>
                 <Link to={`/dash/create-loan-account`}>
-=======
-      {/* Fixed Header Section */}
-      <motion.div 
-        variants={itemVariants}
-        className="flex-shrink-0 pt-20 pb-4 px-4"
-      >
-        <section className="md:p-1">
-          <div className="py-6">
-            <motion.div 
-              variants={itemVariants}
-              className="flex justify-between items-center mb-6"
+                  <MenuButton
+                    as={Button}
+                    colorScheme="#FF782D"
+                    zIndex={20}
+                    className="bg-primary hover:bg-primaryLight"
+                  >
+                    Add New User
+                  </MenuButton>
+                </Link>
+              </Menu>
+            </div>
+            <Drawer
+              isOpen={isOpen2}
+              placement="right"
+              onClose={onClose2}
+              finalFocusRef={btnRef}
             >
-              <motion.div 
-                variants={itemVariants}
-                className="flex gap-2"
-              >
-                <Menu>
->>>>>>> refs/remotes/origin/main
-                  <MenuButton
-                    as={Button}
-                    colorScheme="blue"
-                    className="bg-primary hover:bg-primaryDark text-white"
-                    fontWeight={800}
-                    fontSize={18}
-                  >
-                    Total Collection : ₹ {totalLoanAmt.toLocaleString()}
-                  </MenuButton>
-                </Menu>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme="purple"
-                    className="bg-secondary hover:bg-secondaryDark text-white"
-                    fontWeight={800}
-                    fontSize={18}
-                    ref={btnRef}
-                    onClick={onOpen2}
-                  >
-                    Total Active User : {data.length}
-                  </MenuButton>
-                </Menu>
-              </motion.div>
-
-              <motion.div 
-                variants={itemVariants}
-                className="w-96"
-              >
-                <InputGroup borderRadius={5} size="sm">
-                  <InputLeftElement
-                    pointerEvents="none"
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Search..."
-                    focusBorderColor="blue.500"
-                    border="1px solid #949494"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <InputRightAddon p={0} border="none">
-                    <Button
-                      className="bg-primary hover:bg-primaryDark"
-                      colorScheme="blue"
-                      size="sm"
-                      borderLeftRadius={0}
-                      borderRightRadius={3.3}
-                      border="1px solid #949494"
-                    >
-                      Search
-                    </Button>
-                  </InputRightAddon>
-                </InputGroup>
-              </motion.div>
-
-              <motion.div 
-                variants={itemVariants}
-                className="flex gap-2"
-              >
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme="gray"
-                    className="bg-gray-600 hover:bg-gray-700"
-                  >
-                    Sort By
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>Download</MenuItem>
-                    <MenuItem>Create a Copy</MenuItem>
-                    <MenuItem>Mark as Draft</MenuItem>
-                    <MenuItem>Delete</MenuItem>
-                    <MenuItem>Attend a Workshop</MenuItem>
-                  </MenuList>
-                </Menu>
-
-                <Menu>
-                  <Link to={`/dash/create-loan-account`}>
-                    <MenuButton
-                      as={Button}
-                      colorScheme="blue"
-                      className="bg-primary hover:bg-primaryDark"
-                    >
-                      Add New User
-                    </MenuButton>
-                  </Link>
-                </Menu>
-              </motion.div>
-            </motion.div>
+              <DrawerOverlay />
+              <DrawerContent>
+                <DrawerCloseButton />
+                <DrawerHeader>Create your account</DrawerHeader>
+                <DrawerBody>
+                  <Input placeholder="Type here..." />
+                </DrawerBody>
+                <DrawerFooter>
+                  <Button variant="outline" mr={3} onClick={onClose2}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="blue">Save</Button>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
           </div>
-        </section>
-      </motion.div>
-
-      {/* Scrollable Table Section */}
-      <motion.div 
-        variants={itemVariants}
-        className="flex-1 px-4 pb-4 overflow-hidden"
-      >
-        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
-          <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">Loan Accounts</h3>
-          </div>
-          
-          {/* Only the table content scrolls */}
-          <div className="flex-1 overflow-auto">
+          <div className="mt-2 overflow-x-auto scrollbar-hide">
             <Table data={paginatedData} columns={columns} />
           </div>
-
-          {/* Fixed Pagination */}
-          <div className="flex-shrink-0 flex justify-center p-4 border-t gap-4 items-center bg-gray-50">
+          <div className="flex justify-center mt-4 gap-4 items-center">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               isDisabled={currentPage === 1}
-              colorScheme="blue"
-              variant="outline"
             >
               Previous
             </Button>
-            <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} of {totalPages}
-            </span>
+            <span className="text-sm bg-primary w-10 p-2 rounded-md text-white"> {currentPage} </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               isDisabled={currentPage === totalPages}
-              colorScheme="blue"
-              variant="outline"
             >
               Next
             </Button>
           </div>
         </div>
-      </motion.div>
-
-      {/* Drawers and Dialogs remain the same */}
-      <Drawer
-        isOpen={isOpen2}
-        placement="right"
-        onClose={onClose2}
-        finalFocusRef={btnRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Create your account</DrawerHeader>
-
-          <DrawerBody>
-            <Input placeholder="Type here..." />
-          </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose2}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue">Save</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      </section>
 
       <AlertDialog
         isOpen={isOpen}
@@ -592,11 +407,9 @@ function LoanAccount() {
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Delete User
             </AlertDialogHeader>
-
             <AlertDialogBody>
               Are you sure you want to delete this user? This action cannot be undone.
             </AlertDialogBody>
-
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
@@ -642,7 +455,7 @@ function LoanAccount() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-    </motion.div>
+    </div>
   );
 }
 
