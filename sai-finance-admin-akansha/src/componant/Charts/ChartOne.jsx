@@ -90,23 +90,8 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
       curve: "smooth",
     },
     fill: {
-      type: "gradient",
-      gradient: {
-        shadeIntensity: 1,
-        type: "vertical",
-        colorStops: [
-          {
-            offset: 0,
-            color: "#0d9488",
-            opacity: 0.8,
-          },
-          {
-            offset: 100,
-            color: "#0d9488",
-            opacity: 0.1,
-          },
-        ],
-      },
+      type: "solid",
+      opacity: [0.8, 0.6],
     },
     grid: {
       show: true,
@@ -187,10 +172,10 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="relative rounded-3xl border-0 bg-gradient-to-br from-white via-white to-primaryBg/30 p-6 shadow-xl hover:shadow-2xl transition-all duration-500 group overflow-hidden"
+      className="relative rounded-3xl border-2 border-gray-100 bg-white p-6 shadow-xl hover:shadow-2xl hover:border-primary/30 transition-all duration-500 group overflow-hidden"
     >
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       
       <div className="relative z-10">
         {/* Header */}
@@ -267,9 +252,12 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
         </motion.div>
 
         {/* Decorative elements */}
-        <div className="absolute top-6 right-6 w-3 h-3 bg-primary/20 rounded-full group-hover:bg-primary/40 transition-colors duration-300"></div>
-        <div className="absolute bottom-6 left-6 w-2 h-2 bg-secondary/30 rounded-full group-hover:bg-secondary/60 transition-colors duration-300"></div>
+        <div className="absolute top-6 right-6 w-3 h-3 bg-primary rounded-full opacity-30 group-hover:opacity-60 transition-colors duration-300"></div>
+        <div className="absolute bottom-6 left-6 w-2 h-2 bg-secondary rounded-full opacity-40 group-hover:opacity-80 transition-colors duration-300"></div>
       </div>
+
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
     </motion.div>
   );
 };
