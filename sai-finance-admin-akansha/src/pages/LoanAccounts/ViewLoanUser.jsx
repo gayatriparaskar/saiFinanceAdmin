@@ -445,7 +445,7 @@ function ViewLoanUser() {
                     )}
                   </span>
                 </h2>
-                <h2 class="text-lg font-bold   text-purple text-oswald">
+                <h2 className="text-lg font-bold   text-purple text-oswald">
                   End Date :
                   <span className="ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
