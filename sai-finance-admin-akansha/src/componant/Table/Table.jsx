@@ -31,9 +31,9 @@ const Table = ({
       >
         <table
           {...getTableProps()}
-          className="w-full table-auto border-collapse text-black"
+          className="w-full table-auto border-collapse text-white bg-transparent"
         >
-          <thead className="border-b">
+          <thead className="border-b border-slate-600">
             {headerGroups.map((headerGroup, gIdx) => {
               const { key: headerGroupKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
               return (
@@ -44,7 +44,7 @@ const Table = ({
                       <th
                         key={headerKey || cIdx}
                         {...headerProps}
-                        className="px-2 py-4 font-bold uppercase text-xs text-white sticky top-0 z-10 bg-primaryLight text-center"
+                        className="px-3 py-2 font-bold uppercase text-xs text-slate-300 sticky top-0 z-10 bg-gradient-to-r from-slate-800 to-slate-700 text-center border-r border-slate-600 last:border-r-0"
                       >
                         {column.render("Header")}
                       </th>
@@ -69,7 +69,7 @@ const Table = ({
                   <tr
                     key={rowKey}
                     {...rowProps}
-                    className="border-b border-dashed text-black"
+                    className="border-b border-slate-700 hover:bg-slate-700/50 transition-colors duration-200 text-slate-200"
                   >
                     {row.cells.map((cell, cIdx) => {
                       const { key: cellKey, ...cellProps } = cell.getCellProps();
@@ -77,7 +77,7 @@ const Table = ({
                         <td
                           key={cellKey || cIdx}
                           {...cellProps}
-                          className="px-2 py-2 text-sm text-center max-w-xs break-words text-black"
+                          className="px-3 py-2 text-sm text-center max-w-xs break-words text-slate-200 border-r border-slate-700 last:border-r-0"
                         >
                           {cell.render("Cell", {
                             row: {
@@ -95,6 +95,17 @@ const Table = ({
                 </React.Fragment>
               );
             })}
+            {/* Empty state */}
+            {rows.length === 0 && (
+              <tr>
+                <td 
+                  colSpan={columns.length}
+                  className="px-4 py-8 text-center text-slate-400"
+                >
+                  No data available
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
