@@ -1,14 +1,14 @@
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import Mainroute from "./routes/Mainroute";
+import EnhancedMainroute from "./routes/EnhancedMainroute";
 import CursorTrail from "./components/CursorTrail/CursorTrail";
 
 function App() {
   const queryClient = new QueryClient();
-  
+
   return (
-    <motion.div 
+    <motion.div
       className="App no-select"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -16,7 +16,7 @@ function App() {
     >
       <QueryClientProvider client={queryClient}>
         <CursorTrail />
-        <Mainroute/>
+        <EnhancedMainroute/>
       </QueryClientProvider>
     </motion.div>
   );
