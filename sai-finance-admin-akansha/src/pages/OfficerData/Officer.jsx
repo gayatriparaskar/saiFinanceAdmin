@@ -413,10 +413,6 @@ function Officer() {
         className="flex-1 px-4 pb-4 overflow-hidden"
       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
-          <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">Officer Management</h3>
-          </div>
-          
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
             <Table data={paginatedData} columns={columns} />
