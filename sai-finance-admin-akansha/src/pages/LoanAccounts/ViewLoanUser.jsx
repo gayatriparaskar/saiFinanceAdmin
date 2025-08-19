@@ -437,7 +437,7 @@ function ViewLoanUser() {
                 Name :<span className="ml-4">{userdata?.full_name}</span>
               </h2>
               <div className="flex gap-20">
-                <h2 class="text-lg font-bold   text-purple text-oswald">
+                <h2 className="text-lg font-bold   text-purple text-oswald">
                   Start Date :
                   <span className="ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
