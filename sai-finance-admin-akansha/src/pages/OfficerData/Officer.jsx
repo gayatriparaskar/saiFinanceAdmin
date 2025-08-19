@@ -260,9 +260,9 @@ function Officer() {
     //   backgroundPosition: "center",
     // }}
     >
-      <section class=" md:p-1 ">
-        <div class="py-6 ">
-          <div class="flex  justify-between items-center">
+      <section className=" md:p-1 ">
+        <div className="py-6 ">
+          <div className="flex  justify-between items-center">
             {/* <div>
               <h2 class="text-xl font-bold  mb-4 text-purple text-oswald">
                 Demo User
