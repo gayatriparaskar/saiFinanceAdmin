@@ -312,7 +312,7 @@ const DashHome = () => {
             repeat: Infinity,
             ease: "linear",
           }}
-          className="absolute bottom-40 left-20 w-24 h-24 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-xl"
+          className="absolute bottom-40 left-20 w-24 h-24 bg-secondary/10 rounded-full blur-xl"
         />
       </div>
     </motion.div>
