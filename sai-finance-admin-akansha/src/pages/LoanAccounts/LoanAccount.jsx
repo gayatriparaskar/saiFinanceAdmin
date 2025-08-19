@@ -440,11 +440,11 @@ function LoanAccount() {
         finalFocusRef={btnRef}
       >
         <DrawerOverlay />
-        <DrawerContent bg="slate.800" color="white">
+        <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Account Details</DrawerHeader>
           <DrawerBody>
-            <Input placeholder="Type here..." bg="slate.700" border="1px solid #475569" />
+            <Input placeholder="Type here..." />
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
@@ -462,7 +462,7 @@ function LoanAccount() {
         isCentered
       >
         <AlertDialogOverlay>
-          <AlertDialogContent bg="slate.800" color="white">
+          <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Delete User
             </AlertDialogHeader>
@@ -483,30 +483,26 @@ function LoanAccount() {
 
       <Drawer isOpen={isEditing} placement="right" onClose={() => setIsEditing(false)}>
         <DrawerOverlay />
-        <DrawerContent bg="slate.800" color="white">
+        <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Edit User</DrawerHeader>
           <DrawerBody>
-            <Input
-              placeholder="Full Name"
-              value={editData?.full_name || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, full_name: e.target.value })
-              }
-              mb={3}
-              bg="slate.700"
-              border="1px solid #475569"
-            />
-            <Input
-              placeholder="Phone Number"
-              value={editData?.phone_number || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, phone_number: e.target.value })
-              }
-              mb={3}
-              bg="slate.700"
-              border="1px solid #475569"
-            />
+            <div className="space-y-4">
+              <Input
+                placeholder="Full Name"
+                value={editData?.full_name || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, full_name: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Phone Number"
+                value={editData?.phone_number || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, phone_number: e.target.value })
+                }
+              />
+            </div>
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
