@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import EnhancedDashHome from "../userPanal/dashhome/EnhancedDashHome";
 import TestDashHome from "../userPanal/dashhome/TestDashHome";
+import FixedEnhancedDashHome from "../userPanal/dashhome/FixedEnhancedDashHome";
 import DemoUser from "../userControl/DemoUser";
 import ViewCourse from "../courseControl/ViewCourse";
 import ActiveUser from "../userControl/ActiveUser";
