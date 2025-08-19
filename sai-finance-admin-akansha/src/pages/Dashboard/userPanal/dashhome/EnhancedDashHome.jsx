@@ -33,10 +33,12 @@ const EnhancedDashHome = () => {
   useEffect(() => {
     axios.get("account/").then((res) => {
       if (res?.data?.result) {
-        const activeSavings = res.data.result.filter(account => 
+        const activeSavings = res.data.result.filter(account =>
           account.account_type === 'savings' && account.status === 'active'
         );
         setActiveSavingsUsers(activeSavings.length);
+      } else {
+        setActiveSavingsUsers(0);
       }
     }).catch((error) => {
       console.error("Error fetching savings accounts:", error);
