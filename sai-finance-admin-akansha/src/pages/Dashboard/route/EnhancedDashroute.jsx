@@ -47,13 +47,13 @@ const EnhancedDashRoute = () => {
     >
       <Routes>
         {/* Enhanced Dashboard Home */}
-        <Route 
-          path='/home' 
+        <Route
+          path='/home'
           element={
             <motion.div {...pageTransition}>
-              <EnhancedDashHome />
+              <TestDashHome />
             </motion.div>
-          } 
+          }
         />
         
         <Route 
