@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import EnhancedCardDataStats from "../../../../componant/CardDataStats/EnhancedCardDataStats";
 import EnhancedChartOne from "../../../../componant/Charts/EnhancedChartOne";
 import EnhancedChartTwo from "../../../../componant/Charts/EnhancedChartTwo";
