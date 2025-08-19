@@ -184,7 +184,7 @@ const DashHome = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg flex items-center justify-center">
+      <div className="min-h-screen bg-primaryBg flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
