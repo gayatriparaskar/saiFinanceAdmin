@@ -9,14 +9,14 @@ import classNames from "classnames";
 const Table = ({
   columns,
   data,
-  isLoading,
+  isLoading = false,
   renderSubComponent,
   getRowProps,
   fullHeight = false,
   pagination = true,
-  total,
+  total = 0,
   pageSize = 50,
-  className,
+  className = "",
 }) => {
   // const history = useRouter();
   // const { page } = history.query;
@@ -49,27 +49,33 @@ const Table = ({
           <thead className="border-b">
             {
               // Loop over the header rows
-              headerGroups.map((headerGroup, gIdx) => (
-                // Apply the header row props
-                <tr key={gIdx} {...headerGroup.getHeaderGroupProps()} >
-                  {
-                    // Loop over the headers in each row
-                    headerGroup.headers.map((column, cIdx) => (
-                      // Apply the header cell props
-                      <th
-                        {...column.getHeaderProps()}
-                        key={cIdx}
-                        className="px-2 py-4 font-bold uppercase text-xs text-white sticky top-0 z-10 bg-primaryLight text-center"
-                      >
-                        {
-                          // Render the header
-                          column.render("Header")
-                        }
-                      </th>
-                    ))
-                  }
-                </tr>
-              ))
+              headerGroups.map((headerGroup, gIdx) => {
+                const { key, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+                return (
+                  // Apply the header row props
+                  <tr key={key || gIdx} {...headerGroupProps} >
+                    {
+                      // Loop over the headers in each row
+                      headerGroup.headers.map((column, cIdx) => {
+                        const { key: headerKey, ...headerProps } = column.getHeaderProps();
+                        return (
+                          // Apply the header cell props
+                          <th
+                            key={headerKey || cIdx}
+                            {...headerProps}
+                            className="px-2 py-4 font-bold uppercase text-xs text-white sticky top-0 z-10 bg-primaryLight text-center"
+                          >
+                            {
+                              // Render the header
+                              column.render("Header")
+                            }
+                          </th>
+                        );
+                      })
+                    }
+                  </tr>
+                );
+              })
             }
           </thead>
 
@@ -83,22 +89,26 @@ const Table = ({
                 const rowProps = getRowProps
                   ? row.getRowProps(getRowProps(row))
                   : row.getRowProps();
+                
+                const { key: rowKey, ...restRowProps } = rowProps;
+                
                 return (
                   // Apply the row props
-                  <React.Fragment key={rowProps.key}>
+                  <React.Fragment key={rowKey}>
                     <tr
                       //  onClick={tbleFun}
-                      {...rowProps}
+                      {...restRowProps}
                       className=" border-b border-dashed text-black"
                     >
                       {
                         // Loop over the rows cells
                         row.cells.map((cell, cIdx) => {
                           // Apply the cell props
+                          const { key: cellKey, ...cellProps } = cell.getCellProps();
                           return (
                             <td
-                              key={cIdx}
-                              {...cell.getCellProps()}
+                              key={cellKey || cIdx}
+                              {...cellProps}
                               className="px-2 py-2 text-sm text-center max-w-xs break-words text-black"
                             >
                               {
@@ -146,7 +156,5 @@ const Table = ({
     </div>
   );
 };
-
-Table.defaultProps = {};
 
 export default Table;
