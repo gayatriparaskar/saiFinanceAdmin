@@ -29,7 +29,7 @@ function PlanCard() {
       commodo condimentum.
     </p>
 
-    <div class="mt-4">
+    <div className="mt-4">
       
         {data &&
           data?.map((e, index) => {
