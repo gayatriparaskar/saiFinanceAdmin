@@ -199,7 +199,7 @@ const DashHome = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-20 pb-8 px-4 lg:px-6"
+      className="min-h-screen bg-primaryBg pt-20 pb-8 px-4 lg:px-6"
     >
       {/* Header */}
       <motion.div
