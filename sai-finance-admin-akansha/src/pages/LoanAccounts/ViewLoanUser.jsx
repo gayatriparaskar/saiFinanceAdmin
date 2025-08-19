@@ -429,11 +429,11 @@ function ViewLoanUser() {
 
   return (
     <div className="lg:py-8 py-4 bg-primaryBg">
-      <section class=" md:p-1 ">
-        <div class="py-6 ">
-          <div class="flex  justify-between items-center ">
+      <section className=" md:p-1 ">
+        <div className="py-6 ">
+          <div className="flex  justify-between items-center ">
             <div className="flex w-3/2 flex-col gap-2 text-start">
-              <h2 class="text-xl font-bold   text-purple text-oswald">
+              <h2 className="text-xl font-bold   text-purple text-oswald">
                 Name :<span className="ml-4">{userdata?.full_name}</span>
               </h2>
               <div className="flex gap-20">
