@@ -1,48 +1,78 @@
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import { motion } from "framer-motion";
 
 const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
   const [series, setSeries] = useState([
     {
-      name: "Loan ",
+      name: "Monthly Revenue",
       data: [0],
     },
     {
-      name: "Product Two",
+      name: "Growth Trend",
       data: [0],
     },
   ]);
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
+    setTimeout(() => setIsLoaded(true), 300);
+    
     if (Array.isArray(monthlyAmtData) && monthlyAmtData.length > 0) {
       setSeries([
-        { name: "Loan", data: monthlyAmtData },
-        { name: "Product Two", data: monthlyAmtData },
+        { name: "Monthly Revenue", data: monthlyAmtData },
+        { name: "Growth Trend", data: monthlyAmtData.map(val => val * 0.8) },
       ]);
     }
   }, [monthlyAmtData]);
 
   const options = {
     legend: {
-      show: false,
+      show: true,
       position: "top",
       horizontalAlign: "left",
+      floating: false,
+      fontSize: "14px",
+      fontFamily: "Poppins, sans-serif",
+      fontWeight: 500,
+      markers: {
+        width: 8,
+        height: 8,
+        radius: 4,
+      },
     },
-    colors: ["#3C50E0", "#80CAEE"],
+    colors: ["#0d9488", "#f97316"],
     chart: {
-      fontFamily: "Satoshi, sans-serif",
-      height: 335,
+      fontFamily: "Poppins, sans-serif",
+      height: 400,
       type: "area",
+      animations: {
+        enabled: true,
+        easing: "easeinout",
+        speed: 1200,
+        animateGradually: {
+          enabled: true,
+          delay: 200,
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 600,
+        },
+      },
       dropShadow: {
         enabled: true,
-        color: "#623CEA14",
-        top: 10,
-        blur: 4,
+        color: "#0d9488",
+        top: 6,
         left: 0,
-        opacity: 0.1,
+        blur: 10,
+        opacity: 0.15,
       },
       toolbar: {
         show: false,
+      },
+      zoom: {
+        enabled: false,
       },
     },
     responsive: [
@@ -54,20 +84,34 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
           },
         },
       },
-      {
-        breakpoint: 1366,
-        options: {
-          chart: {
-            height: 350,
-          },
-        },
-      },
     ],
     stroke: {
-      width: [2, 2],
-      curve: "straight",
+      width: [3, 3],
+      curve: "smooth",
+    },
+    fill: {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 1,
+        type: "vertical",
+        colorStops: [
+          {
+            offset: 0,
+            color: "#0d9488",
+            opacity: 0.8,
+          },
+          {
+            offset: 100,
+            color: "#0d9488",
+            opacity: 0.1,
+          },
+        ],
+      },
     },
     grid: {
+      show: true,
+      borderColor: "#e0e6ed",
+      strokeDashArray: 5,
       xaxis: {
         lines: {
           show: true,
@@ -83,17 +127,15 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
       enabled: false,
     },
     markers: {
-      size: 4,
-      colors: "#fff",
-      strokeColors: ["#3056D3", "#80CAEE"],
+      size: 5,
+      colors: ["#ffffff"],
+      strokeColors: ["#0d9488", "#f97316"],
       strokeWidth: 3,
-      strokeOpacity: 0.9,
-      strokeDashArray: 0,
+      strokeOpacity: 1,
       fillOpacity: 1,
-      discrete: [],
       hover: {
-        size: undefined,
-        sizeOffset: 5,
+        size: 8,
+        sizeOffset: 3,
       },
     },
     xaxis: {
@@ -105,61 +147,130 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
       axisTicks: {
         show: false,
       },
+      labels: {
+        style: {
+          colors: "#6b7280",
+          fontSize: "12px",
+          fontFamily: "Poppins, sans-serif",
+        },
+      },
     },
     yaxis: {
-      title: {
+      labels: {
         style: {
-          fontSize: "0px",
+          colors: "#6b7280",
+          fontSize: "12px",
+          fontFamily: "Poppins, sans-serif",
+        },
+        formatter: function (val) {
+          return "₹" + val.toLocaleString();
         },
       },
       min: 0,
-      max: 100000,
+    },
+    tooltip: {
+      theme: "dark",
+      style: {
+        fontSize: "12px",
+        fontFamily: "Poppins, sans-serif",
+      },
+      y: {
+        formatter: function (val) {
+          return "₹" + val.toLocaleString();
+        },
+      },
     },
   };
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 p-4 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
-      <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
-        <div className="flex w-full flex-wrap gap-3 sm:gap-5">
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
-            </span>
-            <div className="w-full">
-              <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="relative rounded-3xl border-0 bg-gradient-to-br from-white via-white to-primaryBg/30 p-6 shadow-xl hover:shadow-2xl transition-all duration-500 group overflow-hidden"
+    >
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      
+      <div className="relative z-10">
+        {/* Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="flex flex-wrap items-start justify-between gap-4 mb-6"
+        >
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Revenue Analytics</h3>
+            <p className="text-gray-600 text-sm">Monthly performance overview</p>
+          </div>
+          
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            className="flex gap-2"
+          >
+            {["Day", "Week", "Month"].map((period, index) => (
+              <motion.button
+                key={period}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  period === "Month" 
+                    ? "bg-primary text-white shadow-lg" 
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                {period}
+              </motion.button>
+            ))}
+          </motion.div>
+        </motion.div>
+
+        {/* Legend */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="flex flex-wrap gap-6 mb-6"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-4 h-4 rounded-full bg-primary shadow-sm"></div>
+            <div>
+              <p className="font-semibold text-gray-900">Monthly Revenue</p>
+              <p className="text-xs text-gray-500">Primary income source</p>
             </div>
           </div>
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-secondary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
-            </span>
-            <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+          <div className="flex items-center gap-3">
+            <div className="w-4 h-4 rounded-full bg-secondary shadow-sm"></div>
+            <div>
+              <p className="font-semibold text-gray-900">Growth Trend</p>
+              <p className="text-xs text-gray-500">Performance indicator</p>
             </div>
           </div>
-        </div>
-        <div className="flex w-full max-w-45 justify-end">
-          <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
-            <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
-              Day
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Week
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Month
-            </button>
+        </motion.div>
+
+        {/* Chart */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.9 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="relative"
+        >
+          <div id="chartOne" className="-mx-2">
+            <ReactApexChart 
+              options={options} 
+              series={series} 
+              type="area" 
+              height={400} 
+            />
           </div>
-        </div>
+        </motion.div>
+
+        {/* Decorative elements */}
+        <div className="absolute top-6 right-6 w-3 h-3 bg-primary/20 rounded-full group-hover:bg-primary/40 transition-colors duration-300"></div>
+        <div className="absolute bottom-6 left-6 w-2 h-2 bg-secondary/30 rounded-full group-hover:bg-secondary/60 transition-colors duration-300"></div>
       </div>
-      <div>
-        <div id="chartOne" className="-ml-5">
-          <ReactApexChart options={options} series={series} type="area" height={350} />
-        </div>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
