@@ -15,7 +15,7 @@ const CardDataStats = ({
       whileHover={{ 
         scale: 1.05, 
         y: -8,
-        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+        boxShadow: "0 25px 50px -12px rgba(13, 148, 136, 0.25)"
       }}
       transition={{ 
         type: "spring", 
@@ -23,20 +23,17 @@ const CardDataStats = ({
         damping: 20,
         hover: { duration: 0.3 }
       }}
-      className="relative rounded-3xl border-0 bg-gradient-to-br from-white via-white to-gray-50 p-6 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group"
+      className="relative rounded-3xl border-2 border-gray-100 bg-white p-6 shadow-lg hover:shadow-xl hover:border-primary/30 transition-all duration-500 overflow-hidden group"
     >
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       
-      {/* Glowing border effect */}
-      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm"></div>
-
       <div className="relative z-10">
-        {/* Icon Circle with enhanced animation */}
+        {/* Icon Circle with primary/secondary colors */}
         <motion.div 
           whileHover={{ rotate: 12, scale: 1.1 }}
           transition={{ type: "spring", stiffness: 400, damping: 15 }}
-          className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary via-primaryLight to-secondary text-white shadow-lg mb-4 text-2xl"
+          className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-white shadow-lg mb-4 text-2xl group-hover:bg-secondary transition-colors duration-300"
         >
           {children}
         </motion.div>
@@ -44,7 +41,7 @@ const CardDataStats = ({
         {/* Content */}
         <div className="space-y-3">
           {/* Title */}
-          <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+          <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide group-hover:text-primary transition-colors duration-300">
             {title}
           </h3>
           
@@ -59,12 +56,12 @@ const CardDataStats = ({
               stiffness: 200,
               delay: 0.1 
             }}
-            className="text-3xl font-bold text-gray-900 group-hover:text-primary transition-colors duration-300"
+            className="text-3xl font-bold text-gray-900 group-hover:text-primaryDark transition-colors duration-300"
           >
             {total}
           </motion.h2>
 
-          {/* Rate Indicator with enhanced styling */}
+          {/* Rate Indicator with solid colors */}
           {(levelUp || levelDown) && (
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -72,8 +69,8 @@ const CardDataStats = ({
               transition={{ delay: 0.2, duration: 0.4 }}
               className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold ${
                 levelUp 
-                  ? "bg-green-100 text-green-700 border border-green-200" 
-                  : "bg-red-100 text-red-700 border border-red-200"
+                  ? "bg-green text-white" 
+                  : "bg-redC text-white"
               }`}
             >
               <motion.div
@@ -96,7 +93,7 @@ const CardDataStats = ({
                     viewBox="0 0 24 24"
                     className="drop-shadow-sm"
                   >
-                    <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+                    <path d="M7 14L12 9L17 14H7Z"/>
                   </svg>
                 )}
                 {levelDown && (
@@ -107,7 +104,7 @@ const CardDataStats = ({
                     viewBox="0 0 24 24"
                     className="drop-shadow-sm"
                   >
-                    <path d="M12 22L10.91 15.74L4 15L10.91 14.26L12 8L13.09 14.26L20 15L13.09 15.74L12 22Z"/>
+                    <path d="M17 10L12 15L7 10H17Z"/>
                   </svg>
                 )}
               </motion.div>
@@ -116,10 +113,14 @@ const CardDataStats = ({
           )}
         </div>
 
-        {/* Decorative elements */}
-        <div className="absolute top-4 right-4 w-2 h-2 bg-primary rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
-        <div className="absolute bottom-4 right-6 w-1 h-1 bg-secondary rounded-full opacity-40 group-hover:opacity-80 transition-opacity duration-300"></div>
+        {/* Decorative elements with primary/secondary colors */}
+        <div className="absolute top-4 right-4 w-3 h-3 bg-primary rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
+        <div className="absolute bottom-4 right-6 w-1.5 h-1.5 bg-secondary rounded-full opacity-40 group-hover:opacity-80 transition-opacity duration-300"></div>
+        <div className="absolute top-1/2 left-4 w-1 h-1 bg-primary rounded-full opacity-20 group-hover:opacity-50 transition-opacity duration-300"></div>
       </div>
+
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
     </motion.div>
   );
 };
