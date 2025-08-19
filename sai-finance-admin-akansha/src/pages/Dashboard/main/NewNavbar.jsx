@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoMdLogOut } from "react-icons/io";
 import { useUser } from "../../../hooks/use-user";
@@ -28,107 +29,247 @@ const NewNavbar = () => {
     setOpenDropdown(null);
   };
 
+  const navVariants = {
+    hidden: { y: -100, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { 
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const menuItemVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: (index) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: 0.1 * index,
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    })
+  };
+
+  const dropdownVariants = {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.95, 
+      y: -10 
+    },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <nav className="w-full top-0 flex items-center justify-between bg-white p-4 shadow-lg fixed  z-50">
-      {/* Logo */}
-      <div className="text-xl font-bold text-bgBlue  w-16">
-        <img src={Logo} alt="" className="w-full" />
-      </div>
+    <motion.nav 
+      variants={navVariants}
+      initial="hidden"
+      animate="visible"
+      className="w-full top-0 flex items-center justify-between bg-white p-4 shadow-lg fixed z-50 border-b-2 border-primary/10"
+    >
+      {/* Logo with animation */}
+      <motion.div 
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        className="text-xl font-bold text-bgBlue w-16"
+      >
+        <img src={Logo} alt="Sai Finance" className="w-full" />
+      </motion.div>
 
-      {/* Menu Items */}
-      <ul className="flex space-x-6 font-semibold">
-        <li>
-          <Link to="/dash/home" className="hover:text-purple">
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link to="/dash/loan-account" className="hover:text-purple">
-            Loan Account
-          </Link>
-        </li>
-        <li>
-          <Link to="/dash/saving-account" className="hover:text-purple">
-            Saving Account
-          </Link>
-        </li>
-        <li>
-          <Link to="/dash/officer" className="hover:text-purple">
-          Officer Controls
-          </Link>
-        </li>
+      {/* Menu Items with staggered animation */}
+      <ul className="flex space-x-8 font-semibold">
+        {[
+          { name: "Home", path: "/dash/home" },
+          { name: "Loan Account", path: "/dash/loan-account" },
+          { name: "Saving Account", path: "/dash/saving-account" },
+          { name: "Officer Controls", path: "/dash/officer" }
+        ].map((item, index) => (
+          <motion.li
+            key={item.name}
+            custom={index}
+            variants={menuItemVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover={{ y: -2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+          >
+            <Link 
+              to={item.path} 
+              className={`relative px-3 py-2 rounded-lg transition-all duration-300 ${
+                isActive(item.path) 
+                  ? "text-primary bg-primary/10 font-bold" 
+                  : "text-gray-700 hover:text-primary hover:bg-primary/5"
+              }`}
+            >
+              {item.name}
+              {isActive(item.path) && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
+                  initial={false}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                />
+              )}
+            </Link>
+          </motion.li>
+        ))}
 
-        {/* User Controls */}
-        <li className="relative z-100">
-          <button onClick={() => toggleDropdown("payment")} className="hover:text-purple flex items-center">
-            Payment Controls <MdKeyboardArrowDown size={20} />
-          </button>
+        {/* Payment Controls Dropdown */}
+        <motion.li 
+          className="relative z-100"
+          custom={4}
+          variants={menuItemVariants}
+          initial="hidden"
+          animate="visible"
+          whileHover={{ y: -2 }}
+          transition={{ type: "spring", stiffness: 300, damping: 15 }}
+        >
+          <motion.button 
+            onClick={() => toggleDropdown("payment")} 
+            whileTap={{ scale: 0.95 }}
+            className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all duration-300 ${
+              openDropdown === "payment" 
+                ? "text-primary bg-primary/10" 
+                : "text-gray-700 hover:text-primary hover:bg-primary/5"
+            }`}
+          >
+            Payment Controls 
+            <motion.div
+              animate={{ rotate: openDropdown === "payment" ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <MdKeyboardArrowDown size={20} />
+            </motion.div>
+          </motion.button>
+          
           {openDropdown === "payment" && (
-            <ul className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
+            <motion.ul
+              variants={dropdownVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="absolute left-0 mt-2 w-48 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden"
+            >
               <Link to="/dash/payment" onClick={closeDropdown}>
-                <li className="p-2 hover:bg-gray-100">Payment</li>
+                <motion.li 
+                  whileHover={{ backgroundColor: "#0d9488", color: "white" }}
+                  transition={{ duration: 0.2 }}
+                  className="p-3 hover:text-white cursor-pointer transition-all duration-200"
+                >
+                  Payment
+                </motion.li>
               </Link>
               <Link to="/dash/payment-request" onClick={closeDropdown}>
-                <li className="p-2 hover:bg-gray-100">Payment Request</li>
+                <motion.li 
+                  whileHover={{ backgroundColor: "#0d9488", color: "white" }}
+                  transition={{ duration: 0.2 }}
+                  className="p-3 hover:text-white cursor-pointer transition-all duration-200"
+                >
+                  Payment Request
+                </motion.li>
               </Link>
-            </ul>
+            </motion.ul>
           )}
-        </li>
+        </motion.li>
       </ul>
 
+      {/* Settings Button */}
       <div className="flex items-center gap-2">
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05, rotate: 90 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => setIsMenuOpen2(!isMenuOpen2)}
-          className="flex text-sm bg-purple rounded-xl p-1 text-white text-xl font-bold focus:ring-2 focus:ring-bgBlue dark:focus:ring-bgBlue mr-4"
+          className="flex text-sm bg-primary rounded-xl p-2 text-white text-xl font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           <IoSettings size={28} />
-        </button>
+        </motion.button>
       </div>
 
-      <div
-        className={`w-60 absolute z-50 right-4 top-16 border border-purple p-2 ${
-          isMenuOpen2 ? "" : "hidden"
-        } text-base list-none bg-bgWhite rounded-xl`}
-        id="user-dropdown"
-      >
-        <button
-          type="button"
-          className="absolute top-0 right-0 p-2 text-purple hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200 font-semibold"
-          onClick={() => setIsMenuOpen2(false)}
+      {/* User Dropdown */}
+      {isMenuOpen2 && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -10 }}
+          transition={{ duration: 0.2 }}
+          className="w-72 absolute z-50 right-4 top-20 border border-primary/20 bg-white rounded-2xl shadow-2xl overflow-hidden"
         >
-          <svg className="w-6 h-6 font-semibold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+          <div className="bg-primary/5 p-4 relative">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              type="button"
+              className="absolute top-2 right-2 p-2 text-primary hover:text-primary/70 transition-colors duration-200"
+              onClick={() => setIsMenuOpen2(false)}
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </motion.button>
 
-        <br />
-        <div className="w-full flex flex-col justify-center items-center">
-          <div className="flex flex-col gap-2 justify-center items-center text-bgBlue font-oswald">
-            <div className="w-1/3 m-auto">
-              <img src={pro} alt="" className="rounded-full border m-auto" />
-            </div>
+            <div className="flex flex-col items-center text-center mt-2">
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="w-16 h-16 rounded-full border-3 border-primary/20 overflow-hidden mb-3"
+              >
+                <img src={pro} alt="Profile" className="w-full h-full object-cover" />
+              </motion.div>
 
-            <div>
-              <h1 className="text-sm font-bold">{user?.name}</h1>
-              <p className="text-sm">{user?.email}</p>
+              <div className="text-gray-900">
+                <h1 className="text-lg font-bold">{user?.name}</h1>
+                <p className="text-sm text-gray-600">{user?.email}</p>
+              </div>
             </div>
           </div>
-          <div className="w-full flex gap-4 justify-between items-center p-2 text-bgBlue font-oswald">
-            <div className="ml-4">
-              <p className="text-sm text-green font-semibold">Logout</p>
-              {/* <h1 className="font-bold text-purple">{user?.planName}</h1> */}
-            </div>
 
-            <div className=" mr-4 text-purple">
-              <IoMdLogOut onClick={() => {
+          <div className="p-4">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-200 cursor-pointer group"
+              onClick={() => {
                 localStorage.removeItem("token");
                 navigate("/login");
-              }} size={25} cursor={"pointer"}/>
-            </div>
+              }}
+            >
+              <div>
+                <p className="text-sm text-red-600 font-semibold">Logout</p>
+                <p className="text-xs text-gray-500">Sign out of your account</p>
+              </div>
+              <motion.div 
+                whileHover={{ x: 5 }}
+                className="text-red-500 group-hover:text-red-600"
+              >
+                <IoMdLogOut size={24} />
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
-      </div>
-    </nav>
+        </motion.div>
+      )}
+
+      {/* Backdrop for dropdown */}
+      {isMenuOpen2 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/10 z-40"
+          onClick={() => setIsMenuOpen2(false)}
+        />
+      )}
+    </motion.nav>
   );
 };
 

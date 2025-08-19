@@ -372,11 +372,11 @@ function ViewCourse() {
         }
       }
     >
-      <section class=" md:p-1 ">
-        <div class="fixed z-40 w-full p-2">
-          <div class="flex  justify-between items-center">
+      <section className=" md:p-1 ">
+        <div className="fixed z-40 w-full p-2">
+          <div className="flex  justify-between items-center">
             <div>
-              <h2 class="text-xl font-bold  mb-4 text-purple text-oswald">
+              <h2 className="text-xl font-bold  mb-4 text-purple text-oswald">
                 View Course
               </h2>
             </div>
