@@ -20,17 +20,14 @@ const EnhancedDashHome = () => {
   const [activeSavingsUsers, setActiveSavingsUsers] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const controls = useAnimation();
-
   // Enhanced loading state animation
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-      controls.start("visible");
-    }, 800);
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, [controls]);
+  }, []);
 
   // Active Savings Users API call
   useEffect(() => {
