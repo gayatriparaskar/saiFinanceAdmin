@@ -402,10 +402,6 @@ function SavingAccount() {
         className="flex-1 px-4 pb-4 overflow-hidden"
       >
         <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg shadow-2xl h-full flex flex-col border border-slate-600">
-          <div className="p-3 border-b border-slate-600">
-            <h3 className="text-lg font-bold text-white">Saving Accounts</h3>
-          </div>
-          
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
             <Table data={paginatedData} columns={columns} />
