@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-const Cell = ({ text, subtext, onClick,bold }) => {
+const Cell = ({ text = "", subtext = "", onClick = null, bold = "normal" }) => {
   return (
     <div
       onClick={onClick}
@@ -13,7 +13,5 @@ const Cell = ({ text, subtext, onClick,bold }) => {
     </div>
   );
 };
-
-Cell.defaultProps = {};
 
 export default Cell;

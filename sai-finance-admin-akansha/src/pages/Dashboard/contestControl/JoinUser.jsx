@@ -210,11 +210,11 @@ function ContestJoinUser() {
        backgroundPosition: 'center'
     }}
     >
-      <section class=" md:p-1 ">
-        <div class="py-4 ">
-        <div class="flex  justify-between items-center">
+      <section className=" md:p-1 ">
+        <div className="py-4 ">
+        <div className="flex  justify-between items-center">
             <div>
-              <h2 class="text-xl font-bold  mb-4 text-purple text-oswald">
+              <h2 className="text-xl font-bold  mb-4 text-purple text-oswald">
                 {data && data[0]?.contestName}
               </h2>
             </div>

@@ -10,64 +10,117 @@ const CardDataStats = ({
 }) => {
   return (
     <motion.div
-      whileHover={{ scale: 1.03 }}
-      transition={{ type: "spring", stiffness: 200, damping: 15 }}
-      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-xl transition-shadow duration-300"
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{ 
+        scale: 1.05, 
+        y: -8,
+        boxShadow: "0 25px 50px -12px rgba(13, 148, 136, 0.25)"
+      }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 20,
+        hover: { duration: 0.3 }
+      }}
+      className="relative rounded-3xl border-2 border-gray-100 bg-white p-6 shadow-lg hover:shadow-xl hover:border-primary/30 transition-all duration-500 overflow-hidden group"
     >
-      {/* Icon Circle */}
-      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-md">
-        {children}
-      </div>
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      
+      <div className="relative z-10">
+        {/* Icon Circle with primary/secondary colors */}
+        <motion.div 
+          whileHover={{ rotate: 12, scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 400, damping: 15 }}
+          className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-white shadow-lg mb-4 text-2xl group-hover:bg-secondary transition-colors duration-300"
+        >
+          {children}
+        </motion.div>
 
-      {/* Content */}
-      <div className="mt-6 flex items-end justify-between">
-        <div>
+        {/* Content */}
+        <div className="space-y-3">
+          {/* Title */}
+          <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide group-hover:text-primary transition-colors duration-300">
+            {title}
+          </h3>
+          
           {/* Animated number */}
-          <motion.h4
+          <motion.h2
             key={total}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-2xl font-extrabold text-gray-900"
+            initial={{ opacity: 0, y: 15, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ 
+              duration: 0.6, 
+              type: "spring", 
+              stiffness: 200,
+              delay: 0.1 
+            }}
+            className="text-3xl font-bold text-gray-900 group-hover:text-primaryDark transition-colors duration-300"
           >
             {total}
-          </motion.h4>
-          <span className="text-sm font-medium text-gray-500">{title}</span>
+          </motion.h2>
+
+          {/* Rate Indicator with solid colors */}
+          {(levelUp || levelDown) && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold ${
+                levelUp 
+                  ? "bg-green text-white" 
+                  : "bg-redC text-white"
+              }`}
+            >
+              <motion.div
+                animate={{ 
+                  y: levelUp ? [-1, -3, -1] : [1, 3, 1],
+                  scale: [1, 1.1, 1] 
+                }}
+                transition={{ 
+                  repeat: Infinity, 
+                  duration: 2,
+                  ease: "easeInOut"
+                }}
+                className="flex items-center"
+              >
+                {levelUp && (
+                  <svg
+                    width="14"
+                    height="14"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    className="drop-shadow-sm"
+                  >
+                    <path d="M7 14L12 9L17 14H7Z"/>
+                  </svg>
+                )}
+                {levelDown && (
+                  <svg
+                    width="14"
+                    height="14"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    className="drop-shadow-sm"
+                  >
+                    <path d="M17 10L12 15L7 10H17Z"/>
+                  </svg>
+                )}
+              </motion.div>
+              <span className="font-bold">{rate}</span>
+            </motion.div>
+          )}
         </div>
 
-        {/* Rate Indicator */}
-        {(levelUp || levelDown) && (
-          <motion.span
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className={`flex items-center gap-1 text-sm font-semibold ${
-              levelUp ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {rate}
-            {levelUp && (
-              <svg
-                width="12"
-                height="12"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M6 0L11 6H7V12H5V6H1L6 0Z" />
-              </svg>
-            )}
-            {levelDown && (
-              <svg
-                width="12"
-                height="12"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M6 12L1 6H5V0H7V6H11L6 12Z" />
-              </svg>
-            )}
-          </motion.span>
-        )}
+        {/* Decorative elements with primary/secondary colors */}
+        <div className="absolute top-4 right-4 w-3 h-3 bg-primary rounded-full opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
+        <div className="absolute bottom-4 right-6 w-1.5 h-1.5 bg-secondary rounded-full opacity-40 group-hover:opacity-80 transition-opacity duration-300"></div>
+        <div className="absolute top-1/2 left-4 w-1 h-1 bg-primary rounded-full opacity-20 group-hover:opacity-50 transition-opacity duration-300"></div>
       </div>
+
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
     </motion.div>
   );
 };
