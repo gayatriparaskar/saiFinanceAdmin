@@ -29,19 +29,19 @@ function PlanCard() {
       commodo condimentum.
     </p>
 
-    <div class="mt-4">
+    <div className="mt-4">
       
         {data &&
           data?.map((e, index) => {
             if (e?.isActive) {
               return (
                 <>
-                  <div class=" flex flex-col bg-white p-6 mx-auto max-w-md text-center xl:p-8 rounded-xl w-80 relative  transition hover:border-primary-focus/20 hover:shadow-primary-focus/20 transition duration-100 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                  <div className=" flex flex-col bg-white p-6 mx-auto max-w-md text-center xl:p-8 rounded-xl w-80 relative  transition hover:border-primary-focus/20 hover:shadow-primary-focus/20 transition duration-100 ease-in-out transform hover:-translate-y-1 hover:scale-105">
                     
                     {/* <div className="h-36 bg-bgBlue rounded-xl">
                       <div className="p-2 mt-2">
                         <div className="flex gap-4 py-4 justify-center items-center">
-                          <div class="absolute top-6 left-1/2 transform -translate-x-1/2 bg-purple text-white text-xs font-bold py-1 px-5 rounded ">
+                          <div className="absolute top-6 left-1/2 transform -translate-x-1/2 bg-purple text-white text-xs font-bold py-1 px-5 rounded ">
                             TOP SELLING
                           </div>
                           <img
@@ -73,14 +73,14 @@ function PlanCard() {
                     <ul
                       style={{ color: "#1C1A4A" }}
                       role="list"
-                      class="mb-4 text-left h-64 grid grid-cols-1 lg:grid-cols-1 mt-2"
+                      className="mb-4 text-left h-64 grid grid-cols-1 lg:grid-cols-1 mt-2"
                     >
                       {e.exams.map((exam) => (
                         <>
-                          <li class="flex items-center space-x-2 justify-between">
+                          <li className="flex items-center space-x-2 justify-between">
                             <div className="flex gap-4 justify-center items-center">
                               <img src={Correct} alt="" />
-                              <span class="text-base-content/80">
+                              <span className="text-base-content/80">
                                 {exam}
                               </span>
                             </div>
@@ -88,7 +88,7 @@ function PlanCard() {
                               <img src={Info} alt="" />
                             </div>
                           </li>
-                          <hr class="h-px bg-midGray border-1 dark:bg-black" />
+                          <hr className="h-px bg-midGray border-1 dark:bg-black" />
                         </>
                       ))}
                     </ul>
