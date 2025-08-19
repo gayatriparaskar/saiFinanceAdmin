@@ -412,7 +412,7 @@ function SavingAccount() {
           </div>
 
           {/* Fixed Pagination */}
-          <div className="flex-shrink-0 flex justify-center p-4 border-t gap-4 items-center bg-gray-50">
+          <div className="flex-shrink-0 flex justify-center p-3 border-t border-slate-600 gap-3 items-center bg-gradient-to-r from-slate-800 to-slate-700">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               isDisabled={currentPage === 1}
