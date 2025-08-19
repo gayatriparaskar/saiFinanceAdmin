@@ -16,6 +16,7 @@ const DashHome = () => {
   const [dailyCollection, setDailyCollection] = useState(0);
   const [totalLoanAmt, setTotalLoanAmt] = useState(0);
   const [totalCollection, setTotalCollection] = useState(0);
+  const [savingUsers, setSavingUsers] = useState(0);
   const [loading, setLoading] = useState(true);
 
   // DailyCollections
