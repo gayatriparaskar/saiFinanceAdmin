@@ -1,16 +1,12 @@
 import React from "react";
 import classNames from "classnames";
 
-<<<<<<< HEAD
-const Cell = ({ 
-  text = "", 
-  subtext = "", 
+const Cell = ({
+  text = "",
+  subtext = "",
   onClick,
-  bold = "normal" 
+  bold = "normal"
 }) => {
-=======
-const Cell = ({ text = "", subtext = "", onClick = null, bold = "normal" }) => {
->>>>>>> refs/remotes/origin/main
   return (
     <div
       onClick={onClick}
