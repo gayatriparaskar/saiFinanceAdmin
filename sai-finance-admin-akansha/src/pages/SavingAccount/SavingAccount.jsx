@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import axios from "../../axios";
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -40,17 +41,17 @@ import {
 import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
 
-function LoanAccount() {
+function SavingAccount() {
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
-  const [totalLoanAmt, setTotalLoanAmt] = useState(0);
+  const [totalSavingAmt, setTotalSavingAmt] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const usersPerPage = 10;
-  const toast = useToast();
+  const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpen2,
@@ -67,13 +68,11 @@ function LoanAccount() {
           setData(response?.data?.result);
           console.log(response?.data?.result);
           setFilteredData(response?.data?.result);
-
-          const sum = response.data.result.reduce(
-            (acc, item) => acc + (item.amount_to_be || 0),
-            0
-          );
-          setTotalLoanAmt(sum);
         }
+        const sum = response.data.result.reduce((acc, item) => {
+          return acc + (item.balance || 0);
+        }, 0);
+        setTotalSavingAmt(sum)
       });
     }
     fetchData();
@@ -85,8 +84,8 @@ function LoanAccount() {
     } else {
       const result = data.filter(
         (user) =>
-          user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.phone_number?.toString().includes(searchTerm)
+          user.account_holder_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.account_number?.toString().includes(searchTerm)
       );
       setFilteredData(result);
       setCurrentPage(1);
@@ -95,22 +94,25 @@ function LoanAccount() {
 
   const handleDelete = () => {
     axios
-      .delete(`users/${newID}`)
+      .delete(`account/${newID}`)
       .then((res) => {
         if (res.data) {
           toast({
-            title: `Success! This loan account has been deleted`,
+            title: `Success! Account has been deleted successfully`,
             status: "success",
             duration: 4000,
             isClosable: true,
-            position: "top",
+            position: "top"
           });
-          window.location.reload();
+          setData((prev) => prev.filter((item) => item._id !== newID));
+          setFilteredData((prev) => prev.filter((item) => item._id !== newID));
+          onClose();
         }
       })
-      .catch(() => {
+      .catch((err) => {
         toast({
-          title: `Something went wrong!`,
+          title: `Delete Failed!`,
+          description: err.response?.data?.message || "Something went wrong while deleting the account",
           status: "error",
           duration: 4000,
           isClosable: true,
@@ -118,132 +120,17 @@ function LoanAccount() {
       });
   };
 
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * usersPerPage;
-    return filteredData.slice(startIndex, startIndex + usersPerPage);
-  }, [filteredData, currentPage]);
-
-  const totalPages = Math.ceil(filteredData.length / usersPerPage);
-
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Sr No.",
-        accessor: "srNo",
-        Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
-      },
-      {
-        Header: "Name",
-        accessor: "full_name",
-        Cell: ({ row: { original } }) => (
-          <Cell text={`${original?.full_name}`} bold={"bold"} />
-        ),
-      },
-      {
-        Header: "Phone Number",
-        accessor: "phone_number",
-        Cell: ({ value }) => <Cell text={value} />,
-      },
-      {
-        Header: "Daily Amount",
-        accessor: "amount_to_be",
-        Cell: ({ row: { original } }) => (
-          <Cell text={`Rs. ${original?.saving_account_id?.amount_to_be}`} />
-        ),
-      },
-      {
-        Header: "Total Amount",
-        accessor: "total_amount",
-        Cell: ({ row: { original } }) => (
-          <Cell text={`Rs. ${original?.saving_account_id?.total_amount + original?.saving_account_id?.current_amount  }`} />
-        ),
-      },
-      // {
-      //   Header: "Total Interest Pay",
-      //   accessor: "total_interest_pay",
-      //   Cell: ({ row: { original } }) => (
-      //     <Cell
-      //       text={`Rs. ${original?.saving_account_id?.total_interest_pay}`}
-      //     />
-      //   ),
-      // },
-      {
-        Header: "Total Withdrawal",
-        accessor: "total_withdrawal",
-        Cell: ({ row: { original } }) => (
-          <Cell text={`Rs. ${original?.saving_account_id?.total_withdrawal}`} />
-        ),
-      },
-         {
-              Header: "Date",
-              accessor: "created_on",
-              Cell: ({ value, row: { original } }) => (
-                <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
-              ),
-            },
-      {
-        Header: "Interest Rate",
-        accessor: "interest_rate",
-        Cell: ({ row: { original } }) => (
-          <Cell text={`${original?.saving_account_id?.interest_rate}%`} />
-        ),
-      },
-      {
-        Header: "Action",
-        accessor: "action",
-        Cell: ({ row: { original } }) => (
-          <Menu>
-            <MenuButton
-              as={Button}
-              className="bg-purple"
-              colorScheme="bgBlue"
-              onClick={() => setNewID(original?._id)}
-            >
-              Actions
-            </MenuButton>
-            <MenuList>
-              {(() => {
-                const idForView = original?.user_id?._id || original?._id;
-                return (
-                  <Link to={`/dash/view-savingUser-details/${idForView}`}>
-                    <MenuItem>
-                      <HiStatusOnline className="mr-4" /> View User
-                    </MenuItem>
-                  </Link>
-                );
-              })()}
-              {/* <Link to={`/dash/edit-course/${original._id}`}> */}
-              <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                <MdEdit className="mr-4" /> Edit
-              </MenuItem>
-              {/* </Link> */}
-              <MenuItem onClick={onOpen}>
-                <MdDelete className="mr-4" /> Delete
-              </MenuItem>
-              <MenuItem onClick={onOpen2}>
-                <HiStatusOnline className="mr-4" /> Status
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        ),
-      },
-    ],
-    [data, currentPage]
-  );
-
-
   const handleEditSave = async () => {
     try {
-      const res = await axios.put(`users/${editData._id}`, editData);
+      const res = await axios.put(`account/${editData._id}`, editData);
       if (res.data) {
         toast({
-          title: `User updated successfully`,
+          title: `Account updated successfully`,
           status: "success",
           duration: 4000,
           isClosable: true,
           position: "top"
         });
-        // Update state without reload
         setData((prev) =>
           prev.map((item) =>
             item._id === editData._id ? { ...item, ...editData } : item
@@ -266,165 +153,313 @@ function LoanAccount() {
     }
   };
 
-  return (
-    <div
-      className="lg:py-8 py-4 bg-primaryBg"
-    // style={{
-    //   backgroundImage: `url('${bgImage}')`,
-    //   backgroundSize: "cover",
-    //   backgroundRepeat: "no-repeat",
-    //   backgroundPosition: "center",
-    // }}
-    >
-      <section className=" md:p-1 ">
-        <div className="py-6 ">
-          <div className="flex  justify-between items-center">
-            {/* <div>
-              <h2 class="text-xl font-bold  mb-4 text-purple text-oswald">
-                Demo User
-              </h2>
-            </div> */}
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * usersPerPage;
+    return filteredData.slice(startIndex, startIndex + usersPerPage);
+  }, [filteredData, currentPage]);
 
-            <div className="flex gap-2">
+  const totalPages = Math.ceil(filteredData.length / usersPerPage);
+
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Sr No.",
+        accessor: "srNo",
+        Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
+      },
+      {
+        Header: "Account Holder",
+        accessor: "account_holder_name",
+        Cell: ({ value, row: { original } }) => (
+          <>
+            <Cell text={`${original?.account_holder_name}`} bold={"bold"} />
+          </>
+        ),
+      },
+      {
+        Header: "Account Number",
+        accessor: "account_number",
+        Cell: ({ value, row: { original } }) => (
+          <>
+            <Cell text={`${original?.account_number}`} />
+          </>
+        ),
+      },
+      {
+        Header: "Balance",
+        accessor: "balance",
+        Cell: ({ value, row: { original } }) => (
+          <>
+            <Cell text={`₹ ${original?.balance?.toLocaleString()}`} />
+          </>
+        ),
+      },
+      {
+        Header: "Account Type",
+        accessor: "account_type",
+        Cell: ({ value, row: { original } }) => <Cell text={original?.account_type || "Saving"} />,
+      },
+      {
+        Header: "Status",
+        accessor: "status",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={original?.status || "Active"} />
+        ),
+      },
+      {
+        Header: "Date Created",
+        accessor: "created_on",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
+        ),
+      },
+      {
+        Header: "Phone",
+        accessor: "phone_number",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={`${original?.phone_number || 'N/A'}`} />
+        ),
+      },
+      {
+        Header: "Action",
+        accessor: "",
+        Cell: ({ value, row: { original } }) => {
+          return (
+            <>
               <Menu>
                 <MenuButton
                   as={Button}
-                  colorScheme="#FF782D"
-                  zIndex={20}
-                  className="bg-primary"
-                  fontWeight={800}
-                  fontSize={18}
+                  className="bg-secondary hover:bg-secondaryDark"
+                  colorScheme="purple"
+                  onClick={() => setNewID(original._id)}
                 >
-                  Total Collection : ₹ {totalLoanAmt}
+                  Actions
                 </MenuButton>
-              </Menu>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  colorScheme="#FF782D"
-                  zIndex={20}
-                  className="bg-primary"
-                  fontWeight={800}
-                  fontSize={18}
-                  ref={btnRef}
-                  onClick={onOpen2}
-                >
-                  Total Active User : {data.length}
-                </MenuButton>
-              </Menu>
-            </div>
-            <div className=" w-96">
-              <InputGroup borderRadius={5} size="sm">
-                <InputLeftElement
-                  pointerEvents="none"
-                // children={<Search2Icon color="gray.600" />}
-                />
-                <Input
-                  type="text"
-                  placeholder="Search..."
-                  focusBorderColor="teal.500"
-                  border="1px solid #949494 "
-                  value={searchTerm} // bind value
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <InputRightAddon p={0} border="none">
-                  <Button
-                    className="bg-primary hover:bg-primaryLight"
-                    colorScheme="#FF782D"
-                    size="sm"
-                    borderLeftRadius={0}
-                    borderRightRadius={3.3}
-                    border="1px solid #949494"
-                  // onClick={handleSearch}
-                  >
-                    Search
-                  </Button>
-                </InputRightAddon>
-              </InputGroup>
-            </div>
-
-
-            <div className="flex gap-2">
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  colorScheme="#FF782D"
-                  zIndex={20}
-                  className="bg-bgBlue hover:bg-yellow-300"
-
-                >
-                  Sort By
-                </MenuButton>
-                <MenuList zIndex={20}>
-                  <MenuItem>Download</MenuItem>
-                  <MenuItem>Create a Copy</MenuItem>
-                  <MenuItem>Mark as Draft</MenuItem>
-                  <MenuItem>Delete</MenuItem>
-                  <MenuItem>Attend a Workshop</MenuItem>
+                <MenuList>
+                  <Link to={`/dash/view-saving-user/${original?._id}`}>
+                    <MenuItem>
+                      <HiStatusOnline className="mr-4" /> View Account
+                    </MenuItem>
+                  </Link>
+                  <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
+                    <MdEdit className="mr-4" /> Edit
+                  </MenuItem>
+                  <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
+                    <MdDelete className="mr-4" />
+                    Delete
+                  </MenuItem>
+                  <MenuItem onClick={onOpen2}>
+                    <HiStatusOnline className="mr-4" /> Status
+                  </MenuItem>
                 </MenuList>
               </Menu>
+            </>
+          );
+        },
+      },
+    ],
+    [data, currentPage]
+  );
 
-              <Menu>
-                <Link to={`/dash/create-saving-account`}>
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className="h-screen bg-primaryBg flex flex-col"
+    >
+      {/* Fixed Header Section */}
+      <motion.div 
+        variants={itemVariants}
+        className="flex-shrink-0 pt-20 pb-4 px-4"
+      >
+        <section className="md:p-1">
+          <div className="py-6">
+            <motion.div 
+              variants={itemVariants}
+              className="flex justify-between items-center mb-6"
+            >
+              <motion.div 
+                variants={itemVariants}
+                className="flex gap-2"
+              >
+                <Menu>
                   <MenuButton
                     as={Button}
-                    colorScheme="#FF782D"
-                    zIndex={20}
-                    className="bg-primary hover:bg-primaryLight"
-                  //   ref={btnRef}  onClick={onOpen2}
+                    colorScheme="purple"
+                    className="bg-secondary hover:bg-secondaryDark text-white"
+                    fontWeight={800}
+                    fontSize={18}
                   >
-                    Add New User
+                    Total Savings : ₹ {totalSavingAmt.toLocaleString()}
                   </MenuButton>
-                </Link>
-              </Menu>
-            </div>
-            <Drawer
-              isOpen={isOpen2}
-              placement="right"
-              onClose={onClose2}
-              finalFocusRef={btnRef}
-            >
-              <DrawerOverlay />
-              <DrawerContent>
-                <DrawerCloseButton />
-                <DrawerHeader>Create your account</DrawerHeader>
+                </Menu>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    colorScheme="blue"
+                    className="bg-primary hover:bg-primaryDark text-white"
+                    fontWeight={800}
+                    fontSize={18}
+                    ref={btnRef}
+                    onClick={onOpen2}
+                  >
+                    Total Accounts : {data.length}
+                  </MenuButton>
+                </Menu>
+              </motion.div>
 
-                <DrawerBody>
-                  <Input placeholder="Type here..." />
-                </DrawerBody>
+              <motion.div 
+                variants={itemVariants}
+                className="w-96"
+              >
+                <InputGroup borderRadius={5} size="sm">
+                  <InputLeftElement
+                    pointerEvents="none"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Search accounts..."
+                    focusBorderColor="purple.500"
+                    border="1px solid #949494"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <InputRightAddon p={0} border="none">
+                    <Button
+                      className="bg-secondary hover:bg-secondaryDark"
+                      colorScheme="purple"
+                      size="sm"
+                      borderLeftRadius={0}
+                      borderRightRadius={3.3}
+                      border="1px solid #949494"
+                    >
+                      Search
+                    </Button>
+                  </InputRightAddon>
+                </InputGroup>
+              </motion.div>
 
-                <DrawerFooter>
-                  <Button variant="outline" mr={3} onClick={onClose2}>
-                    Cancel
-                  </Button>
-                  <Button colorScheme="blue">Save</Button>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
+              <motion.div 
+                variants={itemVariants}
+                className="flex gap-2"
+              >
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    colorScheme="gray"
+                    className="bg-gray-600 hover:bg-gray-700"
+                  >
+                    Sort By
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem>Balance High to Low</MenuItem>
+                    <MenuItem>Balance Low to High</MenuItem>
+                    <MenuItem>Name A-Z</MenuItem>
+                    <MenuItem>Date Created</MenuItem>
+                  </MenuList>
+                </Menu>
+
+                <Menu>
+                  <Link to={`/dash/create-saving-account`}>
+                    <MenuButton
+                      as={Button}
+                      colorScheme="purple"
+                      className="bg-secondary hover:bg-secondaryDark"
+                    >
+                      Add New Account
+                    </MenuButton>
+                  </Link>
+                </Menu>
+              </motion.div>
+            </motion.div>
           </div>
-          <div className="mt-2 overflow-x-auto scrollbar-hide">
+        </section>
+      </motion.div>
+
+      {/* Scrollable Table Section */}
+      <motion.div 
+        variants={itemVariants}
+        className="flex-1 px-4 pb-4 overflow-hidden"
+      >
+        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
+          <div className="p-4 border-b">
+            <h3 className="text-xl font-bold text-gray-800">Saving Accounts</h3>
+          </div>
+          
+          {/* Only the table content scrolls */}
+          <div className="flex-1 overflow-auto">
             <Table data={paginatedData} columns={columns} />
-
           </div>
-          {/* Pagination Controls */}
-          <div className="flex justify-center mt-4 gap-4 items-center">
+
+          {/* Fixed Pagination */}
+          <div className="flex-shrink-0 flex justify-center p-4 border-t gap-4 items-center bg-gray-50">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               isDisabled={currentPage === 1}
+              colorScheme="purple"
+              variant="outline"
             >
               Previous
             </Button>
-            <span className="text-sm bg-blue-500 w-10 p-2 rounded-md text-white"> {currentPage} </span>
+            <span className="text-sm bg-secondary text-white px-4 py-2 rounded-md font-medium">
+              {currentPage} of {totalPages}
+            </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               isDisabled={currentPage === totalPages}
+              colorScheme="purple"
+              variant="outline"
             >
               Next
             </Button>
           </div>
         </div>
-      </section>
+      </motion.div>
 
+      {/* Drawers and Dialogs */}
+      <Drawer
+        isOpen={isOpen2}
+        placement="right"
+        onClose={onClose2}
+        finalFocusRef={btnRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Account Details</DrawerHeader>
+
+          <DrawerBody>
+            <Input placeholder="Account details..." />
+          </DrawerBody>
+
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={onClose2}>
+              Cancel
+            </Button>
+            <Button colorScheme="purple">Save</Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
       <AlertDialog
         isOpen={isOpen}
@@ -435,11 +470,11 @@ function LoanAccount() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Course
+              Delete Account
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? Delete this Users
+              Are you sure you want to delete this saving account? This action cannot be undone.
             </AlertDialogBody>
 
             <AlertDialogFooter>
@@ -454,45 +489,50 @@ function LoanAccount() {
         </AlertDialogOverlay>
       </AlertDialog>
 
-
       <Drawer isOpen={isEditing} placement="right" onClose={() => setIsEditing(false)}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Edit User</DrawerHeader>
+          <DrawerHeader>Edit Account</DrawerHeader>
           <DrawerBody>
             <Input
-              placeholder="Full Name"
-              value={editData?.full_name || ""}
+              placeholder="Account Holder Name"
+              value={editData?.account_holder_name || ""}
               onChange={(e) =>
-                setEditData({ ...editData, full_name: e.target.value })
+                setEditData({ ...editData, account_holder_name: e.target.value })
               }
               mb={3}
             />
             <Input
-              placeholder="Phone Number"
-              value={editData?.phone_number || ""}
+              placeholder="Account Number"
+              value={editData?.account_number || ""}
               onChange={(e) =>
-                setEditData({ ...editData, phone_number: e.target.value })
+                setEditData({ ...editData, account_number: e.target.value })
               }
               mb={3}
             />
-             
-            {/* aur bhi fields yahan dal sakte ho */}
+            <Input
+              placeholder="Balance"
+              type="number"
+              value={editData?.balance || ""}
+              onChange={(e) =>
+                setEditData({ ...editData, balance: parseFloat(e.target.value) })
+              }
+              mb={3}
+            />
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
               Cancel
             </Button>
-            <Button colorScheme="blue" onClick={handleEditSave}>
+            <Button colorScheme="purple" onClick={handleEditSave}>
               Save
             </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-
-    </div>
+    </motion.div>
   );
 }
 
-export default LoanAccount;
+export default SavingAccount;
