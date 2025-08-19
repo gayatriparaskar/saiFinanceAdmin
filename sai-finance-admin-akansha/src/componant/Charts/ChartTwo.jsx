@@ -28,7 +28,7 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
   }, [weekAmtData]);
 
   const options = {
-    colors: ['#0d9488', '#14b8a6'],
+    colors: ['#0d9488', '#f97316'],
     chart: {
       fontFamily: 'Poppins, sans-serif',
       type: 'bar',
@@ -132,17 +132,8 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
       },
     },
     fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'light',
-        type: 'vertical',
-        shadeIntensity: 0.5,
-        gradientToColors: ['#14b8a6', '#0f766e'],
-        inverseColors: false,
-        opacityFrom: 0.9,
-        opacityTo: 0.7,
-        stops: [0, 100],
-      },
+      type: 'solid',
+      opacity: 0.9,
     },
     legend: {
       show: true,
@@ -192,10 +183,10 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-      className="relative rounded-3xl border-0 bg-gradient-to-br from-white via-white to-secondaryBg/30 p-6 shadow-xl hover:shadow-2xl transition-all duration-500 group overflow-hidden"
+      className="relative rounded-3xl border-2 border-gray-100 bg-white p-6 shadow-xl hover:shadow-2xl hover:border-secondary/30 transition-all duration-500 group overflow-hidden"
     >
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       
       <div className="relative z-10">
         {/* Header */}
@@ -214,7 +205,7 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
             whileHover={{ scale: 1.05 }}
             className="relative"
           >
-            <select className="appearance-none bg-gradient-to-r from-primary to-primaryLight text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300">
+            <select className="appearance-none bg-secondary text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all duration-300">
               <option value="" className="bg-white text-gray-900">This Week</option>
               <option value="" className="bg-white text-gray-900">Last Week</option>
               <option value="" className="bg-white text-gray-900">This Month</option>
@@ -234,7 +225,7 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
           transition={{ delay: 0.6, duration: 0.6 }}
           className="grid grid-cols-2 gap-4 mb-6"
         >
-          <div className="bg-gradient-to-r from-primary/10 to-primaryLight/10 p-4 rounded-2xl border border-primary/20">
+          <div className="bg-primary/10 p-4 rounded-2xl border border-primary/20">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
                 <span className="text-white text-lg">📊</span>
@@ -248,7 +239,7 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
             </div>
           </div>
           
-          <div className="bg-gradient-to-r from-secondary/10 to-secondaryLight/10 p-4 rounded-2xl border border-secondary/20">
+          <div className="bg-secondary/10 p-4 rounded-2xl border border-secondary/20">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center">
                 <span className="text-white text-lg">🎯</span>
@@ -281,9 +272,12 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
         </motion.div>
 
         {/* Decorative elements */}
-        <div className="absolute top-6 right-12 w-3 h-3 bg-secondary/20 rounded-full group-hover:bg-secondary/40 transition-colors duration-300"></div>
-        <div className="absolute bottom-6 right-6 w-2 h-2 bg-primary/30 rounded-full group-hover:bg-primary/60 transition-colors duration-300"></div>
+        <div className="absolute top-6 right-12 w-3 h-3 bg-secondary rounded-full opacity-30 group-hover:opacity-60 transition-colors duration-300"></div>
+        <div className="absolute bottom-6 right-6 w-2 h-2 bg-primary rounded-full opacity-40 group-hover:opacity-80 transition-colors duration-300"></div>
       </div>
+
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
     </motion.div>
   );
 };
