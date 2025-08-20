@@ -117,7 +117,7 @@ const AddSavingCollection = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-16 pb-6 px-4 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-24 pb-6 px-4 relative overflow-hidden"
     >
       {/* Animated Header */}
       <motion.div
@@ -127,10 +127,10 @@ const AddSavingCollection = () => {
         className="text-center mb-12"
       >
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-          Add Saving Collection
+          {t('Add Saving Collection', 'बचत संग्रह जोड़ें')}
         </h1>
         <p className="text-lg text-gray-600">
-          Manage deposits and withdrawals for saving accounts
+          {t('Manage deposits and withdrawals for saving accounts', 'बचत खातों के लिए जमा और निकासी का प्रबंधन')}
         </p>
       </motion.div>
 
@@ -148,7 +148,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Saving</p>
+              <p className="text-sm font-medium text-gray-600">{t('Total Saving', 'कुल बचत')}</p>
               <p className="text-2xl font-bold text-primary">₹ {userData?.current_amount || 0}</p>
             </div>
             <div className="text-3xl">💰</div>
