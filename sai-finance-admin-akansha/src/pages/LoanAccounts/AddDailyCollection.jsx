@@ -138,7 +138,7 @@ const AddDailyCollection = () => {
         <div className="grid grid-cols-2 gap-4 mt-2 text-start">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Collected Officer Code
+              {t('Collected Officer Code')}
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -146,14 +146,14 @@ const AddDailyCollection = () => {
               value={formData.collected_officer_code}
               type="text"
               onChange={handleChange}
-              placeholder="Officer Code"
+              placeholder={t('Officer Code')}
             />
           </div>
    
         
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Collected Officer Name
+              {t('Collected Officer Name')}
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
@@ -161,13 +161,13 @@ const AddDailyCollection = () => {
               value="Admin Officer"
               type="text"
               onChange={handleChange}
-              placeholder="Officer Name"
+              placeholder={t('Officer Name')}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Amount
+              {t('Amount')}
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -175,7 +175,7 @@ const AddDailyCollection = () => {
               value={formData.amount}
               type="number"
               onChange={handleChange}
-              placeholder="Amount"
+              placeholder={t('Amount')}
             />
           </div>
 <br />
@@ -192,7 +192,7 @@ const AddDailyCollection = () => {
               }
             />
             <label className="ml-2 text-sm font-medium text-gray-700">
-              Add Penalty
+              {t('Add Penalty')}
             </label>
           </div>
         </div>
@@ -202,7 +202,7 @@ const AddDailyCollection = () => {
             type="submit"
             className="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none"
           >
-            Submit Collection
+            {t('Submit Collection')}
           </button>
         </div>
       </form>
