@@ -6,6 +6,7 @@ import ChartOne from "../../../../componant/Charts/ChartOne";
 import ChartTwo from "../../../../componant/Charts/ChartTwo";
 import ChartThree from "../../../../componant/Charts/ChartThree";
 import axios from "../../../../axios";
+import { handleNetworkError, isNetworkError } from "../../../../utils/errorHandler";
 
 const FixedEnhancedDashHome = () => {
   const { t } = useLocalTranslation();
