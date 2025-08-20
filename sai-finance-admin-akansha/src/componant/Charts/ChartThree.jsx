@@ -154,9 +154,9 @@ const ChartThree = () => {
             className="relative"
           >
             <select className="appearance-none bg-primary text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300">
-              <option value="" className="bg-white text-gray-900">{t("This Month")}</option>
-              <option value="" className="bg-white text-gray-900">{t("Last Month")}</option>
-              <option value="" className="bg-white text-gray-900">{t("This Quarter")}</option>
+              <option value="" className="bg-white text-gray-900">{t("This Month", "This Month")}</option>
+              <option value="" className="bg-white text-gray-900">{t("Last Month", "Last Month")}</option>
+              <option value="" className="bg-white text-gray-900">{t("This Quarter", "This Quarter")}</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
