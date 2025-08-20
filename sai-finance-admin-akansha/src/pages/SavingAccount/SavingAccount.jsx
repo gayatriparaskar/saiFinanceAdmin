@@ -391,7 +391,7 @@ function SavingAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    {t('Total Savings', 'कुल बचत')} : ₹ {totalSavingAmt.toLocaleString()}
+                    {t('Total Savings', 'Total Savings')} : ₹ {totalSavingAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
