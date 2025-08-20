@@ -36,16 +36,25 @@ instance.interceptors.response.use(
   (error) => {
     // Handle different types of network errors
     if (error.code === 'ECONNABORTED') {
-      console.warn('Request timeout - API might be slow or down');
+      console.warn('Request timeout - API might be slow or down. Consider retrying.');
+      error.isTimeout = true;
     } else if (error.message === 'Network Error') {
       console.warn('Network Error - API server might be unavailable');
+      error.isNetworkError = true;
     } else if (error.response) {
       // Server responded with error status
       console.warn(`API Error ${error.response.status}: ${error.response.statusText}`);
+      if (error.response.status >= 500) {
+        error.isServerError = true;
+      }
     } else {
       // Something else happened
       console.warn('Unexpected error:', error.message);
     }
+
+    // Add timestamp for debugging
+    error.timestamp = new Date().toISOString();
+
     return Promise.reject(error);
   }
 );
