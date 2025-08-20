@@ -367,10 +367,10 @@ function LoanAccount() {
                     {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Amount High to Low</MenuItem>
-                    <MenuItem>Amount Low to High</MenuItem>
-                    <MenuItem>Name A-Z</MenuItem>
-                    <MenuItem>Date Created</MenuItem>
+                    <MenuItem>{t('Amount High to Low')}</MenuItem>
+                    <MenuItem>{t('Amount Low to High')}</MenuItem>
+                    <MenuItem>{t('Name A-Z')}</MenuItem>
+                    <MenuItem>{t('Date Created')}</MenuItem>
                   </MenuList>
                 </Menu>
 
