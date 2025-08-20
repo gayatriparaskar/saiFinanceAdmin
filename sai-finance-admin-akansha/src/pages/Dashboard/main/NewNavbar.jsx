@@ -8,6 +8,7 @@ import { IoSettings } from "react-icons/io5";
 import { MdLanguage } from "react-icons/md";
 import Logo from "../../../Images/Sai-finance-logo.png"
 import { useTranslation } from "react-i18next";
+import { useLocalTranslation } from "../../../hooks/useLocalTranslation";
 
 const NewNavbar = () => {
   const { data: user } = useUser();
