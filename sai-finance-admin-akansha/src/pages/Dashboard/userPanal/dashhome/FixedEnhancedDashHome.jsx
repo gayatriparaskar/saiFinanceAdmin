@@ -78,13 +78,22 @@ const FixedEnhancedDashHome = () => {
 
   // total collection
   useEffect(() => {
-    axios.get("/admins/totalCollections").then((res) => {
-      if (res?.data) setTotalCollection(res?.data?.result?.totalAmount || 0);
-    }).catch((error) => {
-      console.error("Error fetching total collections:", error);
-      // Use mock data when API fails
-      setTotalCollection(89500);
-    });
+    const fetchTotalCollections = async () => {
+      try {
+        const res = await axios.get("/admins/totalCollections");
+        if (res?.data?.result?.totalAmount !== undefined) {
+          setTotalCollection(res.data.result.totalAmount);
+        } else {
+          setTotalCollection(0);
+        }
+      } catch (error) {
+        console.warn("API endpoint '/admins/totalCollections' not available:", error.message);
+        // Gracefully handle API unavailability with mock data
+        setTotalCollection(89500);
+      }
+    };
+
+    fetchTotalCollections();
   }, []);
 
   // monthly stats
@@ -100,9 +109,9 @@ const FixedEnhancedDashHome = () => {
         setMonthlyAmtData([0]);
       }
     }).catch((error) => {
-      console.error("Error fetching monthly stats:", error);
-      // Use mock data when API fails
-      setMonthData(["Jan", "Feb", "Mar", "Apr", "May", "Jun"]);
+      console.warn("API endpoint '/admins/totalCollectionsMonthlyStats' not available:", error.message);
+      // Provide fallback data for better user experience
+      setMonthData(["जन", "फर", "मार", "अप्र", "मई", "जून"]);
       setMonthlyAmtData([12000, 15000, 18000, 22000, 25000, 28000]);
     });
   }, []);
@@ -120,9 +129,9 @@ const FixedEnhancedDashHome = () => {
         setWeekAmtData([0]);
       }
     }).catch((error) => {
-      console.error("Error fetching weekly stats:", error);
-      // Use mock data when API fails
-      setWeekDays(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
+      console.warn("API endpoint '/admins/totalCollectionsWeeklyStats' not available:", error.message);
+      // Provide fallback data for better user experience
+      setWeekDays(["सोम", "मंग", "बुध", "गुरु", "शुक्र", "शनि", "रवि"]);
       setWeekAmtData([2500, 3200, 2800, 4100, 3600, 3900, 2200]);
     });
   }, []);
