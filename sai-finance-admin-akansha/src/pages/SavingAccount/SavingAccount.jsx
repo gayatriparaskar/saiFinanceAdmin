@@ -12,6 +12,9 @@ import bgImage from "../../Images/Section (2).png";
 import Info from "../../Images/ph_info-duotone.png";
 import Table from "../../componant/Table/Table";
 import Cell from "../../componant/Table/cell";
+import { createTimeoutAwareCall } from "../../utils/retryHelper";
+import ApiLoader from "../../components/LoadingStates/ApiLoader";
+import ApiErrorHandler from "../../components/ErrorBoundary/ApiErrorHandler";
 import {
   Menu,
   MenuButton,
@@ -52,6 +55,8 @@ function SavingAccount() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const usersPerPage = 10;
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -64,21 +69,87 @@ function SavingAccount() {
   const btnRef = React.useRef();
 
   useEffect(() => {
-    async function fetchData() {
-      axios.get("account/").then((response) => {
+    const fetchData = createTimeoutAwareCall(
+      () => axios.get("account/"),
+      {
+        maxRetries: 3,
+        showToast: toast,
+        fallbackData: { result: [] },
+        errorMessage: "Failed to load savings accounts. Please check your connection and try again."
+      }
+    );
+
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetchData();
         if (response?.data) {
-          setData(response?.data?.result);
+          setData(response?.data?.result || []);
           console.log(response?.data?.result);
-          setFilteredData(response?.data?.result);
+          setFilteredData(response?.data?.result || []);
+
+          // Calculate total safely
+          const sum = (response.data.result || []).reduce((acc, item) => {
+            return acc + (item.amount_to_be || 0);
+          }, 0);
+          setTotalSavingAmt(sum);
         }
-        const sum = response.data.result.reduce((acc, item) => {
-          return acc + (item.amount_to_be || 0);
-        }, 0);
-        setTotalSavingAmt(sum)
-      });
-    }
-    fetchData();
+      } catch (error) {
+        console.error('Failed to load savings accounts:', error);
+        setError(error);
+        // Fallback data
+        setData([]);
+        setFilteredData([]);
+        setTotalSavingAmt(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, []);
+
+  // Retry function for error recovery
+  const handleRetry = () => {
+    const fetchData = createTimeoutAwareCall(
+      () => axios.get("account/"),
+      {
+        maxRetries: 3,
+        showToast: toast,
+        fallbackData: { result: [] },
+        errorMessage: "Failed to load savings accounts. Please check your connection and try again."
+      }
+    );
+
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetchData();
+        if (response?.data) {
+          setData(response?.data?.result || []);
+          setFilteredData(response?.data?.result || []);
+
+          const sum = (response.data.result || []).reduce((acc, item) => {
+            return acc + (item.amount_to_be || 0);
+          }, 0);
+          setTotalSavingAmt(sum);
+        }
+      } catch (error) {
+        setError(error);
+        setData([]);
+        setFilteredData([]);
+        setTotalSavingAmt(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  };
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
@@ -165,13 +236,13 @@ function SavingAccount() {
   const columns = React.useMemo(
     () => [
       {
-        Header: t('Sr No.', 'Sr No.'),
+        Header: t('Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
 
-        Header: "Account Holder",
+        Header: t('Account Holder'),
         accessor: "full_name",
 
 
@@ -183,7 +254,7 @@ function SavingAccount() {
         ),
       },
       {
-        Header: t('Account Number', 'Account Number'),
+        Header: t('Account Number'),
         accessor: "account_number",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -193,7 +264,7 @@ function SavingAccount() {
       },
       {
 
-        Header: "Balance",
+        Header: t('Balance'),
         accessor: "amount_to_be",
 
         Cell: ({ value, row: { original } }) => (
@@ -204,16 +275,16 @@ function SavingAccount() {
       },
       {
 
-        Header: "Total Amount",
+        Header: t('Total Amount'),
         accessor: "total_amount",
         Cell: ({ value, row: { original } }) => <Cell text={original?.saving_account_id?.total_amount} />,
 
       },
       {
-        Header: t('Status', 'Status'),
+        Header: t('Status'),
         accessor: "status",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.status || "Active"} translate={true} />
+          <Cell text={t(original?.status || "Active")} />
         ),
       },
       {
@@ -231,7 +302,7 @@ function SavingAccount() {
         ),
       },
       {
-        Header: t('Action', 'Action'),
+        Header: t('Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -243,23 +314,23 @@ function SavingAccount() {
                   colorScheme="purple"
                   onClick={() => setNewID(original._id)}
                 >
-                  Actions
+                  {t('Actions')}
                 </MenuButton>
                 <MenuList>
                   <Link to={`/dash/view-savingUser-details/${original?._id}`}>
                     <MenuItem>
-                      <HiStatusOnline className="mr-4" /> View Account
+                      <HiStatusOnline className="mr-4" /> {t('View Account')}
                     </MenuItem>
                   </Link>
                   <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                    <MdEdit className="mr-4" /> Edit
+                    <MdEdit className="mr-4" /> {t('Edit')}
                   </MenuItem>
                   <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                     <MdDelete className="mr-4" />
-                    Delete
+                    {t('Delete')}
                   </MenuItem>
                   <MenuItem onClick={onOpen2}>
-                    <HiStatusOnline className="mr-4" /> Status
+                    <HiStatusOnline className="mr-4" /> {t('Status')}
                   </MenuItem>
                 </MenuList>
               </Menu>
@@ -320,7 +391,7 @@ function SavingAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    {t('Total Savings', 'Total Savings')} : ₹ {totalSavingAmt.toLocaleString()}
+                    {t('Total Savings')} : ₹ {totalSavingAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -333,7 +404,7 @@ function SavingAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    {t('Total Accounts', 'Total Accounts')} : {data.length}
+                    {t('Total Accounts')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -348,7 +419,7 @@ function SavingAccount() {
                   />
                   <Input
                     type="text"
-                    placeholder={t('Search accounts...', 'Search accounts...')}
+                    placeholder={t('Search accounts...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -363,7 +434,7 @@ function SavingAccount() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      {t('Search', 'Search')}
+                      {t('Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -382,10 +453,10 @@ function SavingAccount() {
                     {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>{t('Balance High to Low')}</MenuItem>
-                    <MenuItem>{t('Balance Low to High')}</MenuItem>
-                    <MenuItem>{t('Name A-Z')}</MenuItem>
-                    <MenuItem>{t('Date Created')}</MenuItem>
+                    <MenuItem>{t('Balance High to Low', 'Balance High to Low')}</MenuItem>
+                    <MenuItem>{t('Balance Low to High', 'Balance Low to High')}</MenuItem>
+                    <MenuItem>{t('Name A-Z', 'Name A-Z')}</MenuItem>
+                    <MenuItem>{t('Date Created', 'Date Created')}</MenuItem>
                   </MenuList>
                 </Menu>
 
@@ -417,7 +488,20 @@ function SavingAccount() {
 
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
-            <Table data={paginatedData} columns={columns} />
+            {loading ? (
+              <ApiLoader
+                message="Loading savings accounts..."
+                size="lg"
+              />
+            ) : error ? (
+              <ApiErrorHandler
+                error={error}
+                onRetry={handleRetry}
+                message="Failed to load savings accounts"
+              />
+            ) : (
+              <Table data={paginatedData} columns={columns} />
+            )}
           </div>
 
           {/* Fixed Pagination */}
@@ -428,7 +512,7 @@ function SavingAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              Previous
+              {t('Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} {t('of')} {totalPages}
@@ -439,7 +523,7 @@ function SavingAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              Next
+              {t('Next')}
             </Button>
           </div>
         </div>
@@ -455,17 +539,17 @@ function SavingAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Account Details</DrawerHeader>
+          <DrawerHeader>{t('Account Details', 'Account Details')}</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder="Account details..." />
+            <Input placeholder={t('Account details...', 'Account details...')} />
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
-              Cancel
+              {t('Cancel', 'Cancel')}
             </Button>
-            <Button colorScheme="blue">Save</Button>
+            <Button colorScheme="blue">{t('Save', 'Save')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -479,19 +563,19 @@ function SavingAccount() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Account
+              {t('Delete Account', 'Delete Account')}
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete this saving account? This action cannot be undone.
+              {t('Are you sure you want to delete this saving account? This action cannot be undone.', 'Are you sure you want to delete this saving account? This action cannot be undone.')}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
-                Cancel
+                {t('Cancel', 'Cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                Delete
+                {t('Delete', 'Delete')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -502,25 +586,25 @@ function SavingAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Edit Account</DrawerHeader>
+          <DrawerHeader>{t('Edit Account', 'Edit Account')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
-                placeholder="Account Holder Name"
+                placeholder={t('Account Holder Name', 'Account Holder Name')}
                 value={editData?.account_holder_name || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, account_holder_name: e.target.value })
                 }
               />
               <Input
-                placeholder="Account Number"
+                placeholder={t('Account Number', 'Account Number')}
                 value={editData?.account_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, account_number: e.target.value })
                 }
               />
               <Input
-                placeholder="Balance"
+                placeholder={t('Balance', 'Balance')}
                 type="number"
                 value={editData?.balance || ""}
                 onChange={(e) =>
@@ -531,10 +615,10 @@ function SavingAccount() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              Cancel
+              {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              Save
+              {t('Save', 'Save')}
             </Button>
           </DrawerFooter>
         </DrawerContent>

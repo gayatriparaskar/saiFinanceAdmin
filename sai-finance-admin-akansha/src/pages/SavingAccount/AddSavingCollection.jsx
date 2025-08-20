@@ -3,8 +3,10 @@ import { motion } from "framer-motion";
 import axios from "../../axios";
 import { useToast, Button, Menu, MenuButton, Select } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const AddSavingCollection = () => {
+  const { t } = useLocalTranslation();
   const { id } = useParams();
   const toast = useToast();
 
@@ -28,6 +30,25 @@ const AddSavingCollection = () => {
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
+
+      // Show user-friendly error message
+      toast({
+        title: "Error Loading Account",
+        description: error.code === 'ECONNABORTED'
+          ? "Request timed out. Please try again."
+          : "Failed to load account details. Please check your connection.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top"
+      });
+
+      // Set fallback data
+      setUserData({
+        current_amount: 0,
+        total_interest_pay: 0,
+        emi_day: 0
+      });
     }
   };
 
@@ -66,7 +87,7 @@ const AddSavingCollection = () => {
         addPenaltyFlag: formData.addPenaltyFlag,
       };
     } else {
-      apiUrl = `http://localhost:3001/api/savingDailyCollections/withdrawByAdmin/${id}`;
+      apiUrl = `savingDailyCollections/withdrawByAdmin/${id}`;
 
       // 👉 3% extra deduction logic (user jitna withdraw karega usse +3% saving se cut hoga)
       const threePercent = (formData.withdraw_amount * 3) / 100;
@@ -85,7 +106,7 @@ const AddSavingCollection = () => {
       const res = await axios.post(apiUrl, payload);
 
       toast({
-        title: "Success!",
+        title: t('Success!', 'Success!'),
         description: res.data.message,
         status: "success",
         duration: 4000,
@@ -100,8 +121,8 @@ const AddSavingCollection = () => {
       await fetchUserData();
     } catch (err) {
       toast({
-        title: "Something Went Wrong!",
-        description: err.response?.data?.message || "Error occurred",
+        title: t('Something Went Wrong!', 'Something Went Wrong!'),
+        description: err.response?.data?.message || t('Error occurred', 'Error occurred'),
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -115,7 +136,7 @@ const AddSavingCollection = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-16 pb-6 px-4 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-24 pb-6 px-4 relative overflow-hidden"
     >
       {/* Animated Header */}
       <motion.div
@@ -125,10 +146,10 @@ const AddSavingCollection = () => {
         className="text-center mb-12"
       >
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-          Add Saving Collection
+          {t('Add Saving Collection', 'Add Saving Collection')}
         </h1>
         <p className="text-lg text-gray-600">
-          Manage deposits and withdrawals for saving accounts
+          {t('Manage deposits and withdrawals for saving accounts', 'Manage deposits and withdrawals for saving accounts')}
         </p>
       </motion.div>
 
@@ -146,7 +167,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Saving</p>
+              <p className="text-sm font-medium text-gray-600">{t('Total Saving', 'Total Saving')}</p>
               <p className="text-2xl font-bold text-primary">₹ {userData?.current_amount || 0}</p>
             </div>
             <div className="text-3xl">💰</div>
@@ -160,7 +181,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Interest</p>
+              <p className="text-sm font-medium text-gray-600">{t('Total Interest', 'Total Interest')}</p>
               <p className="text-2xl font-bold text-secondary">₹ {userData?.total_interest_pay || 0}</p>
             </div>
             <div className="text-3xl">📈</div>
@@ -174,7 +195,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">EMI Day</p>
+              <p className="text-sm font-medium text-gray-600">{t('EMI Day', 'EMI Day')}</p>
               <p className="text-2xl font-bold text-green-600">{userData?.emi_day || 0}</p>
             </div>
             <div className="text-3xl">📅</div>
@@ -191,29 +212,29 @@ const AddSavingCollection = () => {
       >
         <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-2xl p-8 border border-primary/10">
           <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
-            Transaction Details
+            {t('Transaction Details', 'Transaction Details')}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
             {/* Transaction Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Transaction Type
+                {t('Transaction Type', 'Transaction Type')}
               </label>
               <Select
                 value={transactionType}
                 onChange={(e) => setTransactionType(e.target.value)}
                 className="w-full"
               >
-                <option value="deposit">Deposit</option>
-                <option value="withdraw">Withdraw</option>
+                <option value="deposit">{t('Deposit', 'Deposit')}</option>
+                <option value="withdraw">{t('Withdraw', 'Withdraw')}</option>
               </Select>
             </div>
 
             {/* Officer Code */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Collected Officer Code
+                {t('Collected Officer Code', 'Collected Officer Code')}
               </label>
               <input
                 className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
@@ -221,22 +242,22 @@ const AddSavingCollection = () => {
                 value={formData.collected_officer_code}
                 type="text"
                 onChange={handleChange}
-                placeholder="Officer Code"
+                placeholder={t('Officer Code', 'Officer Code')}
               />
             </div>
 
             {/* Officer Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Collected Officer Name
+                {t('Collected Officer Name', 'Collected Officer Name')}
               </label>
               <input
                 className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                 name="collected_officer_name"
-                value="Admin Officer"
+                value={t('Admin Officer', 'Admin Officer')}
                 type="text"
                 onChange={handleChange}
-                placeholder="Officer Name"
+                placeholder={t('Officer Name', 'Officer Name')}
                 readOnly
               />
             </div>
@@ -245,7 +266,7 @@ const AddSavingCollection = () => {
             {transactionType === "deposit" && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Deposit Amount
+                  {t('Deposit Amount', 'Deposit Amount')}
                 </label>
                 <input
                   className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
@@ -253,7 +274,7 @@ const AddSavingCollection = () => {
                   value={formData.deposit_amount}
                   type="number"
                   onChange={handleChange}
-                  placeholder="Enter deposit amount"
+                  placeholder={t('Enter deposit amount', 'Enter deposit amount')}
                 />
               </div>
             )}
@@ -262,7 +283,7 @@ const AddSavingCollection = () => {
             {transactionType === "withdraw" && (
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Withdraw Amount
+                  {t('Withdraw Amount', 'Withdraw Amount')}
                 </label>
                 <input
                   className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
@@ -270,18 +291,18 @@ const AddSavingCollection = () => {
                   value={formData.withdraw_amount}
                   type="number"
                   onChange={handleChange}
-                  placeholder="Enter withdraw amount"
+                  placeholder={t('Enter withdraw amount', 'Enter withdraw amount')}
                 />
                 {formData.withdraw_amount > 0 && (
                   <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
                     <p className="text-sm text-red-600 font-medium">
-                      Deduction Details:
+                      {t('Deduction Details:', 'Deduction Details:')}
                     </p>
                     <p className="text-xs text-red-500 mt-1">
-                      3% extra deduction: ₹{(formData.withdraw_amount * 0.03).toFixed(2)}
+                      {t('3% extra deduction:', '3% extra deduction:')} ₹{(formData.withdraw_amount * 0.03).toFixed(2)}
                     </p>
                     <p className="text-xs text-red-500">
-                      Total amount deducted from savings: ₹{(
+                      {t('Total amount deducted from savings:', 'Total amount deducted from savings:')} ₹{(
                         Number(formData.withdraw_amount) +
                         formData.withdraw_amount * 0.03
                       ).toFixed(2)}
@@ -302,7 +323,7 @@ const AddSavingCollection = () => {
                   className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                 />
                 <label className="text-sm font-medium text-gray-700">
-                  Add Penalty
+                  {t('Add Penalty', 'Add Penalty')}
                 </label>
               </div>
             )}
@@ -316,7 +337,7 @@ const AddSavingCollection = () => {
               type="submit"
               className="px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              Submit Transaction
+              {t('Submit Transaction', 'Submit Transaction')}
             </motion.button>
           </div>
         </form>

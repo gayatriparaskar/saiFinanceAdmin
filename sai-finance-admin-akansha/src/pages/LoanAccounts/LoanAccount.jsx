@@ -167,7 +167,7 @@ function LoanAccount() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Sr No.",
+        Header: t('Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
@@ -222,7 +222,7 @@ function LoanAccount() {
         ),
       },
       {
-        Header: "Action",
+        Header: t('Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -233,23 +233,23 @@ function LoanAccount() {
                 colorScheme="bgBlue hover:bg-secondaryLight"
                 onClick={() => setNewID(original._id)}
               >
-                Actions
+                {t('Actions')}
               </MenuButton>
               <MenuList>
                 <Link to={`/dash/view-user-details/${original?.active_loan_id?.user_id}`}>
                   <MenuItem >
-                    <HiStatusOnline className="mr-4" /> View User
+                    <HiStatusOnline className="mr-4" /> {t('View User')}
                   </MenuItem>
                 </Link>
                 <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                  <MdEdit className="mr-4" /> Edit
+                  <MdEdit className="mr-4" /> {t('Edit')}
                 </MenuItem>
                 <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                   <MdDelete className="mr-4" />
-                  Delete
+                  {t('Delete')}
                 </MenuItem>
                 <MenuItem onClick={onOpen2}>
-                  <HiStatusOnline className="mr-4" /> Status
+                  <HiStatusOnline className="mr-4" /> {t('Status')}
                 </MenuItem>
               </MenuList>
             </Menu>
@@ -309,7 +309,7 @@ function LoanAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    {t('Total Collection', 'Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
+                    {t('Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -322,7 +322,7 @@ function LoanAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    {t('Total Active User', 'Total Active User')} : {data.length}
+                    {t('Total Active User')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -335,7 +335,7 @@ function LoanAccount() {
                   <InputLeftElement pointerEvents="none" />
                   <Input
                     type="text"
-                    placeholder={t('Search...', 'Search...')}
+                    placeholder={t('Search...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -350,7 +350,7 @@ function LoanAccount() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      {t('Search', 'Search')}
+                      {t('Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -400,7 +400,7 @@ function LoanAccount() {
       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
           <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">Loan Accounts</h3>
+            <h3 className="text-xl font-bold text-gray-800">{t('Loan Accounts', 'ऋण खाते')}</h3>
           </div>
           
           {/* Only the table content scrolls */}
@@ -419,7 +419,7 @@ function LoanAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              Previous
+              {t('Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} {t('of')} {totalPages}
@@ -430,7 +430,7 @@ function LoanAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              Next
+              {t('Next')}
             </Button>
           </div>
         </div>
@@ -446,15 +446,15 @@ function LoanAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Account Details</DrawerHeader>
+          <DrawerHeader>{t('Account Details', 'Account Details')}</DrawerHeader>
           <DrawerBody>
-            <Input placeholder="Type here..." />
+            <Input placeholder={t('Type here...', 'यहां टाइप करें...')} />
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
-              Cancel
+              {t('Cancel', 'रद्द करें')}
             </Button>
-            <Button colorScheme="blue">Save</Button>
+            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -468,17 +468,17 @@ function LoanAccount() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete User
+              {t('Delete User', 'उपयोगकर्ता हटाएं')}
             </AlertDialogHeader>
             <AlertDialogBody>
-              Are you sure you want to delete this user? This action cannot be undone.
+              {t('Are you sure you want to delete this user? This action cannot be undone.', 'क्या आप वाकई इस उपयोगकर्ता को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')}
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose} variant="outline">
-                Cancel
+                {t('Cancel', 'रद्द करें')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                Delete
+                {t('Delete', 'हटाएं')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -489,18 +489,18 @@ function LoanAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Edit User</DrawerHeader>
+          <DrawerHeader>{t('Edit User', 'उपयोगकर्ता संपादित करें')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
-                placeholder="Full Name"
+                placeholder={t('Full Name', 'पूरा नाम')}
                 value={editData?.full_name || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, full_name: e.target.value })
                 }
               />
               <Input
-                placeholder="Phone Number"
+                placeholder={t('Phone Number', 'फोन नंबर')}
                 value={editData?.phone_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, phone_number: e.target.value })
@@ -510,10 +510,10 @@ function LoanAccount() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              Cancel
+              {t('Cancel', 'रद्द करें')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              Save
+              {t('Save', 'सेव ��रें')}
             </Button>
           </DrawerFooter>
         </DrawerContent>

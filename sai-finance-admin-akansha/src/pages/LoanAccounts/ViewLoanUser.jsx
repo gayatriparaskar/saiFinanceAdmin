@@ -10,6 +10,7 @@ import autoTable from "jspdf-autotable";
 import groupBy from "lodash/groupBy"; // you need to install lodash
 
 import axios from "../../axios";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 import { FaArrowRightLong } from "react-icons/fa6";
 import Correct from "../../Images/Vector.png";
 import bgImage from "../../Images/Section (2).png";
@@ -44,6 +45,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
 import { GrOverview } from "react-icons/gr";
 function ViewLoanUser() {
+  const { t } = useLocalTranslation();
   const { id } = useParams();
   console.log(id);
   const [data, setData] = useState([]);
@@ -221,13 +223,13 @@ function ViewLoanUser() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Sr No.",
+        Header: t('Sr No.', 'Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
 
       {
-        Header: "Date",
+        Header: t('Date', 'Date'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
@@ -255,12 +257,12 @@ function ViewLoanUser() {
       // },
 
       {
-        Header: "EMI Amount/Day",
+        Header: t('EMI Amount/Day', 'EMI Amount/Day'),
         accessor: "amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${value}`} />,
       },
       {
-        Header: "total_penalty_amount",
+        Header: t('Penalty Amount', 'Penalty Amount'),
         accessor: "total_penalty_amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${value}`} />,
       },
@@ -274,7 +276,7 @@ function ViewLoanUser() {
       // },
 
       {
-        Header: "Collected By",
+        Header: t('Collected By', 'Collected By'),
         accessor: "collected_officer_name",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -284,7 +286,7 @@ function ViewLoanUser() {
       },
 
       {
-        Header: "Action",
+        Header: t('Action', 'Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -296,31 +298,31 @@ function ViewLoanUser() {
                   colorScheme="bgBlue"
                   onClick={() => setNewID(original._id)}
                 >
-                  Actions
+                  {t('Actions', 'Actions')}
                 </MenuButton>
                 <MenuList>
                   <Link to={`/dash/edit-course/${original._id}`}>
                     <MenuItem>
                       {" "}
-                      <HiStatusOnline className="mr-4" /> View User
+                      <HiStatusOnline className="mr-4" /> {t('View User', 'View User')}
                     </MenuItem>
                   </Link>
 
                   <Link to={`/dash/edit-course/${original._id}`}>
                     <MenuItem>
                       {" "}
-                      <MdEdit className="mr-4" /> Edit
+                      <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
                     </MenuItem>
                   </Link>
 
                   <MenuItem onClick={onOpen}>
                     {" "}
                     <MdDelete className="mr-4" />
-                    Delete
+                    {t('Delete', 'Delete')}
                   </MenuItem>
                   <MenuItem onClick={onOpen2}>
                     {" "}
-                    <HiStatusOnline className="mr-4" /> Status
+                    <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
                   </MenuItem>
                 </MenuList>
               </Menu>
@@ -346,7 +348,7 @@ function ViewLoanUser() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    const title = "LOAN STATEMENT";
+    const title = t("LOAN STATEMENT", "ऋण विवरण");
     const titleWidth = doc.getTextWidth(title);
     doc.text(title, (pageWidth - titleWidth) / 2, 20);
 
@@ -428,17 +430,17 @@ function ViewLoanUser() {
   };
 
   return (
-    <div className="lg:py-8 py-4 bg-primaryBg">
+    <div className="lg:py-8 py-4 bg-primaryBg pt-20 mt-6">
       <section className=" md:p-1 ">
         <div className="py-6 ">
           <div className="flex  justify-between items-center ">
             <div className="flex w-3/2 flex-col gap-2 text-start">
               <h2 className="text-xl font-bold   text-purple text-oswald">
-                Name :<span className="ml-4">{userdata?.full_name}</span>
+                {t('Name', 'Name')} :<span className="ml-4">{userdata?.full_name}</span>
               </h2>
               <div className="flex gap-20">
                 <h2 className="text-lg font-bold   text-purple text-oswald">
-                  Start Date :
+                  {t('Start Date', 'Start Date')} :
                   <span className="ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
                       "D MMM, YYYY"
@@ -446,7 +448,7 @@ function ViewLoanUser() {
                   </span>
                 </h2>
                 <h2 className="text-lg font-bold   text-purple text-oswald">
-                  End Date :
+                  {t('End Date', 'End Date')} :
                   <span className="ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
                       "D MMM, YYYY"
@@ -473,8 +475,8 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Due Amount{" "}
-                    {userdata?.active_loan_id?.total_due_amount} Rs.
+                    {t('Total Due Amount', 'Total Due Amount')}{" "}
+                    {userdata?.active_loan_id?.total_due_amount} रु.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -482,8 +484,8 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Penalty{" "}
-                    {userdata?.active_loan_id?.total_penalty_amount} Rs.
+                    {t('Total Penalty', 'Total Penalty')}{" "}
+                    {userdata?.active_loan_id?.total_penalty_amount} रु.
                   </MenuButton>
                 </Menu>
               </div>
@@ -496,7 +498,7 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Pay {userdata?.active_loan_id?.total_amount} Rs.
+                    {t('Total Pay', 'Total Pay')} {userdata?.active_loan_id?.total_amount} Rs.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -505,7 +507,7 @@ function ViewLoanUser() {
                     className="bg-primaryDark hover:bg-primaryLight"
                     onClick={generatePDF}
                   >
-                    Download PDF
+                    {t('Download PDF', 'Download PDF')}
                   </MenuButton>
 
                   <Menu>
@@ -517,7 +519,7 @@ function ViewLoanUser() {
                         className="bg-purple hover:bg-secondaryDark"
                         //   ref={btnRef}  onClick={onOpen2}
                       >
-                        Add Amount
+                        {t('Add Amount', 'Add Amount')}
                       </MenuButton>
                     </Link>
                   </Menu>

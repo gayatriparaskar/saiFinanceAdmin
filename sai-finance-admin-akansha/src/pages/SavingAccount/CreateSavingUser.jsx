@@ -38,13 +38,13 @@ const CreateSavingUser = () => {
   };
 
   const fieldLabels = {
-    full_name: "Full Name",
-    phone_number: "Phone Number",
-    dob: "Date of Birth",
-    address: "Address",
-    aadhar_no: "Aadhar Number",
-    pan_no: "PAN Number",
-    monthly_income: "Monthly Income",
+    full_name: t('Full Name', 'Full Name'),
+    phone_number: t('Phone Number', 'Phone Number'),
+    dob: t('Date of Birth', 'Date of Birth'),
+    address: t('Address', 'Address'),
+    aadhar_no: t('Aadhar Number', 'Aadhar Number'),
+    pan_no: t('PAN Number', 'PAN Number'),
+    monthly_income: t('Monthly Income', 'Monthly Income'),
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -146,7 +146,7 @@ const CreateSavingUser = () => {
 
 
   return (
-    <div className="m-6 py-8">
+    <div className="m-6 py-8 mt-20 pt-8">
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
           {t("Create Saving Account User")}
@@ -169,7 +169,7 @@ const CreateSavingUser = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Interest Rate (%)
+              {t('Interest Rate (%)', 'ब्याज दर (%)')}
             </label>
             <input
               className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"
@@ -177,7 +177,7 @@ const CreateSavingUser = () => {
               value={formData.saving_details.interest_rate}
               type="number"
               onChange={handleSavingDetailsChange}
-              placeholder="Interest Rate"
+              placeholder={t('Interest Rate', 'ब्याज दर')}
             />
           </div>
           {/* <div>
@@ -195,7 +195,7 @@ const CreateSavingUser = () => {
           </div> */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Daily Widthdraw limit
+              {t('Daily Withdraw Limit', 'दैनिक निकासी सीमा')}
             </label>
             <input
               className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"
@@ -203,19 +203,19 @@ const CreateSavingUser = () => {
               value={formData.saving_details.daily_withdrawal_limit}
               type="number"
               onChange={handleSavingDetailsChange}
-              placeholder="Withdraw Limit"
+              placeholder={t('Withdraw Limit', 'निकासी सीमा')}
             />
           </div>
           <div className="mt-4">
             <Button colorScheme="teal" onClick={() => setIsModalOpen(true)}>
-              Generate Details
+              {t('Generate Details', 'विवरण जनरेट करें')}
             </Button>
           </div>
         </div>
 
         <hr className="my-4" />
 
-        <h4 className="text-lg font-bold mt-6">Personal Details</h4>
+        <h4 className="text-lg font-bold mt-6">{t('Personal Details', 'व्यक्तिगत विवरण')}</h4>
         <div className=" grid grid-cols-3 gap-4 text-start">
           {Object.keys(fieldLabels).map((key) => (
             <div key={key}>
@@ -234,14 +234,14 @@ const CreateSavingUser = () => {
           ))}
           <div className="grid grid-cols-1">
             <label className="text-sm font-medium text-gray-700">
-              Select Officer
+              {t('Select Officer', 'अधिकारी चुनें')}
             </label>
             <select
               name="officer_id"
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
             >
-              <option value="">Select Officer</option>
+              <option value="">{t('Select Officer', 'अधिकारी चुनें')}</option>
               {officerData?.map((el) => (
                 <option key={el._id} value={el._id}>
                   {el.name}
@@ -256,7 +256,7 @@ const CreateSavingUser = () => {
             type="submit"
             className="px-4 py-2 bg-primaryDark text-white font-medium rounded-md hover:bg-indigo-700"
           >
-            Submit Saving User
+            {t('Submit Saving User', 'ब��त उपयोगकर्ता जमा करें')}
           </button>
         </div>
       </form>
@@ -273,7 +273,7 @@ const CreateSavingUser = () => {
               {formData.saving_details.amount_to_be}
             </p>
             <p>
-              <strong>Interest Rate:</strong>{" "}
+              <strong>{t('Interest Rate:', 'ब्याज दर:')}:</strong>{" "}
               {formData.saving_details.interest_rate}%
             </p>
             <p>

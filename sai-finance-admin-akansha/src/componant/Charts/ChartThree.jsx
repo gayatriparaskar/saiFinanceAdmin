@@ -17,10 +17,10 @@ const ChartThree = () => {
   }, []);
 
   const analytics = [
-    { label: t('Loan Applications'), color: '#0d9488', value: 65, icon: '📋' },
-    { label: t('Active Customers'), color: '#f97316', value: 34, icon: '👥' },
-    { label: t('Payments Received'), color: '#14b8a6', value: 45, icon: '💰' },
-    { label: t('Pending Reviews'), color: '#fb923c', value: 23, icon: '⏳' },
+    { label: t('Loan Applications', 'Loan Applications'), color: '#0d9488', value: 65, icon: '📋' },
+    { label: t('Active Customers', 'Active Customers'), color: '#f97316', value: 34, icon: '👥' },
+    { label: t('Payments Received', 'Payments Received'), color: '#14b8a6', value: 45, icon: '💰' },
+    { label: t('Pending Reviews', 'Pending Reviews'), color: '#fb923c', value: 23, icon: '⏳' },
   ];
 
   const options = {
@@ -73,7 +73,7 @@ const ChartThree = () => {
             total: {
               show: true,
               showAlways: false,
-              label: 'Total',
+              label: t('Total', 'Total'),
               fontSize: '14px',
               fontFamily: 'Poppins, sans-serif',
               fontWeight: 500,
@@ -145,8 +145,8 @@ const ChartThree = () => {
           className="flex items-center justify-between mb-6"
         >
           <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t("Business Analytics")}</h3>
-            <p className="text-gray-600 text-sm">{t("Customer interaction overview")}</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t("Business Analytics", "Business Analytics")}</h3>
+            <p className="text-gray-600 text-sm">{t("Customer interaction overview", "Customer interaction overview")}</p>
           </div>
           
           <motion.div 
@@ -154,9 +154,9 @@ const ChartThree = () => {
             className="relative"
           >
             <select className="appearance-none bg-primary text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-300">
-              <option value="" className="bg-white text-gray-900">{t("This Month")}</option>
-              <option value="" className="bg-white text-gray-900">{t("Last Month")}</option>
-              <option value="" className="bg-white text-gray-900">{t("This Quarter")}</option>
+              <option value="" className="bg-white text-gray-900">{t("This Month", "This Month")}</option>
+              <option value="" className="bg-white text-gray-900">{t("Last Month", "Last Month")}</option>
+              <option value="" className="bg-white text-gray-900">{t("This Quarter", "This Quarter")}</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,7 +217,7 @@ const ChartThree = () => {
                     <p className="font-semibold text-gray-900 text-sm group-hover/item:text-gray-700 transition-colors duration-300">
                       {item.label}
                     </p>
-                    <p className="text-xs text-gray-500">{t("Active metrics")}</p>
+                    <p className="text-xs text-gray-500">{t("Active metrics", "Active metrics")}</p>
                   </div>
                 </div>
                 

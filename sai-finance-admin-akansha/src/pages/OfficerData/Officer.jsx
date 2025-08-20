@@ -175,12 +175,12 @@ function Officer() {
   const columns = React.useMemo(
     () => [
       {
-        Header: t('Sr No.', 'Sr No.'),
+        Header: t('Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: t('Officer Name', 'Officer Name'),
+        Header: t('Officer Name'),
         accessor: "name",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.name || 'N/A'}`} bold={"bold"} />
@@ -188,14 +188,14 @@ function Officer() {
       },
       {
 
-        Header: "Employee ID",
+        Header: t('Employee ID'),
         accessor: "officer_code",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.officer_code || 'N/A'}`} />
         ),
       },
       {
-        Header: "Join Date",
+        Header: t('Join Date'),
         accessor: "created_on",
 
         Cell: ({ value, row: { original } }) => (
@@ -204,15 +204,15 @@ function Officer() {
       },
       {
 
-        Header: "Status",
+        Header: t('Status'),
         accessor: "isActive",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.isActive || "Active"} />
+          <Cell text={t(original?.isActive || 'Active')} />
 
         ),
       },
       {
-        Header: t('Action', 'Action'),
+        Header: t('Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -223,23 +223,23 @@ function Officer() {
                 colorScheme="blue"
                 onClick={() => setNewID(original._id)}
               >
-                {t('Actions', 'Actions')}
+                {t('Actions')}
               </MenuButton>
               <MenuList>
                 <Link to={`/dash/view-officer/${original?._id}`}>
                   <MenuItem>
-                    <HiStatusOnline className="mr-4" /> {t('View Officer', 'View Officer')}
+                    <HiStatusOnline className="mr-4" /> {t('View Officer')}
                   </MenuItem>
                 </Link>
                 <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                  <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
+                  <MdEdit className="mr-4" /> {t('Edit')}
                 </MenuItem>
                 <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                   <MdDelete className="mr-4" />
-                  {t('Delete', 'Delete')}
+                  {t('Delete')}
                 </MenuItem>
                 <MenuItem onClick={onOpen2}>
-                  <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
+                  <HiStatusOnline className="mr-4" /> {t('Status')}
                 </MenuItem>
               </MenuList>
             </Menu>
@@ -299,7 +299,7 @@ function Officer() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    {t('Total Officers', 'Total Officers')} : {data.length}
+                    {t('Total Officers')} : {data.length}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -312,7 +312,7 @@ function Officer() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    {t('Active Officers', 'Active Officers')} : {data.filter(officer => officer.status === 'Active').length}
+                    {t('Active Officers')} : {data.filter(officer => officer.status === 'Active').length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -327,7 +327,7 @@ function Officer() {
                   />
                   <Input
                     type="text"
-                    placeholder={t('Search officers...', 'Search officers...')}
+                    placeholder={t('Search officers...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -342,7 +342,7 @@ function Officer() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      {t('Search', 'Search')}
+                      {t('Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -404,7 +404,7 @@ function Officer() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Previous', 'Previous')}
+              {t('Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} {t('of')} {totalPages}
@@ -415,7 +415,7 @@ function Officer() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Next', 'Next')}
+              {t('Next')}
             </Button>
           </div>
         </div>
@@ -436,11 +436,11 @@ function Officer() {
           <DrawerBody>
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-bold text-blue-900">{t('Total Officers', 'Total Officers')}</h4>
+                <h4 className="font-bold text-blue-900">{t('Total Officers')}</h4>
                 <p className="text-2xl font-bold text-blue-600">{data.length}</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-bold text-green-900">{t('Active Officers', 'Active Officers')}</h4>
+                <h4 className="font-bold text-green-900">{t('Active Officers')}</h4>
                 <p className="text-2xl font-bold text-green-600">
                   {data.filter(officer => officer.status === 'Active').length}
                 </p>

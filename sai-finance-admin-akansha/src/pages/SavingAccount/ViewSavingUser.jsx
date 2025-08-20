@@ -7,6 +7,7 @@ import groupBy from "lodash/groupBy";
 import axios from "../../axios";
 import Table from "../../componant/Table/Table";
 import Cell from "../../componant/Table/cell";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 import {
   Menu,
   MenuButton,
@@ -27,6 +28,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
 
 function ViewSavingUser() {
+  const { t } = useLocalTranslation();
   const { id } = useParams();
   const [accountData, setAccountData] = useState({});
   const [transactions, setTransactions] = useState([]);
@@ -51,32 +53,36 @@ function ViewSavingUser() {
       console.log(res.data.account, "account data");
       if (res?.data?.account) {
         console.log(res, "account data");
-        
         setAccountData(res.data.account);
         console.log(res.data, "account data");
-        
-        
       }
+    }).catch((error) => {
+      console.error("Error fetching account data:", error);
+      // Set fallback data to prevent crashes
+      setAccountData({
+        user_id: { full_name: "N/A" },
+        created_on: new Date(),
+        total_amount: 0,
+        current_amount: 0,
+        total_withdrawal: 0
+      });
     });
   }, [id]);
 
 
     useEffect(() => {
     async function fetchData() {
-      axios.get(`/savingDailyCollections/getAllSavings`).then((response) => {
-        // console.log(response?.data?.result);
+      try {
+        const response = await axios.get(`/savingDailyCollections/getAllSavings`);
         if (response) {
           setTransactions(response?.data?.result || []);
           console.log(response);
-          
         }
-
-        // const sum = response.data.result.reduce((acc, item) => {
-        //   return acc + (item.amount || 0);
-        // }, 0);
-
-        // setTotalAmount(sum);
-      });
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        // Set fallback data
+        setTransactions([]);
+      }
     }
     fetchData();
   }, []);
@@ -84,29 +90,29 @@ function ViewSavingUser() {
   const columns = useMemo(
     () => [
       {
-        Header: "Sr No.",
+        Header: t('Sr No.', 'Sr No.'),
         accessor: "srNo",
         Cell: ({ row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: "Date",
+        Header: t('Date', 'Date'),
         accessor: "created_on",
         Cell: ({ value }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
         ),
       },
       {
-        Header: "Total Amount/Day",
+        Header: t('Total Amount/Day', 'Total Amount/Day'),
         accessor: "deposit_amount",
         Cell: ({ value }) => <Cell text={`Rs. ${value}`} />,
       },
       {
-        Header: "Withdraw Amount",
+        Header: t('Withdraw Amount', 'Withdraw Amount'),
         accessor: "withdraw_amount",
         Cell: ({ value }) => <Cell text={`Rs. ${value}`} />,
       },
       {
-        Header: "Collected By",
+        Header: t('Collected By', 'Collected By'),
         accessor: "collected_officer_name",
         Cell: ({ value }) => <Cell text={value || "-"} bold="bold" />,
       },
@@ -117,7 +123,7 @@ function ViewSavingUser() {
   const generatePDF = () => {
     const doc = new jsPDF();
     const userName = accountData?.full_name || "N/A";
-    const title = isLoanAccount ? "LOAN STATEMENT" : "SAVING STATEMENT";
+    const title = isLoanAccount ? t('LOAN STATEMENT', 'LOAN STATEMENT') : t('SAVING STATEMENT', 'SAVING STATEMENT');
     const startDate = dayjs(accountData?.created_on).format("D MMM, YYYY");
     const endDate = startDate;
 
@@ -137,16 +143,16 @@ function ViewSavingUser() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     let y = 30;
-    doc.text(`Name: ${userName}`, 14, y);
-    doc.text(`End Date: ${endDate}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Name', 'Name')}: ${userName}`, 14, y);
+    doc.text(`${t('End Date', 'End Date')}: ${endDate}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Start Date: ${startDate}`, 14, y);
-    doc.text(`Total Due: Rs. ${due}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Start Date', 'Start Date')}: ${startDate}`, 14, y);
+    doc.text(`${t('Total Due', 'Total Due')}: Rs. ${due}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Amount: Rs. ${loan}`, 14, y);
-    doc.text(`Total Paid: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Amount', 'Amount')}: Rs. ${loan}`, 14, y);
+    doc.text(`${t('Total Paid', 'Total Paid')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Total Penalty: Rs. ${penalty}`, 14, y);
+    doc.text(`${t('Total Penalty', 'Total Penalty')}: Rs. ${penalty}`, 14, y);
 
     const groupedByMonth = groupBy(transactions, (item) =>
       dayjs(item.created_on).format("MMMM YYYY")
@@ -165,7 +171,7 @@ function ViewSavingUser() {
 
       const rows = records.map((item) => [
         dayjs(item.created_on).format("D MMM, YYYY h:mm A"),
-        "EMI Payment",
+        t('EMI Payment', 'EMI Payment'),
         `Rs. ${item.amount || 0}`,
         `Rs. ${item.total_penalty_amount || 0}`,
         item.collected_officer_name || "-",
@@ -175,11 +181,11 @@ function ViewSavingUser() {
         startY,
         head: [
           [
-            "Date",
-            "Description",
-            "Amount (Rs.)",
-            "Penalty (Rs.)",
-            "Collected By",
+            t('Date', 'Date'),
+            t('Description', 'Description'),
+            t('Amount (Rs.)', 'Amount (Rs.)'),
+            t('Penalty (Rs.)', 'Penalty (Rs.)'),
+            t('Collected By', 'Collected By'),
           ],
         ],
         body: rows,
@@ -197,14 +203,14 @@ function ViewSavingUser() {
       );
       startY = doc.lastAutoTable.finalY + 4;
       doc.setFontSize(10);
-      doc.text(`Monthly Total EMI: Rs. ${totalEMI}, 14, startY`);
-      doc.text(`Monthly Total Penalty: Rs. ${totalPenalty}`, 100, startY);
+      doc.text(`${t('Monthly Total EMI', 'Monthly Total EMI')}: Rs. ${totalEMI}`, 14, startY);
+      doc.text(`${t('Monthly Total Penalty', 'Monthly Total Penalty')}: Rs. ${totalPenalty}`, 100, startY);
       startY += 10;
     });
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text("Yearly Summary", 14, startY);
+    doc.text(t('Yearly Summary', 'Yearly Summary'), 14, startY);
     startY += 6;
 
     const yearlyRows = Object.entries(groupedByYear).map(([year, records]) => {
@@ -218,7 +224,7 @@ function ViewSavingUser() {
 
     autoTable(doc, {
       startY,
-      head: [["Year", "Total EMI", "Total Penalty"]],
+      head: [[t('Year', 'Year'), t('Total EMI', 'Total EMI'), t('Total Penalty', 'Total Penalty')]],
       body: yearlyRows,
       headStyles: { fillColor: [255, 204, 0], fontStyle: "bold" },
       styles: { fontSize: 10, cellPadding: 3 },
@@ -233,24 +239,24 @@ function ViewSavingUser() {
   
 
   return (
-    <div className="lg:py-8 py-4 bg-primaryBg">
+    <div className="lg:py-8 py-4 bg-primaryBg pt-20">
       <section className="md:p-1">
         <div className="py-6">
                       <div className="flex justify-between items-center">
               <div className="flex w-3/2 flex-col gap-2 text-start">
                 <h2 className="text-xl font-bold text-purple">
-                  Full Name:{" "}
+                  {t('Full Name', 'Full Name')}:{" "}
                   <span className="ml-4">{accountData?.user_id?.full_name}</span>
                 </h2>
               <div className="flex gap-20">
                 <h2 className="text-lg font-bold text-purple">
-                  Start Date:{" "}
+                  {t('Start Date', 'Start Date')}:{" "}
                   <span className="ml-4">
                     {dayjs(accountData?.created_on).format("D MMM, YYYY")}
                   </span>
                 </h2>
                 <h2 className="text-lg font-bold text-purple">
-                  End Date:{" "}
+                  {t('End Date', 'End Date')}:{" "}
                   <span className="ml-4">
                     {dayjs(accountData?.created_on).format("D MMM, YYYY")}
                   </span>
@@ -261,12 +267,12 @@ function ViewSavingUser() {
                           <div className="w-1/2 flex flex-col gap-4">
                 <div className="w-full flex gap-4 justify-end">
                   <Menu>
-                    <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-                      Download PDF
+                    <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D" onClick={generatePDF}>
+                      {t('Download PDF', 'Download PDF')}
                     </MenuButton>
                     <Link to={`/dash/add-Saving-collection/${accountData?.user_id?._id}`}>
                       <MenuButton as={Button} className="bg-purple" colorScheme="#FF782D">
-                        Withdraw
+                        {t('Withdraw', 'Withdraw')}
                       </MenuButton>
                     </Link>
                   </Menu>
@@ -274,13 +280,13 @@ function ViewSavingUser() {
               <div className="w-full flex gap-4 justify-end">
                 <Menu>
                   <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-                    Total Amount: Rs. {accountData.total_amount + accountData.current_amount}
+                    {t('Total Amount', 'Total Amount')}: Rs. {(accountData.total_amount || 0) + (accountData.current_amount || 0)}
                   </MenuButton>
                   {/* <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
                     Total Interest Pay: Rs. {accountData.total_interest_pay}
                   </MenuButton> */}
                   <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-                    Total Withdraw: Rs. {accountData.total_withdrawal}
+                    {t('Total Withdraw', 'Total Withdraw')}: Rs. {accountData.total_withdrawal || 0}
                   </MenuButton>
                 </Menu>
               </div>
@@ -310,15 +316,15 @@ function ViewSavingUser() {
               <DrawerOverlay />
               <DrawerContent>
                 <DrawerCloseButton />
-                <DrawerHeader>Edit</DrawerHeader>
+                <DrawerHeader>{t('Edit', 'Edit')}</DrawerHeader>
                 <DrawerBody>
-                  <Input placeholder="Type here..." />
+                  <Input placeholder={t('Type here...', 'Type here...')} />
                 </DrawerBody>
                 <DrawerFooter>
                   <Button variant="outline" mr={3} onClick={onClose2}>
-                    Cancel
+                    {t('Cancel', 'Cancel')}
                   </Button>
-                  <Button colorScheme="blue">Save</Button>
+                  <Button colorScheme="blue">{t('Save', 'Save')}</Button>
                 </DrawerFooter>
               </DrawerContent>
             </Drawer>

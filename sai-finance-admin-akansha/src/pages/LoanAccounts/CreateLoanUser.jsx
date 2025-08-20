@@ -47,13 +47,13 @@ const CreateLoanUser = () => {
   const fieldLabels = {
     // user_name: "Username",
 
-    full_name: "Full Name",
-    phone_number: "Phone Number",
-    dob: "Date of Birth",
-    address: "Address",
-    aadhar_no: "Aadhar Number",
-    pan_no: "PAN Number",
-    monthly_income: "Monthly Income",
+    full_name: t('Full Name', 'Full Name'),
+    phone_number: t('Phone Number', 'Phone Number'),
+    dob: t('Date of Birth', 'Date of Birth'),
+    address: t('Address', 'Address'),
+    aadhar_no: t('Aadhar Number', 'Aadhar Number'),
+    pan_no: t('PAN Number', 'PAN Number'),
+    monthly_income: t('Monthly Income', 'Monthly Income'),
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -142,7 +142,7 @@ const CreateLoanUser = () => {
   };
 
   return (
-    <div className="m-6 py-8">
+    <div className="m-6 py-8 mt-20 pt-8">
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
           {t("Create Loan Customer")}
@@ -238,41 +238,41 @@ const CreateLoanUser = () => {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Loan Calculation Details</ModalHeader>
+          <ModalHeader>{t('Loan Calculation Details', 'Loan Calculation Details')}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <p>
-              <strong>Loan Amount:</strong> {formData.loan_details.loan_amount}
+              <strong>{t('Loan Amount', 'Loan Amount')}:</strong> {formData.loan_details.loan_amount}
             </p>
             <p>
-              <strong>Interest Rate:</strong>{" "}
+              <strong>{t('Interest Rate', 'Interest Rate')}:</strong>{" "}
               {formData.loan_details.interest_rate}%
             </p>
             <p>
-              <strong>Principle Amount:</strong>{" "}
+              <strong>{t('Principle Amount', 'Principle Amount')}:</strong>{" "}
               {formData.loan_details.principle_amount}
             </p>
             <p>
-              <strong>File Charge:</strong> {formData.loan_details.file_charge}
+              <strong>{t('File Charge', 'File Charge')}:</strong> {formData.loan_details.file_charge}
             </p>
             <p>
-              <strong>Total Interest Payable:</strong>{" "}
+              <strong>{t('Total Interest Payable', 'Total Interest Payable')}:</strong>{" "}
               {formData.loan_details.totalIntrestPay}
             </p>
             <p>
-              <strong>Total Amount:</strong>{" "}
+              <strong>{t('Total Amount', 'Total Amount')}:</strong>{" "}
               {formData.loan_details.total_amount}
             </p>
             <p>
-              <strong>Daily EMI:</strong> {formData.loan_details.emi_day}
+              <strong>{t('Daily EMI', 'Daily EMI')}:</strong> {formData.loan_details.emi_day}
             </p>
           </ModalBody>
           <ModalFooter display={"flex"} gap={"10px"}>
             <Button onClick={() => setIsModalOpen(false)} colorScheme="red">
-              Cancel
+              {t('Cancel', 'Cancel')}
             </Button>
             <Button onClick={() => setIsModalOpen(false)} colorScheme="green">
-              OK
+              {t('OK', 'OK')}
             </Button>
           </ModalFooter>
         </ModalContent>

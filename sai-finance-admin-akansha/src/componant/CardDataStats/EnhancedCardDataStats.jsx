@@ -146,7 +146,7 @@ const EnhancedCardDataStats = ({
       {/* Icon Circle with enhanced animation */}
       <motion.div
         variants={iconVariants}
-        className={`relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r ${gradientFrom} ${gradientTo} text-white shadow-lg text-2xl mb-4`}
+        className={`relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-r ${gradientFrom} ${gradientTo} text-white shadow-lg text-3xl mb-4`}
       >
         {children}
         <motion.div
@@ -161,18 +161,18 @@ const EnhancedCardDataStats = ({
         {/* Animated number */}
         <motion.h4
           variants={numberVariants}
-          className="text-3xl font-extrabold text-gray-900 mb-2"
+          className="text-4xl font-black text-gray-900 mb-2"
         >
-          {typeof animatedTotal === 'number' && !isNaN(animatedTotal) 
-            ? animatedTotal.toLocaleString() 
+          {typeof animatedTotal === 'number' && !isNaN(animatedTotal)
+            ? animatedTotal.toLocaleString()
             : animatedTotal}
         </motion.h4>
-        
+
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: animationDelay + 0.5 }}
-          className="text-sm font-medium text-gray-600 block mb-3"
+          className="text-lg font-black text-gray-800 block mb-3 uppercase tracking-wide"
         >
           {title}
         </motion.span>
