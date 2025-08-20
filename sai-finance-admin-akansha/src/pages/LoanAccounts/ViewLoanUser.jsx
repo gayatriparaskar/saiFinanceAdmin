@@ -436,11 +436,11 @@ function ViewLoanUser() {
           <div className="flex  justify-between items-center ">
             <div className="flex w-3/2 flex-col gap-2 text-start">
               <h2 className="text-xl font-bold   text-purple text-oswald">
-                {t('Name', 'नाम')} :<span className="ml-4">{userdata?.full_name}</span>
+                {t('Name', 'Name')} :<span className="ml-4">{userdata?.full_name}</span>
               </h2>
               <div className="flex gap-20">
                 <h2 className="text-lg font-bold   text-purple text-oswald">
-                  {t('Start Date', 'शुरूआती तिथि')} :
+                  {t('Start Date', 'Start Date')} :
                   <span className="ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
                       "D MMM, YYYY"
@@ -448,7 +448,7 @@ function ViewLoanUser() {
                   </span>
                 </h2>
                 <h2 className="text-lg font-bold   text-purple text-oswald">
-                  {t('End Date', 'समाप्ति तिथि')} :
+                  {t('End Date', 'End Date')} :
                   <span className="ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
                       "D MMM, YYYY"
@@ -475,7 +475,7 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    {t('Total Due Amount', 'कुल बकाया राशि')}{" "}
+                    {t('Total Due Amount', 'Total Due Amount')}{" "}
                     {userdata?.active_loan_id?.total_due_amount} रु.
                   </MenuButton>
                   <MenuButton
@@ -484,7 +484,7 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    {t('Total Penalty', 'कुल दंड')}{" "}
+                    {t('Total Penalty', 'Total Penalty')}{" "}
                     {userdata?.active_loan_id?.total_penalty_amount} रु.
                   </MenuButton>
                 </Menu>
@@ -498,7 +498,7 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    {t('Total Pay', 'कुल भुगतान')} {userdata?.active_loan_id?.total_amount} रु.
+                    {t('Total Pay', 'Total Pay')} {userdata?.active_loan_id?.total_amount} Rs.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -507,7 +507,7 @@ function ViewLoanUser() {
                     className="bg-primaryDark hover:bg-primaryLight"
                     onClick={generatePDF}
                   >
-                    {t('Download PDF', 'पीडीएफ डाउनलोड')}
+                    {t('Download PDF', 'Download PDF')}
                   </MenuButton>
 
                   <Menu>
@@ -519,7 +519,7 @@ function ViewLoanUser() {
                         className="bg-purple hover:bg-secondaryDark"
                         //   ref={btnRef}  onClick={onOpen2}
                       >
-                        {t('Add Amount', 'राशि जोड़ें')}
+                        {t('Add Amount', 'Add Amount')}
                       </MenuButton>
                     </Link>
                   </Menu>
