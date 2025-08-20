@@ -272,12 +272,12 @@ const EnhancedDashHome = () => {
       >
         <motion.h1
           className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4"
-          animate={{ 
+          animate={{
             backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
           }}
           transition={{ duration: 3, repeat: Infinity }}
         >
-          Financial Dashboard
+          {t("Financial Dashboard")}
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -285,7 +285,7 @@ const EnhancedDashHome = () => {
           transition={{ delay: 0.5 }}
           className="text-lg text-gray-600"
         >
-          Real-time analytics and insights for your finance management
+          {t("Real-time analytics and insights for your finance management")}
         </motion.p>
       </motion.div>
 
@@ -294,11 +294,11 @@ const EnhancedDashHome = () => {
         className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4 mb-8"
         variants={containerVariants}
       >
-        <EnhancedCardDataStats 
-          title="Daily Collection" 
-          total={dailyCollection} 
-          rate="+5.2%" 
-          levelUp 
+        <EnhancedCardDataStats
+          title={t("Daily Collection")}
+          total={dailyCollection}
+          rate="+5.2%"
+          levelUp
           gradientFrom="from-emerald-500"
           gradientTo="to-teal-600"
           animationDelay={0.1}
@@ -306,10 +306,10 @@ const EnhancedDashHome = () => {
           📈
         </EnhancedCardDataStats>
 
-        <EnhancedCardDataStats 
-          title="Total Loan Customers" 
-          total={userdata.length} 
-          rate="-2.3%" 
+        <EnhancedCardDataStats
+          title={t("Total Loan Customers")}
+          total={userdata.length}
+          rate="-2.3%"
           levelDown
           gradientFrom="from-blue-500"
           gradientTo="to-indigo-600"
@@ -318,10 +318,10 @@ const EnhancedDashHome = () => {
           👥
         </EnhancedCardDataStats>
 
-        <EnhancedCardDataStats 
-          title="Total Outgoing" 
-          total={totalLoanAmt} 
-          rate="+1.8%" 
+        <EnhancedCardDataStats
+          title={t("Total Outgoing")}
+          total={totalLoanAmt}
+          rate="+1.8%"
           levelUp
           gradientFrom="from-purple-500"
           gradientTo="to-violet-600"
@@ -330,10 +330,10 @@ const EnhancedDashHome = () => {
           💸
         </EnhancedCardDataStats>
 
-        <EnhancedCardDataStats 
-          title="Active Savings Users" 
-          total={activeSavingsUsers} 
-          rate="+3.5%" 
+        <EnhancedCardDataStats
+          title={t("Active Savings Users")}
+          total={activeSavingsUsers}
+          rate="+3.5%"
           levelUp
           gradientFrom="from-orange-500"
           gradientTo="to-red-500"
@@ -348,10 +348,10 @@ const EnhancedDashHome = () => {
         className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-2 mb-8"
         variants={containerVariants}
       >
-        <EnhancedCardDataStats 
-          title="Total Collections" 
-          total={totalCollection} 
-          rate="+4.1%" 
+        <EnhancedCardDataStats
+          title={t("Total Collections")}
+          total={totalCollection}
+          rate="+4.1%"
           levelUp
           gradientFrom="from-green-500"
           gradientTo="to-emerald-600"
@@ -361,10 +361,10 @@ const EnhancedDashHome = () => {
           💰
         </EnhancedCardDataStats>
 
-        <EnhancedCardDataStats 
-          title="Monthly Growth" 
-          total={(((totalCollection / 100000) * 100).toFixed(1)) + "%"} 
-          rate="+8.2%" 
+        <EnhancedCardDataStats
+          title={t("Monthly Growth")}
+          total={(((totalCollection / 100000) * 100).toFixed(1)) + "%"}
+          rate="+8.2%"
           levelUp
           gradientFrom="from-pink-500"
           gradientTo="to-rose-600"
