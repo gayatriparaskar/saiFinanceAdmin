@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "../../axios";
 import { useToast } from "@chakra-ui/react";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const CreateOfficer = () => {
   const toast = useToast();
