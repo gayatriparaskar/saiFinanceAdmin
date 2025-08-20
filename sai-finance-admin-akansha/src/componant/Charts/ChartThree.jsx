@@ -217,7 +217,7 @@ const ChartThree = () => {
                     <p className="font-semibold text-gray-900 text-sm group-hover/item:text-gray-700 transition-colors duration-300">
                       {item.label}
                     </p>
-                    <p className="text-xs text-gray-500">Active metrics</p>
+                    <p className="text-xs text-gray-500">{t("Active metrics")}</p>
                   </div>
                 </div>
                 
