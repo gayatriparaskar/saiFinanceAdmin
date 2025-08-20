@@ -162,5 +162,16 @@
   "Approved": "Approved",
   "Rejected": "Rejected",
   "Completed": "Completed",
-  "Processing": "Processing"
+  "Processing": "Processing",
+  "Search...": "Search...",
+  "Search": "Search",
+  "Search officers...": "Search officers...",
+  "Search accounts...": "Search accounts...",
+  "Total Collection": "Total Collection",
+  "Total Active User": "Total Active User",
+  "Total Officers": "Total Officers",
+  "Active Officers": "Active Officers",
+  "Previous": "Previous",
+  "Next": "Next",
+  "of": "of"
 }
