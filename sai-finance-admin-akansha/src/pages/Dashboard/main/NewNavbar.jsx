@@ -14,7 +14,8 @@ const NewNavbar = () => {
   const { data: user } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t: tOriginal, i18n } = useTranslation();
+  const { t } = useLocalTranslation();
   const [pro, setPro] = useState("");
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isMenuOpen2, setIsMenuOpen2] = useState(false);
