@@ -154,7 +154,7 @@ export const translations = {
     'Status': 'स्थिति',
     'Action': 'कार्य',
     'View Officer': 'अधिकारी देखें',
-    'Officer Statistics': 'अधिकारी आंक���़े',
+    'Officer Statistics': 'अधिकारी आंकड़े',
     'Delete Officer': 'अधिकारी हटाएं',
     'Edit Officer': 'अधिकारी संपादित करें',
     'Are you sure you want to delete this officer? This action cannot be undone.': 'क्या आप वाकई इस अधिकारी को हटाना चाहते हैं? यह कार्य पूर्ववत नहीं किया जा सकता।',
@@ -197,8 +197,8 @@ export const translations = {
     'Officer Controls': 'अधिकारी नियंत्रण',
     'Payment Controls': 'भुगतान नियंत्रण',
     'Payment': 'भुगतान',
-    'Payment Request': 'भुगतान अनुरोध',
-    'Language': 'भा��ा',
+    'Payment Request': 'भुगतान अन���रोध',
+    'Language': 'भाषा',
 
     // Table data and status
     'Active': 'सक्रिय',
@@ -242,6 +242,17 @@ export const translations = {
     'Loading...': 'लोड हो रहा है...',
     'Please wait': 'कृपया प्रतीक्षा करें',
     'of': 'का',
+
+    // Chart translations
+    'Monthly Revenue': 'मासिक आय',
+    'Growth Trend': 'वृद्धि प्रवृत्ति',
+    'Revenue Analytics': 'आय विश्लेषण',
+    'Monthly performance overview': 'मासिक प्रदर्शन अवलोकन',
+    'Day': 'दिन',
+    'Week': 'सप्ताह',
+    'Month': 'महीना',
+    'Primary income source': 'प्राथमिक आय स्रोत',
+    'Performance indicator': 'प्रदर्शन संकेतक',
   }
 };
 
