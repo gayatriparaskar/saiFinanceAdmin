@@ -251,7 +251,7 @@ const FixedEnhancedDashHome = () => {
           transition={{ type: "spring", stiffness: 300 }}
         >
           <CardDataStats 
-            title="Total Collections" 
+            title={t("Total Collections")} 
             total={`₹ ${totalCollection}`} 
             rate="+4.1%" 
             levelUp
@@ -265,7 +265,7 @@ const FixedEnhancedDashHome = () => {
           transition={{ type: "spring", stiffness: 300 }}
         >
           <CardDataStats 
-            title="Monthly Growth" 
+            title={t("Monthly Growth")} 
             total={(((totalCollection / 100000) * 100).toFixed(1)) + "%"} 
             rate="+8.2%" 
             levelUp
