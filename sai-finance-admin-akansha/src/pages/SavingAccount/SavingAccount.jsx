@@ -65,9 +65,19 @@ function SavingAccount() {
   const btnRef = React.useRef();
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = createTimeoutAwareCall(
+      () => axios.get("account/"),
+      {
+        maxRetries: 3,
+        showToast: toast,
+        fallbackData: { result: [] },
+        errorMessage: "Failed to load savings accounts. Please check your connection and try again."
+      }
+    );
+
+    const loadData = async () => {
       try {
-        const response = await axios.get("account/");
+        const response = await fetchData();
         if (response?.data) {
           setData(response?.data?.result || []);
           console.log(response?.data?.result);
@@ -80,27 +90,14 @@ function SavingAccount() {
           setTotalSavingAmt(sum);
         }
       } catch (error) {
-        console.error("Error fetching savings accounts:", error);
-
-        // Show user-friendly error message
-        toast({
-          title: "Connection Error",
-          description: error.code === 'ECONNABORTED'
-            ? "Request timed out. The server might be slow. Please try again."
-            : "Failed to load savings accounts. Please check your connection and try again.",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "top"
-        });
-
-        // Set fallback data to prevent crashes
+        // Fallback data is already handled by createTimeoutAwareCall
         setData([]);
         setFilteredData([]);
         setTotalSavingAmt(0);
       }
-    }
-    fetchData();
+    };
+
+    loadData();
   }, []);
 
   useEffect(() => {
@@ -371,7 +368,7 @@ function SavingAccount() {
                   />
                   <Input
                     type="text"
-                    placeholder={t('Search accounts...', 'खाते खोजें...')}
+                    placeholder={t('Search accounts...', 'खा��े खोजें...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
