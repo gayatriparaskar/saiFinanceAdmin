@@ -199,7 +199,7 @@ function SavingAccount() {
       {
         Header: t('Account Type', 'Account Type'),
         accessor: "account_type",
-        Cell: ({ value, row: { original } }) => <Cell text={original?.account_type || "Saving"} />,
+        Cell: ({ value, row: { original } }) => <Cell text={original?.account_type || "Saving"} translate={true} />,
       },
       {
         Header: t('Status', 'Status'),
