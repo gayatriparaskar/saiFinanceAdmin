@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import axios from "../../axios";
 import { useToast, Button, Menu, MenuButton, Select } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const AddSavingCollection = () => {
   const { id } = useParams();
