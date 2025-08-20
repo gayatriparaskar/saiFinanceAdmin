@@ -175,12 +175,12 @@ function Officer() {
   const columns = React.useMemo(
     () => [
       {
-        Header: t('Sr No.', 'Sr No.'),
+        Header: t('Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: t('Officer Name', 'Officer Name'),
+        Header: t('Officer Name'),
         accessor: "name",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.name || 'N/A'}`} bold={"bold"} />
@@ -188,14 +188,14 @@ function Officer() {
       },
       {
 
-        Header: t('Employee ID', 'Employee ID'),
+        Header: t('Employee ID'),
         accessor: "officer_code",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.officer_code || 'N/A'}`} />
         ),
       },
       {
-        Header: t('Join Date', 'Join Date'),
+        Header: t('Join Date'),
         accessor: "created_on",
 
         Cell: ({ value, row: { original } }) => (
@@ -204,15 +204,15 @@ function Officer() {
       },
       {
 
-        Header: t('Status', 'Status'),
+        Header: t('Status'),
         accessor: "isActive",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.isActive || t('Active', 'Active')} />
+          <Cell text={t(original?.isActive || 'Active')} />
 
         ),
       },
       {
-        Header: t('Action', 'Action'),
+        Header: t('Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -223,20 +223,20 @@ function Officer() {
                 colorScheme="blue"
                 onClick={() => setNewID(original._id)}
               >
-                {t('Actions', 'Actions')}
+                {t('Actions')}
               </MenuButton>
               <MenuList>
                 <Link to={`/dash/view-officer/${original?._id}`}>
                   <MenuItem>
-                    <HiStatusOnline className="mr-4" /> {t('View Officer', 'View Officer')}
+                    <HiStatusOnline className="mr-4" /> {t('View Officer')}
                   </MenuItem>
                 </Link>
                 <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                  <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
+                  <MdEdit className="mr-4" /> {t('Edit')}
                 </MenuItem>
                 <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                   <MdDelete className="mr-4" />
-                  {t('Delete', 'Delete')}
+                  {t('Delete')}
                 </MenuItem>
                 <MenuItem onClick={onOpen2}>
                   <HiStatusOnline className="mr-4" /> {t('Status')}
@@ -312,7 +312,7 @@ function Officer() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    {t('Active Officers', 'Active Officers')} : {data.filter(officer => officer.status === 'Active').length}
+                    {t('Active Officers')} : {data.filter(officer => officer.status === 'Active').length}
                   </MenuButton>
                 </Menu>
               </motion.div>
