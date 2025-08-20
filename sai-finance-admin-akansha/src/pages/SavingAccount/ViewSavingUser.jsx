@@ -241,18 +241,18 @@ function ViewSavingUser() {
                       <div className="flex justify-between items-center">
               <div className="flex w-3/2 flex-col gap-2 text-start">
                 <h2 className="text-xl font-bold text-purple">
-                  {t('Full Name', 'पूरा नाम')}:{" "}
+                  {t('Full Name', 'Full Name')}:{" "}
                   <span className="ml-4">{accountData?.user_id?.full_name}</span>
                 </h2>
               <div className="flex gap-20">
                 <h2 className="text-lg font-bold text-purple">
-                  {t('Start Date', 'प्रारंभ तिथि')}:{" "}
+                  {t('Start Date', 'Start Date')}:{" "}
                   <span className="ml-4">
                     {dayjs(accountData?.created_on).format("D MMM, YYYY")}
                   </span>
                 </h2>
                 <h2 className="text-lg font-bold text-purple">
-                  {t('End Date', 'समाप्ति तिथि')}:{" "}
+                  {t('End Date', 'End Date')}:{" "}
                   <span className="ml-4">
                     {dayjs(accountData?.created_on).format("D MMM, YYYY")}
                   </span>
@@ -264,11 +264,11 @@ function ViewSavingUser() {
                 <div className="w-full flex gap-4 justify-end">
                   <Menu>
                     <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D" onClick={generatePDF}>
-                      {t('Download PDF', 'पीडीएफ डाउनलोड')}
+                      {t('Download PDF', 'Download PDF')}
                     </MenuButton>
                     <Link to={`/dash/add-Saving-collection/${accountData?.user_id?._id}`}>
                       <MenuButton as={Button} className="bg-purple" colorScheme="#FF782D">
-                        {t('Withdraw', 'निकासी')}
+                        {t('Withdraw', 'Withdraw')}
                       </MenuButton>
                     </Link>
                   </Menu>
@@ -276,13 +276,13 @@ function ViewSavingUser() {
               <div className="w-full flex gap-4 justify-end">
                 <Menu>
                   <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-                    {t('Total Amount', 'कुल राशि')}: Rs. {(accountData.total_amount || 0) + (accountData.current_amount || 0)}
+                    {t('Total Amount', 'Total Amount')}: Rs. {(accountData.total_amount || 0) + (accountData.current_amount || 0)}
                   </MenuButton>
                   {/* <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
                     Total Interest Pay: Rs. {accountData.total_interest_pay}
                   </MenuButton> */}
                   <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-                    {t('Total Withdraw', 'कुल निकासी')}: Rs. {accountData.total_withdrawal || 0}
+                    {t('Total Withdraw', 'Total Withdraw')}: Rs. {accountData.total_withdrawal || 0}
                   </MenuButton>
                 </Menu>
               </div>
@@ -312,15 +312,15 @@ function ViewSavingUser() {
               <DrawerOverlay />
               <DrawerContent>
                 <DrawerCloseButton />
-                <DrawerHeader>{t('Edit', 'संपादित करें')}</DrawerHeader>
+                <DrawerHeader>{t('Edit', 'Edit')}</DrawerHeader>
                 <DrawerBody>
-                  <Input placeholder={t('Type here...', 'यहां टाइप करें...')} />
+                  <Input placeholder={t('Type here...', 'Type here...')} />
                 </DrawerBody>
                 <DrawerFooter>
                   <Button variant="outline" mr={3} onClick={onClose2}>
-                    {t('Cancel', 'रद्द करें')}
+                    {t('Cancel', 'Cancel')}
                   </Button>
-                  <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
+                  <Button colorScheme="blue">{t('Save', 'Save')}</Button>
                 </DrawerFooter>
               </DrawerContent>
             </Drawer>
