@@ -115,6 +115,17 @@ export const translations = {
     'Loading...': 'Loading...',
     'Please wait': 'Please wait',
     'of': 'of',
+
+    // Chart translations
+    'Monthly Revenue': 'Monthly Revenue',
+    'Growth Trend': 'Growth Trend',
+    'Revenue Analytics': 'Revenue Analytics',
+    'Monthly performance overview': 'Monthly performance overview',
+    'Day': 'Day',
+    'Week': 'Week',
+    'Month': 'Month',
+    'Primary income source': 'Primary income source',
+    'Performance indicator': 'Performance indicator',
   },
   hi: {
     // Common actions
@@ -143,7 +154,7 @@ export const translations = {
     'Status': 'स्थिति',
     'Action': 'कार्य',
     'View Officer': 'अधिकारी देखें',
-    'Officer Statistics': 'अधिकारी आंकड़े',
+    'Officer Statistics': 'अधिकारी आंक���़े',
     'Delete Officer': 'अधिकारी हटाएं',
     'Edit Officer': 'अधिकारी संपादित करें',
     'Are you sure you want to delete this officer? This action cannot be undone.': 'क्या आप वाकई इस अधिकारी को हटाना चाहते हैं? यह कार्य पूर्ववत नहीं किया जा सकता।',
@@ -173,7 +184,7 @@ export const translations = {
     'Real-time analytics and insights for your finance management': 'आपके वित्त प्रबंधन के लिए रीयल-टाइम एनालिटिक्स और अंतर्दृष्टि',
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
-    'Total Outgoing': 'कुल निव���्तमान',
+    'Total Outgoing': 'कुल निवर्तमान',
     'Active Savings Users': 'सक्रिय बचत उपयोगकर्ता',
     'Total Collections': 'कुल संग्रह',
     'Monthly Growth': 'मासिक वृद्धि',
@@ -187,7 +198,7 @@ export const translations = {
     'Payment Controls': 'भुगतान नियंत्रण',
     'Payment': 'भुगतान',
     'Payment Request': 'भुगतान अनुरोध',
-    'Language': 'भाषा',
+    'Language': 'भा��ा',
 
     // Table data and status
     'Active': 'सक्रिय',
