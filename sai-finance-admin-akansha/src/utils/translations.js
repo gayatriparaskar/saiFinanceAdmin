@@ -59,11 +59,21 @@ export const translations = {
     'Total Loan Customers': 'Total Loan Customers',
     'Total Outgoing': 'Total Outgoing',
     'Sign out of your account': 'Sign out of your account',
+
+    // Navbar
+    'Home': 'Home',
+    'Loan Account': 'Loan Account',
+    'Saving Account': 'Saving Account',
+    'Officer Controls': 'Officer Controls',
+    'Payment Controls': 'Payment Controls',
+    'Payment': 'Payment',
+    'Payment Request': 'Payment Request',
+    'Language': 'Language',
   },
   hi: {
     // Common actions
     'Search': 'खोजें',
-    'Edit': 'संपादित करें',
+    'Edit': 'संपादित क��ें',
     'Delete': 'हटाएं',
     'Save': 'सेव करें',
     'Cancel': 'रद्द करें',
@@ -90,7 +100,7 @@ export const translations = {
     'Officer Statistics': 'अधिकारी आंकड़े',
     'Delete Officer': 'अधिकारी हटाएं',
     'Edit Officer': 'अधिकारी संपादित करें',
-    'Are you sure you want to delete this officer? This action cannot be undone.': 'क्या आप वाकई इस अधिकारी को हटाना चाहते हैं? यह कार्य पूर्ववत नहीं किया जा सकता।',
+    'Are you sure you want to delete this officer? This action cannot be undone.': 'क्या ���प वाकई इस अधिकारी को हटाना चाहते हैं? यह कार्य पूर्ववत नहीं किया जा सकता।',
     
     // Savings page
     'Total Savings': 'कुल बचत',
