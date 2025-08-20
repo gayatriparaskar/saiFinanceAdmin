@@ -19,16 +19,22 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Memoize translated strings to prevent infinite re-renders
+  const dailyCollectionsText = t('Daily Collections');
+  const targetAchievementText = t('Target Achievement');
+
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 500);
+  }, []);
 
+  useEffect(() => {
     if (Array.isArray(weekAmtData) && weekAmtData.length > 0) {
       setSeries([
-        { name: t('Daily Collections'), data: weekAmtData },
-        { name: t('Target Achievement'), data: weekAmtData.map(val => val * 0.7) },
+        { name: dailyCollectionsText, data: weekAmtData },
+        { name: targetAchievementText, data: weekAmtData.map(val => val * 0.7) },
       ]);
     }
-  }, [weekAmtData, t]);
+  }, [weekAmtData, dailyCollectionsText, targetAchievementText]);
 
   const options = {
     colors: ['#0d9488', '#f97316'],
