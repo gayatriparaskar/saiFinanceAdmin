@@ -262,7 +262,7 @@ const FixedEnhancedDashHome = () => {
           transition={{ type: "spring", stiffness: 300 }}
         >
           <CardDataStats 
-            title={t("Daily Collection", "Daily Collection")} 
+            title={t("Daily Collection")} 
             total={`₹ ${dailyCollection}`} 
             rate="+5.2%" 
             levelUp 
@@ -276,7 +276,7 @@ const FixedEnhancedDashHome = () => {
           transition={{ type: "spring", stiffness: 300 }}
         >
           <CardDataStats 
-            title={t("Total Loan Customers", "Total Loan Customers")} 
+            title={t("Total Loan Customers")} 
             total={userdata.length} 
             rate="-2.3%" 
             levelDown
@@ -290,7 +290,7 @@ const FixedEnhancedDashHome = () => {
           transition={{ type: "spring", stiffness: 300 }}
         >
           <CardDataStats 
-            title={t("Total Outgoing", "Total Outgoing")} 
+            title={t("Total Outgoing")} 
             total={`₹ ${totalLoanAmt}`} 
             rate="+1.8%" 
             levelUp
