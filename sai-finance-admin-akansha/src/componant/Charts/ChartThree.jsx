@@ -17,10 +17,10 @@ const ChartThree = () => {
   }, []);
 
   const analytics = [
-    { label: t('Loan Applications', 'ऋण आवेदन'), color: '#0d9488', value: 65, icon: '📋' },
-    { label: t('Active Customers', 'सक्रिय ग्राहक'), color: '#f97316', value: 34, icon: '👥' },
-    { label: t('Payments Received', 'प्राप्त भुगतान'), color: '#14b8a6', value: 45, icon: '💰' },
-    { label: t('Pending Reviews', 'लंबित समीक्षा'), color: '#fb923c', value: 23, icon: '⏳' },
+    { label: t('Loan Applications', 'Loan Applications'), color: '#0d9488', value: 65, icon: '📋' },
+    { label: t('Active Customers', 'Active Customers'), color: '#f97316', value: 34, icon: '👥' },
+    { label: t('Payments Received', 'Payments Received'), color: '#14b8a6', value: 45, icon: '💰' },
+    { label: t('Pending Reviews', 'Pending Reviews'), color: '#fb923c', value: 23, icon: '⏳' },
   ];
 
   const options = {
@@ -73,7 +73,7 @@ const ChartThree = () => {
             total: {
               show: true,
               showAlways: false,
-              label: t('Total', 'कुल'),
+              label: t('Total', 'Total'),
               fontSize: '14px',
               fontFamily: 'Poppins, sans-serif',
               fontWeight: 500,
