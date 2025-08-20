@@ -24,8 +24,8 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
     
     if (Array.isArray(monthlyAmtData) && monthlyAmtData.length > 0) {
       setSeries([
-        { name: "Monthly Revenue", data: monthlyAmtData },
-        { name: "Growth Trend", data: monthlyAmtData.map(val => val * 0.8) },
+        { name: t("Monthly Revenue"), data: monthlyAmtData },
+        { name: t("Growth Trend"), data: monthlyAmtData.map(val => val * 0.8) },
       ]);
     }
   }, [monthlyAmtData]);
