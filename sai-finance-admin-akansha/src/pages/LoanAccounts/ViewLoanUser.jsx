@@ -10,6 +10,7 @@ import autoTable from "jspdf-autotable";
 import groupBy from "lodash/groupBy"; // you need to install lodash
 
 import axios from "../../axios";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 import { FaArrowRightLong } from "react-icons/fa6";
 import Correct from "../../Images/Vector.png";
 import bgImage from "../../Images/Section (2).png";
