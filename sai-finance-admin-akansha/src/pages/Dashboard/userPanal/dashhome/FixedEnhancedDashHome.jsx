@@ -122,7 +122,7 @@ const FixedEnhancedDashHome = () => {
     }).catch((error) => {
       console.warn("API endpoint '/admins/totalCollectionsMonthlyStats' not available:", error.message);
       // Provide fallback data for better user experience
-      setMonthData(["जन", "फर", "मार", "अप्र", "मई", "जून"]);
+      setMonthData(["Jan", "Feb", "Mar", "Apr", "May", "Jun"]);
       setMonthlyAmtData([12000, 15000, 18000, 22000, 25000, 28000]);
     });
   }, []);
