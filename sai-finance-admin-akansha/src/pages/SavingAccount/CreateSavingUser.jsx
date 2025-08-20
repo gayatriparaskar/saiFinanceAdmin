@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 
 const CreateSavingUser = () => {
+  const { t } = useLocalTranslation();
   const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
