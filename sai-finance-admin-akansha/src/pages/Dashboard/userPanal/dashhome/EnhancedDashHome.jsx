@@ -98,7 +98,7 @@ const EnhancedDashHome = () => {
       }
     }).catch((error) => {
       console.warn("API endpoint '/admins/totalCollectionsMonthlyStats' not available:", error.message);
-      setMonthData(["जन", "फर", "मार", "अप्र", "मई", "जून"]);
+      setMonthData(["Jan", "Feb", "Mar", "Apr", "May", "Jun"]);
       setMonthlyAmtData([12000, 15000, 18000, 22000, 25000, 28000]);
     });
   }, []);
@@ -117,7 +117,7 @@ const EnhancedDashHome = () => {
       }
     }).catch((error) => {
       console.warn("API endpoint '/admins/totalCollectionsWeeklyStats' not available:", error.message);
-      setWeekDays(["सोम", "मंग", "बुध", "गुरु", "शुक्र", "शनि", "रवि"]);
+      setWeekDays(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
       setWeekAmtData([2500, 3200, 2800, 4100, 3600, 3900, 2200]);
     });
   }, []);
