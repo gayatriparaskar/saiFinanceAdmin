@@ -428,7 +428,7 @@ function Officer() {
               colorScheme="blue"
               variant="outline"
             >
-              Previous
+              {t('Previous', 'Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} of {totalPages}
@@ -439,7 +439,7 @@ function Officer() {
               colorScheme="blue"
               variant="outline"
             >
-              Next
+              {t('Next', 'Next')}
             </Button>
           </div>
         </div>
@@ -455,16 +455,16 @@ function Officer() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Officer Statistics</DrawerHeader>
+          <DrawerHeader>{t('Officer Statistics', 'Officer Statistics')}</DrawerHeader>
 
           <DrawerBody>
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-bold text-blue-900">Total Officers</h4>
+                <h4 className="font-bold text-blue-900">{t('Total Officers', 'Total Officers')}</h4>
                 <p className="text-2xl font-bold text-blue-600">{data.length}</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-bold text-green-900">Active Officers</h4>
+                <h4 className="font-bold text-green-900">{t('Active Officers', 'Active Officers')}</h4>
                 <p className="text-2xl font-bold text-green-600">
                   {data.filter(officer => officer.status === 'Active').length}
                 </p>
@@ -474,7 +474,7 @@ function Officer() {
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
-              Close
+              {t('Close', 'Close')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
@@ -489,19 +489,19 @@ function Officer() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Officer
+              {t('Delete Officer', 'Delete Officer')}
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete this officer? This action cannot be undone.
+              {t('Are you sure you want to delete this officer? This action cannot be undone.', 'Are you sure you want to delete this officer? This action cannot be undone.')}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
-                Cancel
+                {t('Cancel', 'Cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                Delete
+                {t('Delete', 'Delete')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -512,46 +512,46 @@ function Officer() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Edit Officer</DrawerHeader>
+          <DrawerHeader>{t('Edit Officer', 'Edit Officer')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
-                placeholder="Officer Name"
+                placeholder={t('Officer Name', 'Officer Name')}
                 value={editData?.name || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, name: e.target.value })
                 }
               />
               <Input
-                placeholder="Employee ID"
+                placeholder={t('Employee ID', 'Employee ID')}
                 value={editData?.employee_id || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, employee_id: e.target.value })
                 }
               />
               <Input
-                placeholder="Department"
+                placeholder={t('Department', 'Department')}
                 value={editData?.department || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, department: e.target.value })
                 }
               />
               <Input
-                placeholder="Position"
+                placeholder={t('Position', 'Position')}
                 value={editData?.position || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, position: e.target.value })
                 }
               />
               <Input
-                placeholder="Phone Number"
+                placeholder={t('Phone Number', 'Phone Number')}
                 value={editData?.phone_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, phone_number: e.target.value })
                 }
               />
               <Input
-                placeholder="Email"
+                placeholder={t('Email', 'Email')}
                 type="email"
                 value={editData?.email || ""}
                 onChange={(e) =>
@@ -562,10 +562,10 @@ function Officer() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              Cancel
+              {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              Save
+              {t('Save', 'Save')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
