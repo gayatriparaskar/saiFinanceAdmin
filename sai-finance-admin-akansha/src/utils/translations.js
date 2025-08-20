@@ -130,9 +130,7 @@ export const translations = {
     'Target Achievement': 'Target Achievement',
     'Weekly Performance': 'Weekly Performance',
     'Daily collection insights': 'Daily collection insights',
-    'This Week': 'This Week',
     'Last Week': 'Last Week',
-    'This Month': 'This Month',
     'Average Daily': 'Average Daily',
     'Weekly Total': 'Weekly Total',
 
@@ -233,7 +231,7 @@ export const translations = {
     // Common
     'Sr No.': 'क्रम संख्या',
     'Sort By': 'इसके अनुसार क्रमबद्ध करें',
-    'Financial Dashboard': 'वित्तीय डैशबोर्ड',
+    'Financial Dashboard': 'वित्तीय डै��बोर्ड',
     'Real-time analytics and insights for your finance management': 'आपके वित्त प्रबंधन के लिए रीयल-टाइम एनालिटिक्स और अंतर्दृष्टि',
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
