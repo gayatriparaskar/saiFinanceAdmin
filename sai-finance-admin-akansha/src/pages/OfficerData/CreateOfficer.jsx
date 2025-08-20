@@ -4,6 +4,7 @@ import { useToast } from "@chakra-ui/react";
 import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const CreateOfficer = () => {
+  const { t } = useLocalTranslation();
   const toast = useToast();
 
   const initialFormState = {
