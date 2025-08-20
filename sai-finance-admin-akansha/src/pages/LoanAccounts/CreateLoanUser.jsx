@@ -47,13 +47,13 @@ const CreateLoanUser = () => {
   const fieldLabels = {
     // user_name: "Username",
 
-    full_name: t('Full Name', 'पूरा नाम'),
-    phone_number: t('Phone Number', 'फोन नंबर'),
-    dob: t('Date of Birth', 'जन्म तिथि'),
-    address: t('Address', 'पता'),
-    aadhar_no: t('Aadhar Number', 'आधार नंबर'),
-    pan_no: t('PAN Number', 'पैन नंबर'),
-    monthly_income: t('Monthly Income', 'मासिक आय'),
+    full_name: t('Full Name', 'Full Name'),
+    phone_number: t('Phone Number', 'Phone Number'),
+    dob: t('Date of Birth', 'Date of Birth'),
+    address: t('Address', 'Address'),
+    aadhar_no: t('Aadhar Number', 'Aadhar Number'),
+    pan_no: t('PAN Number', 'PAN Number'),
+    monthly_income: t('Monthly Income', 'Monthly Income'),
   };
 
   const [formData, setFormData] = useState(initialFormState);
