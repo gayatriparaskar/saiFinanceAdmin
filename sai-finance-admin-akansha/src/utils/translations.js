@@ -198,7 +198,7 @@ export const translations = {
     'Close': 'बंद करें',
     
     // Officer page
-    'Total Officers': 'कुल अधिकारी',
+    'Total Officers': '���ुल अधिकारी',
     'Active Officers': 'सक्रिय अधिकारी',
     'Search officers...': 'अधिकारी खोजें...',
     'Add New Officer': 'नया अधिकारी जोड़ें',
@@ -218,7 +218,7 @@ export const translations = {
     'Are you sure you want to delete this officer? This action cannot be undone.': 'क्या आप वाकई इस अधिकारी को हटाना चाहते हैं? यह कार्य पूर्ववत नहीं किया जा सकता।',
     
     // Savings page
-    'Total Savings': 'क���ल बचत',
+    'Total Savings': 'कुल बचत',
     'Total Accounts': 'कुल खाते',
     'Search accounts...': 'खाते खोजें...',
     'Add New Account': 'नया खाता जोड़ें',
@@ -329,7 +329,7 @@ export const translations = {
     'Remaining Emi': 'शेष ईएमआई',
     'Total Due Amount': 'कुल देय राशि',
     'Date': 'तारीख',
-    'Mobile Number': 'मोबाइल नंबर',
+    'Mobile Number': 'मोबाइल न���बर',
 
     // Sort options
     'Amount High to Low': 'राशि अधिक से कम',
@@ -350,8 +350,8 @@ export const translations = {
     'Loan Details': 'ऋण विवरण',
     'Interest Rate': 'ब्याज दर',
     'Generate Details': 'विवरण उत्पन्न करें',
-    'Personal Details': 'व्यक्तिगत ���िवरण',
-    'Select Officers': 'अधिकारी चुनें',
+    'Personal Details': 'व्यक्तिगत विवरण',
+    'Select Officers': 'अधिकारी चु���ें',
     'Select Officer': 'अधिकारी चुनें',
     'Submit Loan User': 'ऋण उपयोगकर्ता जमा करें',
     'Success! Loan Customer Added successfully': 'सफलता! ऋण ग्राहक सफलतापूर्वक जोड़ा गया',
@@ -368,6 +368,7 @@ export const translations = {
     'Officer Name': 'अधिकारी नाम',
     'Add Penalty': 'जुर्माना जोड़ें',
     'Submit Collection': 'संग्रह जमा करें',
+    'Submit Transaction': 'लेनदेन जमा करें',
   }
 };
 
