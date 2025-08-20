@@ -17,8 +17,8 @@ import {
 import { useParams } from "react-router-dom";
 
 const AddDailyCollection = () => {
-
-    const {id}=useParams()
+  const { t } = useLocalTranslation();
+  const {id}=useParams()
   const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
