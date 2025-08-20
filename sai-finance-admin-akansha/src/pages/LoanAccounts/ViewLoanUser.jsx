@@ -223,7 +223,7 @@ function ViewLoanUser() {
   const columns = React.useMemo(
     () => [
       {
-        Header: t('Sr No.', 'क्रम संख्या'),
+        Header: t('Sr No.', 'Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
