@@ -183,6 +183,7 @@ export const translations = {
     'Officer Name': 'Officer Name',
     'Add Penalty': 'Add Penalty',
     'Submit Collection': 'Submit Collection',
+    'Submit Transaction': 'Submit Transaction',
   },
   hi: {
     // Common actions
@@ -217,7 +218,7 @@ export const translations = {
     'Are you sure you want to delete this officer? This action cannot be undone.': 'क्या आप वाकई इस अधिकारी को हटाना चाहते हैं? यह कार्य पूर्ववत नहीं किया जा सकता।',
     
     // Savings page
-    'Total Savings': 'कुल बचत',
+    'Total Savings': 'क���ल बचत',
     'Total Accounts': 'कुल खाते',
     'Search accounts...': 'खाते खोजें...',
     'Add New Account': 'नया खाता जोड़ें',
@@ -252,7 +253,7 @@ export const translations = {
     'Loan Account': 'ऋण खाता',
     'Saving Account': 'बचत खाता',
     'Officer Controls': 'अधिकारी नियंत्रण',
-    'Payment Controls': 'भुगतान न���यंत्रण',
+    'Payment Controls': 'भुगतान नियंत्रण',
     'Payment': 'भुगतान',
     'Payment Request': 'भुगतान अनुरोध',
     'Language': 'भाषा',
@@ -343,13 +344,13 @@ export const translations = {
     'Enter officer\'s name': 'अधिकारी का नाम दर्ज करें',
     'Is Active': 'सक्रिय है',
     'Submit Officer': 'अधिकारी जमा करें',
-    'Success! Officer Added successfully': 'सफलता! अ��िकारी सफलतापूर्वक जोड़ा गया',
+    'Success! Officer Added successfully': 'सफलता! अधिकारी सफलतापूर्वक जोड़ा गया',
     'An error occurred.': 'एक त्रुटि हुई।',
     'Create Loan Customer': 'ऋण ग्राहक बनाएं',
     'Loan Details': 'ऋण विवरण',
     'Interest Rate': 'ब्याज दर',
     'Generate Details': 'विवरण उत्पन्न करें',
-    'Personal Details': 'व्यक्तिगत विवरण',
+    'Personal Details': 'व्यक्तिगत ���िवरण',
     'Select Officers': 'अधिकारी चुनें',
     'Select Officer': 'अधिकारी चुनें',
     'Submit Loan User': 'ऋण उपयोगकर्ता जमा करें',
