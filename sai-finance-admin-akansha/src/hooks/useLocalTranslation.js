@@ -31,7 +31,8 @@ export const useLocalTranslation = () => {
     // First try to get from i18next (this ensures reactivity to language changes)
     try {
       const i18nextTranslation = i18nT(key);
-      if (i18nextTranslation !== key) {
+      // Check if we actually got a translation (not just the key back)
+      if (i18nextTranslation && i18nextTranslation !== key) {
         return i18nextTranslation;
       }
     } catch (error) {
@@ -40,11 +41,11 @@ export const useLocalTranslation = () => {
 
     // Then try to get from our local translations
     const localTranslation = getTranslation(key, currentLanguage);
-    if (localTranslation !== key) {
+    if (localTranslation && localTranslation !== key) {
       return localTranslation;
     }
 
-    // Finally use fallback
+    // Finally use fallback (which should be English text)
     return fallback;
   };
 
