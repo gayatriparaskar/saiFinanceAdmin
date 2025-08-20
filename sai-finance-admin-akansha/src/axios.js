@@ -24,7 +24,29 @@ instance.interceptors.request.use(
     return config;
   },
   (err) => {
-    Promise.reject(err);
+    return Promise.reject(err);
+  }
+);
+
+// Response interceptor for better error handling
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // Handle different types of network errors
+    if (error.code === 'ECONNABORTED') {
+      console.warn('Request timeout - API might be slow or down');
+    } else if (error.message === 'Network Error') {
+      console.warn('Network Error - API server might be unavailable');
+    } else if (error.response) {
+      // Server responded with error status
+      console.warn(`API Error ${error.response.status}: ${error.response.statusText}`);
+    } else {
+      // Something else happened
+      console.warn('Unexpected error:', error.message);
+    }
+    return Promise.reject(error);
   }
 );
 
