@@ -431,7 +431,7 @@ function Officer() {
               {t('Previous', 'Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} of {totalPages}
+              {currentPage} {t('of')} {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
