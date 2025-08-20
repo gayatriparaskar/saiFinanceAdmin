@@ -137,14 +137,11 @@ export const translations = {
     'Weekly Total': 'Weekly Total',
 
     // Loan table headers
-    'Name': 'Name',
     'Loan Amount': 'Loan Amount',
     'Total Pay Amount': 'Total Pay Amount',
     'Total EMI/Day': 'Total EMI/Day',
     'Remaining Emi': 'Remaining EMI',
     'Total Due Amount': 'Total Due Amount',
-    'Date': 'Date',
-    'Mobile Number': 'Mobile Number',
 
     // Sort options
     'Amount High to Low': 'Amount High to Low',
@@ -221,7 +218,7 @@ export const translations = {
     'Total Savings': 'कुल बचत',
     'Total Accounts': 'कुल खाते',
     'Search accounts...': 'खाते खोजें...',
-    'Add New Account': 'नया खाता जोड़ें',
+    'Add New Account': 'नया खा���ा जोड़ें',
     'Account Holder': 'खाता धारक',
     'Account Number': 'खाता संख्या',
     'Balance': 'शेष राशि',
@@ -243,7 +240,7 @@ export const translations = {
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
     'Total Outgoing': 'कुल निवर्तमान',
-    'Active Savings Users': 'सक्रिय बचत उपयोगकर्ता',
+    'Active Savings Users': 'सक्रिय बच��� उपयोगकर्ता',
     'Total Collections': 'कुल संग्रह',
     'Monthly Growth': 'मासिक वृद्धि',
     'Sign out of your account': 'अपने खाते से साइन आउट करें',
@@ -275,7 +272,7 @@ export const translations = {
 
     // Chart and data labels
     'Monthly Stats': 'मासिक आंकड़े',
-    'Weekly Stats': 'साप्ताहिक आंकड़े',
+    'Weekly Stats': 'साप्��ाहिक आंकड़े',
     'Revenue': 'आय',
     'Amount': 'राशि',
     'Count': 'गणना',
@@ -310,7 +307,7 @@ export const translations = {
     'Week': 'सप्ताह',
     'Month': 'महीना',
     'Primary income source': 'प्राथमिक आय स्रोत',
-    'Performance indicator': 'प्रदर्शन संकेतक',
+    'Performance indicator': 'प्रद���्शन संकेतक',
     'Daily Collections': 'दैनिक संग्रह',
     'Target Achievement': 'लक्ष्य उपलब्धि',
     'Weekly Performance': 'साप्ताहिक प्रदर्शन',
