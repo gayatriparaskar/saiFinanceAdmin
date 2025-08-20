@@ -303,7 +303,7 @@ const EnhancedDashHome = () => {
           gradientTo="to-teal-600"
           animationDelay={0.1}
         >
-          📈
+          💰
         </EnhancedCardDataStats>
 
         <EnhancedCardDataStats
@@ -315,7 +315,7 @@ const EnhancedDashHome = () => {
           gradientTo="to-indigo-600"
           animationDelay={0.2}
         >
-          👥
+          🏛️
         </EnhancedCardDataStats>
 
         <EnhancedCardDataStats
@@ -327,7 +327,7 @@ const EnhancedDashHome = () => {
           gradientTo="to-violet-600"
           animationDelay={0.3}
         >
-          💸
+          📤
         </EnhancedCardDataStats>
 
         <EnhancedCardDataStats
@@ -339,7 +339,7 @@ const EnhancedDashHome = () => {
           gradientTo="to-red-500"
           animationDelay={0.4}
         >
-          🏦
+          💳
         </EnhancedCardDataStats>
       </motion.div>
 
@@ -358,7 +358,7 @@ const EnhancedDashHome = () => {
           animationDelay={0.5}
           bgColor="bg-gradient-to-br from-green-50 to-emerald-50"
         >
-          💰
+          💵
         </EnhancedCardDataStats>
 
         <EnhancedCardDataStats
