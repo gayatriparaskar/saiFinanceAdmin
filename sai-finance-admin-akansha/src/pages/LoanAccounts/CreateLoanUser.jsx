@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../axios";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 import {
   useToast,
   Modal,
@@ -13,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 
 const CreateLoanUser = () => {
+  const { t } = useLocalTranslation();
   const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -119,7 +121,7 @@ const CreateLoanUser = () => {
     .then((res) => {
         if (res.data) {
             toast({
-                title: "Success! Contest Added successfully",
+                title: t("Success! Loan Customer Added successfully"),
                 status: "success",
                 duration: 4000,
                 isClosable: true,
@@ -130,7 +132,7 @@ const CreateLoanUser = () => {
     })
     .catch((err) => {
         toast({
-            title: "Something Went Wrong!",
+            title: t("Something Went Wrong!"),
             status: "error",
             duration: 4000,
             isClosable: true,
@@ -143,14 +145,14 @@ const CreateLoanUser = () => {
     <div className="m-6 py-8">
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
-          Create Loan Customer
+          {t("Create Loan Customer")}
         </h3>
 
-        <h4 className="text-lg font-bold mt-6">Loan Details</h4>
+        <h4 className="text-lg font-bold mt-6">{t("Loan Details")}</h4>
         <div className=" grid grid-cols-3 gap-4 mt-2 text-start">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Loan Amount
+              {t("Loan Amount")}
             </label>
             <input
               className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -159,12 +161,12 @@ const CreateLoanUser = () => {
               type="text"
               // required
               onChange={handleloan_detailsChange}
-              placeholder="Loan Amount"
+              placeholder={t("Loan Amount")}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Interest Rate
+              {t("Interest Rate")}
             </label>
             <input
               className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -173,12 +175,12 @@ const CreateLoanUser = () => {
               type="text"
               // required
               onChange={handleloan_detailsChange}
-              placeholder="Intrest Rate"
+              placeholder={t("Interest Rate")}
             />
           </div>
           <div className=" mt-4">
           <Button colorScheme="teal" onClick={() => setIsModalOpen(true)}>
-            Generate Details
+            {t("Generate Details")}
           </Button>
         </div>
         </div>
@@ -186,7 +188,7 @@ const CreateLoanUser = () => {
   <hr />
         
 
-        <h4 className="text-lg font-bold mt-6">Personal Details</h4>
+        <h4 className="text-lg font-bold mt-6">{t("Personal Details")}</h4>
         <div className=" grid grid-cols-3 gap-4 text-start">
           {Object.keys(fieldLabels).map((key) => (
             <div key={key} className="">
@@ -206,7 +208,7 @@ const CreateLoanUser = () => {
           ))}
           <div className="grid grid-cols-1 ">
             <label className=" text-sm font-medium text-gray-700">
-              {"Select Officers"}
+              {t("Select Officers")}
             </label>
             <select
               name="officer_id"
@@ -214,9 +216,9 @@ const CreateLoanUser = () => {
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             >
-              <option value="">Select Officer</option>
+              <option value="">{t("Select Officer")}</option>
               {officerData?.map((el) => (
-                <option value={el?._id}>{el?.name}</option>
+                <option key={el?._id} value={el?._id}>{el?.name}</option>
               ))}
             </select>
           </div>
@@ -227,7 +229,7 @@ const CreateLoanUser = () => {
             type="submit"
             className="px-4 py-2 bg-primaryDark text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none"
           >
-            Submit Loan User
+            {t("Submit Loan User")}
           </button>
         </div>
       </form>

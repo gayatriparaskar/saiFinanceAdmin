@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 import axios from "../../axios";
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -47,6 +48,7 @@ import { HiStatusOnline } from "react-icons/hi";
 import { GrOverview } from "react-icons/gr";
 
 function Officer() {
+  const { t } = useLocalTranslation();
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -173,68 +175,68 @@ function Officer() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Sr No.",
+        Header: t('Sr No.', 'Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: "Officer Name",
+        Header: t('Officer Name', 'Officer Name'),
         accessor: "name",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.name || 'N/A'}`} bold={"bold"} />
         ),
       },
       {
-        Header: "Employee ID",
+        Header: t('Employee ID', 'Employee ID'),
         accessor: "employee_id",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.employee_id || 'N/A'}`} />
         ),
       },
       {
-        Header: "Department",
+        Header: t('Department', 'Department'),
         accessor: "department",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.department || 'N/A'}`} />
         ),
       },
       {
-        Header: "Position",
+        Header: t('Position', 'Position'),
         accessor: "position",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.position || 'N/A'}`} />
         ),
       },
       {
-        Header: "Phone Number",
+        Header: t('Phone Number', 'Phone Number'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.phone_number || 'N/A'}`} />
         ),
       },
       {
-        Header: "Email",
+        Header: t('Email', 'Email'),
         accessor: "email",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.email || 'N/A'}`} />
         ),
       },
       {
-        Header: "Join Date",
+        Header: t('Join Date', 'Join Date'),
         accessor: "join_date",
         Cell: ({ value, row: { original } }) => (
           <Cell text={original?.join_date ? dayjs(original.join_date).format("D MMM, YYYY") : 'N/A'} />
         ),
       },
       {
-        Header: "Status",
+        Header: t('Status', 'Status'),
         accessor: "status",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.status || "Active"} />
+          <Cell text={original?.status || "Active"} translate={true} />
         ),
       },
       {
-        Header: "Action",
+        Header: t('Action', 'Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -245,23 +247,23 @@ function Officer() {
                 colorScheme="blue"
                 onClick={() => setNewID(original._id)}
               >
-                Actions
+                {t('Actions', 'Actions')}
               </MenuButton>
               <MenuList>
                 <Link to={`/dash/view-officer/${original?._id}`}>
                   <MenuItem>
-                    <HiStatusOnline className="mr-4" /> View Officer
+                    <HiStatusOnline className="mr-4" /> {t('View Officer', 'View Officer')}
                   </MenuItem>
                 </Link>
                 <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                  <MdEdit className="mr-4" /> Edit
+                  <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
                 </MenuItem>
                 <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                   <MdDelete className="mr-4" />
-                  Delete
+                  {t('Delete', 'Delete')}
                 </MenuItem>
                 <MenuItem onClick={onOpen2}>
-                  <HiStatusOnline className="mr-4" /> Status
+                  <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
                 </MenuItem>
               </MenuList>
             </Menu>
@@ -321,7 +323,7 @@ function Officer() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    Total Officers : {data.length}
+                    {t('Total Officers', 'Total Officers')} : {data.length}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -334,7 +336,7 @@ function Officer() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    Active Officers : {data.filter(officer => officer.status === 'Active').length}
+                    {t('Active Officers', 'Active Officers')} : {data.filter(officer => officer.status === 'Active').length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -349,7 +351,7 @@ function Officer() {
                   />
                   <Input
                     type="text"
-                    placeholder="Search officers..."
+                    placeholder={t('Search officers...', 'Search officers...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -364,7 +366,7 @@ function Officer() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      Search
+                      {t('Search', 'Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -380,13 +382,13 @@ function Officer() {
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700"
                   >
-                    Sort By
+                    {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Name A-Z</MenuItem>
-                    <MenuItem>Department</MenuItem>
-                    <MenuItem>Join Date</MenuItem>
-                    <MenuItem>Status</MenuItem>
+                    <MenuItem>{t('Name A-Z')}</MenuItem>
+                    <MenuItem>{t('Department')}</MenuItem>
+                    <MenuItem>{t('Join Date')}</MenuItem>
+                    <MenuItem>{t('Status')}</MenuItem>
                   </MenuList>
                 </Menu>
 
@@ -397,7 +399,7 @@ function Officer() {
                       colorScheme="blue"
                       className="bg-primary hover:bg-primaryDark"
                     >
-                      Add New Officer
+                      {t('Add New Officer', 'Add New Officer')}
                     </MenuButton>
                   </Link>
                 </Menu>
@@ -413,10 +415,6 @@ function Officer() {
         className="flex-1 px-4 pb-4 overflow-hidden"
       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
-          <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">Officer Management</h3>
-          </div>
-          
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
             <Table data={paginatedData} columns={columns} />
@@ -430,10 +428,10 @@ function Officer() {
               colorScheme="blue"
               variant="outline"
             >
-              Previous
+              {t('Previous', 'Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} of {totalPages}
+              {currentPage} {t('of')} {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -441,7 +439,7 @@ function Officer() {
               colorScheme="blue"
               variant="outline"
             >
-              Next
+              {t('Next', 'Next')}
             </Button>
           </div>
         </div>
@@ -457,16 +455,16 @@ function Officer() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Officer Statistics</DrawerHeader>
+          <DrawerHeader>{t('Officer Statistics', 'Officer Statistics')}</DrawerHeader>
 
           <DrawerBody>
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-bold text-blue-900">Total Officers</h4>
+                <h4 className="font-bold text-blue-900">{t('Total Officers', 'Total Officers')}</h4>
                 <p className="text-2xl font-bold text-blue-600">{data.length}</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-bold text-green-900">Active Officers</h4>
+                <h4 className="font-bold text-green-900">{t('Active Officers', 'Active Officers')}</h4>
                 <p className="text-2xl font-bold text-green-600">
                   {data.filter(officer => officer.status === 'Active').length}
                 </p>
@@ -476,7 +474,7 @@ function Officer() {
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
-              Close
+              {t('Close', 'Close')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
@@ -491,19 +489,19 @@ function Officer() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Officer
+              {t('Delete Officer', 'Delete Officer')}
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete this officer? This action cannot be undone.
+              {t('Are you sure you want to delete this officer? This action cannot be undone.', 'Are you sure you want to delete this officer? This action cannot be undone.')}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
-                Cancel
+                {t('Cancel', 'Cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                Delete
+                {t('Delete', 'Delete')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -514,46 +512,46 @@ function Officer() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Edit Officer</DrawerHeader>
+          <DrawerHeader>{t('Edit Officer', 'Edit Officer')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
-                placeholder="Officer Name"
+                placeholder={t('Officer Name', 'Officer Name')}
                 value={editData?.name || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, name: e.target.value })
                 }
               />
               <Input
-                placeholder="Employee ID"
+                placeholder={t('Employee ID', 'Employee ID')}
                 value={editData?.employee_id || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, employee_id: e.target.value })
                 }
               />
               <Input
-                placeholder="Department"
+                placeholder={t('Department', 'Department')}
                 value={editData?.department || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, department: e.target.value })
                 }
               />
               <Input
-                placeholder="Position"
+                placeholder={t('Position', 'Position')}
                 value={editData?.position || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, position: e.target.value })
                 }
               />
               <Input
-                placeholder="Phone Number"
+                placeholder={t('Phone Number', 'Phone Number')}
                 value={editData?.phone_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, phone_number: e.target.value })
                 }
               />
               <Input
-                placeholder="Email"
+                placeholder={t('Email', 'Email')}
                 type="email"
                 value={editData?.email || ""}
                 onChange={(e) =>
@@ -564,10 +562,10 @@ function Officer() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              Cancel
+              {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              Save
+              {t('Save', 'Save')}
             </Button>
           </DrawerFooter>
         </DrawerContent>

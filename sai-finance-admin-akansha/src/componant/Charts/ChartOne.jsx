@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { motion } from "framer-motion";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
+  const { t } = useLocalTranslation();
+
   const [series, setSeries] = useState([
     {
       name: "Monthly Revenue",
@@ -16,16 +19,22 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Memoize translated strings to prevent infinite re-renders
+  const monthlyRevenueText = t("Monthly Revenue");
+  const growthTrendText = t("Growth Trend");
+
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 300);
-    
+  }, []);
+
+  useEffect(() => {
     if (Array.isArray(monthlyAmtData) && monthlyAmtData.length > 0) {
       setSeries([
-        { name: "Monthly Revenue", data: monthlyAmtData },
-        { name: "Growth Trend", data: monthlyAmtData.map(val => val * 0.8) },
+        { name: monthlyRevenueText, data: monthlyAmtData },
+        { name: growthTrendText, data: monthlyAmtData.map(val => val * 0.8) },
       ]);
     }
-  }, [monthlyAmtData]);
+  }, [monthlyAmtData, monthlyRevenueText, growthTrendText]);
 
   const options = {
     legend: {
@@ -186,21 +195,21 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
           className="flex flex-wrap items-start justify-between gap-4 mb-6"
         >
           <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Revenue Analytics</h3>
-            <p className="text-gray-600 text-sm">Monthly performance overview</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t("Revenue Analytics")}</h3>
+            <p className="text-gray-600 text-sm">{t("Monthly performance overview")}</p>
           </div>
           
           <motion.div 
             whileHover={{ scale: 1.05 }}
             className="flex gap-2"
           >
-            {["Day", "Week", "Month"].map((period, index) => (
+            {[t("Day"), t("Week"), t("Month")].map((period, index) => (
               <motion.button
                 key={period}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                  period === "Month" 
+                  period === t("Month") 
                     ? "bg-primary text-white shadow-lg" 
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
@@ -221,15 +230,15 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
           <div className="flex items-center gap-3">
             <div className="w-4 h-4 rounded-full bg-primary shadow-sm"></div>
             <div>
-              <p className="font-semibold text-gray-900">Monthly Revenue</p>
-              <p className="text-xs text-gray-500">Primary income source</p>
+              <p className="font-semibold text-gray-900">{t("Monthly Revenue")}</p>
+              <p className="text-xs text-gray-500">{t("Primary income source")}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-4 h-4 rounded-full bg-secondary shadow-sm"></div>
             <div>
-              <p className="font-semibold text-gray-900">Growth Trend</p>
-              <p className="text-xs text-gray-500">Performance indicator</p>
+              <p className="font-semibold text-gray-900">{t("Growth Trend")}</p>
+              <p className="text-xs text-gray-500">{t("Performance indicator")}</p>
             </div>
           </div>
         </motion.div>

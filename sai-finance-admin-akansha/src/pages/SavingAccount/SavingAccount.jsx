@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 import axios from "../../axios";
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -42,6 +43,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
 
 function SavingAccount() {
+  const { t } = useLocalTranslation();
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
   const [totalSavingAmt, setTotalSavingAmt] = useState(0);
@@ -163,12 +165,12 @@ function SavingAccount() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Sr No.",
+        Header: t('Sr No.', 'Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: "Account Holder",
+        Header: t('Account Holder', 'Account Holder'),
         accessor: "account_holder_name",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -177,7 +179,7 @@ function SavingAccount() {
         ),
       },
       {
-        Header: "Account Number",
+        Header: t('Account Number', 'Account Number'),
         accessor: "account_number",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -186,7 +188,7 @@ function SavingAccount() {
         ),
       },
       {
-        Header: "Balance",
+        Header: t('Balance', 'Balance'),
         accessor: "balance",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -195,33 +197,33 @@ function SavingAccount() {
         ),
       },
       {
-        Header: "Account Type",
+        Header: t('Account Type', 'Account Type'),
         accessor: "account_type",
-        Cell: ({ value, row: { original } }) => <Cell text={original?.account_type || "Saving"} />,
+        Cell: ({ value, row: { original } }) => <Cell text={original?.account_type || "Saving"} translate={true} />,
       },
       {
-        Header: "Status",
+        Header: t('Status', 'Status'),
         accessor: "status",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.status || "Active"} />
+          <Cell text={original?.status || "Active"} translate={true} />
         ),
       },
       {
-        Header: "Date Created",
+        Header: t('Date Created', 'Date Created'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
         ),
       },
       {
-        Header: "Phone",
+        Header: t('Phone', 'Phone'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.phone_number || 'N/A'}`} />
         ),
       },
       {
-        Header: "Action",
+        Header: t('Action', 'Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -288,17 +290,17 @@ function SavingAccount() {
       className="h-screen bg-primaryBg flex flex-col"
     >
       {/* Fixed Header Section */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         className="flex-shrink-0 pt-20 pb-4 px-4"
       >
         <section className="md:p-1">
           <div className="py-6">
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="flex justify-between items-center mb-6"
             >
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="flex gap-2"
               >
@@ -310,7 +312,7 @@ function SavingAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    Total Savings : ₹ {totalSavingAmt.toLocaleString()}
+                    {t('Total Savings', 'Total Savings')} : ₹ {totalSavingAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -323,12 +325,12 @@ function SavingAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    Total Accounts : {data.length}
+                    {t('Total Accounts', 'Total Accounts')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="w-96"
               >
@@ -338,28 +340,28 @@ function SavingAccount() {
                   />
                   <Input
                     type="text"
-                    placeholder="Search accounts..."
-                    focusBorderColor="purple.500"
+                    placeholder={t('Search accounts...', 'Search accounts...')}
+                    focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                   <InputRightAddon p={0} border="none">
                     <Button
-                      className="bg-secondary hover:bg-secondaryDark"
-                      colorScheme="purple"
+                      className="bg-primary hover:bg-primaryDark"
+                      colorScheme="blue"
                       size="sm"
                       borderLeftRadius={0}
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      Search
+                      {t('Search', 'Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="flex gap-2"
               >
@@ -369,13 +371,13 @@ function SavingAccount() {
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700"
                   >
-                    Sort By
+                    {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Balance High to Low</MenuItem>
-                    <MenuItem>Balance Low to High</MenuItem>
-                    <MenuItem>Name A-Z</MenuItem>
-                    <MenuItem>Date Created</MenuItem>
+                    <MenuItem>{t('Balance High to Low')}</MenuItem>
+                    <MenuItem>{t('Balance Low to High')}</MenuItem>
+                    <MenuItem>{t('Name A-Z')}</MenuItem>
+                    <MenuItem>{t('Date Created')}</MenuItem>
                   </MenuList>
                 </Menu>
 
@@ -383,10 +385,10 @@ function SavingAccount() {
                   <Link to={`/dash/create-saving-account`}>
                     <MenuButton
                       as={Button}
-                      colorScheme="purple"
-                      className="bg-secondary hover:bg-secondaryDark"
+                      colorScheme="blue"
+                      className="bg-primary hover:bg-primaryDark"
                     >
-                      Add New Account
+                      {t('Add New Account', 'Add New Account')}
                     </MenuButton>
                   </Link>
                 </Menu>
@@ -397,15 +399,11 @@ function SavingAccount() {
       </motion.div>
 
       {/* Scrollable Table Section */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         className="flex-1 px-4 pb-4 overflow-hidden"
       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
-          <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">Saving Accounts</h3>
-          </div>
-          
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
             <Table data={paginatedData} columns={columns} />
@@ -416,18 +414,18 @@ function SavingAccount() {
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               isDisabled={currentPage === 1}
-              colorScheme="purple"
+              colorScheme="blue"
               variant="outline"
             >
               Previous
             </Button>
-            <span className="text-sm bg-secondary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} of {totalPages}
+            <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
+              {currentPage} {t('of')} {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               isDisabled={currentPage === totalPages}
-              colorScheme="purple"
+              colorScheme="blue"
               variant="outline"
             >
               Next
@@ -456,7 +454,7 @@ function SavingAccount() {
             <Button variant="outline" mr={3} onClick={onClose2}>
               Cancel
             </Button>
-            <Button colorScheme="purple">Save</Button>
+            <Button colorScheme="blue">Save</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -495,37 +493,36 @@ function SavingAccount() {
           <DrawerCloseButton />
           <DrawerHeader>Edit Account</DrawerHeader>
           <DrawerBody>
-            <Input
-              placeholder="Account Holder Name"
-              value={editData?.account_holder_name || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, account_holder_name: e.target.value })
-              }
-              mb={3}
-            />
-            <Input
-              placeholder="Account Number"
-              value={editData?.account_number || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, account_number: e.target.value })
-              }
-              mb={3}
-            />
-            <Input
-              placeholder="Balance"
-              type="number"
-              value={editData?.balance || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, balance: parseFloat(e.target.value) })
-              }
-              mb={3}
-            />
+            <div className="space-y-4">
+              <Input
+                placeholder="Account Holder Name"
+                value={editData?.account_holder_name || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, account_holder_name: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Account Number"
+                value={editData?.account_number || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, account_number: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Balance"
+                type="number"
+                value={editData?.balance || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, balance: parseFloat(e.target.value) })
+                }
+              />
+            </div>
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
               Cancel
             </Button>
-            <Button colorScheme="purple" onClick={handleEditSave}>
+            <Button colorScheme="blue" onClick={handleEditSave}>
               Save
             </Button>
           </DrawerFooter>

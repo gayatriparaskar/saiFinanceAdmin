@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../axios";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 import {
   useToast,
   Modal,
@@ -13,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 
 const CreateSavingUser = () => {
+  const { t } = useLocalTranslation();
   const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -122,7 +124,7 @@ const CreateSavingUser = () => {
     .then((res) => {
       if (res.data) {
         toast({
-          title: "Success! Saving User Created",
+          title: t("Success! Saving User Created"),
           status: "success",
           duration: 4000,
           isClosable: true,
@@ -133,7 +135,7 @@ const CreateSavingUser = () => {
     })
     .catch((err) => {
       toast({
-        title: "Something Went Wrong!",
+        title: t("Something Went Wrong!"),
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -147,14 +149,14 @@ const CreateSavingUser = () => {
     <div className="m-6 py-8">
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
-          Create Saving Account User
+          {t("Create Saving Account User")}
         </h3>
 
-        <h4 className="text-lg font-bold mt-6">Saving Account Details</h4>
+        <h4 className="text-lg font-bold mt-6">{t("Saving Account Details")}</h4>
         <div className=" grid grid-cols-3 gap-4 mt-2 text-start">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-             Saving Amount 
+             {t("Saving Amount")}
             </label>
             <input
               className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"

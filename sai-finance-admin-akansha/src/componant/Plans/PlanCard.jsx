@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import { FaArrowRightLong } from 'react-icons/fa6';
 import Correct from "../../Images/Vector.png";
 import Info from "../../Images/ph_info-duotone.png";
 function PlanCard() {
+  const [data] = useState([]);
 
 
   return (
