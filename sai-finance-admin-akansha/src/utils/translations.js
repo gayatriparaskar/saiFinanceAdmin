@@ -145,6 +145,13 @@ export const translations = {
     'Total Due Amount': 'Total Due Amount',
     'Date': 'Date',
     'Mobile Number': 'Mobile Number',
+
+    // Sort options
+    'Amount High to Low': 'Amount High to Low',
+    'Amount Low to High': 'Amount Low to High',
+    'Balance High to Low': 'Balance High to Low',
+    'Balance Low to High': 'Balance Low to High',
+    'Name A-Z': 'Name A-Z',
   },
   hi: {
     // Common actions
