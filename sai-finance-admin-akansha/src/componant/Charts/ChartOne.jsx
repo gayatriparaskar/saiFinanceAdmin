@@ -19,16 +19,22 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Memoize translated strings to prevent infinite re-renders
+  const monthlyRevenueText = t("Monthly Revenue");
+  const growthTrendText = t("Growth Trend");
+
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 300);
+  }, []);
 
+  useEffect(() => {
     if (Array.isArray(monthlyAmtData) && monthlyAmtData.length > 0) {
       setSeries([
-        { name: t("Monthly Revenue"), data: monthlyAmtData },
-        { name: t("Growth Trend"), data: monthlyAmtData.map(val => val * 0.8) },
+        { name: monthlyRevenueText, data: monthlyAmtData },
+        { name: growthTrendText, data: monthlyAmtData.map(val => val * 0.8) },
       ]);
     }
-  }, [monthlyAmtData, t]);
+  }, [monthlyAmtData, monthlyRevenueText, growthTrendText]);
 
   const options = {
     legend: {
