@@ -284,7 +284,7 @@ function SavingAccount() {
         Header: t('Status'),
         accessor: "status",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.status || "Active"} translate={true} />
+          <Cell text={t(original?.status || "Active")} />
         ),
       },
       {
