@@ -314,7 +314,7 @@ function SavingAccount() {
                   colorScheme="purple"
                   onClick={() => setNewID(original._id)}
                 >
-                  {t('Actions', 'कार्य')}
+                  {t('Actions', 'Actions')}
                 </MenuButton>
                 <MenuList>
                   <Link to={`/dash/view-savingUser-details/${original?._id}`}>
