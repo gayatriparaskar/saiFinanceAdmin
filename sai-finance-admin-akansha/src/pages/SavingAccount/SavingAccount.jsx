@@ -363,7 +363,7 @@ function SavingAccount() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      {t('Search', 'खोजें')}
+                      {t('Search', 'Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -379,13 +379,13 @@ function SavingAccount() {
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700"
                   >
-                    {t('Sort By', 'क्रमानुसार')}
+                    {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>{t('Balance High to Low', 'शेष राशि अधिक से कम')}</MenuItem>
-                    <MenuItem>{t('Balance Low to High', 'शेष राशि कम से अधिक')}</MenuItem>
-                    <MenuItem>{t('Name A-Z', 'नाम अ-ह')}</MenuItem>
-                    <MenuItem>{t('Date Created', 'निर्माण तिथि')}</MenuItem>
+                    <MenuItem>{t('Balance High to Low', 'Balance High to Low')}</MenuItem>
+                    <MenuItem>{t('Balance Low to High', 'Balance Low to High')}</MenuItem>
+                    <MenuItem>{t('Name A-Z', 'Name A-Z')}</MenuItem>
+                    <MenuItem>{t('Date Created', 'Date Created')}</MenuItem>
                   </MenuList>
                 </Menu>
 
@@ -396,7 +396,7 @@ function SavingAccount() {
                       colorScheme="blue"
                       className="bg-primary hover:bg-primaryDark"
                     >
-                      {t('Add New Account', 'नया खाता जोड़ें')}
+                      {t('Add New Account', 'Add New Account')}
                     </MenuButton>
                   </Link>
                 </Menu>
@@ -428,10 +428,10 @@ function SavingAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Previous', 'पिछला')}
+              {t('Previous', 'Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} {t('of', 'का')} {totalPages}
+              {currentPage} {t('of', 'of')} {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -439,7 +439,7 @@ function SavingAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Next', 'अगला')}
+              {t('Next', 'Next')}
             </Button>
           </div>
         </div>
@@ -455,7 +455,7 @@ function SavingAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Account Details', 'खाता ���िवरण')}</DrawerHeader>
+          <DrawerHeader>{t('Account Details', 'खाता विवरण')}</DrawerHeader>
 
           <DrawerBody>
             <Input placeholder={t('Account details...', 'खाता विवरण...')} />
