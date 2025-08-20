@@ -80,6 +80,9 @@ function SavingAccount() {
     );
 
     const loadData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         const response = await fetchData();
         if (response?.data) {
@@ -94,10 +97,14 @@ function SavingAccount() {
           setTotalSavingAmt(sum);
         }
       } catch (error) {
-        // Fallback data is already handled by createTimeoutAwareCall
+        console.error('Failed to load savings accounts:', error);
+        setError(error);
+        // Fallback data
         setData([]);
         setFilteredData([]);
         setTotalSavingAmt(0);
+      } finally {
+        setLoading(false);
       }
     };
 
