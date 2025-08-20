@@ -86,29 +86,29 @@ function ViewSavingUser() {
   const columns = useMemo(
     () => [
       {
-        Header: t('Sr No.', 'क्रम संख्या'),
+        Header: t('Sr No.', 'Sr No.'),
         accessor: "srNo",
         Cell: ({ row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: t('Date', 'तारी���'),
+        Header: t('Date', 'Date'),
         accessor: "created_on",
         Cell: ({ value }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
         ),
       },
       {
-        Header: t('Total Amount/Day', 'कुल राशि/दिन'),
+        Header: t('Total Amount/Day', 'Total Amount/Day'),
         accessor: "deposit_amount",
         Cell: ({ value }) => <Cell text={`Rs. ${value}`} />,
       },
       {
-        Header: t('Withdraw Amount', 'निकासी राशि'),
+        Header: t('Withdraw Amount', 'Withdraw Amount'),
         accessor: "withdraw_amount",
         Cell: ({ value }) => <Cell text={`Rs. ${value}`} />,
       },
       {
-        Header: t('Collected By', 'संग्रहकर्ता'),
+        Header: t('Collected By', 'Collected By'),
         accessor: "collected_officer_name",
         Cell: ({ value }) => <Cell text={value || "-"} bold="bold" />,
       },
@@ -119,7 +119,7 @@ function ViewSavingUser() {
   const generatePDF = () => {
     const doc = new jsPDF();
     const userName = accountData?.full_name || "N/A";
-    const title = isLoanAccount ? t('LOAN STATEMENT', 'ऋण विवरण') : t('SAVING STATEMENT', 'बचत विवरण');
+    const title = isLoanAccount ? t('LOAN STATEMENT', 'LOAN STATEMENT') : t('SAVING STATEMENT', 'SAVING STATEMENT');
     const startDate = dayjs(accountData?.created_on).format("D MMM, YYYY");
     const endDate = startDate;
 
@@ -139,16 +139,16 @@ function ViewSavingUser() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     let y = 30;
-    doc.text(`${t('Name', 'नाम')}: ${userName}`, 14, y);
-    doc.text(`${t('End Date', 'समाप्ति तिथि')}: ${endDate}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Name', 'Name')}: ${userName}`, 14, y);
+    doc.text(`${t('End Date', 'End Date')}: ${endDate}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Start Date', 'प्रारंभ तिथि')}: ${startDate}`, 14, y);
-    doc.text(`${t('Total Due', 'कुल बकाया')}: Rs. ${due}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Start Date', 'Start Date')}: ${startDate}`, 14, y);
+    doc.text(`${t('Total Due', 'Total Due')}: Rs. ${due}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Amount', 'राशि')}: Rs. ${loan}`, 14, y);
-    doc.text(`${t('Total Paid', 'कुल भुगतान')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Amount', 'Amount')}: Rs. ${loan}`, 14, y);
+    doc.text(`${t('Total Paid', 'Total Paid')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Total Penalty', 'कुल दंड')}: Rs. ${penalty}`, 14, y);
+    doc.text(`${t('Total Penalty', 'Total Penalty')}: Rs. ${penalty}`, 14, y);
 
     const groupedByMonth = groupBy(transactions, (item) =>
       dayjs(item.created_on).format("MMMM YYYY")
@@ -167,7 +167,7 @@ function ViewSavingUser() {
 
       const rows = records.map((item) => [
         dayjs(item.created_on).format("D MMM, YYYY h:mm A"),
-        t('EMI Payment', 'ईएमआई भुगतान'),
+        t('EMI Payment', 'EMI Payment'),
         `Rs. ${item.amount || 0}`,
         `Rs. ${item.total_penalty_amount || 0}`,
         item.collected_officer_name || "-",
@@ -177,11 +177,11 @@ function ViewSavingUser() {
         startY,
         head: [
           [
-            t('Date', 'तारीख'),
-            t('Description', 'विवरण'),
-            t('Amount (Rs.)', 'राशि (रु.)'),
-            t('Penalty (Rs.)', 'दंड (रु.)'),
-            t('Collected By', 'संग्रहकर्ता'),
+            t('Date', 'Date'),
+            t('Description', 'Description'),
+            t('Amount (Rs.)', 'Amount (Rs.)'),
+            t('Penalty (Rs.)', 'Penalty (Rs.)'),
+            t('Collected By', 'Collected By'),
           ],
         ],
         body: rows,
@@ -199,14 +199,14 @@ function ViewSavingUser() {
       );
       startY = doc.lastAutoTable.finalY + 4;
       doc.setFontSize(10);
-      doc.text(`${t('Monthly Total EMI', 'मासिक कुल ईएमआई')}: Rs. ${totalEMI}`, 14, startY);
-      doc.text(`${t('Monthly Total Penalty', 'मासिक कुल दंड')}: Rs. ${totalPenalty}`, 100, startY);
+      doc.text(`${t('Monthly Total EMI', 'Monthly Total EMI')}: Rs. ${totalEMI}`, 14, startY);
+      doc.text(`${t('Monthly Total Penalty', 'Monthly Total Penalty')}: Rs. ${totalPenalty}`, 100, startY);
       startY += 10;
     });
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text(t('Yearly Summary', 'वार्षिक सारांश'), 14, startY);
+    doc.text(t('Yearly Summary', 'Yearly Summary'), 14, startY);
     startY += 6;
 
     const yearlyRows = Object.entries(groupedByYear).map(([year, records]) => {
@@ -220,7 +220,7 @@ function ViewSavingUser() {
 
     autoTable(doc, {
       startY,
-      head: [[t('Year', 'वर्ष'), t('Total EMI', 'कुल ईएमआई'), t('Total Penalty', 'कुल दंड')]],
+      head: [[t('Year', 'Year'), t('Total EMI', 'Total EMI'), t('Total Penalty', 'Total Penalty')]],
       body: yearlyRows,
       headStyles: { fillColor: [255, 204, 0], fontStyle: "bold" },
       styles: { fontSize: 10, cellPadding: 3 },
