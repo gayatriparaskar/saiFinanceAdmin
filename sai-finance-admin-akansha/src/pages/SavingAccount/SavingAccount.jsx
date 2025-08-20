@@ -320,7 +320,7 @@ function SavingAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    {t('Total Savings', 'Total Savings')} : ₹ {totalSavingAmt.toLocaleString()}
+                    {t('Total Savings', 'कुल बचत')} : ₹ {totalSavingAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -333,7 +333,7 @@ function SavingAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    {t('Total Accounts', 'Total Accounts')} : {data.length}
+                    {t('Total Accounts', 'कुल खाते')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -348,7 +348,7 @@ function SavingAccount() {
                   />
                   <Input
                     type="text"
-                    placeholder={t('Search accounts...', 'Search accounts...')}
+                    placeholder={t('Search accounts...', 'खाते खोजें...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -363,7 +363,7 @@ function SavingAccount() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      {t('Search', 'Search')}
+                      {t('Search', 'खोजें')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -379,13 +379,13 @@ function SavingAccount() {
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700"
                   >
-                    {t('Sort By', 'Sort By')}
+                    {t('Sort By', 'क्रमानुसार')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>{t('Balance High to Low')}</MenuItem>
-                    <MenuItem>{t('Balance Low to High')}</MenuItem>
-                    <MenuItem>{t('Name A-Z')}</MenuItem>
-                    <MenuItem>{t('Date Created')}</MenuItem>
+                    <MenuItem>{t('Balance High to Low', 'शेष राशि अधिक से कम')}</MenuItem>
+                    <MenuItem>{t('Balance Low to High', 'शेष राशि कम से अधिक')}</MenuItem>
+                    <MenuItem>{t('Name A-Z', 'नाम अ-ह')}</MenuItem>
+                    <MenuItem>{t('Date Created', 'निर्माण तिथि')}</MenuItem>
                   </MenuList>
                 </Menu>
 
@@ -396,7 +396,7 @@ function SavingAccount() {
                       colorScheme="blue"
                       className="bg-primary hover:bg-primaryDark"
                     >
-                      {t('Add New Account', 'Add New Account')}
+                      {t('Add New Account', 'नया खाता जोड़ें')}
                     </MenuButton>
                   </Link>
                 </Menu>
@@ -428,10 +428,10 @@ function SavingAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              Previous
+              {t('Previous', 'पिछला')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} {t('of')} {totalPages}
+              {currentPage} {t('of', 'का')} {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -439,7 +439,7 @@ function SavingAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              Next
+              {t('Next', 'अगला')}
             </Button>
           </div>
         </div>
@@ -455,17 +455,17 @@ function SavingAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Account Details</DrawerHeader>
+          <DrawerHeader>{t('Account Details', 'खाता ���िवरण')}</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder="Account details..." />
+            <Input placeholder={t('Account details...', 'खाता विवरण...')} />
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
-              Cancel
+              {t('Cancel', 'रद्द करें')}
             </Button>
-            <Button colorScheme="blue">Save</Button>
+            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -479,19 +479,19 @@ function SavingAccount() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Account
+              {t('Delete Account', 'खाता हटाएं')}
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure you want to delete this saving account? This action cannot be undone.
+              {t('Are you sure you want to delete this saving account? This action cannot be undone.', 'क्या आप वाकई इस बचत खाते को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
-                Cancel
+                {t('Cancel', 'रद्द करें')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                Delete
+                {t('Delete', 'हटाएं')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -502,25 +502,25 @@ function SavingAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Edit Account</DrawerHeader>
+          <DrawerHeader>{t('Edit Account', 'खाता संपादित करें')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
-                placeholder="Account Holder Name"
+                placeholder={t('Account Holder Name', 'खाता धारक का नाम')}
                 value={editData?.account_holder_name || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, account_holder_name: e.target.value })
                 }
               />
               <Input
-                placeholder="Account Number"
+                placeholder={t('Account Number', 'खाता संख्या')}
                 value={editData?.account_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, account_number: e.target.value })
                 }
               />
               <Input
-                placeholder="Balance"
+                placeholder={t('Balance', 'शेष राशि')}
                 type="number"
                 value={editData?.balance || ""}
                 onChange={(e) =>
@@ -531,10 +531,10 @@ function SavingAccount() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              Cancel
+              {t('Cancel', 'रद्द करें')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              Save
+              {t('Save', 'सेव करें')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
