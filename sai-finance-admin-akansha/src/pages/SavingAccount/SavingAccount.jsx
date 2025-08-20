@@ -243,23 +243,23 @@ function SavingAccount() {
                   colorScheme="purple"
                   onClick={() => setNewID(original._id)}
                 >
-                  Actions
+                  {t('Actions', 'कार्य')}
                 </MenuButton>
                 <MenuList>
                   <Link to={`/dash/view-savingUser-details/${original?._id}`}>
                     <MenuItem>
-                      <HiStatusOnline className="mr-4" /> View Account
+                      <HiStatusOnline className="mr-4" /> {t('View Account', 'खाता देखें')}
                     </MenuItem>
                   </Link>
                   <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                    <MdEdit className="mr-4" /> Edit
+                    <MdEdit className="mr-4" /> {t('Edit', 'संपादित करें')}
                   </MenuItem>
                   <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                     <MdDelete className="mr-4" />
-                    Delete
+                    {t('Delete', 'हटाएं')}
                   </MenuItem>
                   <MenuItem onClick={onOpen2}>
-                    <HiStatusOnline className="mr-4" /> Status
+                    <HiStatusOnline className="mr-4" /> {t('Status', 'स्थिति')}
                   </MenuItem>
                 </MenuList>
               </Menu>
