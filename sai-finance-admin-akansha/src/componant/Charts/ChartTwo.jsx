@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 
 const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
+  const { t } = useLocalTranslation();
+
   const [series, setSeries] = useState([
     {
       name: 'Daily Collections',
