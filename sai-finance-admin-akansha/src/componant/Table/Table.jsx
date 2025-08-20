@@ -1,6 +1,7 @@
 import React from "react";
 import { useTable, useExpanded } from "react-table";
 import classNames from "classnames";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const Table = ({
   columns,
@@ -14,6 +15,7 @@ const Table = ({
   pageSize = 50,
   className = "",
 }) => {
+  const { t } = useLocalTranslation();
   const totalPages = Math.ceil(total / pageSize);
   const tableInstance = useTable({ columns, data }, useExpanded);
 
@@ -21,29 +23,32 @@ const Table = ({
     tableInstance;
 
   return (
+
     <div className="h-auto flex flex-col mt-0">
+
       <div
         className={classNames(
-          `flex-1 overflow-auto scrollbar-hide`,
+          `overflow-auto h-viewport relative scrollbar-hide`,
           className
         )}
+        style={{ height: '75vh' }}
       >
         <table
           {...getTableProps()}
-          className="w-full table-auto border-collapse text-black min-w-full"
+          className="w-full table-auto border-collapse text-black bg-transparent"
         >
-          <thead className="sticky top-0 z-10 bg-white border-b-2 border-gray-200">
+          <thead className="border-b border-gray-300">
             {headerGroups.map((headerGroup, gIdx) => {
-              const { key, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+              const { key: headerGroupKey, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
               return (
-                <tr key={key || gIdx} {...headerGroupProps}>
+                <tr key={headerGroupKey || gIdx} {...headerGroupProps}>
                   {headerGroup.headers.map((column, cIdx) => {
                     const { key: headerKey, ...headerProps } = column.getHeaderProps();
                     return (
                       <th
                         key={headerKey || cIdx}
                         {...headerProps}
-                        className="px-4 py-4 font-bold uppercase text-xs text-white bg-primary text-center border-r border-primaryLight last:border-r-0"
+                        className="px-3 py-2 font-bold uppercase text-xs text-gray-700 sticky top-0 z-10 bg-gray-100 text-center border-r border-gray-300 last:border-r-0"
                       >
                         {column.render("Header")}
                       </th>
@@ -57,17 +62,18 @@ const Table = ({
           <tbody {...getTableBodyProps()}>
             {rows.map((row) => {
               prepareRow(row);
-              const rowProps = getRowProps
+              const baseRowProps = getRowProps
                 ? row.getRowProps(getRowProps(row))
                 : row.getRowProps();
               
-              const { key: rowKey, ...restRowProps } = rowProps;
+              const { key: rowKey, ...rowProps } = baseRowProps;
               
               return (
                 <React.Fragment key={rowKey}>
                   <tr
-                    {...restRowProps}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-150"
+                    key={rowKey}
+                    {...rowProps}
+                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200 text-black"
                   >
                     {row.cells.map((cell, cIdx) => {
                       const { key: cellKey, ...cellProps } = cell.getCellProps();
@@ -75,7 +81,9 @@ const Table = ({
                         <td
                           key={cellKey || cIdx}
                           {...cellProps}
+
                           className="px-4 py-0 text-sm text-center border-r border-gray-100 last:border-r-0"
+
                         >
                           {cell.render("Cell", {
                             row: {
@@ -89,7 +97,7 @@ const Table = ({
                   </tr>
                   {row.isExpanded &&
                     renderSubComponent &&
-                    renderSubComponent({ row, rowProps })}
+                    renderSubComponent({ row, rowProps: { key: rowKey, ...rowProps } })}
                 </React.Fragment>
               );
             })}
@@ -100,7 +108,7 @@ const Table = ({
                   colSpan={columns.length}
                   className="px-4 py-6 text-center text-gray-500"
                 >
-                  No data available
+                  {t("No data available")}
                 </td>
               </tr>
             )}

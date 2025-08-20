@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import axios from "../../axios";
 import { useToast, Button, Menu, MenuButton, Select } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
@@ -48,7 +49,6 @@ const AddSavingCollection = () => {
     }));
   };
 
-  // ✅ handle submit
   // ✅ handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,154 +111,217 @@ const AddSavingCollection = () => {
   };
 
   return (
-    <div className="m-6 py-12">
-      {/* Account Summary */}
-      <div className="flex flex-col gap-4 py-4">
-        <div className="w-full flex gap-4 justify-end">
-          <Menu>
-            <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight w-auto" colorScheme="#FF782D">
-              Total saving Rs. {userData?.current_amount || 0} Rs.
-            </MenuButton>
-            {/* <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-              Total Due Amount {userData?.total_amount || 0} Rs.
-            </MenuButton> */}
-            <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-              Total Interest Pay {userData?.total_interest_pay || 0} Rs.
-            </MenuButton>
-          </Menu>
-        </div>
-        <div className="w-full flex gap-4 justify-end">
-          <Menu>
-            <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-              Emi Day {userData?.emi_day || 0}
-            </MenuButton>
-          </Menu>
-        </div>
-      </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-16 pb-6 px-4 relative overflow-hidden"
+    >
+      {/* Animated Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="text-center mb-12"
+      >
+        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+          Add Saving Collection
+        </h1>
+        <p className="text-lg text-gray-600">
+          Manage deposits and withdrawals for saving accounts
+        </p>
+      </motion.div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
-        <h3 className="text-xl font-bold text-purple mb-4">
-          Add Saving Transaction
-        </h3>
+      {/* Account Summary Cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 mb-8 max-w-6xl mx-auto"
+      >
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="bg-white rounded-xl shadow-lg p-6 border border-primary/10"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Saving</p>
+              <p className="text-2xl font-bold text-primary">₹ {userData?.current_amount || 0}</p>
+            </div>
+            <div className="text-3xl">💰</div>
+          </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 gap-4 mt-2 text-start">
-          {/* Transaction Type */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Transaction Type
-            </label>
-            <Select
-              value={transactionType}
-              onChange={(e) => setTransactionType(e.target.value)}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="bg-white rounded-xl shadow-lg p-6 border border-secondary/10"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Interest</p>
+              <p className="text-2xl font-bold text-secondary">₹ {userData?.total_interest_pay || 0}</p>
+            </div>
+            <div className="text-3xl">📈</div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="bg-white rounded-xl shadow-lg p-6 border border-green-200"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">EMI Day</p>
+              <p className="text-2xl font-bold text-green-600">{userData?.emi_day || 0}</p>
+            </div>
+            <div className="text-3xl">📅</div>
+          </div>
+        </motion.div>
+      </motion.div>
+
+      {/* Form Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        className="max-w-4xl mx-auto"
+      >
+        <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-2xl p-8 border border-primary/10">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
+            Transaction Details
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
+            {/* Transaction Type */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Transaction Type
+              </label>
+              <Select
+                value={transactionType}
+                onChange={(e) => setTransactionType(e.target.value)}
+                className="w-full"
+              >
+                <option value="deposit">Deposit</option>
+                <option value="withdraw">Withdraw</option>
+              </Select>
+            </div>
+
+            {/* Officer Code */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Collected Officer Code
+              </label>
+              <input
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                name="collected_officer_code"
+                value={formData.collected_officer_code}
+                type="text"
+                onChange={handleChange}
+                placeholder="Officer Code"
+              />
+            </div>
+
+            {/* Officer Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Collected Officer Name
+              </label>
+              <input
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                name="collected_officer_name"
+                value="Admin Officer"
+                type="text"
+                onChange={handleChange}
+                placeholder="Officer Name"
+                readOnly
+              />
+            </div>
+
+            {/* Deposit Amount */}
+            {transactionType === "deposit" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Deposit Amount
+                </label>
+                <input
+                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                  name="deposit_amount"
+                  value={formData.deposit_amount}
+                  type="number"
+                  onChange={handleChange}
+                  placeholder="Enter deposit amount"
+                />
+              </div>
+            )}
+
+            {/* Withdraw Amount */}
+            {transactionType === "withdraw" && (
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Withdraw Amount
+                </label>
+                <input
+                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+                  name="withdraw_amount"
+                  value={formData.withdraw_amount}
+                  type="number"
+                  onChange={handleChange}
+                  placeholder="Enter withdraw amount"
+                />
+                {formData.withdraw_amount > 0 && (
+                  <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
+                    <p className="text-sm text-red-600 font-medium">
+                      Deduction Details:
+                    </p>
+                    <p className="text-xs text-red-500 mt-1">
+                      3% extra deduction: ₹{(formData.withdraw_amount * 0.03).toFixed(2)}
+                    </p>
+                    <p className="text-xs text-red-500">
+                      Total amount deducted from savings: ₹{(
+                        Number(formData.withdraw_amount) +
+                        formData.withdraw_amount * 0.03
+                      ).toFixed(2)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Penalty Checkbox (only for deposit) */}
+            {transactionType === "deposit" && (
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  name="addPenaltyFlag"
+                  checked={formData.addPenaltyFlag}
+                  onChange={handleChange}
+                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                />
+                <label className="text-sm font-medium text-gray-700">
+                  Add Penalty
+                </label>
+              </div>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-end mt-8">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              className="px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <option value="deposit">Deposit</option>
-              <option value="withdraw">Withdraw</option>
-            </Select>
+              Submit Transaction
+            </motion.button>
           </div>
-
-          {/* Officer Code */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Collected Officer Code
-            </label>
-            <input
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              name="collected_officer_code"
-              value={formData.collected_officer_code}
-              type="text"
-              onChange={handleChange}
-              placeholder="Officer Code"
-            />
-          </div>
-          {/* Officer Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Collected Officer Name
-            </label>
-            <input
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              name="collected_officer_code"
-              value="Admin Officer"
-              type="text"
-              onChange={handleChange}
-              placeholder="Officer Name"
-            />
-          </div>
-
-          {/* Deposit Amount */}
-          {transactionType === "deposit" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Deposit Amount
-              </label>
-              <input
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                name="deposit_amount"
-                value={formData.deposit_amount}
-                type="number"
-                onChange={handleChange}
-                placeholder="Deposit Amount"
-              />
-            </div>
-          )}
-
-          {/* Withdraw Amount */}
-          {/* Withdraw Amount */}
-          {transactionType === "withdraw" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Withdraw Amount
-              </label>
-              <input
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                name="withdraw_amount"
-                value={formData.withdraw_amount}
-                type="number"
-                onChange={handleChange}
-                placeholder="Withdraw Amount"
-              />
-              {formData.withdraw_amount > 0 && (
-                <p className="text-sm text-red-500 mt-1">
-                  3% extra deduction:{" "}
-                  {(formData.withdraw_amount * 0.03).toFixed(2)} | Total Saving
-                  se Cut:{" "}
-                  {(
-                    Number(formData.withdraw_amount) +
-                    formData.withdraw_amount * 0.03
-                  ).toFixed(2)}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Penalty Checkbox (only for deposit) */}
-          {transactionType === "deposit" && (
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="addPenaltyFlag"
-                checked={formData.addPenaltyFlag}
-                onChange={handleChange}
-              />
-              <label className="ml-2 text-sm font-medium text-gray-700">
-                Add Penalty
-              </label>
-            </div>
-          )}
-        </div>
-
-        {/* Submit */}
-        <div className="flex justify-end mt-6">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-indigo-700"
-          >
-            Submit Transaction
-          </button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </motion.div>
+    </motion.div>
   );
 };
 

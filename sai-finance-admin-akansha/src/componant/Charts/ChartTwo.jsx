@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { motion } from 'framer-motion';
+import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 
 const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
+  const { t } = useLocalTranslation();
+
   const [series, setSeries] = useState([
     {
       name: 'Daily Collections',
@@ -16,16 +19,22 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
 
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Memoize translated strings to prevent infinite re-renders
+  const dailyCollectionsText = t('Daily Collections');
+  const targetAchievementText = t('Target Achievement');
+
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 500);
-    
+  }, []);
+
+  useEffect(() => {
     if (Array.isArray(weekAmtData) && weekAmtData.length > 0) {
       setSeries([
-        { name: 'Daily Collections', data: weekAmtData },
-        { name: 'Target Achievement', data: weekAmtData.map(val => val * 0.7) },
+        { name: dailyCollectionsText, data: weekAmtData },
+        { name: targetAchievementText, data: weekAmtData.map(val => val * 0.7) },
       ]);
     }
-  }, [weekAmtData]);
+  }, [weekAmtData, dailyCollectionsText, targetAchievementText]);
 
   const options = {
     colors: ['#0d9488', '#f97316'],
@@ -197,8 +206,8 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
           className="flex items-center justify-between mb-6"
         >
           <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Weekly Performance</h3>
-            <p className="text-gray-600 text-sm">Daily collection insights</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t("Weekly Performance")}</h3>
+            <p className="text-gray-600 text-sm">{t("Daily collection insights")}</p>
           </div>
           
           <motion.div 
@@ -206,9 +215,9 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
             className="relative"
           >
             <select className="appearance-none bg-secondary text-white px-4 py-2 rounded-xl text-sm font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary/50 transition-all duration-300">
-              <option value="" className="bg-white text-gray-900">This Week</option>
-              <option value="" className="bg-white text-gray-900">Last Week</option>
-              <option value="" className="bg-white text-gray-900">This Month</option>
+              <option value="" className="bg-white text-gray-900">{t("This Week")}</option>
+              <option value="" className="bg-white text-gray-900">{t("Last Week")}</option>
+              <option value="" className="bg-white text-gray-900">{t("This Month")}</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,7 +240,7 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
                 <span className="text-white text-lg">📊</span>
               </div>
               <div>
-                <p className="text-xs text-gray-600 font-medium">Average Daily</p>
+                <p className="text-xs text-gray-600 font-medium">{t("Average Daily")}</p>
                 <p className="text-lg font-bold text-primary">
                   ₹{weekAmtData.length > 0 ? Math.round(weekAmtData.reduce((a, b) => a + b, 0) / weekAmtData.length).toLocaleString() : '0'}
                 </p>
@@ -245,7 +254,7 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
                 <span className="text-white text-lg">🎯</span>
               </div>
               <div>
-                <p className="text-xs text-gray-600 font-medium">Weekly Total</p>
+                <p className="text-xs text-gray-600 font-medium">{t("Weekly Total")}</p>
                 <p className="text-lg font-bold text-secondary">
                   ₹{weekAmtData.reduce((a, b) => a + b, 0).toLocaleString()}
                 </p>

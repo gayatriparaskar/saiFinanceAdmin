@@ -1,27 +1,25 @@
 import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Mainroute from "./routes/Mainroute";
-
+import { motion } from "framer-motion";
+import EnhancedMainroute from "./routes/EnhancedMainroute";
+import EnhancedCursor from "./components/EnhancedCursor/EnhancedCursor";
+import "./i18n"; // Import i18n configuration
 
 function App() {
   const queryClient = new QueryClient();
+
   return (
-    <div className="App no-select">
+    <motion.div
+      className="App no-select"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
       <QueryClientProvider client={queryClient}>
-      {/* {token && token.length > 0 ? (
-        <>
-          {" "}
-          <Sidebar />
-           
-        </>
-      ) : (
-        <LoginRout />
-      )} */}
-      
-     
-      <Mainroute/>
+        <EnhancedCursor />
+        <EnhancedMainroute/>
       </QueryClientProvider>
-    </div>
+    </motion.div>
   );
 }
 

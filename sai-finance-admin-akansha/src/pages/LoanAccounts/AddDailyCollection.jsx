@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../axios";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 import {
   useToast,
   Modal,
@@ -16,8 +17,8 @@ import {
 import { useParams } from "react-router-dom";
 
 const AddDailyCollection = () => {
-
-    const {id}=useParams()
+  const { t } = useLocalTranslation();
+  const {id}=useParams()
   const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,12 +36,12 @@ const AddDailyCollection = () => {
       axios.get(`users/${id}`).then((response) => {
         if (response?.data) {
           setOfficerData(response?.data?.result);
-          
+
         }
       });
     }
     fetchData();
-  }, []);
+  }, [id]);
 
 
 
@@ -93,7 +94,7 @@ const AddDailyCollection = () => {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Loan {userData?.active_loan_id?.loan_amount} Rs.
+                    {t('Total Loan')} {userData?.active_loan_id?.loan_amount} Rs.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -101,7 +102,7 @@ const AddDailyCollection = () => {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Due Amount {userData?.active_loan_id?.total_due_amount} Rs.
+                    {t('Total Due Amount')} {userData?.active_loan_id?.total_due_amount} Rs.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -109,7 +110,7 @@ const AddDailyCollection = () => {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Penalty {userData?.active_loan_id?.total_penalty_amount} Rs.
+                    {t('Total Penalty')} {userData?.active_loan_id?.total_penalty_amount} Rs.
                   </MenuButton>
                 </Menu>
               </div>
@@ -122,7 +123,7 @@ const AddDailyCollection = () => {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Emi Amount {userData?.active_loan_id?.emi_day} Rs.
+                    {t('Emi Amount')} {userData?.active_loan_id?.emi_day} Rs.
                   </MenuButton>
                  
  
@@ -131,13 +132,13 @@ const AddDailyCollection = () => {
             </div>
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
-          Add Daily Collecion
+          {t('Add Daily Collection')}
         </h3>
 
         <div className="grid grid-cols-2 gap-4 mt-2 text-start">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Collected Officer Code
+              {t('Collected Officer Code')}
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -145,14 +146,14 @@ const AddDailyCollection = () => {
               value={formData.collected_officer_code}
               type="text"
               onChange={handleChange}
-              placeholder="Officer Code"
+              placeholder={t('Officer Code')}
             />
           </div>
    
         
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Collected Officer Name
+              {t('Collected Officer Name')}
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
@@ -160,13 +161,13 @@ const AddDailyCollection = () => {
               value="Admin Officer"
               type="text"
               onChange={handleChange}
-              placeholder="Officer Name"
+              placeholder={t('Officer Name')}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Amount
+              {t('Amount')}
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
@@ -174,7 +175,7 @@ const AddDailyCollection = () => {
               value={formData.amount}
               type="number"
               onChange={handleChange}
-              placeholder="Amount"
+              placeholder={t('Amount')}
             />
           </div>
 <br />
@@ -191,7 +192,7 @@ const AddDailyCollection = () => {
               }
             />
             <label className="ml-2 text-sm font-medium text-gray-700">
-              Add Penalty
+              {t('Add Penalty')}
             </label>
           </div>
         </div>
@@ -201,7 +202,7 @@ const AddDailyCollection = () => {
             type="submit"
             className="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none"
           >
-            Submit Collection
+            {t('Submit Collection')}
           </button>
         </div>
       </form>

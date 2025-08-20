@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 import axios from "../../axios";
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -16,10 +17,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
   InputGroup,
   InputLeftElement,
   Input,
@@ -44,13 +41,12 @@ import {
 
 import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
-import { GrOverview } from "react-icons/gr";
 
 function LoanAccount() {
+  const { t } = useLocalTranslation();
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
   const [totalLoanAmt, setTotalLoanAmt] = useState(0);
-  // console.log(data);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,12 +66,10 @@ function LoanAccount() {
   useEffect(() => {
     async function fetchData() {
       axios.get("users/").then((response) => {
-        // 
         if (response?.data) {
           setData(response?.data?.result);
           console.log(response?.data?.result);
           setFilteredData(response?.data?.result);
-          // localStorage.setItem("plans", JSON.stringify(response?.data?.result));
         }
         const sum = response.data.result.reduce((acc, item) => {
           return acc + (item.active_loan_id?.total_amount || 0);
@@ -105,16 +99,18 @@ function LoanAccount() {
       .delete(`users/${newID}`)
       .then((res) => {
         if (res.data) {
-          // console.log(res.data);
           toast({
-            title: `Success! This course has been deleted`,
-            
+            title: `Success! User has been deleted successfully`,
+
             status: "success",
             duration: 4000,
             isClosable: true,
             position:"top"
           });
-          window.location.reload();
+          // Update state without reload
+          setData((prev) => prev.filter((item) => item._id !== newID));
+          setFilteredData((prev) => prev.filter((item) => item._id !== newID));
+          onClose(); // Close the alert dialog
         }
       })
       .catch((err) => {
@@ -139,7 +135,6 @@ function LoanAccount() {
           isClosable: true,
           position: "top"
         });
-        // Update state without reload
         setData((prev) =>
           prev.map((item) =>
             item._id === editData._id ? { ...item, ...editData } : item
@@ -161,6 +156,7 @@ function LoanAccount() {
       });
     }
   };
+
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * usersPerPage;
     return filteredData.slice(startIndex, startIndex + usersPerPage);
@@ -176,111 +172,91 @@ function LoanAccount() {
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: "Name",
+        Header: t('Name'),
         accessor: "full_name",
         Cell: ({ value, row: { original } }) => (
-          <>
-            <Cell text={`${original?.full_name}`} bold={"bold"} />
-          </>
+          <Cell text={`${original?.full_name}`} bold={"bold"} />
         ),
       },
-
       {
-        Header: "Loan Amount",
+        Header: t('Loan Amount'),
         accessor: "loan_amount",
         Cell: ({ value, row: { original } }) => (
-          <>
-            {/* {console.log(original)} */}
-            <Cell text={`Rs. ${original?.active_loan_id?.loan_amount}`} />
-          </>
+          <Cell text={`Rs. ${original?.active_loan_id?.loan_amount}`} />
         ),
       },
       {
-        Header: "Total Pay Amount",
+        Header: t('Total Pay Amount'),
         accessor: "total_amount",
         Cell: ({ value, row: { original } }) => (
-          <>
-            <Cell text={`Rs. ${original?.active_loan_id?.total_amount}`} />
-          </>
+          <Cell text={`Rs. ${original?.active_loan_id?.total_amount}`} />
         ),
       },
-
       {
-        Header: "Total EMI/Day",
+        Header: t('Total EMI/Day'),
         accessor: "emi_day",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.emi_day}`} />,
       },
       {
-        Header: "Remaining Emi",
+        Header: t('Remaining Emi'),
         accessor: "remaining_emi",
         Cell: ({ value, row: { original } }) => <Cell text={`${Math.ceil(original?.active_loan_id?.total_due_amount / original?.active_loan_id?.emi_day)}`} />,
       },
       {
-        Header: "Total Due Amount",
+        Header: t('Total Due Amount'),
         accessor: "total_due_amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.total_due_amount}`} />,
       },
-
       {
-        Header: "Date",
+        Header: t('Date'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
         ),
       },
       {
-        Header: "Mobile Number",
+        Header: t('Mobile Number'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${Math.ceil(value)}`} />
         ),
       },
-
       {
         Header: "Action",
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
-            <>
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  className="bg-primary hover:bg-primaryDark"
-                  colorScheme="blue"
-                  onClick={() => setNewID(original._id)}
-                >
-                  Actions
-                </MenuButton>
-                <MenuList>
-                  <Link to={`/dash/view-user-details/${original?.active_loan_id?.user_id}`}>
-                    <MenuItem >
-                      {" "}
-                      <HiStatusOnline className="mr-4" /> View User
-                    </MenuItem></Link>
-
-                  {/* <Link to={`/dash/edit-course/${original._id}`}> */}
-                  <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                    <MdEdit className="mr-4" /> Edit
+            <Menu>
+              <MenuButton
+                as={Button}
+                className="bg-purple "
+                colorScheme="bgBlue hover:bg-secondaryLight"
+                onClick={() => setNewID(original._id)}
+              >
+                Actions
+              </MenuButton>
+              <MenuList>
+                <Link to={`/dash/view-user-details/${original?.active_loan_id?.user_id}`}>
+                  <MenuItem >
+                    <HiStatusOnline className="mr-4" /> View User
                   </MenuItem>
-                  {/* </Link> */}
-
-                  <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
-                    {" "}
-                    <MdDelete className="mr-4" />
-                    Delete
-                  </MenuItem>
-                  <MenuItem onClick={onOpen2}>
-                    {" "}
-                    <HiStatusOnline className="mr-4" /> Status
-                  </MenuItem>
-                </MenuList>
-              </Menu>
-            </>
+                </Link>
+                <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
+                  <MdEdit className="mr-4" /> Edit
+                </MenuItem>
+                <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
+                  <MdDelete className="mr-4" />
+                  Delete
+                </MenuItem>
+                <MenuItem onClick={onOpen2}>
+                  <HiStatusOnline className="mr-4" /> Status
+                </MenuItem>
+              </MenuList>
+            </Menu>
           );
         },
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, currentPage]
   );
 
@@ -311,17 +287,17 @@ function LoanAccount() {
       className="h-screen bg-primaryBg flex flex-col"
     >
       {/* Fixed Header Section */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         className="flex-shrink-0 pt-20 pb-0 px-4 mb-0"
       >
-        <section className="md:p-1 mb-0">
-          <div className="py-6 mb-0">
+        <section className="md:p-1">
+          <div className="py-6">
             <motion.div 
               variants={itemVariants}
               className="flex justify-between items-center mb-6"
             >
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="flex gap-2"
               >
@@ -333,7 +309,7 @@ function LoanAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    Total Collection : ₹ {totalLoanAmt.toLocaleString()}
+                    {t('Total Collection', 'Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -346,22 +322,20 @@ function LoanAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    Total Active User : {data.length}
+                    {t('Total Active User', 'Total Active User')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="w-96"
               >
                 <InputGroup borderRadius={5} size="sm">
-                  <InputLeftElement
-                    pointerEvents="none"
-                  />
+                  <InputLeftElement pointerEvents="none" />
                   <Input
                     type="text"
-                    placeholder="Search..."
+                    placeholder={t('Search...', 'Search...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -376,13 +350,13 @@ function LoanAccount() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      Search
+                      {t('Search', 'Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="flex gap-2"
               >
@@ -392,14 +366,13 @@ function LoanAccount() {
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700"
                   >
-                    Sort By
+                    {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Download</MenuItem>
-                    <MenuItem>Create a Copy</MenuItem>
-                    <MenuItem>Mark as Draft</MenuItem>
-                    <MenuItem>Delete</MenuItem>
-                    <MenuItem>Attend a Workshop</MenuItem>
+                    <MenuItem>{t('Amount High to Low')}</MenuItem>
+                    <MenuItem>{t('Amount Low to High')}</MenuItem>
+                    <MenuItem>{t('Name A-Z')}</MenuItem>
+                    <MenuItem>{t('Date Created')}</MenuItem>
                   </MenuList>
                 </Menu>
 
@@ -410,7 +383,7 @@ function LoanAccount() {
                       colorScheme="blue"
                       className="bg-primary hover:bg-primaryDark"
                     >
-                      Add New User
+                      {t('Add New User', 'Add New User')}
                     </MenuButton>
                   </Link>
                 </Menu>
@@ -421,15 +394,21 @@ function LoanAccount() {
       </motion.div>
 
       {/* Scrollable Table Section */}
-      <motion.div 
+      <motion.div
         variants={itemVariants}
         className="flex-1 px-4 pb-0 overflow-hidden mt-0"
       >
-        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col mt-0">
+        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
+          <div className="p-4 border-b">
+            <h3 className="text-xl font-bold text-gray-800">Loan Accounts</h3>
+          </div>
           
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
-            <Table data={paginatedData} columns={columns} />
+            <Table
+              data={paginatedData}
+              columns={columns}
+            />
           </div>
 
           {/* Fixed Pagination */}
@@ -443,7 +422,7 @@ function LoanAccount() {
               Previous
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} of {totalPages}
+              {currentPage} {t('of')} {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -457,7 +436,7 @@ function LoanAccount() {
         </div>
       </motion.div>
 
-      {/* Drawers and Dialogs remain the same */}
+      {/* Drawers and Dialogs */}
       <Drawer
         isOpen={isOpen2}
         placement="right"
@@ -467,12 +446,10 @@ function LoanAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Create your account</DrawerHeader>
-
+          <DrawerHeader>Account Details</DrawerHeader>
           <DrawerBody>
             <Input placeholder="Type here..." />
           </DrawerBody>
-
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
               Cancel
@@ -493,13 +470,11 @@ function LoanAccount() {
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Delete User
             </AlertDialogHeader>
-
             <AlertDialogBody>
               Are you sure you want to delete this user? This action cannot be undone.
             </AlertDialogBody>
-
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onClose} variant="outline">
                 Cancel
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
@@ -516,22 +491,22 @@ function LoanAccount() {
           <DrawerCloseButton />
           <DrawerHeader>Edit User</DrawerHeader>
           <DrawerBody>
-            <Input
-              placeholder="Full Name"
-              value={editData?.full_name || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, full_name: e.target.value })
-              }
-              mb={3}
-            />
-            <Input
-              placeholder="Phone Number"
-              value={editData?.phone_number || ""}
-              onChange={(e) =>
-                setEditData({ ...editData, phone_number: e.target.value })
-              }
-              mb={3}
-            />
+            <div className="space-y-4">
+              <Input
+                placeholder="Full Name"
+                value={editData?.full_name || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, full_name: e.target.value })
+                }
+              />
+              <Input
+                placeholder="Phone Number"
+                value={editData?.phone_number || ""}
+                onChange={(e) =>
+                  setEditData({ ...editData, phone_number: e.target.value })
+                }
+              />
+            </div>
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
