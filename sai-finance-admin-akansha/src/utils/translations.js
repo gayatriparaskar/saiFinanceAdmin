@@ -111,6 +111,10 @@ export const translations = {
     'Notifications': 'Notifications',
     'Help': 'Help',
     'About': 'About',
+    'No data available': 'No data available',
+    'Loading...': 'Loading...',
+    'Please wait': 'Please wait',
+    'of': 'of',
   },
   hi: {
     // Common actions
@@ -122,7 +126,7 @@ export const translations = {
     'Actions': 'कार्य',
     'Previous': 'पिछला',
     'Next': 'अगला',
-    'Close': 'बंद क���ें',
+    'Close': 'बंद करें',
     
     // Officer page
     'Total Officers': 'कुल अधिकारी',
@@ -145,7 +149,7 @@ export const translations = {
     'Are you sure you want to delete this officer? This action cannot be undone.': 'क्या आप वाकई इस अधिकारी को हटाना चाहते हैं? यह कार्य पूर्ववत नहीं किया जा सकता।',
     
     // Savings page
-    'Total Savings': 'कुल ��चत',
+    'Total Savings': 'कुल बचत',
     'Total Accounts': 'कुल खाते',
     'Search accounts...': 'खाते खोजें...',
     'Add New Account': 'नया खाता जोड़ें',
@@ -197,7 +201,7 @@ export const translations = {
     'Saving': 'बचत',
     'Current': 'चालू',
     'Fixed Deposit': 'सावधि जमा',
-    'Yes': 'ह���ँ',
+    'Yes': 'हाँ',
     'No': 'नहीं',
 
     // Chart and data labels
