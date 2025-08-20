@@ -165,12 +165,12 @@ function SavingAccount() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Sr No.",
+        Header: t('Sr No.', 'Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: "Account Holder",
+        Header: t('Account Holder', 'Account Holder'),
         accessor: "account_holder_name",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -179,7 +179,7 @@ function SavingAccount() {
         ),
       },
       {
-        Header: "Account Number",
+        Header: t('Account Number', 'Account Number'),
         accessor: "account_number",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -188,7 +188,7 @@ function SavingAccount() {
         ),
       },
       {
-        Header: "Balance",
+        Header: t('Balance', 'Balance'),
         accessor: "balance",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -197,33 +197,33 @@ function SavingAccount() {
         ),
       },
       {
-        Header: "Account Type",
+        Header: t('Account Type', 'Account Type'),
         accessor: "account_type",
         Cell: ({ value, row: { original } }) => <Cell text={original?.account_type || "Saving"} />,
       },
       {
-        Header: "Status",
+        Header: t('Status', 'Status'),
         accessor: "status",
         Cell: ({ value, row: { original } }) => (
           <Cell text={original?.status || "Active"} />
         ),
       },
       {
-        Header: "Date Created",
+        Header: t('Date Created', 'Date Created'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
         ),
       },
       {
-        Header: "Phone",
+        Header: t('Phone', 'Phone'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.phone_number || 'N/A'}`} />
         ),
       },
       {
-        Header: "Action",
+        Header: t('Action', 'Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
