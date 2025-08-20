@@ -385,10 +385,10 @@ function Officer() {
                     {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Name A-Z</MenuItem>
-                    <MenuItem>Department</MenuItem>
-                    <MenuItem>Join Date</MenuItem>
-                    <MenuItem>Status</MenuItem>
+                    <MenuItem>{t('Name A-Z')}</MenuItem>
+                    <MenuItem>{t('Department')}</MenuItem>
+                    <MenuItem>{t('Join Date')}</MenuItem>
+                    <MenuItem>{t('Status')}</MenuItem>
                   </MenuList>
                 </Menu>
 
