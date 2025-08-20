@@ -257,12 +257,12 @@ function ViewLoanUser() {
       // },
 
       {
-        Header: t('EMI Amount/Day', 'दैनिक ईएमआई राशि'),
+        Header: t('EMI Amount/Day', 'EMI Amount/Day'),
         accessor: "amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${value}`} />,
       },
       {
-        Header: t('Penalty Amount', 'दंड राशि'),
+        Header: t('Penalty Amount', 'Penalty Amount'),
         accessor: "total_penalty_amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${value}`} />,
       },
@@ -276,7 +276,7 @@ function ViewLoanUser() {
       // },
 
       {
-        Header: t('Collected By', 'संग्रहकर्ता'),
+        Header: t('Collected By', 'Collected By'),
         accessor: "collected_officer_name",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -286,7 +286,7 @@ function ViewLoanUser() {
       },
 
       {
-        Header: t('Action', 'कार्य'),
+        Header: t('Action', 'Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -298,31 +298,31 @@ function ViewLoanUser() {
                   colorScheme="bgBlue"
                   onClick={() => setNewID(original._id)}
                 >
-                  {t('Actions', 'कार्य')}
+                  {t('Actions', 'Actions')}
                 </MenuButton>
                 <MenuList>
                   <Link to={`/dash/edit-course/${original._id}`}>
                     <MenuItem>
                       {" "}
-                      <HiStatusOnline className="mr-4" /> {t('View User', 'उपयोगकर्ता देखें')}
+                      <HiStatusOnline className="mr-4" /> {t('View User', 'View User')}
                     </MenuItem>
                   </Link>
 
                   <Link to={`/dash/edit-course/${original._id}`}>
                     <MenuItem>
                       {" "}
-                      <MdEdit className="mr-4" /> {t('Edit', 'संपादित करें')}
+                      <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
                     </MenuItem>
                   </Link>
 
                   <MenuItem onClick={onOpen}>
                     {" "}
                     <MdDelete className="mr-4" />
-                    {t('Delete', 'हटाएं')}
+                    {t('Delete', 'Delete')}
                   </MenuItem>
                   <MenuItem onClick={onOpen2}>
                     {" "}
-                    <HiStatusOnline className="mr-4" /> {t('Status', 'स्थिति')}
+                    <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
                   </MenuItem>
                 </MenuList>
               </Menu>
