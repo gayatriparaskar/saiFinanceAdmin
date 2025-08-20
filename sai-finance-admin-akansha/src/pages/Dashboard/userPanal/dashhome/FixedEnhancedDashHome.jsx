@@ -9,7 +9,6 @@ import axios from "../../../../axios";
 
 const FixedEnhancedDashHome = () => {
   const { t } = useLocalTranslation();
-  const [data, setData] = useState([]);
   const [weekDays, setWeekDays] = useState([""]);
   const [weekAmtData, setWeekAmtData] = useState([0]);
   const [userdata, setUserData] = useState([]);
