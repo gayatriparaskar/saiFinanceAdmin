@@ -173,7 +173,7 @@ export const translations = {
     'Real-time analytics and insights for your finance management': 'आपके वित्त प्रबंधन के लिए रीयल-टाइम एनालिटिक्स और अंतर्दृष्टि',
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
-    'Total Outgoing': 'कुल निवर्तमान',
+    'Total Outgoing': 'कुल निव���्तमान',
     'Active Savings Users': 'सक्रिय बचत उपयोगकर्ता',
     'Total Collections': 'कुल संग्रह',
     'Monthly Growth': 'मासिक वृद्धि',
@@ -227,6 +227,10 @@ export const translations = {
     'Notifications': 'सूचनाएं',
     'Help': 'सहायता',
     'About': 'के बारे में',
+    'No data available': 'कोई डेटा उपलब्ध नहीं',
+    'Loading...': 'लोड हो रहा है...',
+    'Please wait': 'कृपया प्रतीक्षा करें',
+    'of': 'का',
   }
 };
 
