@@ -455,17 +455,17 @@ function SavingAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Account Details', 'खाता विवरण')}</DrawerHeader>
+          <DrawerHeader>{t('Account Details', 'Account Details')}</DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder={t('Account details...', 'खाता विवरण...')} />
+            <Input placeholder={t('Account details...', 'Account details...')} />
           </DrawerBody>
 
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
-              {t('Cancel', 'रद्द करें')}
+              {t('Cancel', 'Cancel')}
             </Button>
-            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
+            <Button colorScheme="blue">{t('Save', 'Save')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -479,19 +479,19 @@ function SavingAccount() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              {t('Delete Account', 'खाता हटाएं')}
+              {t('Delete Account', 'Delete Account')}
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              {t('Are you sure you want to delete this saving account? This action cannot be undone.', 'क्या आप वाकई इस बचत खाते को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')}
+              {t('Are you sure you want to delete this saving account? This action cannot be undone.', 'Are you sure you want to delete this saving account? This action cannot be undone.')}
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
-                {t('Cancel', 'रद्द करें')}
+                {t('Cancel', 'Cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                {t('Delete', 'हटाएं')}
+                {t('Delete', 'Delete')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -502,25 +502,25 @@ function SavingAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Edit Account', 'खाता संपादित करें')}</DrawerHeader>
+          <DrawerHeader>{t('Edit Account', 'Edit Account')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
-                placeholder={t('Account Holder Name', 'खाता धारक का नाम')}
+                placeholder={t('Account Holder Name', 'Account Holder Name')}
                 value={editData?.account_holder_name || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, account_holder_name: e.target.value })
                 }
               />
               <Input
-                placeholder={t('Account Number', 'खाता संख्या')}
+                placeholder={t('Account Number', 'Account Number')}
                 value={editData?.account_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, account_number: e.target.value })
                 }
               />
               <Input
-                placeholder={t('Balance', 'शेष राशि')}
+                placeholder={t('Balance', 'Balance')}
                 type="number"
                 value={editData?.balance || ""}
                 onChange={(e) =>
@@ -531,10 +531,10 @@ function SavingAccount() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              {t('Cancel', 'रद्द करें')}
+              {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              {t('Save', 'सेव करें')}
+              {t('Save', 'Save')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
