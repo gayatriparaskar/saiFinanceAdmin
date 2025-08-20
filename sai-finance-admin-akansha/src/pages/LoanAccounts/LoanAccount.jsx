@@ -307,7 +307,7 @@ function LoanAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    Total Collection : ₹ {totalLoanAmt.toLocaleString()}
+                    {t('Total Collection', 'Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -320,7 +320,7 @@ function LoanAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    Total Active User : {data.length}
+                    {t('Total Active User', 'Total Active User')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -333,7 +333,7 @@ function LoanAccount() {
                   <InputLeftElement pointerEvents="none" />
                   <Input
                     type="text"
-                    placeholder="Search..."
+                    placeholder={t('Search...', 'Search...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -348,7 +348,7 @@ function LoanAccount() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      Search
+                      {t('Search', 'Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -364,7 +364,7 @@ function LoanAccount() {
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700"
                   >
-                    Sort By
+                    {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
                     <MenuItem>Amount High to Low</MenuItem>
@@ -381,7 +381,7 @@ function LoanAccount() {
                       colorScheme="blue"
                       className="bg-primary hover:bg-primaryDark"
                     >
-                      Add New User
+                      {t('Add New User', 'Add New User')}
                     </MenuButton>
                   </Link>
                 </Menu>
