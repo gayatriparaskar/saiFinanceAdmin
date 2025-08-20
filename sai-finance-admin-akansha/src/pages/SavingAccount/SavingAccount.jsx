@@ -65,17 +65,39 @@ function SavingAccount() {
 
   useEffect(() => {
     async function fetchData() {
-      axios.get("account/").then((response) => {
+      try {
+        const response = await axios.get("account/");
         if (response?.data) {
-          setData(response?.data?.result);
+          setData(response?.data?.result || []);
           console.log(response?.data?.result);
-          setFilteredData(response?.data?.result);
+          setFilteredData(response?.data?.result || []);
+
+          // Calculate total safely
+          const sum = (response.data.result || []).reduce((acc, item) => {
+            return acc + (item.amount_to_be || 0);
+          }, 0);
+          setTotalSavingAmt(sum);
         }
-        const sum = response.data.result.reduce((acc, item) => {
-          return acc + (item.amount_to_be || 0);
-        }, 0);
-        setTotalSavingAmt(sum)
-      });
+      } catch (error) {
+        console.error("Error fetching savings accounts:", error);
+
+        // Show user-friendly error message
+        toast({
+          title: "Connection Error",
+          description: error.code === 'ECONNABORTED'
+            ? "Request timed out. The server might be slow. Please try again."
+            : "Failed to load savings accounts. Please check your connection and try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top"
+        });
+
+        // Set fallback data to prevent crashes
+        setData([]);
+        setFilteredData([]);
+        setTotalSavingAmt(0);
+      }
     }
     fetchData();
   }, []);
