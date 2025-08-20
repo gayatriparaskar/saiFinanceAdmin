@@ -452,9 +452,9 @@ function LoanAccount() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
-              Cancel
+              {t('Cancel', 'रद्द करें')}
             </Button>
-            <Button colorScheme="blue">Save</Button>
+            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -500,7 +500,7 @@ function LoanAccount() {
                 }
               />
               <Input
-                placeholder="Phone Number"
+                placeholder={t('Phone Number', 'फोन नंबर')}
                 value={editData?.phone_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, phone_number: e.target.value })
@@ -510,10 +510,10 @@ function LoanAccount() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              Cancel
+              {t('Cancel', 'रद्द करें')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              Save
+              {t('Save', 'सेव ��रें')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
