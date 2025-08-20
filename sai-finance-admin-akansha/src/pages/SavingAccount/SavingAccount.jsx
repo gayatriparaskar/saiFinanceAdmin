@@ -236,13 +236,13 @@ function SavingAccount() {
   const columns = React.useMemo(
     () => [
       {
-        Header: t('Sr No.', 'Sr No.'),
+        Header: t('Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
 
-        Header: t('Account Holder', 'Account Holder'),
+        Header: t('Account Holder'),
         accessor: "full_name",
 
 
@@ -254,7 +254,7 @@ function SavingAccount() {
         ),
       },
       {
-        Header: t('Account Number', 'Account Number'),
+        Header: t('Account Number'),
         accessor: "account_number",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -264,7 +264,7 @@ function SavingAccount() {
       },
       {
 
-        Header: t('Balance', 'Balance'),
+        Header: t('Balance'),
         accessor: "amount_to_be",
 
         Cell: ({ value, row: { original } }) => (
@@ -275,13 +275,13 @@ function SavingAccount() {
       },
       {
 
-        Header: t('Total Amount', 'Total Amount'),
+        Header: t('Total Amount'),
         accessor: "total_amount",
         Cell: ({ value, row: { original } }) => <Cell text={original?.saving_account_id?.total_amount} />,
 
       },
       {
-        Header: t('Status', 'Status'),
+        Header: t('Status'),
         accessor: "status",
         Cell: ({ value, row: { original } }) => (
           <Cell text={original?.status || "Active"} translate={true} />
@@ -302,7 +302,7 @@ function SavingAccount() {
         ),
       },
       {
-        Header: t('Action', 'Action'),
+        Header: t('Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -314,23 +314,23 @@ function SavingAccount() {
                   colorScheme="purple"
                   onClick={() => setNewID(original._id)}
                 >
-                  {t('Actions', 'Actions')}
+                  {t('Actions')}
                 </MenuButton>
                 <MenuList>
                   <Link to={`/dash/view-savingUser-details/${original?._id}`}>
                     <MenuItem>
-                      <HiStatusOnline className="mr-4" /> {t('View Account', 'View Account')}
+                      <HiStatusOnline className="mr-4" /> {t('View Account')}
                     </MenuItem>
                   </Link>
                   <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                    <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
+                    <MdEdit className="mr-4" /> {t('Edit')}
                   </MenuItem>
                   <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                     <MdDelete className="mr-4" />
-                    {t('Delete', 'Delete')}
+                    {t('Delete')}
                   </MenuItem>
                   <MenuItem onClick={onOpen2}>
-                    <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
+                    <HiStatusOnline className="mr-4" /> {t('Status')}
                   </MenuItem>
                 </MenuList>
               </Menu>
