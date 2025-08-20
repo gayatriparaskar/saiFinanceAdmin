@@ -374,10 +374,10 @@ function SavingAccount() {
                     {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Balance High to Low</MenuItem>
-                    <MenuItem>Balance Low to High</MenuItem>
-                    <MenuItem>Name A-Z</MenuItem>
-                    <MenuItem>Date Created</MenuItem>
+                    <MenuItem>{t('Balance High to Low')}</MenuItem>
+                    <MenuItem>{t('Balance Low to High')}</MenuItem>
+                    <MenuItem>{t('Name A-Z')}</MenuItem>
+                    <MenuItem>{t('Date Created')}</MenuItem>
                   </MenuList>
                 </Menu>
 
