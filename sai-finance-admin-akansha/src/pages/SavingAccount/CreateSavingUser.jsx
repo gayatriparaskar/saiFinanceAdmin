@@ -195,7 +195,7 @@ const CreateSavingUser = () => {
           </div> */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Daily Widthdraw limit
+              {t('Daily Withdraw Limit', 'दैनिक निकासी सीमा')}
             </label>
             <input
               className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"
@@ -203,7 +203,7 @@ const CreateSavingUser = () => {
               value={formData.saving_details.daily_withdrawal_limit}
               type="number"
               onChange={handleSavingDetailsChange}
-              placeholder="Withdraw Limit"
+              placeholder={t('Withdraw Limit', 'निकासी सीमा')}
             />
           </div>
           <div className="mt-4">
@@ -256,7 +256,7 @@ const CreateSavingUser = () => {
             type="submit"
             className="px-4 py-2 bg-primaryDark text-white font-medium rounded-md hover:bg-indigo-700"
           >
-            {t('Submit Saving User', 'बचत उपयोगकर्ता जमा करें')}
+            {t('Submit Saving User', 'ब��त उपयोगकर्ता जमा करें')}
           </button>
         </div>
       </form>
