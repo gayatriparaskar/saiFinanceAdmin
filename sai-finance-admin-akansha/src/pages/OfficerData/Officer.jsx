@@ -247,23 +247,23 @@ function Officer() {
                 colorScheme="blue"
                 onClick={() => setNewID(original._id)}
               >
-                Actions
+                {t('Actions', 'Actions')}
               </MenuButton>
               <MenuList>
                 <Link to={`/dash/view-officer/${original?._id}`}>
                   <MenuItem>
-                    <HiStatusOnline className="mr-4" /> View Officer
+                    <HiStatusOnline className="mr-4" /> {t('View Officer', 'View Officer')}
                   </MenuItem>
                 </Link>
                 <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                  <MdEdit className="mr-4" /> Edit
+                  <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
                 </MenuItem>
                 <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                   <MdDelete className="mr-4" />
-                  Delete
+                  {t('Delete', 'Delete')}
                 </MenuItem>
                 <MenuItem onClick={onOpen2}>
-                  <HiStatusOnline className="mr-4" /> Status
+                  <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
                 </MenuItem>
               </MenuList>
             </Menu>
