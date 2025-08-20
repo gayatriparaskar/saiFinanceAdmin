@@ -305,8 +305,8 @@ const NewNavbar = () => {
               }}
             >
               <div>
-                <p className="text-sm text-red-600 font-semibold">Logout</p>
-                <p className="text-xs text-gray-500">Sign out of your account</p>
+                <p className="text-sm text-red-600 font-semibold">{t("LogOut", "Logout")}</p>
+                <p className="text-xs text-gray-500">{t("Sign out of your account", "Sign out of your account")}</p>
               </div>
               <motion.div 
                 whileHover={{ x: 5 }}
