@@ -229,7 +229,7 @@ function ViewLoanUser() {
       },
 
       {
-        Header: t('Date', 'तारी���'),
+        Header: t('Date', 'Date'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
