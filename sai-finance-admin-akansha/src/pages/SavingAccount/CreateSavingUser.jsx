@@ -38,13 +38,13 @@ const CreateSavingUser = () => {
   };
 
   const fieldLabels = {
-    full_name: "Full Name",
-    phone_number: "Phone Number",
-    dob: "Date of Birth",
-    address: "Address",
-    aadhar_no: "Aadhar Number",
-    pan_no: "PAN Number",
-    monthly_income: "Monthly Income",
+    full_name: t('Full Name', 'पूरा ना��'),
+    phone_number: t('Phone Number', 'फोन नंबर'),
+    dob: t('Date of Birth', 'जन्म तिथि'),
+    address: t('Address', 'पता'),
+    aadhar_no: t('Aadhar Number', 'आधार नंबर'),
+    pan_no: t('PAN Number', 'पैन नंबर'),
+    monthly_income: t('Monthly Income', 'मासिक आय'),
   };
 
   const [formData, setFormData] = useState(initialFormState);
