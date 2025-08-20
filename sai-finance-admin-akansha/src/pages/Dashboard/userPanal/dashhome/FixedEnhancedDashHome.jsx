@@ -49,13 +49,22 @@ const FixedEnhancedDashHome = () => {
 
   // DailyCollections
   useEffect(() => {
-    axios.get(`/admins/totalCollectionsToday`).then((res) => {
-      if (res?.data) setDailyCollection(res?.data?.result?.totalAmount || 0);
-    }).catch((error) => {
-      console.error("Error fetching daily collections:", error);
-      // Use mock data when API fails
-      setDailyCollection(15750);
-    });
+    const fetchDailyCollections = async () => {
+      try {
+        const res = await axios.get(`/admins/totalCollectionsToday`);
+        if (res?.data?.result?.totalAmount !== undefined) {
+          setDailyCollection(res.data.result.totalAmount);
+        } else {
+          setDailyCollection(0);
+        }
+      } catch (error) {
+        console.warn("API endpoint '/admins/totalCollectionsToday' not available:", error.message);
+        // Gracefully handle API unavailability
+        setDailyCollection(15750);
+      }
+    };
+
+    fetchDailyCollections();
   }, []);
 
   // total outgoing
