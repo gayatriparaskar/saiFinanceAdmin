@@ -43,6 +43,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
 
 function SavingAccount() {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
   const [totalSavingAmt, setTotalSavingAmt] = useState(0);
