@@ -208,7 +208,7 @@ export const translations = {
     'Sort By': 'इसके अनुसार क्रमबद्ध करें',
     'Financial Dashboard': 'वित्तीय डैशबोर्ड',
     'Real-time analytics and insights for your finance management': 'आपके वित्त प्रबंधन के लिए रीयल-टाइम एनालिटिक्स और अंतर्दृष्टि',
-    'Daily Collection': 'दैनिक संग्रह',
+    'Daily Collection': 'दै��िक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
     'Total Outgoing': 'कुल निवर्तमान',
     'Active Savings Users': 'सक्रिय बचत उपयोगकर्ता',
@@ -271,7 +271,7 @@ export const translations = {
 
     // Chart translations
     'Monthly Revenue': 'मासिक आय',
-    'Growth Trend': 'वृद्धि प्रवृत्ति',
+    'Growth Trend': '��ृद्धि प्रवृत्ति',
     'Revenue Analytics': 'आय विश्लेषण',
     'Monthly performance overview': 'मासिक प्रदर्शन अवलोकन',
     'Day': 'दिन',
@@ -298,6 +298,13 @@ export const translations = {
     'Total Due Amount': 'कुल देय राशि',
     'Date': 'तारीख',
     'Mobile Number': 'मोबाइल नंबर',
+
+    // Sort options
+    'Amount High to Low': 'राशि अधिक से कम',
+    'Amount Low to High': 'राशि कम से अधिक',
+    'Balance High to Low': 'शेष राशि अधिक से कम',
+    'Balance Low to High': 'शेष राशि कम से अधिक',
+    'Name A-Z': 'नाम अ-ज्ञ',
   }
 };
 
