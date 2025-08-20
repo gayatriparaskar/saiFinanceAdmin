@@ -91,7 +91,7 @@ function ViewSavingUser() {
         Cell: ({ row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: t('Date', 'तारीख'),
+        Header: t('Date', 'तारी���'),
         accessor: "created_on",
         Cell: ({ value }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
@@ -178,7 +178,7 @@ function ViewSavingUser() {
         head: [
           [
             t('Date', 'तारीख'),
-            t('Description', '���िवरण'),
+            t('Description', 'विवरण'),
             t('Amount (Rs.)', 'राशि (रु.)'),
             t('Penalty (Rs.)', 'दंड (रु.)'),
             t('Collected By', 'संग्रहकर्ता'),
@@ -235,24 +235,24 @@ function ViewSavingUser() {
   
 
   return (
-    <div className="lg:py-8 py-4 bg-primaryBg">
+    <div className="lg:py-8 py-4 bg-primaryBg pt-20">
       <section className="md:p-1">
         <div className="py-6">
                       <div className="flex justify-between items-center">
               <div className="flex w-3/2 flex-col gap-2 text-start">
                 <h2 className="text-xl font-bold text-purple">
-                  Full Name:{" "}
+                  {t('Full Name', 'पूरा नाम')}:{" "}
                   <span className="ml-4">{accountData?.user_id?.full_name}</span>
                 </h2>
               <div className="flex gap-20">
                 <h2 className="text-lg font-bold text-purple">
-                  Start Date:{" "}
+                  {t('Start Date', 'प्रारंभ तिथि')}:{" "}
                   <span className="ml-4">
                     {dayjs(accountData?.created_on).format("D MMM, YYYY")}
                   </span>
                 </h2>
                 <h2 className="text-lg font-bold text-purple">
-                  End Date:{" "}
+                  {t('End Date', 'समाप्ति तिथि')}:{" "}
                   <span className="ml-4">
                     {dayjs(accountData?.created_on).format("D MMM, YYYY")}
                   </span>
@@ -263,12 +263,12 @@ function ViewSavingUser() {
                           <div className="w-1/2 flex flex-col gap-4">
                 <div className="w-full flex gap-4 justify-end">
                   <Menu>
-                    <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-                      Download PDF
+                    <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D" onClick={generatePDF}>
+                      {t('Download PDF', 'पीडीएफ डाउनलोड')}
                     </MenuButton>
                     <Link to={`/dash/add-Saving-collection/${accountData?.user_id?._id}`}>
                       <MenuButton as={Button} className="bg-purple" colorScheme="#FF782D">
-                        Withdraw
+                        {t('Withdraw', 'निकासी')}
                       </MenuButton>
                     </Link>
                   </Menu>
@@ -276,13 +276,13 @@ function ViewSavingUser() {
               <div className="w-full flex gap-4 justify-end">
                 <Menu>
                   <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-                    Total Amount: Rs. {accountData.total_amount + accountData.current_amount}
+                    {t('Total Amount', 'कुल राशि')}: Rs. {(accountData.total_amount || 0) + (accountData.current_amount || 0)}
                   </MenuButton>
                   {/* <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
                     Total Interest Pay: Rs. {accountData.total_interest_pay}
                   </MenuButton> */}
                   <MenuButton as={Button} className="bg-primaryDark hover:bg-primaryLight" colorScheme="#FF782D">
-                    Total Withdraw: Rs. {accountData.total_withdrawal}
+                    {t('Total Withdraw', 'कुल निकासी')}: Rs. {accountData.total_withdrawal || 0}
                   </MenuButton>
                 </Menu>
               </div>
@@ -312,15 +312,15 @@ function ViewSavingUser() {
               <DrawerOverlay />
               <DrawerContent>
                 <DrawerCloseButton />
-                <DrawerHeader>Edit</DrawerHeader>
+                <DrawerHeader>{t('Edit', 'संपादित करें')}</DrawerHeader>
                 <DrawerBody>
-                  <Input placeholder="Type here..." />
+                  <Input placeholder={t('Type here...', 'यहां टाइप करें...')} />
                 </DrawerBody>
                 <DrawerFooter>
                   <Button variant="outline" mr={3} onClick={onClose2}>
-                    Cancel
+                    {t('Cancel', 'रद्द करें')}
                   </Button>
-                  <Button colorScheme="blue">Save</Button>
+                  <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
                 </DrawerFooter>
               </DrawerContent>
             </Drawer>
