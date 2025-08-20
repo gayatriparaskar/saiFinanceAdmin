@@ -134,7 +134,7 @@ export const translations = {
     'Phone Number': 'फोन नंबर',
     'Email': 'ईमेल',
     'Join Date': 'ज्वाइन की तारीख',
-    'Status': 'स्थित��',
+    'Status': 'स्थिति',
     'Action': 'कार्य',
     'View Officer': 'अधिकारी देखें',
     'Officer Statistics': 'अधिकारी आंकड़े',
@@ -151,7 +151,7 @@ export const translations = {
     'Account Number': 'खाता संख्या',
     'Balance': 'शेष राशि',
     'Account Type': 'खाता प्रकार',
-    'Date Created': 'बनाने की तारीख',
+    'Date Created': 'बनाने की तारी���',
     'Phone': 'फोन',
     
     // Loan page
@@ -180,6 +180,45 @@ export const translations = {
     'Payment': 'भुगतान',
     'Payment Request': 'भुगतान अनुरोध',
     'Language': 'भाषा',
+
+    // Table data and status
+    'Active': 'सक्रिय',
+    'Inactive': 'निष्क्रिय',
+    'Pending': 'लंबित',
+    'Completed': 'पूर्ण',
+    'Processing': 'प्रसंस्करण',
+    'Approved': 'स्वीकृत',
+    'Rejected': 'अस्वीकृत',
+    'N/A': 'उपलब्ध नहीं',
+    'Saving': 'बचत',
+    'Current': 'चालू',
+    'Fixed Deposit': 'सावधि जमा',
+    'Yes': 'हाँ',
+    'No': 'नहीं',
+
+    // Chart and data labels
+    'Monthly Stats': 'मासिक आंकड़े',
+    'Weekly Stats': 'साप्ताहिक आंकड़े',
+    'Revenue': 'आय',
+    'Amount': 'राशि',
+    'Count': 'गणना',
+    'Percentage': 'प्रतिशत',
+    'Growth': 'वृद्धि',
+    'Decline': 'गिरावट',
+    'Today': 'आज',
+    'This Week': 'इस सप्ताह',
+    'This Month': 'इस महीने',
+    'This Year': 'इस साल',
+
+    // Additional UI elements
+    'Dashboard': 'डैशबोर्ड',
+    'Reports': 'रिपोर्ट',
+    'Analytics': 'विश्लेषण',
+    'Settings': 'सेटिंग्स',
+    'Profile': 'प्रोफ़ाइल',
+    'Notifications': 'सूचनाएं',
+    'Help': 'सहायता',
+    'About': 'के बारे में',
   }
 };
 
