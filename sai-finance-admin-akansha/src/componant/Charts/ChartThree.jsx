@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { motion } from 'framer-motion';
+import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 
 const ChartThree = () => {
   const [state, setState] = useState({
