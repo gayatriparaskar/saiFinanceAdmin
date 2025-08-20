@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
 import ChartOne from "../../../../componant/Charts/ChartOne";
 import ChartTwo from "../../../../componant/Charts/ChartTwo";
