@@ -59,6 +59,8 @@ export const translations = {
     'Total Loan Customers': 'Total Loan Customers',
     'Total Outgoing': 'Total Outgoing',
     'Active Savings Users': 'Active Savings Users',
+    'Total Collections': 'Total Collections',
+    'Monthly Growth': 'Monthly Growth',
     'Sign out of your account': 'Sign out of your account',
 
     // Navbar
@@ -145,13 +147,13 @@ export const translations = {
     // Savings page
     'Total Savings': 'कुल बचत',
     'Total Accounts': 'कुल खाते',
-    'Search accounts...': 'खाते खोजें...',
+    'Search accounts...': 'खाते ��ोजें...',
     'Add New Account': 'नया खाता जोड़ें',
     'Account Holder': 'खाता धारक',
     'Account Number': 'खाता संख्या',
     'Balance': 'शेष राशि',
     'Account Type': 'खाता प्रकार',
-    'Date Created': 'बनाने की तारी���',
+    'Date Created': 'बनाने की तारीख',
     'Phone': 'फोन',
     
     // Loan page
@@ -167,7 +169,7 @@ export const translations = {
     'Real-time analytics and insights for your finance management': 'आपके वित्त प्रबंधन के लिए रीयल-टाइम एनालिटिक्स और अंतर्दृष्टि',
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
-    'Total Outgoing': 'कुल निवर्तमान',
+    'Total Outgoing': 'कुल निवर्तमा���',
     'Active Savings Users': 'सक्रिय बचत उपयोगकर्ता',
     'Sign out of your account': 'अपने खाते से साइन आउट करें',
 
