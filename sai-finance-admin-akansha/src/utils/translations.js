@@ -122,13 +122,14 @@ export const translations = {
     'Add New User': 'नया उपयोगकर्ता जोड़ें',
     
     // Common
-    'Sr No.': 'क्रम संख्��ा',
+    'Sr No.': 'क्रम संख्या',
     'Sort By': 'इसके अनुसार क्रमबद्ध करें',
     'Financial Dashboard': 'वित्तीय डैशबोर्ड',
-    'Real-time analytics and insights for your finance management': 'आपके वित्त प्रबंधन के लिए रीयल-टाइम एनालिटिक्स और अंतर्दृष्टि',
+    'Real-time analytics and insights for your finance management': 'आपके वित्त प्रबंधन के लिए रीयल-टाइम एनालिटिक्स और अंत��्दृष्टि',
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
     'Total Outgoing': 'कुल निवर्तमान',
+    'Active Savings Users': 'सक्रिय बचत उपयोगकर्ता',
     'Sign out of your account': 'अपने खाते से साइन आउट करें',
 
     // Navbar
