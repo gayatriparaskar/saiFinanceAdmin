@@ -348,7 +348,7 @@ function ViewLoanUser() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    const title = "LOAN STATEMENT";
+    const title = t("LOAN STATEMENT", "ऋण विवरण");
     const titleWidth = doc.getTextWidth(title);
     doc.text(title, (pageWidth - titleWidth) / 2, 20);
 
