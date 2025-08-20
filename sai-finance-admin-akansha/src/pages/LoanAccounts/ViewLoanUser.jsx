@@ -223,13 +223,13 @@ function ViewLoanUser() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Sr No.",
+        Header: t('Sr No.', 'क्रम संख्या'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
 
       {
-        Header: "Date",
+        Header: t('Date', 'तारीख'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
@@ -257,12 +257,12 @@ function ViewLoanUser() {
       // },
 
       {
-        Header: "EMI Amount/Day",
+        Header: t('EMI Amount/Day', 'दैनिक ईएमआई राशि'),
         accessor: "amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${value}`} />,
       },
       {
-        Header: "total_penalty_amount",
+        Header: t('Penalty Amount', 'दंड राशि'),
         accessor: "total_penalty_amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${value}`} />,
       },
@@ -276,7 +276,7 @@ function ViewLoanUser() {
       // },
 
       {
-        Header: "Collected By",
+        Header: t('Collected By', 'संग्रहकर्ता'),
         accessor: "collected_officer_name",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -286,7 +286,7 @@ function ViewLoanUser() {
       },
 
       {
-        Header: "Action",
+        Header: t('Action', 'कार्य'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -298,13 +298,13 @@ function ViewLoanUser() {
                   colorScheme="bgBlue"
                   onClick={() => setNewID(original._id)}
                 >
-                  Actions
+                  {t('Actions', 'कार्य')}
                 </MenuButton>
                 <MenuList>
                   <Link to={`/dash/edit-course/${original._id}`}>
                     <MenuItem>
                       {" "}
-                      <HiStatusOnline className="mr-4" /> View User
+                      <HiStatusOnline className="mr-4" /> {t('View User', 'उपयोगकर्ता देखें')}
                     </MenuItem>
                   </Link>
 
