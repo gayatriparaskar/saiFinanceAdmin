@@ -171,7 +171,7 @@ function SavingAccount() {
       },
       {
 
-        Header: "Account Holder",
+        Header: t('Account Holder', 'खाता धारक'),
         accessor: "full_name",
 
 
@@ -193,7 +193,7 @@ function SavingAccount() {
       },
       {
 
-        Header: "Balance",
+        Header: t('Balance', 'शेष राशि'),
         accessor: "amount_to_be",
 
         Cell: ({ value, row: { original } }) => (
