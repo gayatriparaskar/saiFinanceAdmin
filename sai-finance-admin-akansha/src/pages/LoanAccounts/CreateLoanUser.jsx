@@ -188,7 +188,7 @@ const CreateLoanUser = () => {
   <hr />
         
 
-        <h4 className="text-lg font-bold mt-6">Personal Details</h4>
+        <h4 className="text-lg font-bold mt-6">{t("Personal Details")}</h4>
         <div className=" grid grid-cols-3 gap-4 text-start">
           {Object.keys(fieldLabels).map((key) => (
             <div key={key} className="">
@@ -208,7 +208,7 @@ const CreateLoanUser = () => {
           ))}
           <div className="grid grid-cols-1 ">
             <label className=" text-sm font-medium text-gray-700">
-              {"Select Officers"}
+              {t("Select Officers")}
             </label>
             <select
               name="officer_id"
@@ -216,7 +216,7 @@ const CreateLoanUser = () => {
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             >
-              <option value="">Select Officer</option>
+              <option value="">{t("Select Officer")}</option>
               {officerData?.map((el) => (
                 <option key={el?._id} value={el?._id}>{el?.name}</option>
               ))}
@@ -229,7 +229,7 @@ const CreateLoanUser = () => {
             type="submit"
             className="px-4 py-2 bg-primaryDark text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none"
           >
-            Submit Loan User
+            {t("Submit Loan User")}
           </button>
         </div>
       </form>
