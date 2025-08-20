@@ -261,13 +261,13 @@ const FixedEnhancedDashHome = () => {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <CardDataStats 
-            title={t("Daily Collection")} 
-            total={`₹ ${dailyCollection}`} 
-            rate="+5.2%" 
-            levelUp 
+          <CardDataStats
+            title={t("Daily Collection")}
+            total={`₹ ${dailyCollection}`}
+            rate="+5.2%"
+            levelUp
           >
-            📈
+            💰
           </CardDataStats>
         </motion.div>
 
@@ -275,13 +275,13 @@ const FixedEnhancedDashHome = () => {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <CardDataStats 
-            title={t("Total Loan Customers")} 
-            total={userdata.length} 
-            rate="-2.3%" 
+          <CardDataStats
+            title={t("Total Loan Customers")}
+            total={userdata.length}
+            rate="-2.3%"
             levelDown
           >
-            👥
+            🏛️
           </CardDataStats>
         </motion.div>
 
@@ -289,13 +289,13 @@ const FixedEnhancedDashHome = () => {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <CardDataStats 
-            title={t("Total Outgoing")} 
-            total={`₹ ${totalLoanAmt}`} 
-            rate="+1.8%" 
+          <CardDataStats
+            title={t("Total Outgoing")}
+            total={`₹ ${totalLoanAmt}`}
+            rate="+1.8%"
             levelUp
           >
-            💸
+            📤
           </CardDataStats>
         </motion.div>
 
@@ -303,13 +303,13 @@ const FixedEnhancedDashHome = () => {
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <CardDataStats 
-            title={t("Active Savings Users")} 
-            total={activeSavingsUsers} 
-            rate="+3.5%" 
+          <CardDataStats
+            title={t("Active Savings Users")}
+            total={activeSavingsUsers}
+            rate="+3.5%"
             levelUp
           >
-            🏦
+            💳
           </CardDataStats>
         </motion.div>
       </motion.div>
@@ -325,13 +325,13 @@ const FixedEnhancedDashHome = () => {
           whileHover={{ scale: 1.02 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <CardDataStats 
-            title={t("Total Collections")} 
-            total={`₹ ${totalCollection}`} 
-            rate="+4.1%" 
+          <CardDataStats
+            title={t("Total Collections")}
+            total={`₹ ${totalCollection}`}
+            rate="+4.1%"
             levelUp
           >
-            💰
+            💵
           </CardDataStats>
         </motion.div>
 
