@@ -220,14 +220,14 @@ useEffect(() => {
       total: userdata.length.toLocaleString(),
       rate: "-2.3%",
       levelDown: true,
-      icon: "👥",
+      icon: "🏛️",
     },
     {
       title: t("Active Saving Users"),
       total: savingUsers.toLocaleString(),
       rate: "+8.4%",
       levelUp: true,
-      icon: "💸",
+      icon: "💳",
     },
     {
       title: t("Total Outgoing"),
@@ -241,7 +241,7 @@ useEffect(() => {
       total: `₹ ${totalCollection.toLocaleString()}`,
       rate: "+12.5%",
       levelUp: true,
-      icon: "🏦",
+      icon: "💵",
     },
   ];
 
