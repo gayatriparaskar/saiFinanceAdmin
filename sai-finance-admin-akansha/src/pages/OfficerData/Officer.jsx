@@ -48,7 +48,7 @@ import { HiStatusOnline } from "react-icons/hi";
 import { GrOverview } from "react-icons/gr";
 
 function Officer() {
-  const { t } = useTranslation();
+  const { t } = useLocalTranslation();
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
