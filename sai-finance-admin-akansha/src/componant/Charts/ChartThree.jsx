@@ -145,8 +145,8 @@ const ChartThree = () => {
           className="flex items-center justify-between mb-6"
         >
           <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Business Analytics</h3>
-            <p className="text-gray-600 text-sm">Customer interaction overview</p>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t("Business Analytics")}</h3>
+            <p className="text-gray-600 text-sm">{t("Customer interaction overview")}</p>
           </div>
           
           <motion.div 
