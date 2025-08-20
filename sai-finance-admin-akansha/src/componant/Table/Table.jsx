@@ -15,6 +15,7 @@ const Table = ({
   pageSize = 50,
   className = "",
 }) => {
+  const { t } = useLocalTranslation();
   const totalPages = Math.ceil(total / pageSize);
   const tableInstance = useTable({ columns, data }, useExpanded);
 
