@@ -142,7 +142,7 @@ const FixedEnhancedDashHome = () => {
     }).catch((error) => {
       console.warn("API endpoint '/admins/totalCollectionsWeeklyStats' not available:", error.message);
       // Provide fallback data for better user experience
-      setWeekDays(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
+      setWeekDays([t("Mon", "सोम"), t("Tue", "मंग"), t("Wed", "बुध"), t("Thu", "गुरु"), t("Fri", "शुक्र"), t("Sat", "शनि"), t("Sun", "रवि")]);
       setWeekAmtData([2500, 3200, 2800, 4100, 3600, 3900, 2200]);
     });
   }, []);
