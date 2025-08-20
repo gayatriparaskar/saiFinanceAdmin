@@ -36,12 +36,12 @@ const AddDailyCollection = () => {
       axios.get(`users/${id}`).then((response) => {
         if (response?.data) {
           setOfficerData(response?.data?.result);
-          
+
         }
       });
     }
     fetchData();
-  }, []);
+  }, [id]);
 
 
 
