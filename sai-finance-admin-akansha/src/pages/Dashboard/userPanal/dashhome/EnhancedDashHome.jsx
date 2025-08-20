@@ -5,9 +5,11 @@ import EnhancedChartOne from "../../../../componant/Charts/EnhancedChartOne";
 import EnhancedChartTwo from "../../../../componant/Charts/EnhancedChartTwo";
 import EnhancedChartThree from "../../../../componant/Charts/EnhancedChartThree";
 import CursorTrail from "../../../../components/CursorTrail/CursorTrail";
+import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
 
 const EnhancedDashHome = () => {
+  const { t } = useLocalTranslation();
   const [data, setData] = useState([]);
   const [weekDays, setWeekDays] = useState([""]);
   const [weekAmtData, setWeekAmtData] = useState([0]);
@@ -83,12 +85,42 @@ const EnhancedDashHome = () => {
     });
   }, []);
 
+  // Helper function to translate month names
+  const translateMonth = (monthName) => {
+    const monthMap = {
+      'January': t('Jan'),
+      'February': t('Feb'),
+      'March': t('Mar'),
+      'April': t('Apr'),
+      'May': t('May'),
+      'June': t('Jun'),
+      'July': t('Jul'),
+      'August': t('Aug'),
+      'September': t('Sep'),
+      'October': t('Oct'),
+      'November': t('Nov'),
+      'December': t('Dec'),
+      'Jan': t('Jan'),
+      'Feb': t('Feb'),
+      'Mar': t('Mar'),
+      'Apr': t('Apr'),
+      'Jun': t('Jun'),
+      'Jul': t('Jul'),
+      'Aug': t('Aug'),
+      'Sep': t('Sep'),
+      'Oct': t('Oct'),
+      'Nov': t('Nov'),
+      'Dec': t('Dec')
+    };
+    return monthMap[monthName] || monthName;
+  };
+
   // monthly stats
   useEffect(() => {
     axios.get("/admins/totalCollectionsMonthlyStats").then((res) => {
       if (res?.data?.result && Array.isArray(res.data.result)) {
         setData(res.data.result);
-        const months = res.data.result.map((e) => e.month || "");
+        const months = res.data.result.map((e) => translateMonth(e.month || ""));
         const monthsAmt = res.data.result.map((e) => Number(e.totalAmount || 0));
         setMonthData(months.length > 0 ? months : [""]);
         setMonthlyAmtData(monthsAmt.length > 0 ? monthsAmt : [0]);
@@ -98,16 +130,37 @@ const EnhancedDashHome = () => {
       }
     }).catch((error) => {
       console.warn("API endpoint '/admins/totalCollectionsMonthlyStats' not available:", error.message);
-      setMonthData([t("Jan", "जन"), t("Feb", "फ़र"), t("Mar", "मार"), t("Apr", "अप्र"), t("May", "मई"), t("Jun", "जून")]);
+      setMonthData([t("Jan"), t("Feb"), t("Mar"), t("Apr"), t("May"), t("Jun")]);
       setMonthlyAmtData([12000, 15000, 18000, 22000, 25000, 28000]);
     });
-  }, []);
+  }, [t]);
+
+  // Helper function to translate weekday names
+  const translateWeekday = (dayName) => {
+    const dayMap = {
+      'Monday': t('Mon'),
+      'Tuesday': t('Tue'),
+      'Wednesday': t('Wed'),
+      'Thursday': t('Thu'),
+      'Friday': t('Fri'),
+      'Saturday': t('Sat'),
+      'Sunday': t('Sun'),
+      'Mon': t('Mon'),
+      'Tue': t('Tue'),
+      'Wed': t('Wed'),
+      'Thu': t('Thu'),
+      'Fri': t('Fri'),
+      'Sat': t('Sat'),
+      'Sun': t('Sun')
+    };
+    return dayMap[dayName] || dayName;
+  };
 
   // weekly stats
   useEffect(() => {
     axios.get("/admins/totalCollectionsWeeklyStats").then((res) => {
       if (res?.data?.result?.dailyStats && Array.isArray(res.data.result.dailyStats)) {
-        const weeks = res.data.result.dailyStats.map((e) => e.day || "");
+        const weeks = res.data.result.dailyStats.map((e) => translateWeekday(e.day || ""));
         const weeksAmt = res.data.result.dailyStats.map((e) => Number(e.totalAmount || 0));
         setWeekDays(weeks.length > 0 ? weeks : [""]);
         setWeekAmtData(weeksAmt.length > 0 ? weeksAmt : [0]);
@@ -117,10 +170,10 @@ const EnhancedDashHome = () => {
       }
     }).catch((error) => {
       console.warn("API endpoint '/admins/totalCollectionsWeeklyStats' not available:", error.message);
-      setWeekDays([t("Mon", "सोम"), t("Tue", "मंग"), t("Wed", "बुध"), t("Thu", "गुरु"), t("Fri", "शुक्र"), t("Sat", "शनि"), t("Sun", "रवि")]);
+      setWeekDays([t("Mon"), t("Tue"), t("Wed"), t("Thu"), t("Fri"), t("Sat"), t("Sun")]);
       setWeekAmtData([2500, 3200, 2800, 4100, 3600, 3900, 2200]);
     });
-  }, []);
+  }, [t]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
