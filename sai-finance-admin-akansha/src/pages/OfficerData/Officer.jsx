@@ -239,7 +239,7 @@ function Officer() {
                   {t('Delete', 'Delete')}
                 </MenuItem>
                 <MenuItem onClick={onOpen2}>
-                  <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
+                  <HiStatusOnline className="mr-4" /> {t('Status')}
                 </MenuItem>
               </MenuList>
             </Menu>
