@@ -209,35 +209,35 @@ useEffect(() => {
 
   const cardData = [
     {
-      title: "Daily Collection",
+      title: t("Daily Collection"),
       total: `₹ ${dailyCollection.toLocaleString()}`,
       rate: "+5.2%",
       levelUp: true,
       icon: "💰",
     },
     {
-      title: "Total Loan Customer",
+      title: t("Total Loan Customer"),
       total: userdata.length.toLocaleString(),
       rate: "-2.3%",
       levelDown: true,
       icon: "👥",
     },
     {
-      title: "Active Saving Users",
+      title: t("Active Saving Users"),
       total: savingUsers.toLocaleString(),
       rate: "+8.4%",
       levelUp: true,
       icon: "💸",
     },
     {
-      title: "Total Outgoing",
+      title: t("Total Outgoing"),
       total: `₹ ${totalLoanAmt.toLocaleString()}`,
       rate: "+1.8%",
       levelUp: true,
       icon: "📤",
     },
     {
-      title: "Total Collections",
+      title: t("Total Collections"),
       total: `₹ ${totalCollection.toLocaleString()}`,
       rate: "+12.5%",
       levelUp: true,
@@ -272,10 +272,10 @@ useEffect(() => {
         className="mb-8"
       >
         <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          Finance Dashboard
+          {t("Finance Dashboard")}
         </h1>
         <p className="text-gray-600 text-lg">
-          Welcome back! Here's your finance overview
+          {t("Welcome back! Here's your finance overview")}
         </p>
       </motion.div>
 
