@@ -419,7 +419,7 @@ function LoanAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Previous', 'पिछला')}
+              {t('Previous', 'Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} {t('of')} {totalPages}
