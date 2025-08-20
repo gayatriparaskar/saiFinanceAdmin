@@ -229,7 +229,7 @@ function ViewLoanUser() {
       },
 
       {
-        Header: t('Date', 'तारीख'),
+        Header: t('Date', 'तारी���'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
@@ -430,7 +430,7 @@ function ViewLoanUser() {
   };
 
   return (
-    <div className="lg:py-8 py-4 bg-primaryBg">
+    <div className="lg:py-8 py-4 bg-primaryBg pt-20 mt-6">
       <section className=" md:p-1 ">
         <div className="py-6 ">
           <div className="flex  justify-between items-center ">
