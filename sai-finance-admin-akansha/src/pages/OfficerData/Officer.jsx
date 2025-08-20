@@ -323,7 +323,7 @@ function Officer() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    Total Officers : {data.length}
+                    {t('Total Officers', 'Total Officers')} : {data.length}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -336,7 +336,7 @@ function Officer() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    Active Officers : {data.filter(officer => officer.status === 'Active').length}
+                    {t('Active Officers', 'Active Officers')} : {data.filter(officer => officer.status === 'Active').length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -351,7 +351,7 @@ function Officer() {
                   />
                   <Input
                     type="text"
-                    placeholder="Search officers..."
+                    placeholder={t('Search officers...', 'Search officers...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -366,7 +366,7 @@ function Officer() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      Search
+                      {t('Search', 'Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -382,7 +382,7 @@ function Officer() {
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700"
                   >
-                    Sort By
+                    {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
                     <MenuItem>Name A-Z</MenuItem>
@@ -399,7 +399,7 @@ function Officer() {
                       colorScheme="blue"
                       className="bg-primary hover:bg-primaryDark"
                     >
-                      Add New Officer
+                      {t('Add New Officer', 'Add New Officer')}
                     </MenuButton>
                   </Link>
                 </Menu>
