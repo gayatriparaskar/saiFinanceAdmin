@@ -58,20 +58,30 @@ const DashHome = () => {
     });
   }, []);
 
-  // saving users
-  useEffect(() => {
-    axios.get("account/").then((res) => {
+// saving users
+useEffect(() => {
+  axios.get("account/")
+    .then((res) => {
       if (res?.data?.result && Array.isArray(res.data.result)) {
-        const activeSavingUsers = res.data.result.filter(user => user.status === 'active' || user.is_active === true);
-        setSavingUsers(activeSavingUsers.length);
+        
+        // Sirf un users ko filter karna jinke saving_account_id.is_active true hai
+        const activeSavingUsers = res.data.result.filter(
+          (user) => user?.saving_account_id?.is_active === true
+        );
+
+        console.log("Active Saving Users:", activeSavingUsers.length);
+        setSavingUsers(activeSavingUsers.length); 
       } else {
         setSavingUsers(0);
       }
-    }).catch((error) => {
+    })
+    .catch((error) => {
       console.error("Error fetching saving users:", error);
       setSavingUsers(0);
     });
-  }, []);
+}, []);
+
+
 
   // monthly stats
   useEffect(() => {

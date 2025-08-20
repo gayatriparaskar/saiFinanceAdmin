@@ -69,7 +69,7 @@ function Officer() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get("officers/");
+        const response = await axios.get("officers");
         if (response?.data) {
           setData(response?.data?.result || []);
           setFilteredData(response?.data?.result || []);
@@ -186,51 +186,23 @@ function Officer() {
       },
       {
         Header: "Employee ID",
-        accessor: "employee_id",
+        accessor: "officer_code",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.employee_id || 'N/A'}`} />
-        ),
-      },
-      {
-        Header: "Department",
-        accessor: "department",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.department || 'N/A'}`} />
-        ),
-      },
-      {
-        Header: "Position",
-        accessor: "position",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.position || 'N/A'}`} />
-        ),
-      },
-      {
-        Header: "Phone Number",
-        accessor: "phone_number",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.phone_number || 'N/A'}`} />
-        ),
-      },
-      {
-        Header: "Email",
-        accessor: "email",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.email || 'N/A'}`} />
+          <Cell text={`${original?.officer_code || 'N/A'}`} />
         ),
       },
       {
         Header: "Join Date",
-        accessor: "join_date",
+        accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.join_date ? dayjs(original.join_date).format("D MMM, YYYY") : 'N/A'} />
+          <Cell text={original?.created_on ? dayjs(original.created_on).format("D MMM, YYYY") : 'N/A'} />
         ),
       },
       {
         Header: "Status",
-        accessor: "status",
+        accessor: "isActive",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.status || "Active"} />
+          <Cell text={original?.isActive || "Active"} />
         ),
       },
       {

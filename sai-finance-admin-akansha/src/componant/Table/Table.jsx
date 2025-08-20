@@ -21,7 +21,7 @@ const Table = ({
     tableInstance;
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-auto flex flex-col mt-0">
       <div
         className={classNames(
           `flex-1 overflow-auto scrollbar-hide`,
@@ -75,7 +75,7 @@ const Table = ({
                         <td
                           key={cellKey || cIdx}
                           {...cellProps}
-                          className="px-4 py-3 text-sm text-center border-r border-gray-100 last:border-r-0"
+                          className="px-4 py-0 text-sm text-center border-r border-gray-100 last:border-r-0"
                         >
                           {cell.render("Cell", {
                             row: {
@@ -98,7 +98,7 @@ const Table = ({
               <tr>
                 <td 
                   colSpan={columns.length}
-                  className="px-4 py-8 text-center text-gray-500"
+                  className="px-4 py-6 text-center text-gray-500"
                 >
                   No data available
                 </td>

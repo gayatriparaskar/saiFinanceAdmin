@@ -70,7 +70,7 @@ function SavingAccount() {
           setFilteredData(response?.data?.result);
         }
         const sum = response.data.result.reduce((acc, item) => {
-          return acc + (item.balance || 0);
+          return acc + (item.amount_to_be || 0);
         }, 0);
         setTotalSavingAmt(sum)
       });
@@ -94,7 +94,7 @@ function SavingAccount() {
 
   const handleDelete = () => {
     axios
-      .delete(`account/${newID}`)
+      .delete(`users/${newID}`)
       .then((res) => {
         if (res.data) {
           toast({
@@ -122,7 +122,7 @@ function SavingAccount() {
 
   const handleEditSave = async () => {
     try {
-      const res = await axios.put(`account/${editData._id}`, editData);
+      const res = await axios.put(`users/${editData._id}`, editData);
       if (res.data) {
         toast({
           title: `Account updated successfully`,
@@ -169,10 +169,10 @@ function SavingAccount() {
       },
       {
         Header: "Account Holder",
-        accessor: "account_holder_name",
+        accessor: "full_name",
         Cell: ({ value, row: { original } }) => (
           <>
-            <Cell text={`${original?.account_holder_name}`} bold={"bold"} />
+            <Cell text={`${original?.full_name}`} bold={"bold"} />
           </>
         ),
       },
@@ -181,23 +181,23 @@ function SavingAccount() {
         accessor: "account_number",
         Cell: ({ value, row: { original } }) => (
           <>
-            <Cell text={`${original?.account_number}`} />
+            <Cell text={`${original?.saving_account_id?.amount_to_be}`} />
           </>
         ),
       },
       {
         Header: "Balance",
-        accessor: "balance",
+        accessor: "amount_to_be",
         Cell: ({ value, row: { original } }) => (
           <>
-            <Cell text={`₹ ${original?.balance?.toLocaleString()}`} />
+            <Cell text={`₹ ${original?.saving_account_id?.amount_to_be?.toLocaleString()}`} />
           </>
         ),
       },
       {
-        Header: "Account Type",
-        accessor: "account_type",
-        Cell: ({ value, row: { original } }) => <Cell text={original?.account_type || "Saving"} />,
+        Header: "Total Amount",
+        accessor: "total_amount",
+        Cell: ({ value, row: { original } }) => <Cell text={original?.saving_account_id?.total_amount} />,
       },
       {
         Header: "Status",
@@ -236,7 +236,7 @@ function SavingAccount() {
                   Actions
                 </MenuButton>
                 <MenuList>
-                  <Link to={`/dash/view-saving-user/${original?._id}`}>
+                  <Link to={`/dash/view-savingUser-details/${original?._id}`}>
                     <MenuItem>
                       <HiStatusOnline className="mr-4" /> View Account
                     </MenuItem>
@@ -290,7 +290,7 @@ function SavingAccount() {
       {/* Fixed Header Section */}
       <motion.div 
         variants={itemVariants}
-        className="flex-shrink-0 pt-20 pb-4 px-4"
+        className="flex-shrink-0 pt-20 pb-0 px-4"
       >
         <section className="md:p-1">
           <div className="py-6">
@@ -399,12 +399,9 @@ function SavingAccount() {
       {/* Scrollable Table Section */}
       <motion.div 
         variants={itemVariants}
-        className="flex-1 px-4 pb-4 overflow-hidden"
+        className="flex-1 px-4 pb-0 overflow-hidden mt-0"
       >
-        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
-          <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">Saving Accounts</h3>
-          </div>
+        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col mt-0">
           
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">

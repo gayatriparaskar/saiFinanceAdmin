@@ -107,23 +107,20 @@ function LoanAccount() {
         if (res.data) {
           // console.log(res.data);
           toast({
-            title: `Success! User has been deleted successfully`,
-
+            title: `Success! This course has been deleted`,
+            
             status: "success",
             duration: 4000,
             isClosable: true,
-            position: "top"
+            position:"top"
           });
-          // Update state without reload
-          setData((prev) => prev.filter((item) => item._id !== newID));
-          setFilteredData((prev) => prev.filter((item) => item._id !== newID));
-          onClose(); // Close the alert dialog
+          window.location.reload();
         }
       })
       .catch((err) => {
         toast({
-          title: `Delete Failed!`,
-          description: err.response?.data?.message || "Something went wrong while deleting the user",
+          title: `Something Went Wrong!`,
+          
           status: "error",
           duration: 4000,
           isClosable: true,
@@ -316,10 +313,10 @@ function LoanAccount() {
       {/* Fixed Header Section */}
       <motion.div 
         variants={itemVariants}
-        className="flex-shrink-0 pt-20 pb-4 px-4"
+        className="flex-shrink-0 pt-20 pb-0 px-4 mb-0"
       >
-        <section className="md:p-1">
-          <div className="py-6">
+        <section className="md:p-1 mb-0">
+          <div className="py-6 mb-0">
             <motion.div 
               variants={itemVariants}
               className="flex justify-between items-center mb-6"
@@ -426,12 +423,9 @@ function LoanAccount() {
       {/* Scrollable Table Section */}
       <motion.div 
         variants={itemVariants}
-        className="flex-1 px-4 pb-4 overflow-hidden"
+        className="flex-1 px-4 pb-0 overflow-hidden mt-0"
       >
-        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
-          <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">Loan Accounts</h3>
-          </div>
+        <div className="bg-white rounded-xl shadow-lg h-full flex flex-col mt-0">
           
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
@@ -439,7 +433,7 @@ function LoanAccount() {
           </div>
 
           {/* Fixed Pagination */}
-          <div className="flex-shrink-0 flex justify-center p-4 border-t gap-4 items-center bg-gray-50">
+          <div className="flex-shrink-0 flex justify-center p-0 border-t gap-4 items-center bg-gray-50">
             <Button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               isDisabled={currentPage === 1}
