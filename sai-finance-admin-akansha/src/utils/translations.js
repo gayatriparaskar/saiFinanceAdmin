@@ -58,6 +58,7 @@ export const translations = {
     'Daily Collection': 'Daily Collection',
     'Total Loan Customers': 'Total Loan Customers',
     'Total Outgoing': 'Total Outgoing',
+    'Active Savings Users': 'Active Savings Users',
     'Sign out of your account': 'Sign out of your account',
 
     // Navbar
@@ -121,9 +122,9 @@ export const translations = {
     'Add New User': 'नया उपयोगकर्ता जोड़ें',
     
     // Common
-    'Sr No.': 'क्रम संख्या',
+    'Sr No.': 'क्रम संख्��ा',
     'Sort By': 'इसके अनुसार क्रमबद्ध करें',
-    'Financial Dashboard': 'वि��्तीय डैशबोर्ड',
+    'Financial Dashboard': 'वित्तीय डैशबोर्ड',
     'Real-time analytics and insights for your finance management': 'आपके वित्त प्रबंधन के लिए रीयल-टाइम एनालिटिक्स और अंतर्दृष्टि',
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
