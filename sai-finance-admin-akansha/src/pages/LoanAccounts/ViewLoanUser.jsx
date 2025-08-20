@@ -519,7 +519,7 @@ function ViewLoanUser() {
                         className="bg-purple hover:bg-secondaryDark"
                         //   ref={btnRef}  onClick={onOpen2}
                       >
-                        Add Amount
+                        {t('Add Amount', 'राशि जोड़ें')}
                       </MenuButton>
                     </Link>
                   </Menu>
