@@ -1,15 +1,23 @@
 import { useTranslation } from 'react-i18next';
 import { getTranslation } from '../utils/translations';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 export const useLocalTranslation = () => {
   const { t: i18nT, i18n } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'en');
+  const [, forceUpdate] = useState({});
+
+  // Force component re-render
+  const forceRerender = useCallback(() => {
+    forceUpdate({});
+  }, []);
 
   // Listen to language changes
   useEffect(() => {
     const handleLanguageChange = (lng) => {
       setCurrentLanguage(lng);
+      // Force all components using this hook to re-render
+      forceRerender();
     };
 
     i18n.on('languageChanged', handleLanguageChange);
@@ -17,7 +25,7 @@ export const useLocalTranslation = () => {
     return () => {
       i18n.off('languageChanged', handleLanguageChange);
     };
-  }, [i18n]);
+  }, [i18n, forceRerender]);
 
   const t = (key, fallback = key) => {
     // First try to get from i18next (this ensures reactivity to language changes)
