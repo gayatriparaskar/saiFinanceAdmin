@@ -12,6 +12,7 @@ import bgImage from "../../Images/Section (2).png";
 import Info from "../../Images/ph_info-duotone.png";
 import Table from "../../componant/Table/Table";
 import Cell from "../../componant/Table/cell";
+import { createTimeoutAwareCall } from "../../utils/retryHelper";
 import {
   Menu,
   MenuButton,
