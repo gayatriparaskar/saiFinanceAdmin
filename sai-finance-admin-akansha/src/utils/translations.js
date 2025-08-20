@@ -126,6 +126,15 @@ export const translations = {
     'Month': 'Month',
     'Primary income source': 'Primary income source',
     'Performance indicator': 'Performance indicator',
+    'Daily Collections': 'Daily Collections',
+    'Target Achievement': 'Target Achievement',
+    'Weekly Performance': 'Weekly Performance',
+    'Daily collection insights': 'Daily collection insights',
+    'This Week': 'This Week',
+    'Last Week': 'Last Week',
+    'This Month': 'This Month',
+    'Average Daily': 'Average Daily',
+    'Weekly Total': 'Weekly Total',
   },
   hi: {
     // Common actions
@@ -167,7 +176,7 @@ export const translations = {
     'Account Holder': 'खाता धारक',
     'Account Number': 'खाता संख्या',
     'Balance': 'शेष राशि',
-    'Account Type': 'खाता प्रकार',
+    'Account Type': 'खाता प्रका��',
     'Date Created': 'बनाने की तारीख',
     'Phone': 'फोन',
     
@@ -197,7 +206,7 @@ export const translations = {
     'Officer Controls': 'अधिकारी नियंत्रण',
     'Payment Controls': 'भुगतान नियंत्रण',
     'Payment': 'भुगतान',
-    'Payment Request': 'भुगतान अन���रोध',
+    'Payment Request': 'भुगतान अनुरोध',
     'Language': 'भाषा',
 
     // Table data and status
@@ -223,7 +232,7 @@ export const translations = {
     'Count': 'गणना',
     'Percentage': 'प्रतिशत',
     'Growth': 'वृद्धि',
-    'Decline': 'गिरावट',
+    'Decline': 'गिर��वट',
     'Today': 'आज',
     'This Week': 'इस सप्ताह',
     'This Month': 'इस महीने',
@@ -252,7 +261,7 @@ export const translations = {
     'Week': 'सप्ताह',
     'Month': 'महीना',
     'Primary income source': 'प्राथमिक आय स्रोत',
-    'Performance indicator': 'प्रदर्शन संकेतक',
+    'Performance indicator': 'प्रदर्शन संक���तक',
   }
 };
 
