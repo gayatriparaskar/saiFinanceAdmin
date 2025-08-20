@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../axios";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 import {
   useToast,
   Modal,
