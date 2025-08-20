@@ -188,14 +188,14 @@ function Officer() {
       },
       {
 
-        Header: "Employee ID",
+        Header: t('Employee ID', 'कर्मचारी आईडी'),
         accessor: "officer_code",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.officer_code || 'N/A'}`} />
         ),
       },
       {
-        Header: "Join Date",
+        Header: t('Join Date', 'जॉइनिंग तिथि'),
         accessor: "created_on",
 
         Cell: ({ value, row: { original } }) => (
@@ -204,10 +204,10 @@ function Officer() {
       },
       {
 
-        Header: "Status",
+        Header: t('Status', 'स्थिति'),
         accessor: "isActive",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.isActive || "Active"} />
+          <Cell text={original?.isActive || t('Active', 'सक्रिय')} />
 
         ),
       },
