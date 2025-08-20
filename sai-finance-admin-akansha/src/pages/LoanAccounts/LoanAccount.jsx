@@ -446,7 +446,7 @@ function LoanAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Account Details', 'खाता विवरण')}</DrawerHeader>
+          <DrawerHeader>{t('Account Details', 'Account Details')}</DrawerHeader>
           <DrawerBody>
             <Input placeholder={t('Type here...', 'यहां टाइप करें...')} />
           </DrawerBody>
@@ -454,7 +454,7 @@ function LoanAccount() {
             <Button variant="outline" mr={3} onClick={onClose2}>
               {t('Cancel', 'रद्द करें')}
             </Button>
-            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
+            <Button colorScheme="blue">{t('Save', '���ेव करें')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
