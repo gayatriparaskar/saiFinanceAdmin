@@ -87,7 +87,7 @@ const AddSavingCollection = () => {
       const res = await axios.post(apiUrl, payload);
 
       toast({
-        title: t('Success!', 'सफलता!'),
+        title: t('Success!', 'Success!'),
         description: res.data.message,
         status: "success",
         duration: 4000,
@@ -102,8 +102,8 @@ const AddSavingCollection = () => {
       await fetchUserData();
     } catch (err) {
       toast({
-        title: t('Something Went Wrong!', 'कुछ गलत हुआ!'),
-        description: err.response?.data?.message || t('Error occurred', 'त्रुटि हुई'),
+        title: t('Something Went Wrong!', 'Something Went Wrong!'),
+        description: err.response?.data?.message || t('Error occurred', 'Error occurred'),
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -127,10 +127,10 @@ const AddSavingCollection = () => {
         className="text-center mb-12"
       >
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-          {t('Add Saving Collection', 'बचत संग्रह जोड़ें')}
+          {t('Add Saving Collection', 'Add Saving Collection')}
         </h1>
         <p className="text-lg text-gray-600">
-          {t('Manage deposits and withdrawals for saving accounts', 'बचत खातों के लिए जमा और निकासी का प्रबंधन')}
+          {t('Manage deposits and withdrawals for saving accounts', 'Manage deposits and withdrawals for saving accounts')}
         </p>
       </motion.div>
 
@@ -148,7 +148,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">{t('Total Saving', 'कुल बचत')}</p>
+              <p className="text-sm font-medium text-gray-600">{t('Total Saving', 'Total Saving')}</p>
               <p className="text-2xl font-bold text-primary">₹ {userData?.current_amount || 0}</p>
             </div>
             <div className="text-3xl">💰</div>
@@ -162,7 +162,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">{t('Total Interest', 'कुल ब्याज')}</p>
+              <p className="text-sm font-medium text-gray-600">{t('Total Interest', 'Total Interest')}</p>
               <p className="text-2xl font-bold text-secondary">₹ {userData?.total_interest_pay || 0}</p>
             </div>
             <div className="text-3xl">📈</div>
@@ -176,7 +176,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">{t('EMI Day', 'ईएमआई दिवस')}</p>
+              <p className="text-sm font-medium text-gray-600">{t('EMI Day', 'EMI Day')}</p>
               <p className="text-2xl font-bold text-green-600">{userData?.emi_day || 0}</p>
             </div>
             <div className="text-3xl">📅</div>
@@ -193,22 +193,22 @@ const AddSavingCollection = () => {
       >
         <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-2xl p-8 border border-primary/10">
           <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
-            {t('Transaction Details', 'लेनदेन विवरण')}
+            {t('Transaction Details', 'Transaction Details')}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
             {/* Transaction Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('Transaction Type', 'लेनदेन प्रकार')}
+                {t('Transaction Type', 'Transaction Type')}
               </label>
               <Select
                 value={transactionType}
                 onChange={(e) => setTransactionType(e.target.value)}
                 className="w-full"
               >
-                <option value="deposit">{t('Deposit', 'जमा')}</option>
-                <option value="withdraw">{t('Withdraw', 'निकासी')}</option>
+                <option value="deposit">{t('Deposit', 'Deposit')}</option>
+                <option value="withdraw">{t('Withdraw', 'Withdraw')}</option>
               </Select>
             </div>
 
