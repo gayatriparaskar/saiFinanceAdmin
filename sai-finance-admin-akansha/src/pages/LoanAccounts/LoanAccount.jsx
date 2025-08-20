@@ -309,7 +309,7 @@ function LoanAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    {t('Total Collection', 'Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
+                    {t('Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -322,7 +322,7 @@ function LoanAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    {t('Total Active User', 'Total Active User')} : {data.length}
+                    {t('Total Active User')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -335,7 +335,7 @@ function LoanAccount() {
                   <InputLeftElement pointerEvents="none" />
                   <Input
                     type="text"
-                    placeholder={t('Search...', 'Search...')}
+                    placeholder={t('Search...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -350,7 +350,7 @@ function LoanAccount() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      {t('Search', 'Search')}
+                      {t('Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -419,7 +419,7 @@ function LoanAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Previous', 'Previous')}
+              {t('Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} {t('of')} {totalPages}
@@ -430,7 +430,7 @@ function LoanAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Next', 'Next')}
+              {t('Next')}
             </Button>
           </div>
         </div>
