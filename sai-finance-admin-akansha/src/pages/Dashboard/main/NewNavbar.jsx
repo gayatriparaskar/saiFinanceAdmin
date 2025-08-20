@@ -33,6 +33,13 @@ const NewNavbar = () => {
     setOpenDropdown(null);
   };
 
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setCurrentLanguage(lng);
+    localStorage.setItem('language', lng);
+    closeDropdown();
+  };
+
   const navVariants = {
     hidden: { y: -100, opacity: 0 },
     visible: { 
