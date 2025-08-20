@@ -175,68 +175,68 @@ function Officer() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Sr No.",
+        Header: t('Sr No.', 'Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: "Officer Name",
+        Header: t('Officer Name', 'Officer Name'),
         accessor: "name",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.name || 'N/A'}`} bold={"bold"} />
         ),
       },
       {
-        Header: "Employee ID",
+        Header: t('Employee ID', 'Employee ID'),
         accessor: "employee_id",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.employee_id || 'N/A'}`} />
         ),
       },
       {
-        Header: "Department",
+        Header: t('Department', 'Department'),
         accessor: "department",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.department || 'N/A'}`} />
         ),
       },
       {
-        Header: "Position",
+        Header: t('Position', 'Position'),
         accessor: "position",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.position || 'N/A'}`} />
         ),
       },
       {
-        Header: "Phone Number",
+        Header: t('Phone Number', 'Phone Number'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.phone_number || 'N/A'}`} />
         ),
       },
       {
-        Header: "Email",
+        Header: t('Email', 'Email'),
         accessor: "email",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.email || 'N/A'}`} />
         ),
       },
       {
-        Header: "Join Date",
+        Header: t('Join Date', 'Join Date'),
         accessor: "join_date",
         Cell: ({ value, row: { original } }) => (
           <Cell text={original?.join_date ? dayjs(original.join_date).format("D MMM, YYYY") : 'N/A'} />
         ),
       },
       {
-        Header: "Status",
+        Header: t('Status', 'Status'),
         accessor: "status",
         Cell: ({ value, row: { original } }) => (
           <Cell text={original?.status || "Active"} />
         ),
       },
       {
-        Header: "Action",
+        Header: t('Action', 'Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
