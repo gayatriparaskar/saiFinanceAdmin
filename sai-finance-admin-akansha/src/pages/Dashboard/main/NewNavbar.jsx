@@ -5,7 +5,9 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoMdLogOut } from "react-icons/io";
 import { useUser } from "../../../hooks/use-user";
 import { IoSettings } from "react-icons/io5";
+import { MdLanguage } from "react-icons/md";
 import Logo from "../../../Images/Sai-finance-logo.png"
+import { useTranslation } from "react-i18next";
 
 const NewNavbar = () => {
   const { data: user } = useUser();
