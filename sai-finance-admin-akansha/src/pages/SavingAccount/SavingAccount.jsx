@@ -242,7 +242,7 @@ function SavingAccount() {
       },
       {
 
-        Header: t('Account Holder', 'खाता धारक'),
+        Header: t('Account Holder', 'Account Holder'),
         accessor: "full_name",
 
 
@@ -264,7 +264,7 @@ function SavingAccount() {
       },
       {
 
-        Header: t('Balance', 'शेष राशि'),
+        Header: t('Balance', 'Balance'),
         accessor: "amount_to_be",
 
         Cell: ({ value, row: { original } }) => (
@@ -319,18 +319,18 @@ function SavingAccount() {
                 <MenuList>
                   <Link to={`/dash/view-savingUser-details/${original?._id}`}>
                     <MenuItem>
-                      <HiStatusOnline className="mr-4" /> {t('View Account', 'खाता देखें')}
+                      <HiStatusOnline className="mr-4" /> {t('View Account', 'View Account')}
                     </MenuItem>
                   </Link>
                   <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                    <MdEdit className="mr-4" /> {t('Edit', 'संपादित करें')}
+                    <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
                   </MenuItem>
                   <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                     <MdDelete className="mr-4" />
-                    {t('Delete', 'हटाएं')}
+                    {t('Delete', 'Delete')}
                   </MenuItem>
                   <MenuItem onClick={onOpen2}>
-                    <HiStatusOnline className="mr-4" /> {t('Status', 'स्थिति')}
+                    <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
                   </MenuItem>
                 </MenuList>
               </Menu>
@@ -419,7 +419,7 @@ function SavingAccount() {
                   />
                   <Input
                     type="text"
-                    placeholder={t('Search accounts...', 'खाते खोजें...')}
+                    placeholder={t('Search accounts...', 'Search accounts...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
