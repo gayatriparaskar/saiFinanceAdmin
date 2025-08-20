@@ -72,20 +72,17 @@ function ViewSavingUser() {
 
     useEffect(() => {
     async function fetchData() {
-      axios.get(`/savingDailyCollections/getAllSavings`).then((response) => {
-        // console.log(response?.data?.result);
+      try {
+        const response = await axios.get(`/savingDailyCollections/getAllSavings`);
         if (response) {
           setTransactions(response?.data?.result || []);
           console.log(response);
-          
         }
-
-        // const sum = response.data.result.reduce((acc, item) => {
-        //   return acc + (item.amount || 0);
-        // }, 0);
-
-        // setTotalAmount(sum);
-      });
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        // Set fallback data
+        setTransactions([]);
+      }
     }
     fetchData();
   }, []);
