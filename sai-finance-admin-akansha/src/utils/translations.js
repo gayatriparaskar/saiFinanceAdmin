@@ -135,6 +135,16 @@ export const translations = {
     'This Month': 'This Month',
     'Average Daily': 'Average Daily',
     'Weekly Total': 'Weekly Total',
+
+    // Loan table headers
+    'Name': 'Name',
+    'Loan Amount': 'Loan Amount',
+    'Total Pay Amount': 'Total Pay Amount',
+    'Total EMI/Day': 'Total EMI/Day',
+    'Remaining Emi': 'Remaining EMI',
+    'Total Due Amount': 'Total Due Amount',
+    'Date': 'Date',
+    'Mobile Number': 'Mobile Number',
   },
   hi: {
     // Common actions
@@ -194,7 +204,7 @@ export const translations = {
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
     'Total Outgoing': 'कुल निवर्तमान',
-    'Active Savings Users': 'सक्रिय बचत उपयोगकर्ता',
+    'Active Savings Users': 'सक्रिय बचत उपयोगकर्त��',
     'Total Collections': 'कुल संग्रह',
     'Monthly Growth': 'मासिक वृद्धि',
     'Sign out of your account': 'अपने खाते से साइन आउट करें',
@@ -228,7 +238,7 @@ export const translations = {
     'Monthly Stats': 'मासिक आंकड़े',
     'Weekly Stats': 'साप्ताहिक आंकड़े',
     'Revenue': 'आय',
-    'Amount': 'र��शि',
+    'Amount': 'राशि',
     'Count': 'गणना',
     'Percentage': 'प्रतिशत',
     'Growth': 'वृद्धि',
@@ -258,7 +268,7 @@ export const translations = {
     'Revenue Analytics': 'आय विश्लेषण',
     'Monthly performance overview': 'मासिक प्रदर्शन अवलोकन',
     'Day': 'दिन',
-    'Week': 'सप्ताह',
+    'Week': '��प्ताह',
     'Month': 'महीना',
     'Primary income source': 'प्राथमिक आय स्रोत',
     'Performance indicator': 'प्रदर्शन संकेतक',
