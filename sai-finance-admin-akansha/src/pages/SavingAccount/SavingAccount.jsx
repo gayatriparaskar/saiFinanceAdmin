@@ -404,7 +404,7 @@ function SavingAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    {t('Total Accounts', 'कुल खाते')} : {data.length}
+                    {t('Total Accounts', 'Total Accounts')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
