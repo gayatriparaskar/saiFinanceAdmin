@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 
 const ChartThree = () => {
+  const { t } = useLocalTranslation();
+
   const [state, setState] = useState({
     series: [65, 34, 45, 23],
   });
-  
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -15,10 +17,10 @@ const ChartThree = () => {
   }, []);
 
   const analytics = [
-    { label: 'Loan Applications', color: '#0d9488', value: 65, icon: '📋' },
-    { label: 'Active Customers', color: '#f97316', value: 34, icon: '👥' },
-    { label: 'Payments Received', color: '#14b8a6', value: 45, icon: '💰' },
-    { label: 'Pending Reviews', color: '#fb923c', value: 23, icon: '⏳' },
+    { label: t('Loan Applications'), color: '#0d9488', value: 65, icon: '📋' },
+    { label: t('Active Customers'), color: '#f97316', value: 34, icon: '👥' },
+    { label: t('Payments Received'), color: '#14b8a6', value: 45, icon: '💰' },
+    { label: t('Pending Reviews'), color: '#fb923c', value: 23, icon: '⏳' },
   ];
 
   const options = {
