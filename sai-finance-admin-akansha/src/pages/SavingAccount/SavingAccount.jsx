@@ -488,7 +488,20 @@ function SavingAccount() {
 
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
-            <Table data={paginatedData} columns={columns} />
+            {loading ? (
+              <ApiLoader
+                message="Loading savings accounts..."
+                size="lg"
+              />
+            ) : error ? (
+              <ApiErrorHandler
+                error={error}
+                onRetry={handleRetry}
+                message="Failed to load savings accounts"
+              />
+            ) : (
+              <Table data={paginatedData} columns={columns} />
+            )}
           </div>
 
           {/* Fixed Pagination */}
