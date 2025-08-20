@@ -475,8 +475,8 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Due Amount{" "}
-                    {userdata?.active_loan_id?.total_due_amount} Rs.
+                    {t('Total Due Amount', 'कुल बकाया राशि')}{" "}
+                    {userdata?.active_loan_id?.total_due_amount} रु.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -484,8 +484,8 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Penalty{" "}
-                    {userdata?.active_loan_id?.total_penalty_amount} Rs.
+                    {t('Total Penalty', 'कुल दंड')}{" "}
+                    {userdata?.active_loan_id?.total_penalty_amount} रु.
                   </MenuButton>
                 </Menu>
               </div>
@@ -498,7 +498,7 @@ function ViewLoanUser() {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Pay {userdata?.active_loan_id?.total_amount} Rs.
+                    {t('Total Pay', 'कुल भुगतान')} {userdata?.active_loan_id?.total_amount} रु.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -507,7 +507,7 @@ function ViewLoanUser() {
                     className="bg-primaryDark hover:bg-primaryLight"
                     onClick={generatePDF}
                   >
-                    Download PDF
+                    {t('Download PDF', 'पीडीएफ डाउनलोड')}
                   </MenuButton>
 
                   <Menu>
