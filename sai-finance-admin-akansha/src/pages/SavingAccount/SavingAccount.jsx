@@ -391,7 +391,7 @@ function SavingAccount() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    {t('Total Savings', 'Total Savings')} : ₹ {totalSavingAmt.toLocaleString()}
+                    {t('Total Savings')} : ₹ {totalSavingAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -404,7 +404,7 @@ function SavingAccount() {
                     ref={btnRef}
                     onClick={onOpen2}
                   >
-                    {t('Total Accounts', 'Total Accounts')} : {data.length}
+                    {t('Total Accounts')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
@@ -419,7 +419,7 @@ function SavingAccount() {
                   />
                   <Input
                     type="text"
-                    placeholder={t('Search accounts...', 'Search accounts...')}
+                    placeholder={t('Search accounts...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -434,7 +434,7 @@ function SavingAccount() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      {t('Search', 'Search')}
+                      {t('Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -512,10 +512,10 @@ function SavingAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Previous', 'Previous')}
+              {t('Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} {t('of', 'of')} {totalPages}
+              {currentPage} {t('of')} {totalPages}
             </span>
             <Button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -523,7 +523,7 @@ function SavingAccount() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Next', 'Next')}
+              {t('Next')}
             </Button>
           </div>
         </div>
