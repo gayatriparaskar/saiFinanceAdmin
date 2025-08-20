@@ -43,7 +43,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
 
 function LoanAccount() {
-  const { t } = useTranslation();
+  const { t } = useLocalTranslation();
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
   const [totalLoanAmt, setTotalLoanAmt] = useState(0);
