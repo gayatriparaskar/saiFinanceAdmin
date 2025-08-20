@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
+  const { t } = useLocalTranslation();
+
   const [series, setSeries] = useState([
     {
       name: "Monthly Revenue",
