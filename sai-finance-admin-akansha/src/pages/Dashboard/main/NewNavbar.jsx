@@ -105,10 +105,10 @@ const NewNavbar = () => {
       {/* Menu Items with staggered animation */}
       <ul className="flex space-x-8 font-semibold">
         {[
-          { name: t("header_menu.home", "Home"), path: "/dash/home" },
-          { name: t("Loan Account", "Loan Account"), path: "/dash/loan-account" },
-          { name: t("Saving Account", "Saving Account"), path: "/dash/saving-account" },
-          { name: t("Officer Controls", "Officer Controls"), path: "/dash/officer" }
+          { name: t("Home"), path: "/dash/home" },
+          { name: t("Loan Account"), path: "/dash/loan-account" },
+          { name: t("Saving Account"), path: "/dash/saving-account" },
+          { name: t("Officer Controls"), path: "/dash/officer" }
         ].map((item, index) => (
           <motion.li
             key={item.name}
