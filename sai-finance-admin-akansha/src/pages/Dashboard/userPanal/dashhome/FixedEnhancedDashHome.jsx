@@ -8,6 +8,7 @@ import ChartThree from "../../../../componant/Charts/ChartThree";
 import axios from "../../../../axios";
 
 const FixedEnhancedDashHome = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [weekDays, setWeekDays] = useState([""]);
   const [weekAmtData, setWeekAmtData] = useState([0]);
