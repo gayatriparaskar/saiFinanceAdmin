@@ -30,6 +30,25 @@ const AddSavingCollection = () => {
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
+
+      // Show user-friendly error message
+      toast({
+        title: "Error Loading Account",
+        description: error.code === 'ECONNABORTED'
+          ? "Request timed out. Please try again."
+          : "Failed to load account details. Please check your connection.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top"
+      });
+
+      // Set fallback data
+      setUserData({
+        current_amount: 0,
+        total_interest_pay: 0,
+        emi_day: 0
+      });
     }
   };
 
