@@ -170,50 +170,50 @@ function LoanAccount() {
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-        Header: "Name",
+        Header: t('Name'),
         accessor: "full_name",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.full_name}`} bold={"bold"} />
         ),
       },
       {
-        Header: "Loan Amount",
+        Header: t('Loan Amount'),
         accessor: "loan_amount",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`Rs. ${original?.active_loan_id?.loan_amount}`} />
         ),
       },
       {
-        Header: "Total Pay Amount",
+        Header: t('Total Pay Amount'),
         accessor: "total_amount",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`Rs. ${original?.active_loan_id?.total_amount}`} />
         ),
       },
       {
-        Header: "Total EMI/Day",
+        Header: t('Total EMI/Day'),
         accessor: "emi_day",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.emi_day}`} />,
       },
       {
-        Header: "Remaining Emi",
+        Header: t('Remaining Emi'),
         accessor: "remaining_emi",
         Cell: ({ value, row: { original } }) => <Cell text={`${Math.ceil(original?.active_loan_id?.total_due_amount / original?.active_loan_id?.emi_day)}`} />,
       },
       {
-        Header: "Total Due Amount",
+        Header: t('Total Due Amount'),
         accessor: "total_due_amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.total_due_amount}`} />,
       },
       {
-        Header: "Date",
+        Header: t('Date'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
         ),
       },
       {
-        Header: "Mobile Number",
+        Header: t('Mobile Number'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${Math.ceil(value)}`} />
