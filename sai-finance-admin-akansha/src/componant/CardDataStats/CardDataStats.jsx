@@ -30,10 +30,10 @@ const CardDataStats = ({
       
       <div className="relative z-10">
         {/* Icon Circle with primary/secondary colors */}
-        <motion.div 
+        <motion.div
           whileHover={{ rotate: 12, scale: 1.1 }}
           transition={{ type: "spring", stiffness: 400, damping: 15 }}
-          className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-white shadow-lg mb-4 text-2xl group-hover:bg-secondary transition-colors duration-300"
+          className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary text-white shadow-lg mb-4 text-3xl group-hover:bg-secondary transition-colors duration-300"
         >
           {children}
         </motion.div>
@@ -41,7 +41,7 @@ const CardDataStats = ({
         {/* Content */}
         <div className="space-y-3">
           {/* Title */}
-          <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide group-hover:text-primary transition-colors duration-300">
+          <h3 className="text-lg font-black text-gray-800 uppercase tracking-wide group-hover:text-primary transition-colors duration-300">
             {title}
           </h3>
           
@@ -50,13 +50,13 @@ const CardDataStats = ({
             key={total}
             initial={{ opacity: 0, y: 15, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ 
-              duration: 0.6, 
-              type: "spring", 
+            transition={{
+              duration: 0.6,
+              type: "spring",
               stiffness: 200,
-              delay: 0.1 
+              delay: 0.1
             }}
-            className="text-3xl font-bold text-gray-900 group-hover:text-primaryDark transition-colors duration-300"
+            className="text-4xl font-black text-gray-900 group-hover:text-primaryDark transition-colors duration-300"
           >
             {total}
           </motion.h2>
