@@ -53,12 +53,19 @@ function ViewSavingUser() {
       console.log(res.data.account, "account data");
       if (res?.data?.account) {
         console.log(res, "account data");
-        
         setAccountData(res.data.account);
         console.log(res.data, "account data");
-        
-        
       }
+    }).catch((error) => {
+      console.error("Error fetching account data:", error);
+      // Set fallback data to prevent crashes
+      setAccountData({
+        user_id: { full_name: "N/A" },
+        created_on: new Date(),
+        total_amount: 0,
+        current_amount: 0,
+        total_withdrawal: 0
+      });
     });
   }, [id]);
 
