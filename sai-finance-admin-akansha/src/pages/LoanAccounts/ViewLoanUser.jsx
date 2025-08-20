@@ -45,6 +45,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
 import { GrOverview } from "react-icons/gr";
 function ViewLoanUser() {
+  const { t } = useLocalTranslation();
   const { id } = useParams();
   console.log(id);
   const [data, setData] = useState([]);
