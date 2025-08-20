@@ -243,10 +243,10 @@ const FixedEnhancedDashHome = () => {
         className="text-center mb-12"
       >
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-          {t("Financial Dashboard", "Financial Dashboard")}
+          {t("Financial Dashboard")}
         </h1>
         <p className="text-lg text-gray-600">
-          {t("Real-time analytics and insights for your finance management", "Real-time analytics and insights for your finance management")}
+          {t("Real-time analytics and insights for your finance management")}
         </p>
       </motion.div>
 
