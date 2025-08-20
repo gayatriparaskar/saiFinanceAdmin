@@ -14,7 +14,7 @@ const NewNavbar = () => {
   const { data: user } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
-  const { t: tOriginal, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const { t } = useLocalTranslation();
   const [pro, setPro] = useState("");
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -243,7 +243,7 @@ const NewNavbar = () => {
                 onClick={() => changeLanguage('hi')}
               >
                 <span className="text-sm">🇮🇳</span>
-                <span>हि���दी</span>
+                <span>हिंदी</span>
               </motion.li>
             </motion.ul>
           )}
