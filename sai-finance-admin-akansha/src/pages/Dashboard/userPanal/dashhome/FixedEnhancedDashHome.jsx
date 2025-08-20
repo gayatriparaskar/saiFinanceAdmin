@@ -229,7 +229,7 @@ const FixedEnhancedDashHome = () => {
           transition={{ type: "spring", stiffness: 300 }}
         >
           <CardDataStats 
-            title="Active Savings Users" 
+            title={t("Active Savings Users")} 
             total={activeSavingsUsers} 
             rate="+3.5%" 
             levelUp
