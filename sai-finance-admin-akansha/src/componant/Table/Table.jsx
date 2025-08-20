@@ -104,7 +104,7 @@ const Table = ({
                   colSpan={columns.length}
                   className="px-4 py-8 text-center text-gray-500"
                 >
-                  No data available
+                  {t("No data available")}
                 </td>
               </tr>
             )}
