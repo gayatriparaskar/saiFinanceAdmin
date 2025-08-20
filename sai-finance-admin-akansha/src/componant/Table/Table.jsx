@@ -1,6 +1,7 @@
 import React from "react";
 import { useTable, useExpanded } from "react-table";
 import classNames from "classnames";
+import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const Table = ({
   columns,
