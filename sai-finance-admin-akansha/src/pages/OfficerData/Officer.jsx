@@ -299,7 +299,7 @@ function Officer() {
                     fontWeight={800}
                     fontSize={18}
                   >
-                    {t('Total Officers', 'Total Officers')} : {data.length}
+                    {t('Total Officers')} : {data.length}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -327,7 +327,7 @@ function Officer() {
                   />
                   <Input
                     type="text"
-                    placeholder={t('Search officers...', 'Search officers...')}
+                    placeholder={t('Search officers...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
@@ -342,7 +342,7 @@ function Officer() {
                       borderRightRadius={3.3}
                       border="1px solid #949494"
                     >
-                      {t('Search', 'Search')}
+                      {t('Search')}
                     </Button>
                   </InputRightAddon>
                 </InputGroup>
@@ -404,7 +404,7 @@ function Officer() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Previous', 'Previous')}
+              {t('Previous')}
             </Button>
             <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
               {currentPage} {t('of')} {totalPages}
@@ -415,7 +415,7 @@ function Officer() {
               colorScheme="blue"
               variant="outline"
             >
-              {t('Next', 'Next')}
+              {t('Next')}
             </Button>
           </div>
         </div>
@@ -436,7 +436,7 @@ function Officer() {
           <DrawerBody>
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-bold text-blue-900">{t('Total Officers', 'Total Officers')}</h4>
+                <h4 className="font-bold text-blue-900">{t('Total Officers')}</h4>
                 <p className="text-2xl font-bold text-blue-600">{data.length}</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg">
