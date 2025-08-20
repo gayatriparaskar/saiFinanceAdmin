@@ -94,7 +94,7 @@ const AddDailyCollection = () => {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Loan {userData?.active_loan_id?.loan_amount} Rs.
+                    {t('Total Loan')} {userData?.active_loan_id?.loan_amount} Rs.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -102,7 +102,7 @@ const AddDailyCollection = () => {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Due Amount {userData?.active_loan_id?.total_due_amount} Rs.
+                    {t('Total Due Amount')} {userData?.active_loan_id?.total_due_amount} Rs.
                   </MenuButton>
                   <MenuButton
                     as={Button}
@@ -110,7 +110,7 @@ const AddDailyCollection = () => {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Total Penalty {userData?.active_loan_id?.total_penalty_amount} Rs.
+                    {t('Total Penalty')} {userData?.active_loan_id?.total_penalty_amount} Rs.
                   </MenuButton>
                 </Menu>
               </div>
@@ -123,7 +123,7 @@ const AddDailyCollection = () => {
                     zIndex={20}
                     className="bg-primaryDark hover:bg-primaryLight"
                   >
-                    Emi Amount {userData?.active_loan_id?.emi_day} Rs.
+                    {t('Emi Amount')} {userData?.active_loan_id?.emi_day} Rs.
                   </MenuButton>
                  
  
@@ -132,7 +132,7 @@ const AddDailyCollection = () => {
             </div>
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
-          Add Daily Collecion
+          {t('Add Daily Collection')}
         </h3>
 
         <div className="grid grid-cols-2 gap-4 mt-2 text-start">
