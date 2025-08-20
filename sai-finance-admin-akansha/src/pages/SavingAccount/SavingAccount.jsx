@@ -111,6 +111,46 @@ function SavingAccount() {
     loadData();
   }, []);
 
+  // Retry function for error recovery
+  const handleRetry = () => {
+    const fetchData = createTimeoutAwareCall(
+      () => axios.get("account/"),
+      {
+        maxRetries: 3,
+        showToast: toast,
+        fallbackData: { result: [] },
+        errorMessage: "Failed to load savings accounts. Please check your connection and try again."
+      }
+    );
+
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetchData();
+        if (response?.data) {
+          setData(response?.data?.result || []);
+          setFilteredData(response?.data?.result || []);
+
+          const sum = (response.data.result || []).reduce((acc, item) => {
+            return acc + (item.amount_to_be || 0);
+          }, 0);
+          setTotalSavingAmt(sum);
+        }
+      } catch (error) {
+        setError(error);
+        setData([]);
+        setFilteredData([]);
+        setTotalSavingAmt(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  };
+
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredData(data);
