@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const AddSavingCollection = () => {
+  const { t } = useLocalTranslation();
   const { id } = useParams();
   const toast = useToast();
 
