@@ -145,7 +145,7 @@ const ChartThree = () => {
           className="flex items-center justify-between mb-6"
         >
           <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t("Business Analytics")}</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{t("Business Analytics", "व्यापार विश्लेषण")}</h3>
             <p className="text-gray-600 text-sm">{t("Customer interaction overview")}</p>
           </div>
           
@@ -217,7 +217,7 @@ const ChartThree = () => {
                     <p className="font-semibold text-gray-900 text-sm group-hover/item:text-gray-700 transition-colors duration-300">
                       {item.label}
                     </p>
-                    <p className="text-xs text-gray-500">{t("Active metrics", "स���्रिय मेट्रिक्स")}</p>
+                    <p className="text-xs text-gray-500">{t("Active metrics", "सक्रिय मेट्रिक्स")}</p>
                   </div>
                 </div>
                 
