@@ -87,7 +87,7 @@ const AddSavingCollection = () => {
       const res = await axios.post(apiUrl, payload);
 
       toast({
-        title: "Success!",
+        title: t('Success!', 'सफलता!'),
         description: res.data.message,
         status: "success",
         duration: 4000,
@@ -102,8 +102,8 @@ const AddSavingCollection = () => {
       await fetchUserData();
     } catch (err) {
       toast({
-        title: "Something Went Wrong!",
-        description: err.response?.data?.message || "Error occurred",
+        title: t('Something Went Wrong!', 'कुछ गलत हुआ!'),
+        description: err.response?.data?.message || t('Error occurred', 'त्रुटि हुई'),
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -162,7 +162,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Interest</p>
+              <p className="text-sm font-medium text-gray-600">{t('Total Interest', 'कुल ब्याज')}</p>
               <p className="text-2xl font-bold text-secondary">₹ {userData?.total_interest_pay || 0}</p>
             </div>
             <div className="text-3xl">📈</div>
@@ -176,7 +176,7 @@ const AddSavingCollection = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">EMI Day</p>
+              <p className="text-sm font-medium text-gray-600">{t('EMI Day', 'ईएमआई दिवस')}</p>
               <p className="text-2xl font-bold text-green-600">{userData?.emi_day || 0}</p>
             </div>
             <div className="text-3xl">📅</div>
@@ -193,29 +193,29 @@ const AddSavingCollection = () => {
       >
         <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-2xl p-8 border border-primary/10">
           <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">
-            Transaction Details
+            {t('Transaction Details', 'लेनदेन विवरण')}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
             {/* Transaction Type */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Transaction Type
+                {t('Transaction Type', 'लेनदेन प्रकार')}
               </label>
               <Select
                 value={transactionType}
                 onChange={(e) => setTransactionType(e.target.value)}
                 className="w-full"
               >
-                <option value="deposit">Deposit</option>
-                <option value="withdraw">Withdraw</option>
+                <option value="deposit">{t('Deposit', 'जमा')}</option>
+                <option value="withdraw">{t('Withdraw', 'निकासी')}</option>
               </Select>
             </div>
 
             {/* Officer Code */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Collected Officer Code
+                {t('Collected Officer Code', 'संग्रहकर्ता अधिकारी कोड')}
               </label>
               <input
                 className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
@@ -223,22 +223,22 @@ const AddSavingCollection = () => {
                 value={formData.collected_officer_code}
                 type="text"
                 onChange={handleChange}
-                placeholder="Officer Code"
+                placeholder={t('Officer Code', 'अधिकारी कोड')}
               />
             </div>
 
             {/* Officer Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Collected Officer Name
+                {t('Collected Officer Name', 'संग्रहकर्ता अधिकारी नाम')}
               </label>
               <input
                 className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
                 name="collected_officer_name"
-                value="Admin Officer"
+                value={t('Admin Officer', 'प्रशासन अधिकारी')}
                 type="text"
                 onChange={handleChange}
-                placeholder="Officer Name"
+                placeholder={t('Officer Name', 'अधिकारी नाम')}
                 readOnly
               />
             </div>
@@ -247,7 +247,7 @@ const AddSavingCollection = () => {
             {transactionType === "deposit" && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Deposit Amount
+                  {t('Deposit Amount', 'जमा राशि')}
                 </label>
                 <input
                   className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
@@ -255,7 +255,7 @@ const AddSavingCollection = () => {
                   value={formData.deposit_amount}
                   type="number"
                   onChange={handleChange}
-                  placeholder="Enter deposit amount"
+                  placeholder={t('Enter deposit amount', 'जमा राशि दर्ज करें')}
                 />
               </div>
             )}
@@ -264,7 +264,7 @@ const AddSavingCollection = () => {
             {transactionType === "withdraw" && (
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Withdraw Amount
+                  {t('Withdraw Amount', 'निकासी राशि')}
                 </label>
                 <input
                   className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
@@ -272,18 +272,18 @@ const AddSavingCollection = () => {
                   value={formData.withdraw_amount}
                   type="number"
                   onChange={handleChange}
-                  placeholder="Enter withdraw amount"
+                  placeholder={t('Enter withdraw amount', 'निकासी राशि दर्ज करें')}
                 />
                 {formData.withdraw_amount > 0 && (
                   <div className="mt-3 p-3 bg-red-50 rounded-lg border border-red-200">
                     <p className="text-sm text-red-600 font-medium">
-                      Deduction Details:
+                      {t('Deduction Details:', 'कटौती विवरण:')}
                     </p>
                     <p className="text-xs text-red-500 mt-1">
-                      3% extra deduction: ₹{(formData.withdraw_amount * 0.03).toFixed(2)}
+                      {t('3% extra deduction:', '3% अतिरिक्त कटौती:')} ₹{(formData.withdraw_amount * 0.03).toFixed(2)}
                     </p>
                     <p className="text-xs text-red-500">
-                      Total amount deducted from savings: ₹{(
+                      {t('Total amount deducted from savings:', 'बचत से काटी जाने वाली कुल राशि:')} ₹{(
                         Number(formData.withdraw_amount) +
                         formData.withdraw_amount * 0.03
                       ).toFixed(2)}
@@ -304,7 +304,7 @@ const AddSavingCollection = () => {
                   className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
                 />
                 <label className="text-sm font-medium text-gray-700">
-                  Add Penalty
+                  {t('Add Penalty', 'दंड जोड़ें')}
                 </label>
               </div>
             )}
@@ -318,7 +318,7 @@ const AddSavingCollection = () => {
               type="submit"
               className="px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              Submit Transaction
+              {t('Submit Transaction', 'लेनदेन जमा करें')}
             </motion.button>
           </div>
         </form>
