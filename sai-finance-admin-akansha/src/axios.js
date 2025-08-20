@@ -6,10 +6,10 @@ import axios from "axios";
  const API_BASE_URL = "https://sai-finance.vercel.app/api/";
 
 const instance = axios.create({
-  baseURL:API_BASE_URL,
+  baseURL: API_BASE_URL,
+  timeout: 10000, // 10 seconds timeout
   headers: {
     "Content-Type": "application/json",
-    
   },
 });
 
