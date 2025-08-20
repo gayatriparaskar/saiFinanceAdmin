@@ -103,7 +103,7 @@ const NewNavbar = () => {
       {/* Menu Items with staggered animation */}
       <ul className="flex space-x-8 font-semibold">
         {[
-          { name: "Home", path: "/dash/home" },
+          { name: t("header_menu.home", "Home"), path: "/dash/home" },
           { name: "Loan Account", path: "/dash/loan-account" },
           { name: "Saving Account", path: "/dash/saving-account" },
           { name: "Officer Controls", path: "/dash/officer" }
