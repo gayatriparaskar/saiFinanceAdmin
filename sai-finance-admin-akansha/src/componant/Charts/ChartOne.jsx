@@ -21,14 +21,14 @@ const ChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
 
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 300);
-    
+
     if (Array.isArray(monthlyAmtData) && monthlyAmtData.length > 0) {
       setSeries([
         { name: t("Monthly Revenue"), data: monthlyAmtData },
         { name: t("Growth Trend"), data: monthlyAmtData.map(val => val * 0.8) },
       ]);
     }
-  }, [monthlyAmtData]);
+  }, [monthlyAmtData, t]);
 
   const options = {
     legend: {
