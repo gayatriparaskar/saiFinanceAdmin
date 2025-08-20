@@ -104,9 +104,9 @@ const NewNavbar = () => {
       <ul className="flex space-x-8 font-semibold">
         {[
           { name: t("header_menu.home", "Home"), path: "/dash/home" },
-          { name: "Loan Account", path: "/dash/loan-account" },
-          { name: "Saving Account", path: "/dash/saving-account" },
-          { name: "Officer Controls", path: "/dash/officer" }
+          { name: t("Loan Account", "Loan Account"), path: "/dash/loan-account" },
+          { name: t("Saving Account", "Saving Account"), path: "/dash/saving-account" },
+          { name: t("Officer Controls", "Officer Controls"), path: "/dash/officer" }
         ].map((item, index) => (
           <motion.li
             key={item.name}
