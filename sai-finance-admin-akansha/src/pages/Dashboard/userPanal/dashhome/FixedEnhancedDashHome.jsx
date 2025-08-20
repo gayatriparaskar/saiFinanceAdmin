@@ -91,7 +91,6 @@ const FixedEnhancedDashHome = () => {
   useEffect(() => {
     axios.get("/admins/totalCollectionsMonthlyStats").then((res) => {
       if (res?.data?.result && Array.isArray(res.data.result)) {
-        setData(res.data.result);
         const months = res.data.result.map((e) => e.month || "");
         const monthsAmt = res.data.result.map((e) => Number(e.totalAmount || 0));
         setMonthData(months.length > 0 ? months : [""]);
