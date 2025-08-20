@@ -204,7 +204,7 @@ export const translations = {
     'Daily Collection': 'दैनिक संग्रह',
     'Total Loan Customers': 'कुल ऋण ग्राहक',
     'Total Outgoing': 'कुल निवर्तमान',
-    'Active Savings Users': 'सक्रिय बचत उपयोगकर्त��',
+    'Active Savings Users': 'सक्रिय बचत उपयोगकर्ता',
     'Total Collections': 'कुल संग्रह',
     'Monthly Growth': 'मासिक वृद्धि',
     'Sign out of your account': 'अपने खाते से साइन आउट करें',
@@ -268,7 +268,7 @@ export const translations = {
     'Revenue Analytics': 'आय विश्लेषण',
     'Monthly performance overview': 'मासिक प्रदर्शन अवलोकन',
     'Day': 'दिन',
-    'Week': '��प्ताह',
+    'Week': 'सप्ताह',
     'Month': 'महीना',
     'Primary income source': 'प्राथमिक आय स्रोत',
     'Performance indicator': 'प्रदर्शन संकेतक',
@@ -281,6 +281,16 @@ export const translations = {
     'This Month': 'इस महीने',
     'Average Daily': 'औसत दैनिक',
     'Weekly Total': 'साप्ताहिक कुल',
+
+    // Loan table headers
+    'Name': 'नाम',
+    'Loan Amount': 'ऋण राशि',
+    'Total Pay Amount': 'कुल भुगतान राशि',
+    'Total EMI/Day': 'कुल ईएमआई/दिन',
+    'Remaining Emi': 'शेष ईएमआई',
+    'Total Due Amount': 'कुल देय राशि',
+    'Date': 'तारीख',
+    'Mobile Number': 'मोबाइल नंबर',
   }
 };
 
