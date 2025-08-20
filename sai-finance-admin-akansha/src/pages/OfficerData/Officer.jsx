@@ -440,7 +440,7 @@ function Officer() {
                 <p className="text-2xl font-bold text-blue-600">{data.length}</p>
               </div>
               <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-bold text-green-900">{t('Active Officers', 'Active Officers')}</h4>
+                <h4 className="font-bold text-green-900">{t('Active Officers')}</h4>
                 <p className="text-2xl font-bold text-green-600">
                   {data.filter(officer => officer.status === 'Active').length}
                 </p>
