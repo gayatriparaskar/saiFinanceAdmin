@@ -436,11 +436,11 @@ function ViewLoanUser() {
           <div className="flex  justify-between items-center ">
             <div className="flex w-3/2 flex-col gap-2 text-start">
               <h2 className="text-xl font-bold   text-purple text-oswald">
-                Name :<span className="ml-4">{userdata?.full_name}</span>
+                {t('Name', 'नाम')} :<span className="ml-4">{userdata?.full_name}</span>
               </h2>
               <div className="flex gap-20">
                 <h2 className="text-lg font-bold   text-purple text-oswald">
-                  Start Date :
+                  {t('Start Date', 'शुरूआती तिथि')} :
                   <span className="ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
                       "D MMM, YYYY"
@@ -448,7 +448,7 @@ function ViewLoanUser() {
                   </span>
                 </h2>
                 <h2 className="text-lg font-bold   text-purple text-oswald">
-                  End Date :
+                  {t('End Date', 'समाप्ति तिथि')} :
                   <span className="ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
                       "D MMM, YYYY"
