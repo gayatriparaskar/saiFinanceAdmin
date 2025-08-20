@@ -197,8 +197,57 @@ const NewNavbar = () => {
         </motion.li>
       </ul>
 
-      {/* Settings Button */}
+      {/* Language Switcher and Settings */}
       <div className="flex items-center gap-2">
+        {/* Language Switcher */}
+        <motion.div className="relative">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => toggleDropdown("language")}
+            className="flex items-center gap-2 text-sm bg-secondary rounded-xl p-2 text-white font-bold focus:ring-2 focus:ring-secondary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
+          >
+            <MdLanguage size={20} />
+            <span className="text-xs">{currentLanguage === 'en' ? 'EN' : 'हि'}</span>
+            <motion.div
+              animate={{ rotate: openDropdown === "language" ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <MdKeyboardArrowDown size={16} />
+            </motion.div>
+          </motion.button>
+
+          {openDropdown === "language" && (
+            <motion.ul
+              variants={dropdownVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="absolute right-0 mt-2 w-32 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50"
+            >
+              <motion.li
+                whileHover={{ backgroundColor: "#8b5cf6", color: "white" }}
+                transition={{ duration: 0.2 }}
+                className="p-3 hover:text-white cursor-pointer transition-all duration-200 flex items-center gap-2"
+                onClick={() => changeLanguage('en')}
+              >
+                <span className="text-sm">🇺🇸</span>
+                <span>English</span>
+              </motion.li>
+              <motion.li
+                whileHover={{ backgroundColor: "#8b5cf6", color: "white" }}
+                transition={{ duration: 0.2 }}
+                className="p-3 hover:text-white cursor-pointer transition-all duration-200 flex items-center gap-2"
+                onClick={() => changeLanguage('hi')}
+              >
+                <span className="text-sm">🇮🇳</span>
+                <span>हिंदी</span>
+              </motion.li>
+            </motion.ul>
+          )}
+        </motion.div>
+
+        {/* Settings Button */}
         <motion.button
           whileHover={{ scale: 1.05, rotate: 90 }}
           whileTap={{ scale: 0.95 }}
