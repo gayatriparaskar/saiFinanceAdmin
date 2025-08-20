@@ -13,6 +13,8 @@ import Info from "../../Images/ph_info-duotone.png";
 import Table from "../../componant/Table/Table";
 import Cell from "../../componant/Table/cell";
 import { createTimeoutAwareCall } from "../../utils/retryHelper";
+import ApiLoader from "../../components/LoadingStates/ApiLoader";
+import ApiErrorHandler from "../../components/ErrorBoundary/ApiErrorHandler";
 import {
   Menu,
   MenuButton,
@@ -368,7 +370,7 @@ function SavingAccount() {
                   />
                   <Input
                     type="text"
-                    placeholder={t('Search accounts...', 'खा��े खोजें...')}
+                    placeholder={t('Search accounts...', 'खाते खोजें...')}
                     focusBorderColor="blue.500"
                     border="1px solid #949494"
                     value={searchTerm}
