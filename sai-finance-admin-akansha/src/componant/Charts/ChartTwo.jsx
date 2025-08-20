@@ -24,8 +24,8 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
     
     if (Array.isArray(weekAmtData) && weekAmtData.length > 0) {
       setSeries([
-        { name: 'Daily Collections', data: weekAmtData },
-        { name: 'Target Achievement', data: weekAmtData.map(val => val * 0.7) },
+        { name: t('Daily Collections'), data: weekAmtData },
+        { name: t('Target Achievement'), data: weekAmtData.map(val => val * 0.7) },
       ]);
     }
   }, [weekAmtData]);
