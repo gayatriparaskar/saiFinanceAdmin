@@ -167,7 +167,7 @@ function LoanAccount() {
   const columns = React.useMemo(
     () => [
       {
-        Header: t('Sr No.', 'Sr No.'),
+        Header: t('Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
@@ -222,7 +222,7 @@ function LoanAccount() {
         ),
       },
       {
-        Header: t('Action', 'Action'),
+        Header: t('Action'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -233,23 +233,23 @@ function LoanAccount() {
                 colorScheme="bgBlue hover:bg-secondaryLight"
                 onClick={() => setNewID(original._id)}
               >
-                {t('Actions', 'Actions')}
+                {t('Actions')}
               </MenuButton>
               <MenuList>
                 <Link to={`/dash/view-user-details/${original?.active_loan_id?.user_id}`}>
                   <MenuItem >
-                    <HiStatusOnline className="mr-4" /> {t('View User', 'View User')}
+                    <HiStatusOnline className="mr-4" /> {t('View User')}
                   </MenuItem>
                 </Link>
                 <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                  <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
+                  <MdEdit className="mr-4" /> {t('Edit')}
                 </MenuItem>
                 <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                   <MdDelete className="mr-4" />
-                  {t('Delete', 'Delete')}
+                  {t('Delete')}
                 </MenuItem>
                 <MenuItem onClick={onOpen2}>
-                  <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
+                  <HiStatusOnline className="mr-4" /> {t('Status')}
                 </MenuItem>
               </MenuList>
             </Menu>
