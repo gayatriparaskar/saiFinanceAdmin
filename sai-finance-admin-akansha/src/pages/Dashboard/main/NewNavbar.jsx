@@ -159,7 +159,7 @@ const NewNavbar = () => {
                 : "text-gray-700 hover:text-primary hover:bg-primary/5"
             }`}
           >
-            Payment Controls 
+            {t('Payment Controls')}
             <motion.div
               animate={{ rotate: openDropdown === "payment" ? 180 : 0 }}
               transition={{ duration: 0.2 }}
@@ -182,7 +182,7 @@ const NewNavbar = () => {
                   transition={{ duration: 0.2 }}
                   className="p-3 hover:text-white cursor-pointer transition-all duration-200"
                 >
-                  Payment
+                  {t('Payment')}
                 </motion.li>
               </Link>
               <Link to="/dash/payment-request" onClick={closeDropdown}>
@@ -191,7 +191,7 @@ const NewNavbar = () => {
                   transition={{ duration: 0.2 }}
                   className="p-3 hover:text-white cursor-pointer transition-all duration-200"
                 >
-                  Payment Request
+                  {t('Payment Request')}
                 </motion.li>
               </Link>
             </motion.ul>
@@ -243,7 +243,7 @@ const NewNavbar = () => {
                 onClick={() => changeLanguage('hi')}
               >
                 <span className="text-sm">🇮🇳</span>
-                <span>हिंदी</span>
+                <span>हि���दी</span>
               </motion.li>
             </motion.ul>
           )}
