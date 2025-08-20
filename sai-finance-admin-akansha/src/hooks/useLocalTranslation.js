@@ -1,12 +1,25 @@
 import { useTranslation } from 'react-i18next';
 import { getTranslation } from '../utils/translations';
+import { useEffect, useState } from 'react';
 
 export const useLocalTranslation = () => {
   const { t: i18nT, i18n } = useTranslation();
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'en');
+
+  // Listen to language changes
+  useEffect(() => {
+    const handleLanguageChange = (lng) => {
+      setCurrentLanguage(lng);
+    };
+
+    i18n.on('languageChanged', handleLanguageChange);
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [i18n]);
 
   const t = (key, fallback = key) => {
-    const currentLanguage = i18n.language || 'en';
-
     // First try to get from i18next (this ensures reactivity to language changes)
     try {
       const i18nextTranslation = i18nT(key);
@@ -27,5 +40,5 @@ export const useLocalTranslation = () => {
     return fallback;
   };
 
-  return { t, currentLanguage: i18n.language || 'en' };
+  return { t, currentLanguage };
 };
