@@ -21,14 +21,14 @@ const ChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
 
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 500);
-    
+
     if (Array.isArray(weekAmtData) && weekAmtData.length > 0) {
       setSeries([
         { name: t('Daily Collections'), data: weekAmtData },
         { name: t('Target Achievement'), data: weekAmtData.map(val => val * 0.7) },
       ]);
     }
-  }, [weekAmtData]);
+  }, [weekAmtData, t]);
 
   const options = {
     colors: ['#0d9488', '#f97316'],
