@@ -149,5 +149,18 @@
   "Finance Dashboard": "Finance Dashboard",
   "Welcome back! Here's your finance overview": "Welcome back! Here's your finance overview",
   "Total Loan Customer": "Total Loan Customer",
-  "Active Saving Users": "Active Saving Users"
+  "Active Saving Users": "Active Saving Users",
+  "Loan Amount": "Loan Amount",
+  "Total Pay Amount": "Total Pay Amount",
+  "Total EMI/Day": "Total EMI/Day",
+  "Remaining Emi": "Remaining Emi",
+  "Total Due Amount": "Total Due Amount",
+  "Mobile Number": "Mobile Number",
+  "View User": "View User",
+  "Inactive": "Inactive",
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected",
+  "Completed": "Completed",
+  "Processing": "Processing"
 }
