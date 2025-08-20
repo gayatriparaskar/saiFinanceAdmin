@@ -275,7 +275,7 @@ function SavingAccount() {
       },
       {
 
-        Header: t('Total Amount', 'कुल राशि'),
+        Header: t('Total Amount', 'Total Amount'),
         accessor: "total_amount",
         Cell: ({ value, row: { original } }) => <Cell text={original?.saving_account_id?.total_amount} />,
 
