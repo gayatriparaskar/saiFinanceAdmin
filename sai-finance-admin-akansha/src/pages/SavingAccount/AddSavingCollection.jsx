@@ -68,7 +68,7 @@ const AddSavingCollection = () => {
         addPenaltyFlag: formData.addPenaltyFlag,
       };
     } else {
-      apiUrl = `http://localhost:3001/api/savingDailyCollections/withdrawByAdmin/${id}`;
+      apiUrl = `savingDailyCollections/withdrawByAdmin/${id}`;
 
       // 👉 3% extra deduction logic (user jitna withdraw karega usse +3% saving se cut hoga)
       const threePercent = (formData.withdraw_amount * 3) / 100;
