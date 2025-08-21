@@ -454,7 +454,7 @@ function LoanAccount() {
             <Button variant="outline" mr={3} onClick={onClose2}>
               {t('Cancel', 'Cancel')}
             </Button>
-            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
+            <Button colorScheme="blue">{t('Save', 'Save')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
