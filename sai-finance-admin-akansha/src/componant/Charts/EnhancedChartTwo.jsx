@@ -6,11 +6,11 @@ const EnhancedChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
   const [series, setSeries] = useState([
     {
       name: 'Weekly Collections',
-      data: [0],
+      data: [12500, 18300, 15600, 22100, 19800, 16400, 14200],
     },
     {
       name: 'Target Revenue',
-      data: [0],
+      data: [15000, 20000, 17000, 24000, 21000, 18000, 16000],
     },
   ]);
 
