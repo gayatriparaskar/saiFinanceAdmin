@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
-import SimpleChart from "../../../../componant/Charts/SimpleChart";
+import SimpleChart from "../../../../../componant/Charts/SimpleChart";
 import axios from "../../../../axios";
 import { handleNetworkError, isNetworkError } from "../../../../utils/errorHandler";
 import { debugNetworkIssues, showNetworkStatus } from "../../../../utils/networkStatus";
