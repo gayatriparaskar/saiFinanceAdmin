@@ -123,7 +123,7 @@ function ViewSavingUser() {
   const generatePDF = () => {
     const doc = new jsPDF();
     const userName = accountData?.full_name || "N/A";
-    const title = isLoanAccount ? t('LOAN STATEMENT', 'LOAN STATEMENT') : t('SAVING STATEMENT', 'SAVING STATEMENT');
+    const title = isLoanAccount ? t('SAI FINANCE LOAN STATEMENT', 'साई फाइनेंस ऋण विवरण') : t('SAI FINANCE SAVING STATEMENT', 'साई फाइनेंस बचत विवरण');
     const startDate = dayjs(accountData?.created_on).format("D MMM, YYYY");
     const endDate = startDate;
 
