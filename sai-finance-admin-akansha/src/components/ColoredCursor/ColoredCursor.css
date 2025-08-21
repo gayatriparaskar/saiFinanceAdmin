@@ -1,7 +1,4 @@
-/* Hide default cursor */
-* {
-  cursor: none !important;
-}
+/* Default cursor restored - no hiding */
 
 .colored-cursor {
   position: fixed;
