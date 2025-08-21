@@ -31,7 +31,7 @@ const EnhancedChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
   }, [weekAmtData]);
 
   const options = {
-    colors: ['#0d9488', '#f97316'],
+    colors: ['#2563eb', '#7c3aed'],
     chart: {
       fontFamily: 'Poppins, sans-serif',
       type: 'bar',
