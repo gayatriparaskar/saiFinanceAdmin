@@ -216,7 +216,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  cursor: none;
+  /* Normal cursor enabled */
   background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 50%, #fff7ed 100%);
   min-height: 100vh;
 }
