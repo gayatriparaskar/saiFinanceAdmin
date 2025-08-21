@@ -91,7 +91,7 @@ const NewNavbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="w-full top-0 flex items-center justify-between bg-white px-4 py-1 shadow-lg fixed z-[1000] border-b-2 border-primary/10"
+      className="w-full top-0 flex items-center justify-between bg-white px-4 py-0.5 shadow-lg fixed z-[1000] border-b-2 border-primary/10"
     >
       {/* Logo with animation */}
       <motion.div 
