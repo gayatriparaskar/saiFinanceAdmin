@@ -333,7 +333,7 @@ useEffect(() => {
           variants={chartVariants}
           className="col-span-12"
         >
-          <ChartThree />
+          <PerformanceChart title="Overall Performance" />
         </motion.div>
       </motion.div>
 
