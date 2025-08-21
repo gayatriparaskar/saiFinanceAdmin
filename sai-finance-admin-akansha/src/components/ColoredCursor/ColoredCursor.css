@@ -5,8 +5,16 @@
 
 .colored-cursor {
   position: fixed;
+  top: 0;
+  left: 0;
   pointer-events: none;
   z-index: 9999;
+
+  /* Smooth movement optimization */
+  will-change: transform;
+  backface-visibility: hidden;
+
+  /* Center the cursor */
   transform: translate(-50%, -50%);
 }
 
@@ -27,15 +35,39 @@
     0 0 8px rgba(59, 130, 246, 0.4),
     0 2px 4px rgba(0, 0, 0, 0.1);
 
-  /* Smooth transitions */
-  transition: all 0.2s ease;
+  /* Smooth transitions for interactions only */
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  /* Hardware acceleration for smooth rendering */
+  will-change: transform, background-color;
+  transform: translateZ(0);
 }
 
 /* Hover state for interactive elements */
-.colored-cursor.hover {
-  transform: scale(1.3);
+.colored-cursor.hover .cursor-dot {
+  transform: scale(1.3) translateZ(0);
   background: #1d4ed8;
   box-shadow:
     0 0 12px rgba(29, 78, 216, 0.6),
     0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure smooth movement on different devices */
+@media (hover: hover) and (pointer: fine) {
+  .colored-cursor {
+    display: block;
+  }
+}
+
+@media (hover: none) or (pointer: coarse) {
+  .colored-cursor {
+    display: none;
+  }
+
+  * {
+    cursor: auto !important;
+  }
 }
