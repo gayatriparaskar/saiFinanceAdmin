@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import EnhancedCardDataStats from "../../../../componant/CardDataStats/EnhancedCardDataStats";
-import FinancialHeatmap from "../../../../componant/Charts/FinancialHeatmap";
-import InvestmentTreemap from "../../../../componant/Charts/InvestmentTreemap";
-import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
+import SimpleChart from "../../../../componant/Charts/SimpleChart";
 import CursorTrail from "../../../../components/CursorTrail/CursorTrail";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
@@ -391,27 +389,11 @@ const EnhancedDashHome = () => {
         variants={containerVariants}
       >
         <motion.div
-          className="col-span-12 xl:col-span-8"
-          whileHover={{ scale: 1.01 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <FinancialHeatmap title="Financial Activity Overview" data={monthlyAmtData} />
-        </motion.div>
-
-        <motion.div
-          className="col-span-12 xl:col-span-4"
-          whileHover={{ scale: 1.01 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <InvestmentTreemap title="Asset Allocation" data={weekAmtData} />
-        </motion.div>
-
-        <motion.div
           className="col-span-12"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <PerformanceChart title="Key Performance Indicators" />
+          <SimpleChart title="Monthly Collections" data={monthlyAmtData} />
         </motion.div>
       </motion.div>
 
