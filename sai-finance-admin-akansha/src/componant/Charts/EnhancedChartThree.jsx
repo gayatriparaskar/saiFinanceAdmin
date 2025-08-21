@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const EnhancedChartThree = () => {
   const [state, setState] = useState({
-    series: [65, 34, 45, 12],
+    series: [245, 189, 156, 89],
   });
 
   const [isVisible, setIsVisible] = useState(false);
