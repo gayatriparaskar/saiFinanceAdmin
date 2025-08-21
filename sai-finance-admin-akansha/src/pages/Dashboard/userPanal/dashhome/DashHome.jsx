@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
-import ChartOne from "../../../../componant/Charts/ChartOne";
-import ChartTwo from "../../../../componant/Charts/ChartTwo";
-import ChartThree from "../../../../componant/Charts/ChartThree";
+import RevenueChart from "../../../../componant/Charts/RevenueChart";
+import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
+import ActivityChart from "../../../../componant/Charts/ActivityChart";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
 
