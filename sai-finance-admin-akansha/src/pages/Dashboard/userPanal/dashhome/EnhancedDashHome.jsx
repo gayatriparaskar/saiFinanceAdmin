@@ -36,9 +36,7 @@ const EnhancedDashHome = () => {
   useEffect(() => {
     axios.get("account/").then((res) => {
       if (res?.data?.result) {
-        const activeSavings = res.data.result.filter(account =>
-          account.account_type === 'savings' && account.status === 'active'
-        );
+        const activeSavings = res.data.result
         setActiveSavingsUsers(activeSavings.length);
       } else {
         setActiveSavingsUsers(0);
