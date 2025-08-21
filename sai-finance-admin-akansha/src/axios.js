@@ -1,15 +1,23 @@
 import axios from "axios";
-//  const API_BASE_URL = "https://api.learn2ern.com/api/";
-//////////////////////
-//  const API_BASE_URL = "https://learn2earn-alpha.vercel.app/";
-//////////////////////
- const API_BASE_URL = "https://sai-finance.vercel.app/api/";
+
+// Primary API endpoint
+const API_BASE_URL = "https://sai-finance.vercel.app/api/";
+
+// Fallback endpoints in order of preference
+const FALLBACK_ENDPOINTS = [
+  "https://api.learn2ern.com/api/",
+  "https://learn2earn-alpha.vercel.app/"
+];
 
 const instance = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000, // 30 seconds timeout (increased from 10s)
+  timeout: 20000, // 20 seconds timeout
   headers: {
     "Content-Type": "application/json",
+  },
+  // Add retry configuration
+  validateStatus: function (status) {
+    return status >= 200 && status < 300; // default
   },
 });
 
@@ -52,9 +60,15 @@ instance.interceptors.response.use(
     else if (error.code === 'ECONNABORTED') {
       console.warn('Request timeout - API might be slow or down. Consider retrying.');
       error.isTimeout = true;
-    } else if (error.message === 'Network Error') {
+    } else if (error.message === 'Network Error' || error.code === 'NETWORK_ERROR') {
       console.warn('Network Error - API server might be unavailable');
       error.isNetworkError = true;
+
+      // Auto-retry with fallback endpoint for critical requests
+      if (error.config && !error.config._retried) {
+        console.log('Attempting automatic retry with fallback endpoint...');
+        return retryWithFallback(error.config);
+      }
     } else if (error.response) {
       // Server responded with error status
       console.warn(`API Error ${error.response.status}: ${error.response.statusText}`);
@@ -72,5 +86,52 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Retry function with fallback endpoints
+const retryWithFallback = async (originalConfig) => {
+  for (const fallbackUrl of FALLBACK_ENDPOINTS) {
+    try {
+      console.log(`Trying fallback endpoint: ${fallbackUrl}`);
+
+      const fallbackConfig = {
+        ...originalConfig,
+        baseURL: fallbackUrl,
+        _retried: true
+      };
+
+      // Add auth header if exists
+      const token = localStorage.getItem('token');
+      if (token) {
+        fallbackConfig.headers = {
+          ...fallbackConfig.headers,
+          Authorization: token
+        };
+      }
+
+      const response = await axios(fallbackConfig);
+
+      // If successful, update the instance base URL
+      instance.defaults.baseURL = fallbackUrl;
+      console.log(`Successfully switched to fallback endpoint: ${fallbackUrl}`);
+
+      return response;
+    } catch (fallbackError) {
+      console.log(`Fallback endpoint ${fallbackUrl} also failed:`, fallbackError.message);
+    }
+  }
+
+  // If all fallbacks fail, throw the original error
+  throw originalConfig.originalError || new Error('All API endpoints are unavailable');
+};
+
+// Add method to test connectivity
+instance.testConnectivity = async () => {
+  try {
+    const response = await instance.get('health');
+    return { success: true, endpoint: instance.defaults.baseURL };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
 
 export default instance;
