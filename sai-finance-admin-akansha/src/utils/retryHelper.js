@@ -51,8 +51,16 @@ export const createTimeoutAwareCall = (apiCall, options = {}) => {
     try {
       return await retryApiCall(apiCall, maxRetries);
     } catch (error) {
+      // Handle authentication errors immediately
+      if (error.response?.status === 401 || error.isAuthError) {
+        console.warn("Authentication failed - redirecting to login");
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
+
       console.error("API call failed after retries:", error);
-      
+
       if (showToast) {
         showToast({
           title: "Connection Error",
