@@ -478,7 +478,7 @@ function LoanAccount() {
                 {t('Cancel', 'Cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                {t('Delete', 'हटाएं')}
+                {t('Delete', 'Delete')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
