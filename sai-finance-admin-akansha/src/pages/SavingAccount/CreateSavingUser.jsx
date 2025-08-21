@@ -256,7 +256,7 @@ const CreateSavingUser = () => {
             type="submit"
             className="px-4 py-2 bg-primaryDark text-white font-medium rounded-md hover:bg-indigo-700"
           >
-            {t('Submit Saving User', 'ब��त उपयोगकर्ता जमा करें')}
+            {t('Submit Saving User', 'Submit Saving User')}
           </button>
         </div>
       </form>
