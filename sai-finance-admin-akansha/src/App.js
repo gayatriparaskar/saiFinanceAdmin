@@ -2,7 +2,7 @@ import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import EnhancedMainroute from "./routes/EnhancedMainroute";
-import ModernCursor from "./components/ModernCursor/ModernCursor";
+import SimpleCursor from "./components/SimpleCursor/SimpleCursor";
 import "./i18n"; // Import i18n configuration
 
 function App() {
