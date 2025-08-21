@@ -500,7 +500,7 @@ function LoanAccount() {
                 }
               />
               <Input
-                placeholder={t('Phone Number', 'फोन नंबर')}
+                placeholder={t('Phone Number', 'Phone Number')}
                 value={editData?.phone_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, phone_number: e.target.value })
