@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
 import SimpleChart from "../../../../componant/Charts/SimpleChart";
+import MonthlyChart from "../../../../componant/Charts/MonthlyChart";
+import WeeklyChart from "../../../../componant/Charts/WeeklyChart";
+import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
 import axios from "../../../../axios";
 import { handleNetworkError, isNetworkError } from "../../../../utils/errorHandler";
 import { debugNetworkIssues, showNetworkStatus } from "../../../../utils/networkStatus";
@@ -365,11 +368,35 @@ const FixedEnhancedDashHome = () => {
         className="grid grid-cols-12 gap-6"
       >
         <motion.div
-          className="col-span-12"
+          className="col-span-12 xl:col-span-6"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <SimpleChart title="Monthly Collections" data={monthlyAmtData} />
+          <SimpleChart title="Simple Overview" data={monthlyAmtData} />
+        </motion.div>
+
+        <motion.div
+          className="col-span-12 xl:col-span-6"
+          whileHover={{ scale: 1.01 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <MonthlyChart title="Monthly Statistics" data={monthlyAmtData} />
+        </motion.div>
+
+        <motion.div
+          className="col-span-12 xl:col-span-6"
+          whileHover={{ scale: 1.01 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <WeeklyChart title="Weekly Statistics" data={weekAmtData} />
+        </motion.div>
+
+        <motion.div
+          className="col-span-12 xl:col-span-6"
+          whileHover={{ scale: 1.01 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <PerformanceChart title="Performance Metrics" />
         </motion.div>
       </motion.div>
 
