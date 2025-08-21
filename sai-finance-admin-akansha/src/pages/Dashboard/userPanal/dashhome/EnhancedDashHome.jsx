@@ -5,7 +5,6 @@ import SimpleChart from "../../../../componant/Charts/SimpleChart";
 import MonthlyChart from "../../../../componant/Charts/MonthlyChart";
 import WeeklyChart from "../../../../componant/Charts/WeeklyChart";
 import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
-import CursorTrail from "../../../../components/CursorTrail/CursorTrail";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
 
