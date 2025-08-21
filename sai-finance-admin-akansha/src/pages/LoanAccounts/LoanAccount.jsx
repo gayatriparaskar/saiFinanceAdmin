@@ -489,7 +489,7 @@ function LoanAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Edit User', 'उपयोगकर्ता संपादित करें')}</DrawerHeader>
+          <DrawerHeader>{t('Edit User', 'Edit User')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
