@@ -241,7 +241,7 @@ const CreateSavingUser = () => {
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
             >
-              <option value="">{t('Select Officer', 'अधिकारी चुनें')}</option>
+              <option value="">{t('Select Officer', 'Select Officer')}</option>
               {officerData?.map((el) => (
                 <option key={el._id} value={el._id}>
                   {el.name}
