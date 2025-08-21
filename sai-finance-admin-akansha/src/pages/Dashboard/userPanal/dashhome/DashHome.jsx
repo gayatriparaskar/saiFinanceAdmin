@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
 import SimpleChart from "../../../../componant/Charts/SimpleChart";
+import MonthlyChart from "../../../../componant/Charts/MonthlyChart";
+import WeeklyChart from "../../../../componant/Charts/WeeklyChart";
+import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
 
@@ -313,9 +316,33 @@ useEffect(() => {
         <motion.div
           custom={0}
           variants={chartVariants}
-          className="col-span-12"
+          className="col-span-12 xl:col-span-6"
         >
-          <SimpleChart title="Monthly Collections" data={monthlyAmtData} />
+          <SimpleChart title="Simple Overview" data={monthlyAmtData} />
+        </motion.div>
+
+        <motion.div
+          custom={1}
+          variants={chartVariants}
+          className="col-span-12 xl:col-span-6"
+        >
+          <MonthlyChart title="Monthly Statistics" data={monthlyAmtData} />
+        </motion.div>
+
+        <motion.div
+          custom={2}
+          variants={chartVariants}
+          className="col-span-12 xl:col-span-6"
+        >
+          <WeeklyChart title="Weekly Statistics" data={weekAmtData} />
+        </motion.div>
+
+        <motion.div
+          custom={3}
+          variants={chartVariants}
+          className="col-span-12 xl:col-span-6"
+        >
+          <PerformanceChart title="Performance Metrics" />
         </motion.div>
       </motion.div>
 
