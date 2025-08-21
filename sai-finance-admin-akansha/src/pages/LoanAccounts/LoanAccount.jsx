@@ -400,7 +400,7 @@ function LoanAccount() {
       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
           <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">{t('Loan Accounts', 'ऋण खाते')}</h3>
+            <h3 className="text-xl font-bold text-gray-800">{t('Loan Accounts', 'Loan Accounts')}</h3>
           </div>
           
           {/* Only the table content scrolls */}
@@ -454,7 +454,7 @@ function LoanAccount() {
             <Button variant="outline" mr={3} onClick={onClose2}>
               {t('Cancel', 'रद्द करें')}
             </Button>
-            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
+            <Button colorScheme="blue">{t('Save', 'स���व करें')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
