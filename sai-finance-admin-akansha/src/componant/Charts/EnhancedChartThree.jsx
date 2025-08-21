@@ -31,8 +31,8 @@ const EnhancedChartThree = () => {
         }
       },
     },
-    colors: ['#0d9488', '#f97316', '#8b5cf6', '#06b6d4'],
-    labels: ['Loan Accounts', 'Saving Accounts', 'Active Users', 'Pending'],
+    colors: ['#2563eb', '#7c3aed', '#10b981', '#f59e0b'],
+    labels: ['Loan Accounts', 'Saving Accounts', 'Active Officers', 'Collections'],
     legend: {
       show: false,
       position: 'bottom',
