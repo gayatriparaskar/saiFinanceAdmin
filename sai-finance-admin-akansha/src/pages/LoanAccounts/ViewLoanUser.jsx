@@ -146,25 +146,6 @@ function ViewLoanUser() {
         ),
       },
 
-      // {
-      //   Header: "Loan Ammount",
-      //   accessor: "loan_amount",
-      //   Cell: ({ value, row: { original } }) => (
-      //     <>
-      //       {/* {console.log(original)} */}
-      //       <Cell text={`Rs. ${original?.loan_detail_id?.loan_amount}`} />
-      //     </>
-      //   ),
-      // },
-      // {
-      //   Header: "Total Pay Ammount",
-      //   accessor: "total_amount",
-      //   Cell: ({ value, row: { original } }) => (
-      //     <>
-      //       <Cell text={`Rs. ${value}`} />
-      //     </>
-      //   ),
-      // },
 
       {
         Header: t('EMI Amount/Day', 'EMI Amount/Day'),
