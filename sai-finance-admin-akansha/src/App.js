@@ -16,7 +16,7 @@ function App() {
       transition={{ duration: 0.8 }}
     >
       <QueryClientProvider client={queryClient}>
-        <EnhancedCursor />
+        <ModernCursor />
         <EnhancedMainroute/>
       </QueryClientProvider>
     </motion.div>
