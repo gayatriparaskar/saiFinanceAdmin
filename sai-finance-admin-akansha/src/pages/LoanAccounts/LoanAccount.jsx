@@ -475,7 +475,7 @@ function LoanAccount() {
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose} variant="outline">
-                {t('Cancel', 'रद्द करें')}
+                {t('Cancel', 'Cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
                 {t('Delete', 'हटाएं')}
@@ -489,7 +489,7 @@ function LoanAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Edit User', 'उपयोगकर्ता संपादित ��रें')}</DrawerHeader>
+          <DrawerHeader>{t('Edit User', 'उपयोगकर्ता संपादित करें')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
