@@ -325,7 +325,7 @@ useEffect(() => {
           variants={chartVariants}
           className="col-span-12 xl:col-span-5"
         >
-          <ChartTwo weekDays={weekDays} weekAmtData={weekAmtData} />
+          <ActivityChart title="Daily Activities" data={weekAmtData} />
         </motion.div>
 
         <motion.div
