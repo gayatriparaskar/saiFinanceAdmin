@@ -471,7 +471,7 @@ function LoanAccount() {
               {t('Delete User', 'Delete User')}
             </AlertDialogHeader>
             <AlertDialogBody>
-              {t('Are you sure you want to delete this user? This action cannot be undone.', 'क्या आप वाकई इस उपयोगकर्ता को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')}
+              {t('Are you sure you want to delete this user? This action cannot be undone.', 'Are you sure you want to delete this user? This action cannot be undone.')}
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose} variant="outline">
@@ -489,7 +489,7 @@ function LoanAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Edit User', 'उपयोगकर्ता संपादित करें')}</DrawerHeader>
+          <DrawerHeader>{t('Edit User', 'उपयोगकर्ता संपादित ��रें')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
