@@ -49,7 +49,7 @@ const SimpleChart = ({ title = "Financial Overview", data = [] }) => {
       curve: 'smooth',
       width: 3
     },
-    colors: ['#3b82f6'],
+    colors: ['#ff6b6b'],
     grid: {
       borderColor: '#e5e7eb',
       strokeDashArray: 4
@@ -84,7 +84,7 @@ const SimpleChart = ({ title = "Financial Overview", data = [] }) => {
     markers: {
       size: 5,
       colors: ['#ffffff'],
-      strokeColors: ['#3b82f6'],
+      strokeColors: ['#ff6b6b'],
       strokeWidth: 2,
       hover: {
         size: 7
