@@ -136,7 +136,7 @@ const AddSavingCollection = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-24 pb-6 px-4 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-20 pb-6 px-4 relative overflow-hidden"
     >
       {/* Animated Header */}
       <motion.div
