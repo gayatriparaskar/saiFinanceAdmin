@@ -468,7 +468,7 @@ function LoanAccount() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              {t('Delete User', 'उपयोगकर्ता हटाएं')}
+              {t('Delete User', 'Delete User')}
             </AlertDialogHeader>
             <AlertDialogBody>
               {t('Are you sure you want to delete this user? This action cannot be undone.', 'क्या आप वाकई इस उपयोगकर्ता को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')}
