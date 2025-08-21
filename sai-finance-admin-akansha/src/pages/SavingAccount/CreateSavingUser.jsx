@@ -208,7 +208,7 @@ const CreateSavingUser = () => {
           </div>
           <div className="mt-4">
             <Button colorScheme="teal" onClick={() => setIsModalOpen(true)}>
-              {t('Generate Details', 'विवरण जनरेट करें')}
+              {t('Generate Details', 'Generate Details')}
             </Button>
           </div>
         </div>
