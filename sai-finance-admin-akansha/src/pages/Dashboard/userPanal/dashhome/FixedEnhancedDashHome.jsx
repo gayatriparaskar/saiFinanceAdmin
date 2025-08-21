@@ -44,7 +44,16 @@ const FixedEnhancedDashHome = () => {
       }
     }).catch((error) => {
       console.error("Error fetching savings accounts:", error);
-      // Use mock data when API fails
+
+      // Check if it's an authentication error
+      if (error.response?.status === 401 || error.isAuthError) {
+        console.warn("Authentication failed - token may be invalid or expired");
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
+
+      // For other errors, use mock data
       setActiveSavingsUsers(24);
     });
   }, []);
