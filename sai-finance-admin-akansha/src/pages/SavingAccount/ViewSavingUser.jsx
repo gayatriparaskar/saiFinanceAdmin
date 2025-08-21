@@ -176,7 +176,7 @@ function ViewSavingUser() {
 
       const rows = records.map((item) => [
         dayjs(item.created_on).format("D MMM, YYYY h:mm A"),
-        t('Saving Deposit', 'बचत जमा'),
+        "Saving Deposit",
         `Rs. ${item.amount || 0}`,
         `Rs. ${item.total_penalty_amount || 0}`,
         item.collected_officer_name || "-",
@@ -186,11 +186,11 @@ function ViewSavingUser() {
         startY,
         head: [
           [
-            t('Date', 'तारीख'),
-            t('Description', 'विवरण'),
-            t('Amount (Rs.)', 'राशि (रु.)'),
-            t('Penalty (Rs.)', 'जुर्माना (रु.)'),
-            t('Collected By', 'संग्रहकर्ता'),
+            "Date",
+            "Description",
+            "Amount (Rs.)",
+            "Penalty (Rs.)",
+            "Collected By",
           ],
         ],
         body: rows,
@@ -215,7 +215,7 @@ function ViewSavingUser() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text(t('Yearly Summary', 'वार्��िक सारांश'), 14, startY);
+    doc.text(t('Yearly Summary', 'वार्षिक सारांश'), 14, startY);
     startY += 6;
 
     const yearlyRows = Object.entries(groupedByYear).map(([year, records]) => {
