@@ -57,7 +57,7 @@ const MonthlyChart = ({ title = "Monthly Statistics", data = [] }) => {
         opacityTo: 0.3
       }
     },
-    colors: ['#10b981'],
+    colors: ['#4ecdc4'],
     grid: {
       borderColor: '#e5e7eb',
       strokeDashArray: 4
@@ -92,7 +92,7 @@ const MonthlyChart = ({ title = "Monthly Statistics", data = [] }) => {
     markers: {
       size: 4,
       colors: ['#ffffff'],
-      strokeColors: ['#10b981'],
+      strokeColors: ['#4ecdc4'],
       strokeWidth: 2,
       hover: {
         size: 6
