@@ -317,7 +317,7 @@ useEffect(() => {
           variants={chartVariants}
           className="col-span-12 xl:col-span-7"
         >
-          <RevenueChart title="Revenue Analytics Dashboard" data={monthlyAmtData} />
+          <FinancialHeatmap title="Monthly Activity Tracker" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
