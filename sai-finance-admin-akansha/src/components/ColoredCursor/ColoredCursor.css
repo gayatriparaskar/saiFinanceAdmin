@@ -1,0 +1,31 @@
+/* Hide default cursor */
+* {
+  cursor: none !important;
+}
+
+.colored-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: normal;
+}
+
+.cursor-dot {
+  width: 12px;
+  height: 12px;
+  background: #3b82f6;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Show cursor for interactive elements */
+a, button, input, select, textarea {
+  cursor: pointer !important;
+}
+
+/* Different cursor for text areas */
+input[type="text"], input[type="email"], input[type="password"], textarea {
+  cursor: text !important;
+}
