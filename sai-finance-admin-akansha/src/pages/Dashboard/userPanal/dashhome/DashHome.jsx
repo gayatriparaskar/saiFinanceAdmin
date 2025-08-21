@@ -260,7 +260,7 @@ useEffect(() => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className=" bg-primaryBg pb-8 px-4 lg:px-6"
+      className="bg-primaryBg pt-16 pb-8 px-4 lg:px-6"
     >
       {/* Header */}
       <motion.div
