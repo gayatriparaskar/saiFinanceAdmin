@@ -98,6 +98,15 @@ function SavingAccount() {
         }
       } catch (error) {
         console.error('Failed to load savings accounts:', error);
+
+        // Check if it's an authentication error
+        if (error.response?.status === 401 || error.isAuthError) {
+          console.warn("Authentication failed - redirecting to login");
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+          return;
+        }
+
         setError(error);
         // Fallback data
         setData([]);
