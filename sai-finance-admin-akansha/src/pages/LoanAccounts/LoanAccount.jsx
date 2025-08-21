@@ -289,7 +289,7 @@ function LoanAccount() {
       {/* Fixed Header Section */}
       <motion.div
         variants={itemVariants}
-        className="flex-shrink-0 pt-20 pb-0 px-4 mb-0"
+        className="flex-shrink-0 pt-24 pb-0 px-4 mb-0"
       >
         <section className="md:p-1">
           <div className="py-6">
@@ -513,7 +513,7 @@ function LoanAccount() {
               {t('Cancel', 'रद्द करें')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              {t('Save', 'सेव ��रें')}
+              {t('Save', 'सेव करें')}
             </Button>
           </DrawerFooter>
         </DrawerContent>

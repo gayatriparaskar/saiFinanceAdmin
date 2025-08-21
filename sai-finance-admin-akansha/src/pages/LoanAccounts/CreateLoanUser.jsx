@@ -142,7 +142,7 @@ const CreateLoanUser = () => {
   };
 
   return (
-    <div className="m-6 py-8 mt-20 pt-8">
+    <div className="m-6 py-8 mt-24 pt-8">
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
           {t("Create Loan Customer")}

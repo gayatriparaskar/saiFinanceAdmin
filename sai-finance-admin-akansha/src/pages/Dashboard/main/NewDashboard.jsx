@@ -8,10 +8,8 @@ import Layout from './Layout'
 function NewDashboard() {
   return (
     <div>
-          <NewNavbar/>
-
+      <NewNavbar/>
       <Layout/>
-  
     </div>
   )
 }

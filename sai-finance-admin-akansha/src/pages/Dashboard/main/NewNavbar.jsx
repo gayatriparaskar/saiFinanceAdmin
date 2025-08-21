@@ -91,19 +91,19 @@ const NewNavbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="w-full top-0 flex items-center justify-between bg-white p-2 shadow-lg fixed z-[1000] border-b-2 border-primary/10"
+      className="w-full flex items-center justify-between px-6 py-4 shadow-lg fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-primary/10"
     >
       {/* Logo with animation */}
       <motion.div 
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        className="text-xl font-bold text-bgBlue w-12"
+        className="text-xl font-bold text-bggr w-12 flex items-center"
       >
         <img src={Logo} alt="Sai Finance" className="w-full" />
       </motion.div>
 
       {/* Menu Items with staggered animation */}
-      <ul className="flex space-x-6 font-semibold">
+      <ul className="flex items-center space-x-6 font-semibold">
         {[
           { name: t("Home"), path: "/dash/home" },
           { name: t("Loan Account"), path: "/dash/loan-account" },
@@ -118,10 +118,11 @@ const NewNavbar = () => {
             animate="visible"
             whileHover={{ y: -2 }}
             transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            className="flex items-center"
           >
             <Link 
               to={item.path} 
-              className={`relative px-3 py-2 rounded-lg transition-all duration-300 ${
+              className={`relative px-3 py-2 rounded-lg transition-all duration-300 flex items-center ${
                 isActive(item.path) 
                   ? "text-primary bg-primary/10 font-bold" 
                   : "text-gray-700 hover:text-primary hover:bg-primary/5"
@@ -142,7 +143,7 @@ const NewNavbar = () => {
 
         {/* Payment Controls Dropdown */}
         <motion.li 
-          className="relative z-100"
+          className="relative flex items-center"
           custom={4}
           variants={menuItemVariants}
           initial="hidden"
@@ -163,6 +164,7 @@ const NewNavbar = () => {
             <motion.div
               animate={{ rotate: openDropdown === "payment" ? 180 : 0 }}
               transition={{ duration: 0.2 }}
+              className="flex items-center"
             >
               <MdKeyboardArrowDown size={20} />
             </motion.div>
@@ -174,7 +176,7 @@ const NewNavbar = () => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="absolute left-0 mt-1 w-48 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden"
+              className="absolute left-0 mt-2 w-48 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50"
             >
               <Link to="/dash/payment" onClick={closeDropdown}>
                 <motion.li 
@@ -202,7 +204,7 @@ const NewNavbar = () => {
       {/* Language Switcher and Settings */}
       <div className="flex items-center gap-2">
         {/* Language Switcher */}
-        <motion.div className="relative">
+        <motion.div className="relative flex items-center">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -214,6 +216,7 @@ const NewNavbar = () => {
             <motion.div
               animate={{ rotate: openDropdown === "language" ? 180 : 0 }}
               transition={{ duration: 0.2 }}
+              className="flex items-center"
             >
               <MdKeyboardArrowDown size={16} />
             </motion.div>
@@ -254,7 +257,7 @@ const NewNavbar = () => {
           whileHover={{ scale: 1.05, rotate: 90 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsMenuOpen2(!isMenuOpen2)}
-          className="flex text-sm bg-primary rounded-xl p-2 text-white text-xl font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="flex items-center text-sm bg-primary rounded-xl p-2 text-white text-xl font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           <IoSettings size={20} />
         </motion.button>

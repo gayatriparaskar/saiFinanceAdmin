@@ -430,7 +430,7 @@ function ViewLoanUser() {
   };
 
   return (
-    <div className="lg:py-8 py-4 bg-primaryBg pt-20 mt-6">
+    <div className="lg:py-8 py-4 bg-primaryBg pt-24 mt-6">
       <section className=" md:p-1 ">
         <div className="py-6 ">
           <div className="flex  justify-between items-center ">

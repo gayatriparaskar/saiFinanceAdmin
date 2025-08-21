@@ -247,7 +247,7 @@ useEffect(() => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-primaryBg flex items-center justify-center">
+      <div className=" bg-primaryBg flex items-center justify-center z-[-1000] pt-30">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
@@ -262,7 +262,7 @@ useEffect(() => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-primaryBg pt-20 pb-8 px-4 lg:px-6"
+      className=" bg-primaryBg pt-24 pb-8 px-4 lg:px-6"
     >
       {/* Header */}
       <motion.div
