@@ -379,7 +379,7 @@ const FixedEnhancedDashHome = () => {
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <ActivityChart title="Weekly Activity Report" data={weekAmtData} />
+          <InvestmentTreemap title="Portfolio Distribution" data={weekAmtData} />
         </motion.div>
 
         <motion.div
