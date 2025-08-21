@@ -162,7 +162,7 @@ const EnhancedChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
     markers: {
       size: 6,
       colors: "#fff",
-      strokeColors: ["#0d9488", "#f97316"],
+      strokeColors: ["#2563eb", "#7c3aed", "#10b981"],
       strokeWidth: 3,
       strokeOpacity: 0.9,
       strokeDashArray: 0,
