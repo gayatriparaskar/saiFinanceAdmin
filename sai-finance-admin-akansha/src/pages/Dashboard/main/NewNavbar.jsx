@@ -91,7 +91,7 @@ const NewNavbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="w-full flex items-center justify-between px-6 py-4 shadow-lg fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b-2 border-primary/10"
+      className="w-full flex items-center justify-between px-6 py-3 shadow-lg fixed top-0 left-0 right-0 z-[9999] bg-white/95 backdrop-blur-md border-b-2 border-primary/10 h-20"
     >
       {/* Logo with animation */}
       <motion.div 
@@ -176,7 +176,7 @@ const NewNavbar = () => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="absolute left-0 mt-2 w-48 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50"
+              className="absolute left-0 mt-2 w-48 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-[10000]"
             >
               <Link to="/dash/payment" onClick={closeDropdown}>
                 <motion.li 
@@ -228,7 +228,7 @@ const NewNavbar = () => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="absolute right-0 mt-1 w-32 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50"
+              className="absolute right-0 mt-1 w-32 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-[10000]"
             >
               <motion.li
                 whileHover={{ backgroundColor: "#8b5cf6", color: "white" }}
@@ -270,7 +270,7 @@ const NewNavbar = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.2 }}
-          className="w-72 absolute z-50 right-4 top-16 border border-primary/20 bg-white rounded-2xl shadow-2xl overflow-hidden"
+          className="w-72 absolute z-[10000] right-4 top-16 border border-primary/20 bg-white rounded-2xl shadow-2xl overflow-hidden"
         >
           <div className="bg-primary/5 p-4 relative">
             <motion.button
@@ -330,7 +330,7 @@ const NewNavbar = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/10 z-40"
+          className="fixed inset-0 bg-black/10 z-[9998]"
           onClick={() => setIsMenuOpen2(false)}
         />
       )}

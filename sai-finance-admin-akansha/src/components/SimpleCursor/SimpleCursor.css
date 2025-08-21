@@ -1,0 +1,122 @@
+/* Sweet and Simple Custom Cursor */
+body {
+  cursor: none !important;
+}
+
+.simple-cursor {
+  position: fixed;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(37, 99, 235, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+  background: rgba(37, 99, 235, 0.05);
+  backdrop-filter: blur(4px);
+}
+
+.cursor-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: #2563eb;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.2s ease;
+}
+
+/* Hover effects */
+.simple-cursor.hovering {
+  transform: translate(-50%, -50%) scale(1.5);
+  border-color: #ec4899;
+  background: rgba(236, 72, 153, 0.1);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+}
+
+.simple-cursor.hovering .cursor-dot {
+  background: #ec4899;
+  transform: translate(-50%, -50%) scale(1.5);
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+}
+
+/* Click effects */
+.simple-cursor.clicking {
+  transform: translate(-50%, -50%) scale(0.8);
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.simple-cursor.clicking .cursor-dot {
+  background: #10b981;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+/* Sweet floating animation */
+.simple-cursor::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, 
+    rgba(37, 99, 235, 0.2), 
+    rgba(236, 72, 153, 0.2), 
+    rgba(16, 185, 129, 0.2));
+  z-index: -1;
+  opacity: 0;
+  animation: sweet-glow 3s ease-in-out infinite;
+}
+
+@keyframes sweet-glow {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+/* Hide on mobile devices */
+@media (max-width: 768px) {
+  body {
+    cursor: auto !important;
+  }
+  
+  .simple-cursor {
+    display: none !important;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .simple-cursor,
+  .cursor-dot {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .simple-cursor::before {
+    animation: none !important;
+  }
+}
+
+/* Override existing cursor styles */
+* {
+  cursor: none !important;
+}
+
+input, textarea, select {
+  cursor: none !important;
+}
+
+button, a, .clickable {
+  cursor: none !important;
+}

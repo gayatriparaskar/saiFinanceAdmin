@@ -5,7 +5,7 @@ import EnhancedDashRoute from '../route/EnhancedDashroute'
 function EnhancedLayout() {
   return (
     <motion.div 
-      className='bg-gradient-to-br from-primaryBg via-white to-secondaryBg my-10'
+      className='bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-8 pb-10'
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}

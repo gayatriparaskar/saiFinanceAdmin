@@ -146,7 +146,7 @@ const CreateSavingUser = () => {
 
 
   return (
-    <div className="m-6 py-8 mt-24 pt-8">
+    <div className="m-6 py-8">
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
           {t("Create Saving Account User")}
@@ -208,7 +208,7 @@ const CreateSavingUser = () => {
           </div>
           <div className="mt-4">
             <Button colorScheme="teal" onClick={() => setIsModalOpen(true)}>
-              {t('Generate Details', 'विवरण जनरेट करें')}
+              {t('Generate Details', 'Generate Details')}
             </Button>
           </div>
         </div>
@@ -234,14 +234,14 @@ const CreateSavingUser = () => {
           ))}
           <div className="grid grid-cols-1">
             <label className="text-sm font-medium text-gray-700">
-              {t('Select Officer', 'अधिकारी चुनें')}
+              {t('Select Officer', 'Select Officer')}
             </label>
             <select
               name="officer_id"
               onChange={handleChange}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
             >
-              <option value="">{t('Select Officer', 'अधिकारी चुनें')}</option>
+              <option value="">{t('Select Officer', 'Select Officer')}</option>
               {officerData?.map((el) => (
                 <option key={el._id} value={el._id}>
                   {el.name}
@@ -256,7 +256,7 @@ const CreateSavingUser = () => {
             type="submit"
             className="px-4 py-2 bg-primaryDark text-white font-medium rounded-md hover:bg-indigo-700"
           >
-            {t('Submit Saving User', 'ब��त उपयोगकर्ता जमा करें')}
+            {t('Submit Saving User', 'Submit Saving User')}
           </button>
         </div>
       </form>

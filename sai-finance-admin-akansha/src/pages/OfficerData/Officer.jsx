@@ -274,12 +274,12 @@ function Officer() {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="h-screen bg-primaryBg flex flex-col"
+      className="min-h-screen bg-primaryBg flex flex-col pt-8"
     >
       {/* Fixed Header Section */}
       <motion.div 
         variants={itemVariants}
-        className="flex-shrink-0 pt-24 pb-4 px-4"
+        className="flex-shrink-0 pb-4 px-4"
       >
         <section className="md:p-1">
           <div className="py-6">

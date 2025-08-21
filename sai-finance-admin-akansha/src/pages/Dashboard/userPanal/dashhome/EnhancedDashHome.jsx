@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import EnhancedCardDataStats from "../../../../componant/CardDataStats/EnhancedCardDataStats";
-import EnhancedChartOne from "../../../../componant/Charts/EnhancedChartOne";
-import EnhancedChartTwo from "../../../../componant/Charts/EnhancedChartTwo";
-import EnhancedChartThree from "../../../../componant/Charts/EnhancedChartThree";
+import SimpleChart from "../../../../componant/Charts/SimpleChart";
+import MonthlyChart from "../../../../componant/Charts/MonthlyChart";
+import WeeklyChart from "../../../../componant/Charts/WeeklyChart";
+import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
 import CursorTrail from "../../../../components/CursorTrail/CursorTrail";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
@@ -35,15 +36,23 @@ const EnhancedDashHome = () => {
   useEffect(() => {
     axios.get("account/").then((res) => {
       if (res?.data?.result) {
-        const activeSavings = res.data.result.filter(account =>
-          account.account_type === 'savings' && account.status === 'active'
-        );
+        const activeSavings = res.data.result
         setActiveSavingsUsers(activeSavings.length);
       } else {
         setActiveSavingsUsers(0);
       }
     }).catch((error) => {
       console.error("Error fetching savings accounts:", error);
+
+      // Check if it's an authentication error
+      if (error.response?.status === 401 || error.isAuthError) {
+        console.warn("Authentication failed - token may be invalid or expired");
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
+
+      // For other errors, set to 0
       setActiveSavingsUsers(0);
     });
   }, []);
@@ -236,7 +245,7 @@ const EnhancedDashHome = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-24 pb-6 px-4 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-16 pb-6 px-4 relative overflow-hidden"
     >
       {/* Cursor Trail */}
       <CursorTrail />
@@ -381,27 +390,35 @@ const EnhancedDashHome = () => {
         variants={containerVariants}
       >
         <motion.div
-          className="col-span-12 xl:col-span-8"
+          className="col-span-12 xl:col-span-6"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <EnhancedChartOne monthsData={monthsData} monthlyAmtData={monthlyAmtData} />
+          <SimpleChart title="Simple Overview" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
-          className="col-span-12 xl:col-span-4"
+          className="col-span-12 xl:col-span-6"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <EnhancedChartTwo weekDays={weekDays} weekAmtData={weekAmtData} />
+          <MonthlyChart title="Monthly Statistics" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
-          className="col-span-12"
+          className="col-span-12 xl:col-span-6"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <EnhancedChartThree />
+          <WeeklyChart title="Weekly Statistics" data={weekAmtData} />
+        </motion.div>
+
+        <motion.div
+          className="col-span-12 xl:col-span-6"
+          whileHover={{ scale: 1.01 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <PerformanceChart title="Performance Metrics" />
         </motion.div>
       </motion.div>
 
