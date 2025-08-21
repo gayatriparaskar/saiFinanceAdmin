@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import EnhancedCardDataStats from "../../../../componant/CardDataStats/EnhancedCardDataStats";
-import RevenueChart from "../../../../componant/Charts/RevenueChart";
+import FinancialHeatmap from "../../../../componant/Charts/FinancialHeatmap";
+import InvestmentTreemap from "../../../../componant/Charts/InvestmentTreemap";
 import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
-import ActivityChart from "../../../../componant/Charts/ActivityChart";
 import CursorTrail from "../../../../components/CursorTrail/CursorTrail";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
