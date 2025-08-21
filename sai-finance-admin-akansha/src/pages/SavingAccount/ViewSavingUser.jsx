@@ -210,21 +210,21 @@ function ViewSavingUser() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text(t('Yearly Summary', 'Yearly Summary'), 14, startY);
+    doc.text(t('Yearly Summary', 'वार्षिक सारांश'), 14, startY);
     startY += 6;
 
     const yearlyRows = Object.entries(groupedByYear).map(([year, records]) => {
-      const totalEMI = records.reduce((sum, r) => sum + (r.amount || 0), 0);
+      const totalAmount = records.reduce((sum, r) => sum + (r.amount || 0), 0);
       const totalPenalty = records.reduce(
         (sum, r) => sum + (r.total_penalty_amount || 0),
         0
       );
-      return [year, `Rs. ${totalEMI}, Rs. ${totalPenalty}`];
+      return [year, `Rs. ${totalAmount}`, `Rs. ${totalPenalty}`];
     });
 
     autoTable(doc, {
       startY,
-      head: [[t('Year', 'Year'), t('Total EMI', 'Total EMI'), t('Total Penalty', 'Total Penalty')]],
+      head: [[t('Year', 'वर्ष'), t('Total Amount', 'कुल राशि'), t('Total Penalty', 'कुल जुर्माना')]],
       body: yearlyRows,
       headStyles: { fillColor: [255, 204, 0], fontStyle: "bold" },
       styles: { fontSize: 10, cellPadding: 3 },
