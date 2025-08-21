@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
-import FinancialHeatmap from "../../../../componant/Charts/FinancialHeatmap";
-import InvestmentTreemap from "../../../../componant/Charts/InvestmentTreemap";
-import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
+import SimpleChart from "../../../../componant/Charts/SimpleChart";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
 
@@ -315,25 +313,9 @@ useEffect(() => {
         <motion.div
           custom={0}
           variants={chartVariants}
-          className="col-span-12 xl:col-span-7"
-        >
-          <FinancialHeatmap title="Monthly Activity Tracker" data={monthlyAmtData} />
-        </motion.div>
-
-        <motion.div
-          custom={1}
-          variants={chartVariants}
-          className="col-span-12 xl:col-span-5"
-        >
-          <InvestmentTreemap title="Financial Portfolio" data={weekAmtData} />
-        </motion.div>
-
-        <motion.div
-          custom={2}
-          variants={chartVariants}
           className="col-span-12"
         >
-          <PerformanceChart title="Overall Performance" />
+          <SimpleChart title="Monthly Collections" data={monthlyAmtData} />
         </motion.div>
       </motion.div>
 
