@@ -9,19 +9,43 @@ const NewLogin = () => {
   const [user_name, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
-      const response = await axios.post("admins/login", { user_name, password });
-      localStorage.setItem("token", response.data.accessToken);
-      if (response.data) {
+      // Try multiple possible endpoints
+      let response;
+      try {
+        response = await axios.post("admins/login", { user_name, password });
+      } catch (firstError) {
+        console.log('First endpoint failed, trying alternative...');
+        response = await axios.post("adminLogin", { email: user_name, password });
+      }
+
+      if (response.data && response.data.accessToken) {
+        localStorage.setItem("token", response.data.accessToken);
         window.location.replace("/dash");
+      } else {
+        setError("Login failed: Invalid response from server");
       }
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
+
+      if (error.isNetworkError) {
+        setError("Network error: Please check your internet connection and try again.");
+      } else if (error.response?.status === 401) {
+        setError("Invalid username or password. Please try again.");
+      } else if (error.response?.status === 404) {
+        setError("Login service not available. Please contact support.");
+      } else if (error.isTimeout) {
+        setError("Request timeout. Please try again.");
+      } else {
+        setError("Login failed. Please try again later.");
+      }
     } finally {
       setLoading(false);
     }
@@ -66,6 +90,12 @@ const NewLogin = () => {
                   Access your Sai Finance dashboard
                 </p>
               </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-600 text-sm font-medium">{error}</p>
+                </div>
+              )}
 
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-1">
