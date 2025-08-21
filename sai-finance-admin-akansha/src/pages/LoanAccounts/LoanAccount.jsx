@@ -493,7 +493,7 @@ function LoanAccount() {
           <DrawerBody>
             <div className="space-y-4">
               <Input
-                placeholder={t('Full Name', 'पूरा नाम')}
+                placeholder={t('Full Name', 'Full Name')}
                 value={editData?.full_name || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, full_name: e.target.value })
