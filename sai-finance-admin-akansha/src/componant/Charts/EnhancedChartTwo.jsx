@@ -114,7 +114,7 @@ const EnhancedChartTwo = ({ weekDays = [], weekAmtData = [] }) => {
       colors: ['transparent']
     },
     xaxis: { 
-      categories: Array.isArray(weekDays) && weekDays.length ? weekDays : [""],
+      categories: Array.isArray(weekDays) && weekDays.length ? weekDays : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
       labels: {
         style: {
           colors: '#64748b',
