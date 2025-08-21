@@ -62,6 +62,7 @@ function ViewLoanUser() {
   const cancelRef = React.useRef();
   const btnRef = React.useRef();
 
+
   useEffect(() => {
     async function fetchData() {
       axios.get(`users/`).then((response) => {
@@ -105,6 +106,30 @@ function ViewLoanUser() {
   }, []);
   console.log(Dailydata);
 
+  //   const initialFormState = {
+  //     user_name: "",
+  //     password: "",
+  //     full_name: "",
+  //     phone_number: "",
+  //     monthly_income: "",
+  //     pan_no: "",
+  //     aadhar_no: "",
+  //     address: "",
+  //     dob: "",
+  //     loan_details: {
+  //         loan_amount: 0,
+  //         principle_amount: 0,
+  //         file_charge: 500,
+  //         interest_rate: "",
+  //         duration_months: 4,
+  //         emi_day: 0,
+  //         total_amount: 0,
+  //         total_interest_pay: 0,
+  //         total_penalty_amount: 0,
+  //         total_due_amount:0
+  //     }
+  // }
+
   const columns = React.useMemo(
     () => [
       {
@@ -121,6 +146,7 @@ function ViewLoanUser() {
         ),
       },
 
+
       {
         Header: t('EMI Amount/Day', 'EMI Amount/Day'),
         accessor: "amount",
@@ -131,6 +157,14 @@ function ViewLoanUser() {
         accessor: "total_penalty_amount",
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${value}`} />,
       },
+
+      // {
+      //   Header: "Mobile Number",
+      //   accessor: "phone_number",
+      //   Cell: ({ value, row: { original } }) => (
+      //     <Cell text={`${Math.ceil(value)}`} />
+      //   ),
+      // },
 
       {
         Header: t('Collected By', 'Collected By'),
@@ -191,8 +225,7 @@ function ViewLoanUser() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [Dailydata]
   );
-
-  const generatePDF = () => {
+   const generatePDF = () => {
     const doc = new jsPDF();
     const userName = userdata?.full_name || "N/A";
     const startDate = dayjs(userdata?.active_loan_id?.created_on).format("D MMM, YYYY");
@@ -203,30 +236,26 @@ function ViewLoanUser() {
     const totalPay = userdata?.active_loan_id?.total_amount || 0;
 
     const pageWidth = doc.internal.pageSize.getWidth();
-    
-    // Check if current language is Hindi to add language indicator
-    const isHindi = t('localization_testing') === 'hindi';
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    const title = isHindi ? "SAI FINANCE LOAN STATEMENT (Hindi)" : "SAI FINANCE LOAN STATEMENT";
+    const title = t("SAI FINANCE LOAN STATEMENT", "स��ई फाइनेंस ऋण विवरण");
     const titleWidth = doc.getTextWidth(title);
     doc.text(title, (pageWidth - titleWidth) / 2, 20);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     let y = 30;
-    // Use English text in PDF to avoid font rendering issues
-    doc.text(`Name: ${userName}`, 14, y);
-    doc.text(`End Date: ${endDate}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Name', 'नाम')}: ${userName}`, 14, y);
+    doc.text(`${t('End Date', 'समाप्ति तिथि')}: ${endDate}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Start Date: ${startDate}`, 14, y);
-    doc.text(`Total Due: Rs. ${due}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Start Date', 'प्रारंभ तिथि')}: ${startDate}`, 14, y);
+    doc.text(`${t('Total Due', 'कुल बकाया')}: Rs. ${due}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Total Loan: Rs. ${loan}`, 14, y);
-    doc.text(`Total Paid: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Total Loan', 'कुल ऋण')}: Rs. ${loan}`, 14, y);
+    doc.text(`${t('Total Paid', 'कुल भुगतान')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Total Penalty: Rs. ${penalty}`, 14, y);
+    doc.text(`${t('Total Penalty', 'कुल जुर्माना')}: Rs. ${penalty}`, 14, y);
 
     const groupedByMonth = groupBy(Dailydata, item => dayjs(item.created_on).format("MMMM YYYY"));
     const groupedByYear = groupBy(Dailydata, item => dayjs(item.created_on).format("YYYY"));
@@ -236,12 +265,12 @@ function ViewLoanUser() {
     Object.entries(groupedByMonth).forEach(([monthYear, records]) => {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(13);
-      doc.text(`${monthYear}`, 14, startY);
+      doc.text(` ${monthYear}`, 14, startY);
       startY += 6;
 
       const rows = records.map(item => [
         dayjs(item.created_on).format("D MMM, YYYY h:mm A"),
-        "EMI Payment",
+        t('EMI Payment', 'EMI भुगतान'),
         `Rs. ${item.amount || 0}`,
         `Rs. ${item.total_penalty_amount || 0}`,
         item.collected_officer_name || "-"
@@ -249,7 +278,7 @@ function ViewLoanUser() {
 
       autoTable(doc, {
         startY,
-        head: [["Date", "Description", "Amount (Rs.)", "Penalty (Rs.)", "Collected By"]],
+        head: [[t('Date', 'तारीख'), t('Description', 'विवरण'), t('Amount (Rs.)', 'राशि (रु.)'), t('Penalty (Rs.)', 'जुर्माना (रु.)'), t('Collected By', 'संग्रहकर्ता')]],
         body: rows,
         headStyles: { fillColor: [211, 211, 211], fontStyle: 'bold' },
         styles: { fontSize: 10, cellPadding: 3 },
@@ -262,14 +291,14 @@ function ViewLoanUser() {
       const totalPenalty = records.reduce((sum, r) => sum + (r.total_penalty_amount || 0), 0);
       startY = doc.lastAutoTable.finalY + 4;
       doc.setFontSize(10);
-      doc.text(`Monthly Total EMI: Rs. ${totalEMI}`, 14, startY);
-      doc.text(`Monthly Total Penalty: Rs. ${totalPenalty}`, 100, startY);
+      doc.text(`${t('Monthly Total EMI', 'मासिक कुल EMI')}: Rs. ${totalEMI}`, 14, startY);
+      doc.text(`${t('Monthly Total Penalty', 'मासिक कुल ज��र्माना')}: Rs. ${totalPenalty}`, 100, startY);
       startY += 10;
     });
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text("Yearly Summary", 14, startY);
+    doc.text(t('Yearly Summary', 'वार्षिक सारांश'), 14, startY);
     startY += 6;
 
     const yearlyRows = Object.entries(groupedByYear).map(([year, records]) => {
@@ -280,7 +309,7 @@ function ViewLoanUser() {
 
     autoTable(doc, {
       startY,
-      head: [["Year", "Total EMI", "Total Penalty"]],
+      head: [[t('Year', 'वर्ष'), t('Total EMI', 'कुल EMI'), t('Total Penalty', 'कुल जुर्माना')]],
       body: yearlyRows,
       headStyles: { fillColor: [255, 204, 0], fontStyle: 'bold' },
       styles: { fontSize: 10, cellPadding: 3 },
@@ -288,8 +317,7 @@ function ViewLoanUser() {
       theme: 'striped'
     });
 
-    const fileName = isHindi ? `${userName}_Loan_Statement_Hindi.pdf` : `${userName}_Loan_Statement.pdf`;
-    doc.save(fileName);
+    doc.save(`${userName}_Loan_Statement.pdf`);
   };
 
   return (

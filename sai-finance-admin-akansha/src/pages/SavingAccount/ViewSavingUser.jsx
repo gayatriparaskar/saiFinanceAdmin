@@ -123,7 +123,11 @@ function ViewSavingUser() {
   const generatePDF = () => {
     const doc = new jsPDF();
     const userName = accountData?.full_name || "N/A";
-    const title = isLoanAccount ? t('LOAN STATEMENT', 'LOAN STATEMENT') : t('SAVING STATEMENT', 'SAVING STATEMENT');
+    // Check if current language is Hindi to add language indicator
+    const isHindi = t('localization_testing') === 'hindi';
+    const title = isLoanAccount
+      ? (isHindi ? "SAI FINANCE LOAN STATEMENT (Hindi)" : "SAI FINANCE LOAN STATEMENT")
+      : (isHindi ? "SAI FINANCE SAVING STATEMENT (Hindi)" : "SAI FINANCE SAVING STATEMENT");
     const startDate = dayjs(accountData?.created_on).format("D MMM, YYYY");
     const endDate = startDate;
 
@@ -143,16 +147,17 @@ function ViewSavingUser() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     let y = 30;
-    doc.text(`${t('Name', 'Name')}: ${userName}`, 14, y);
-    doc.text(`${t('End Date', 'End Date')}: ${endDate}`, pageWidth / 2 + 10, y);
+    // Use English text in PDF to avoid font rendering issues
+    doc.text(`Name: ${userName}`, 14, y);
+    doc.text(`End Date: ${endDate}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Start Date', 'Start Date')}: ${startDate}`, 14, y);
-    doc.text(`${t('Total Due', 'Total Due')}: Rs. ${due}`, pageWidth / 2 + 10, y);
+    doc.text(`Start Date: ${startDate}`, 14, y);
+    doc.text(`Total Due: Rs. ${due}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Amount', 'Amount')}: Rs. ${loan}`, 14, y);
-    doc.text(`${t('Total Paid', 'Total Paid')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
+    doc.text(`Amount: Rs. ${loan}`, 14, y);
+    doc.text(`Total Paid: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Total Penalty', 'Total Penalty')}: Rs. ${penalty}`, 14, y);
+    doc.text(`Total Penalty: Rs. ${penalty}`, 14, y);
 
     const groupedByMonth = groupBy(transactions, (item) =>
       dayjs(item.created_on).format("MMMM YYYY")
@@ -171,7 +176,7 @@ function ViewSavingUser() {
 
       const rows = records.map((item) => [
         dayjs(item.created_on).format("D MMM, YYYY h:mm A"),
-        t('EMI Payment', 'EMI Payment'),
+        "Saving Deposit",
         `Rs. ${item.amount || 0}`,
         `Rs. ${item.total_penalty_amount || 0}`,
         item.collected_officer_name || "-",
@@ -181,11 +186,11 @@ function ViewSavingUser() {
         startY,
         head: [
           [
-            t('Date', 'Date'),
-            t('Description', 'Description'),
-            t('Amount (Rs.)', 'Amount (Rs.)'),
-            t('Penalty (Rs.)', 'Penalty (Rs.)'),
-            t('Collected By', 'Collected By'),
+            "Date",
+            "Description",
+            "Amount (Rs.)",
+            "Penalty (Rs.)",
+            "Collected By",
           ],
         ],
         body: rows,
@@ -203,28 +208,28 @@ function ViewSavingUser() {
       );
       startY = doc.lastAutoTable.finalY + 4;
       doc.setFontSize(10);
-      doc.text(`${t('Monthly Total EMI', 'Monthly Total EMI')}: Rs. ${totalEMI}`, 14, startY);
-      doc.text(`${t('Monthly Total Penalty', 'Monthly Total Penalty')}: Rs. ${totalPenalty}`, 100, startY);
+      doc.text(`Monthly Total Amount: Rs. ${totalEMI}`, 14, startY);
+      doc.text(`Monthly Total Penalty: Rs. ${totalPenalty}`, 100, startY);
       startY += 10;
     });
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text(t('Yearly Summary', 'Yearly Summary'), 14, startY);
+    doc.text("Yearly Summary", 14, startY);
     startY += 6;
 
     const yearlyRows = Object.entries(groupedByYear).map(([year, records]) => {
-      const totalEMI = records.reduce((sum, r) => sum + (r.amount || 0), 0);
+      const totalAmount = records.reduce((sum, r) => sum + (r.amount || 0), 0);
       const totalPenalty = records.reduce(
         (sum, r) => sum + (r.total_penalty_amount || 0),
         0
       );
-      return [year, `Rs. ${totalEMI}, Rs. ${totalPenalty}`];
+      return [year, `Rs. ${totalAmount}`, `Rs. ${totalPenalty}`];
     });
 
     autoTable(doc, {
       startY,
-      head: [[t('Year', 'Year'), t('Total EMI', 'Total EMI'), t('Total Penalty', 'Total Penalty')]],
+      head: [["Year", "Total Amount", "Total Penalty"]],
       body: yearlyRows,
       headStyles: { fillColor: [255, 204, 0], fontStyle: "bold" },
       styles: { fontSize: 10, cellPadding: 3 },
@@ -232,7 +237,8 @@ function ViewSavingUser() {
       theme: "striped",
     });
 
-    doc.save(`${userName}_${title.replace(/\s+/g, "_")}`.pdf);
+    const fileName = isHindi ? `${userName}_Saving_Statement_Hindi.pdf` : `${userName}_Saving_Statement.pdf`;
+    doc.save(fileName);
   };
 
   console.log(accountData, "account data in view");
