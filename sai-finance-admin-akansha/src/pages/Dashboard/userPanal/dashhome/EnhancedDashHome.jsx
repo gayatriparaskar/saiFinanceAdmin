@@ -246,8 +246,6 @@ const EnhancedDashHome = () => {
       animate="visible"
       className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-16 pb-6 px-4 relative overflow-hidden"
     >
-      {/* Cursor Trail */}
-      <CursorTrail />
 
       {/* Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
