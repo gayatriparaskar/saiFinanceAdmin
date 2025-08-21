@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
-import SimpleChart from "../../../../componant/Charts/SimpleChart";
+import SimpleChart from "../../../../../componant/Charts/SimpleChart";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import axios from "../../../../axios";
 
