@@ -245,7 +245,7 @@ const EnhancedDashHome = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-8 pb-6 px-4 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-16 pb-6 px-4 relative overflow-hidden"
     >
       {/* Cursor Trail */}
       <CursorTrail />
