@@ -1,0 +1,28 @@
+/* Hide default cursor and show custom one */
+* {
+  cursor: none !important;
+}
+
+.visible-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-circle {
+  width: 14px;
+  height: 14px;
+  background: #ff6b6b;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 107, 107, 0.6);
+}
+
+/* Show different cursor for buttons and links */
+a:hover ~ .visible-cursor .cursor-circle,
+button:hover ~ .visible-cursor .cursor-circle {
+  background: #4ecdc4;
+  transform: scale(1.2);
+  transition: all 0.2s ease;
+}
