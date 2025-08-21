@@ -5,7 +5,7 @@ import DashRoute from '../route/Dashroute'
 
 function Layout() {
   return (
-    <div className='bg-navBg pt-24'>
+    <div className='bg-navBg pt-20'>
       <DashRoute/>
     </div>
   )
