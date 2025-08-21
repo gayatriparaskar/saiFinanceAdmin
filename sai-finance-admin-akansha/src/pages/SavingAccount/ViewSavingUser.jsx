@@ -237,7 +237,8 @@ function ViewSavingUser() {
       theme: "striped",
     });
 
-    doc.save(`${userName}_${title.replace(/\s+/g, "_")}`.pdf);
+    const fileName = isHindi ? `${userName}_Saving_Statement_Hindi.pdf` : `${userName}_Saving_Statement.pdf`;
+    doc.save(fileName);
   };
 
   console.log(accountData, "account data in view");
