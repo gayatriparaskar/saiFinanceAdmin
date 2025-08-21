@@ -44,6 +44,16 @@ const EnhancedDashHome = () => {
       }
     }).catch((error) => {
       console.error("Error fetching savings accounts:", error);
+
+      // Check if it's an authentication error
+      if (error.response?.status === 401 || error.isAuthError) {
+        console.warn("Authentication failed - token may be invalid or expired");
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
+
+      // For other errors, set to 0
       setActiveSavingsUsers(0);
     });
   }, []);
