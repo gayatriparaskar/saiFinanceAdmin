@@ -1,7 +1,4 @@
-/* Hide default cursor and show custom one */
-* {
-  cursor: none !important;
-}
+/* Normal browser cursor restored */
 
 .visible-cursor {
   position: fixed;
