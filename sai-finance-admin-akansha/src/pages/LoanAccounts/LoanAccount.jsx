@@ -448,13 +448,13 @@ function LoanAccount() {
           <DrawerCloseButton />
           <DrawerHeader>{t('Account Details', 'Account Details')}</DrawerHeader>
           <DrawerBody>
-            <Input placeholder={t('Type here...', 'यहां टाइप करें...')} />
+            <Input placeholder={t('Type here...', 'Type here...')} />
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
               {t('Cancel', 'रद्द करें')}
             </Button>
-            <Button colorScheme="blue">{t('Save', 'स���व करें')}</Button>
+            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
