@@ -143,16 +143,16 @@ function ViewSavingUser() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     let y = 30;
-    doc.text(`${t('Name', 'Name')}: ${userName}`, 14, y);
-    doc.text(`${t('End Date', 'End Date')}: ${endDate}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Name', 'नाम')}: ${userName}`, 14, y);
+    doc.text(`${t('End Date', 'समाप्ति तिथि')}: ${endDate}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Start Date', 'Start Date')}: ${startDate}`, 14, y);
-    doc.text(`${t('Total Due', 'Total Due')}: Rs. ${due}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Start Date', 'प्रारंभ तिथि')}: ${startDate}`, 14, y);
+    doc.text(`${t('Total Due', 'कुल बकाया')}: Rs. ${due}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Amount', 'Amount')}: Rs. ${loan}`, 14, y);
-    doc.text(`${t('Total Paid', 'Total Paid')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Amount', 'राशि')}: Rs. ${loan}`, 14, y);
+    doc.text(`${t('Total Paid', 'कुल भुगतान')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Total Penalty', 'Total Penalty')}: Rs. ${penalty}`, 14, y);
+    doc.text(`${t('Total Penalty', 'कुल जुर्माना')}: Rs. ${penalty}`, 14, y);
 
     const groupedByMonth = groupBy(transactions, (item) =>
       dayjs(item.created_on).format("MMMM YYYY")
