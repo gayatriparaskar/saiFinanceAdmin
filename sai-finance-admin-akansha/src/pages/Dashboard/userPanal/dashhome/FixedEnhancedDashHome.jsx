@@ -387,7 +387,7 @@ const FixedEnhancedDashHome = () => {
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <ChartThree />
+          <PerformanceChart title="Business Performance Metrics" />
         </motion.div>
       </motion.div>
 
