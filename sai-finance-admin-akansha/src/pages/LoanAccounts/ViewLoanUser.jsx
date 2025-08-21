@@ -270,7 +270,7 @@ function ViewLoanUser() {
 
       const rows = records.map(item => [
         dayjs(item.created_on).format("D MMM, YYYY h:mm A"),
-        "EMI Payment",
+        t('EMI Payment', 'EMI भुगतान'),
         `Rs. ${item.amount || 0}`,
         `Rs. ${item.total_penalty_amount || 0}`,
         item.collected_officer_name || "-"
@@ -278,7 +278,7 @@ function ViewLoanUser() {
 
       autoTable(doc, {
         startY,
-        head: [["Date", "Description", "Amount (Rs.)", "Penalty (Rs.)", "Collected By"]],
+        head: [[t('Date', 'तारीख'), t('Description', 'विवरण'), t('Amount (Rs.)', 'राशि (रु.)'), t('Penalty (Rs.)', 'जुर्माना (रु.)'), t('Collected By', 'संग्रहकर्ता')]],
         body: rows,
         headStyles: { fillColor: [211, 211, 211], fontStyle: 'bold' },
         styles: { fontSize: 10, cellPadding: 3 },
