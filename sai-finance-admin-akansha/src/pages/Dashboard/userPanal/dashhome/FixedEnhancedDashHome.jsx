@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
-import FinancialHeatmap from "../../../../componant/Charts/FinancialHeatmap";
-import InvestmentTreemap from "../../../../componant/Charts/InvestmentTreemap";
-import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
+import SimpleChart from "../../../../componant/Charts/SimpleChart";
 import axios from "../../../../axios";
 import { handleNetworkError, isNetworkError } from "../../../../utils/errorHandler";
 import { debugNetworkIssues, showNetworkStatus } from "../../../../utils/networkStatus";
@@ -367,27 +365,11 @@ const FixedEnhancedDashHome = () => {
         className="grid grid-cols-12 gap-6"
       >
         <motion.div
-          className="col-span-12 xl:col-span-8"
-          whileHover={{ scale: 1.01 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <FinancialHeatmap title="Financial Activity Heatmap" data={monthlyAmtData} />
-        </motion.div>
-
-        <motion.div
-          className="col-span-12 xl:col-span-4"
-          whileHover={{ scale: 1.01 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <InvestmentTreemap title="Portfolio Distribution" data={weekAmtData} />
-        </motion.div>
-
-        <motion.div
           className="col-span-12"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <PerformanceChart title="Business Performance Metrics" />
+          <SimpleChart title="Monthly Collections" data={monthlyAmtData} />
         </motion.div>
       </motion.div>
 
