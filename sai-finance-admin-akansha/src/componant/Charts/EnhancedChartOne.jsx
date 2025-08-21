@@ -49,7 +49,7 @@ const EnhancedChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
         radius: 6,
       },
     },
-    colors: ["#0d9488", "#f97316"],
+    colors: ["#2563eb", "#7c3aed", "#10b981"],
     chart: {
       fontFamily: "Poppins, sans-serif",
       height: 400,
