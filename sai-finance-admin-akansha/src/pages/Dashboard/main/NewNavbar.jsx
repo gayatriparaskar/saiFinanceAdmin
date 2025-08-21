@@ -270,7 +270,7 @@ const NewNavbar = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.2 }}
-          className="w-72 absolute z-50 right-4 top-16 border border-primary/20 bg-white rounded-2xl shadow-2xl overflow-hidden"
+          className="w-72 absolute z-[10000] right-4 top-16 border border-primary/20 bg-white rounded-2xl shadow-2xl overflow-hidden"
         >
           <div className="bg-primary/5 p-4 relative">
             <motion.button
