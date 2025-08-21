@@ -147,16 +147,17 @@ function ViewSavingUser() {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     let y = 30;
-    doc.text(`${t('Name', 'नाम')}: ${userName}`, 14, y);
-    doc.text(`${t('End Date', 'समाप्ति तिथि')}: ${endDate}`, pageWidth / 2 + 10, y);
+    // Use English text in PDF to avoid font rendering issues
+    doc.text(`Name: ${userName}`, 14, y);
+    doc.text(`End Date: ${endDate}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Start Date', 'प्रारंभ तिथि')}: ${startDate}`, 14, y);
-    doc.text(`${t('Total Due', 'कुल बकाया')}: Rs. ${due}`, pageWidth / 2 + 10, y);
+    doc.text(`Start Date: ${startDate}`, 14, y);
+    doc.text(`Total Due: Rs. ${due}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Amount', 'राशि')}: Rs. ${loan}`, 14, y);
-    doc.text(`${t('Total Paid', 'कुल भुगतान')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
+    doc.text(`Amount: Rs. ${loan}`, 14, y);
+    doc.text(`Total Paid: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`${t('Total Penalty', 'कुल जुर्माना')}: Rs. ${penalty}`, 14, y);
+    doc.text(`Total Penalty: Rs. ${penalty}`, 14, y);
 
     const groupedByMonth = groupBy(transactions, (item) =>
       dayjs(item.created_on).format("MMMM YYYY")
@@ -214,7 +215,7 @@ function ViewSavingUser() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text(t('Yearly Summary', 'वार्षिक सारांश'), 14, startY);
+    doc.text(t('Yearly Summary', 'वार्��िक सारांश'), 14, startY);
     startY += 6;
 
     const yearlyRows = Object.entries(groupedByYear).map(([year, records]) => {
