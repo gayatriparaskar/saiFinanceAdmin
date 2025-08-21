@@ -291,8 +291,8 @@ function ViewLoanUser() {
       const totalPenalty = records.reduce((sum, r) => sum + (r.total_penalty_amount || 0), 0);
       startY = doc.lastAutoTable.finalY + 4;
       doc.setFontSize(10);
-      doc.text(`Monthly Total EMI: Rs. ${totalEMI}`, 14, startY);
-      doc.text(`Monthly Total Penalty: Rs. ${totalPenalty}`, 100, startY);
+      doc.text(`${t('Monthly Total EMI', 'मासिक कुल EMI')}: Rs. ${totalEMI}`, 14, startY);
+      doc.text(`${t('Monthly Total Penalty', 'मासिक कुल जुर्माना')}: Rs. ${totalPenalty}`, 100, startY);
       startY += 10;
     });
 
