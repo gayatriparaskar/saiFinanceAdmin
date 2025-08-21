@@ -284,12 +284,12 @@ function LoanAccount() {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="h-screen bg-primaryBg flex flex-col"
+      className="min-h-screen bg-primaryBg flex flex-col pt-8"
     >
       {/* Fixed Header Section */}
       <motion.div
         variants={itemVariants}
-        className="flex-shrink-0 pt-24 pb-0 px-4 mb-0"
+        className="flex-shrink-0 pb-0 px-4 mb-0"
       >
         <section className="md:p-1">
           <div className="py-6">
@@ -400,7 +400,7 @@ function LoanAccount() {
       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
           <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">{t('Loan Accounts', 'ऋण खाते')}</h3>
+            <h3 className="text-xl font-bold text-gray-800">{t('Loan Accounts', 'Loan Accounts')}</h3>
           </div>
           
           {/* Only the table content scrolls */}
@@ -448,13 +448,13 @@ function LoanAccount() {
           <DrawerCloseButton />
           <DrawerHeader>{t('Account Details', 'Account Details')}</DrawerHeader>
           <DrawerBody>
-            <Input placeholder={t('Type here...', 'यहां टाइप करें...')} />
+            <Input placeholder={t('Type here...', 'Type here...')} />
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={onClose2}>
-              {t('Cancel', 'रद्द करें')}
+              {t('Cancel', 'Cancel')}
             </Button>
-            <Button colorScheme="blue">{t('Save', 'सेव करें')}</Button>
+            <Button colorScheme="blue">{t('Save', 'Save')}</Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -468,17 +468,17 @@ function LoanAccount() {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              {t('Delete User', 'उपयोगकर्ता हटाएं')}
+              {t('Delete User', 'Delete User')}
             </AlertDialogHeader>
             <AlertDialogBody>
-              {t('Are you sure you want to delete this user? This action cannot be undone.', 'क्या आप वाकई इस उपयोगकर्ता को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।')}
+              {t('Are you sure you want to delete this user? This action cannot be undone.', 'Are you sure you want to delete this user? This action cannot be undone.')}
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose} variant="outline">
-                {t('Cancel', 'रद्द करें')}
+                {t('Cancel', 'Cancel')}
               </Button>
               <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                {t('Delete', 'हटाएं')}
+                {t('Delete', 'Delete')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -489,18 +489,18 @@ function LoanAccount() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Edit User', 'उपयोगकर्ता संपादित करें')}</DrawerHeader>
+          <DrawerHeader>{t('Edit User', 'Edit User')}</DrawerHeader>
           <DrawerBody>
             <div className="space-y-4">
               <Input
-                placeholder={t('Full Name', 'पूरा नाम')}
+                placeholder={t('Full Name', 'Full Name')}
                 value={editData?.full_name || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, full_name: e.target.value })
                 }
               />
               <Input
-                placeholder={t('Phone Number', 'फोन नंबर')}
+                placeholder={t('Phone Number', 'Phone Number')}
                 value={editData?.phone_number || ""}
                 onChange={(e) =>
                   setEditData({ ...editData, phone_number: e.target.value })
@@ -510,10 +510,10 @@ function LoanAccount() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              {t('Cancel', 'रद्द करें')}
+              {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              {t('Save', 'सेव करें')}
+              {t('Save', 'Save')}
             </Button>
           </DrawerFooter>
         </DrawerContent>

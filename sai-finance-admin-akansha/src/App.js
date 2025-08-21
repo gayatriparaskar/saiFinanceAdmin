@@ -2,7 +2,7 @@ import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import EnhancedMainroute from "./routes/EnhancedMainroute";
-import EnhancedCursor from "./components/EnhancedCursor/EnhancedCursor";
+import ColoredCursor from "./components/ColoredCursor/ColoredCursor";
 import "./i18n"; // Import i18n configuration
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
       transition={{ duration: 0.8 }}
     >
       <QueryClientProvider client={queryClient}>
-        <EnhancedCursor />
+        <ColoredCursor />
         <EnhancedMainroute/>
       </QueryClientProvider>
     </motion.div>

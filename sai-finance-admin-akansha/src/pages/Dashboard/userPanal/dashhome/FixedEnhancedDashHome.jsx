@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import CardDataStats from "../../../../componant/CardDataStats/CardDataStats";
-import ChartOne from "../../../../componant/Charts/ChartOne";
-import ChartTwo from "../../../../componant/Charts/ChartTwo";
-import ChartThree from "../../../../componant/Charts/ChartThree";
+import SimpleChart from "../../../../componant/Charts/SimpleChart";
+import MonthlyChart from "../../../../componant/Charts/MonthlyChart";
+import WeeklyChart from "../../../../componant/Charts/WeeklyChart";
+import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
 import axios from "../../../../axios";
 import { handleNetworkError, isNetworkError } from "../../../../utils/errorHandler";
 import { debugNetworkIssues, showNetworkStatus } from "../../../../utils/networkStatus";
@@ -35,16 +36,23 @@ const FixedEnhancedDashHome = () => {
   useEffect(() => {
     axios.get("account/").then((res) => {
       if (res?.data?.result && Array.isArray(res.data.result)) {
-        const activeSavings = res.data.result.filter(account => 
-          account.account_type === 'savings' && account.status === 'active'
-        );
+        const activeSavings = res.data.result
         setActiveSavingsUsers(activeSavings.length);
       } else {
         setActiveSavingsUsers(0);
       }
     }).catch((error) => {
       console.error("Error fetching savings accounts:", error);
-      // Use mock data when API fails
+
+      // Check if it's an authentication error
+      if (error.response?.status === 401 || error.isAuthError) {
+        console.warn("Authentication failed - token may be invalid or expired");
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
+
+      // For other errors, use mock data
       setActiveSavingsUsers(24);
     });
   }, []);
@@ -233,7 +241,7 @@ const FixedEnhancedDashHome = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-24 pb-6 px-4 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-16 pb-6 px-4 relative overflow-hidden"
     >
       {/* Animated Header */}
       <motion.div
@@ -358,27 +366,35 @@ const FixedEnhancedDashHome = () => {
         className="grid grid-cols-12 gap-6"
       >
         <motion.div
-          className="col-span-12 xl:col-span-8"
+          className="col-span-12 xl:col-span-6"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <ChartOne monthsData={monthsData} monthlyAmtData={monthlyAmtData} />
+          <SimpleChart title="Simple Overview" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
-          className="col-span-12 xl:col-span-4"
+          className="col-span-12 xl:col-span-6"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <ChartTwo weekDays={weekDays} weekAmtData={weekAmtData} />
+          <MonthlyChart title="Monthly Statistics" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
-          className="col-span-12"
+          className="col-span-12 xl:col-span-6"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <ChartThree />
+          <WeeklyChart title="Weekly Statistics" data={weekAmtData} />
+        </motion.div>
+
+        <motion.div
+          className="col-span-12 xl:col-span-6"
+          whileHover={{ scale: 1.01 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <PerformanceChart title="Performance Metrics" />
         </motion.div>
       </motion.div>
 

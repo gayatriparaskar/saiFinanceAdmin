@@ -98,6 +98,15 @@ function SavingAccount() {
         }
       } catch (error) {
         console.error('Failed to load savings accounts:', error);
+
+        // Check if it's an authentication error
+        if (error.response?.status === 401 || error.isAuthError) {
+          console.warn("Authentication failed - redirecting to login");
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+          return;
+        }
+
         setError(error);
         // Fallback data
         setData([]);
@@ -366,12 +375,12 @@ function SavingAccount() {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="h-screen bg-primaryBg flex flex-col"
+      className="min-h-screen bg-primaryBg flex flex-col pt-8"
     >
       {/* Fixed Header Section */}
       <motion.div
         variants={itemVariants}
-        className="flex-shrink-0 pt-24 pb-0 px-4"
+        className="flex-shrink-0 pb-0 px-4"
       >
         <section className="md:p-1">
           <div className="py-6">

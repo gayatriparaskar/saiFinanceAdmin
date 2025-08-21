@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Route, Routes, useLocation, Navigate } from 'react-router-dom'
 import NewDashboard from '../pages/Dashboard/main/NewDashboard';
 import { Riple } from 'react-loading-indicators';
 import NewLogin from '../pages/SignIn/NewLogin';
 // import Carousel from '../pages/OfficerData/Corouasol';
 
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
 const Mainroute = () => {
-  
+
   const [loading, setLoading] = useState(false);
   const location = useLocation();
 
@@ -27,12 +38,16 @@ const Mainroute = () => {
         )}
     <Routes>
 
-        <Route path='/' element={<NewLogin />}/>
-        
+        <Route path='/' element={<Navigate to="/login" replace />}/>
+
         {/* <Route path='/' element={<Carousel />}/> */}
         <Route path='/login' element={<NewLogin/>}/>
 
-        <Route path='/dash/*' element={<NewDashboard/>}/>
+        <Route path='/dash/*' element={
+          <ProtectedRoute>
+            <NewDashboard/>
+          </ProtectedRoute>
+        }/>
 
     </Routes>
     </>
@@ -40,4 +55,3 @@ const Mainroute = () => {
 };
 
 export default Mainroute;
-
