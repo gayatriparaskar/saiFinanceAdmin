@@ -171,7 +171,7 @@ function ViewSavingUser() {
 
       const rows = records.map((item) => [
         dayjs(item.created_on).format("D MMM, YYYY h:mm A"),
-        t('EMI Payment', 'EMI Payment'),
+        t('Saving Deposit', 'बचत जमा'),
         `Rs. ${item.amount || 0}`,
         `Rs. ${item.total_penalty_amount || 0}`,
         item.collected_officer_name || "-",
@@ -181,11 +181,11 @@ function ViewSavingUser() {
         startY,
         head: [
           [
-            t('Date', 'Date'),
-            t('Description', 'Description'),
-            t('Amount (Rs.)', 'Amount (Rs.)'),
-            t('Penalty (Rs.)', 'Penalty (Rs.)'),
-            t('Collected By', 'Collected By'),
+            t('Date', 'तारीख'),
+            t('Description', 'विवरण'),
+            t('Amount (Rs.)', 'राशि (रु.)'),
+            t('Penalty (Rs.)', 'जुर्माना (रु.)'),
+            t('Collected By', 'संग्रहकर्ता'),
           ],
         ],
         body: rows,
