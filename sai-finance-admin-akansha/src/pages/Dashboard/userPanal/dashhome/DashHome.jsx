@@ -68,10 +68,7 @@ useEffect(() => {
       if (res?.data?.result && Array.isArray(res.data.result)) {
         
         // Sirf un users ko filter karna jinke saving_account_id.is_active true hai
-        const activeSavingUsers = res.data.result.filter(
-          (user) => user?.saving_account_id?.is_active === true
-        );
-
+        const activeSavingUsers = res.data.result
         console.log("Active Saving Users:", activeSavingUsers.length);
         setSavingUsers(activeSavingUsers.length); 
       } else {
