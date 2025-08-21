@@ -513,7 +513,7 @@ function LoanAccount() {
               {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              {t('Save', 'सेव करें')}
+              {t('Save', 'Save')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
