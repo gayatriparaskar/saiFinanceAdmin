@@ -11,6 +11,14 @@ export const retryApiCall = async (apiCall, maxRetries = 3, delay = 1000) => {
     } catch (error) {
       lastError = error;
       
+      // Handle authentication errors immediately
+      if (error.response?.status === 401 || error.isAuthError) {
+        console.warn("Authentication failed - redirecting to login");
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
+
       // Don't retry if it's not a timeout or network error
       if (error.code !== 'ECONNABORTED' && error.message !== 'Network Error') {
         throw error;
