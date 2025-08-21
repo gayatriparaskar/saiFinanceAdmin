@@ -91,19 +91,19 @@ const NewNavbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="w-full top-0 flex items-center justify-between bg-white p-2 shadow-lg fixed z-[1000] border-b-2 border-primary/10"
+      className="w-full top-0 flex items-center justify-between bg-white px-4 py-0.5 shadow-lg fixed z-[1000] border-b-2 border-primary/10"
     >
       {/* Logo with animation */}
       <motion.div 
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        className="text-xl font-bold text-bgBlue w-16"
+        className="text-xl font-bold text-bgBlue w-12"
       >
         <img src={Logo} alt="Sai Finance" className="w-full" />
       </motion.div>
 
       {/* Menu Items with staggered animation */}
-      <ul className="flex space-x-8 font-semibold">
+      <ul className="flex space-x-6 font-semibold">
         {[
           { name: t("Home"), path: "/dash/home" },
           { name: t("Loan Account"), path: "/dash/loan-account" },
@@ -121,7 +121,7 @@ const NewNavbar = () => {
           >
             <Link 
               to={item.path} 
-              className={`relative px-3 py-2 rounded-lg transition-all duration-300 ${
+              className={`relative px-2 py-1 rounded-lg transition-all duration-300 ${
                 isActive(item.path) 
                   ? "text-primary bg-primary/10 font-bold" 
                   : "text-gray-700 hover:text-primary hover:bg-primary/5"
@@ -153,7 +153,7 @@ const NewNavbar = () => {
           <motion.button 
             onClick={() => toggleDropdown("payment")} 
             whileTap={{ scale: 0.95 }}
-            className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all duration-300 ${
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg transition-all duration-300 ${
               openDropdown === "payment" 
                 ? "text-primary bg-primary/10" 
                 : "text-gray-700 hover:text-primary hover:bg-primary/5"
@@ -207,9 +207,9 @@ const NewNavbar = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => toggleDropdown("language")}
-            className="flex items-center gap-2 text-sm bg-secondary rounded-xl p-2 text-white font-bold focus:ring-2 focus:ring-secondary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="flex items-center gap-1 text-xs bg-secondary rounded-lg px-2 py-1 text-white font-bold focus:ring-2 focus:ring-secondary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
-            <MdLanguage size={20} />
+            <MdLanguage size={16} />
             <span className="text-xs">{currentLanguage === 'en' ? 'EN' : 'हि'}</span>
             <motion.div
               animate={{ rotate: openDropdown === "language" ? 180 : 0 }}
@@ -254,9 +254,9 @@ const NewNavbar = () => {
           whileHover={{ scale: 1.05, rotate: 90 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsMenuOpen2(!isMenuOpen2)}
-          className="flex text-sm bg-primary rounded-xl p-2 text-white text-xl font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="flex text-sm bg-primary rounded-lg px-2 py-1 text-white text-lg font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
         >
-          <IoSettings size={28} />
+          <IoSettings size={20} />
         </motion.button>
       </div>
 
@@ -267,7 +267,7 @@ const NewNavbar = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.2 }}
-          className="w-72 absolute z-50 right-4 top-20 border border-primary/20 bg-white rounded-2xl shadow-2xl overflow-hidden"
+          className="w-72 absolute z-50 right-4 top-16 border border-primary/20 bg-white rounded-2xl shadow-2xl overflow-hidden"
         >
           <div className="bg-primary/5 p-4 relative">
             <motion.button
@@ -285,7 +285,7 @@ const NewNavbar = () => {
             <div className="flex flex-col items-center text-center mt-2">
               <motion.div 
                 whileHover={{ scale: 1.05 }}
-                className="w-16 h-16 rounded-full border-3 border-primary/20 overflow-hidden mb-3"
+                className="w-12 h-12 rounded-full border-3 border-primary/20 overflow-hidden mb-2"
               >
                 <img src={pro} alt="Profile" className="w-full h-full object-cover" />
               </motion.div>
