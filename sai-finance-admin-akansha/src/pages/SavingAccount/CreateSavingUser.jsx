@@ -234,7 +234,7 @@ const CreateSavingUser = () => {
           ))}
           <div className="grid grid-cols-1">
             <label className="text-sm font-medium text-gray-700">
-              {t('Select Officer', 'अधिकारी चुनें')}
+              {t('Select Officer', 'Select Officer')}
             </label>
             <select
               name="officer_id"
