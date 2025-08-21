@@ -399,9 +399,6 @@ function LoanAccount() {
         className="flex-1 px-4 pb-0 overflow-hidden mt-0"
       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
-          <div className="p-4 border-b">
-            <h3 className="text-xl font-bold text-gray-800">{t('Loan Accounts', 'Loan Accounts')}</h3>
-          </div>
           
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
