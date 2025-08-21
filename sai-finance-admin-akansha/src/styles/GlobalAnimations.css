@@ -25,11 +25,11 @@
 
 /* Enhanced Cursor Styles */
 * {
-  cursor: none !important;
+  /* Normal cursor enabled */
 }
 
 body {
-  cursor: none;
+  /* Normal cursor enabled */
   overflow-x: hidden;
 }
 
