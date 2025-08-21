@@ -34,8 +34,22 @@ instance.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Handle authentication errors first
+    if (error.response?.status === 401) {
+      console.warn('Authentication failed - redirecting to login');
+      localStorage.removeItem('token');
+      // Only redirect if not already on login page
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+      error.isAuthError = true;
+    } else if (error.response?.status === 403) {
+      console.warn('Access forbidden - insufficient permissions');
+      error.isAuthError = true;
+    }
+
     // Handle different types of network errors
-    if (error.code === 'ECONNABORTED') {
+    else if (error.code === 'ECONNABORTED') {
       console.warn('Request timeout - API might be slow or down. Consider retrying.');
       error.isTimeout = true;
     } else if (error.message === 'Network Error') {
