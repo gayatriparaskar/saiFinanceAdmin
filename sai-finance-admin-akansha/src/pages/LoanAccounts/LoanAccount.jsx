@@ -510,7 +510,7 @@ function LoanAccount() {
           </DrawerBody>
           <DrawerFooter>
             <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              {t('Cancel', 'रद्द करें')}
+              {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
               {t('Save', 'सेव करें')}
