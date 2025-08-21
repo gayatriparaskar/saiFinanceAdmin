@@ -228,7 +228,7 @@ const NewNavbar = () => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="absolute right-0 mt-1 w-32 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50"
+              className="absolute right-0 mt-1 w-32 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-[10000]"
             >
               <motion.li
                 whileHover={{ backgroundColor: "#8b5cf6", color: "white" }}
