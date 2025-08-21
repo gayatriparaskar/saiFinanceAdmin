@@ -325,7 +325,7 @@ useEffect(() => {
           variants={chartVariants}
           className="col-span-12 xl:col-span-5"
         >
-          <ActivityChart title="Daily Activities" data={weekAmtData} />
+          <InvestmentTreemap title="Financial Portfolio" data={weekAmtData} />
         </motion.div>
 
         <motion.div
