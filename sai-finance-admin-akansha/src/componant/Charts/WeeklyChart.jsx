@@ -49,7 +49,7 @@ const WeeklyChart = ({ title = "Weekly Statistics", data = [] }) => {
         columnWidth: '60%'
       }
     },
-    colors: ['#f59e0b'],
+    colors: ['#ffa726'],
     grid: {
       borderColor: '#e5e7eb',
       strokeDashArray: 4
