@@ -239,23 +239,23 @@ function ViewLoanUser() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    const title = t("LOAN STATEMENT", "ऋण विवरण");
+    const title = t("SAI FINANCE LOAN STATEMENT", "साई फाइनेंस ऋण विवरण");
     const titleWidth = doc.getTextWidth(title);
     doc.text(title, (pageWidth - titleWidth) / 2, 20);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
     let y = 30;
-    doc.text(`Name: ${userName}`, 14, y);
-    doc.text(`End Date: ${endDate}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Name', 'नाम')}: ${userName}`, 14, y);
+    doc.text(`${t('End Date', 'समाप्ति तिथि')}: ${endDate}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Start Date: ${startDate}`, 14, y);
-    doc.text(`Total Due: Rs. ${due}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Start Date', 'प्रारंभ तिथि')}: ${startDate}`, 14, y);
+    doc.text(`${t('Total Due', 'कुल बकाया')}: Rs. ${due}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Total Loan: Rs. ${loan}`, 14, y);
-    doc.text(`Total Paid: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
+    doc.text(`${t('Total Loan', 'कुल ऋण')}: Rs. ${loan}`, 14, y);
+    doc.text(`${t('Total Paid', 'कुल भुगतान')}: Rs. ${totalPay}`, pageWidth / 2 + 10, y);
     y += 7;
-    doc.text(`Total Penalty: Rs. ${penalty}`, 14, y);
+    doc.text(`${t('Total Penalty', 'कुल जुर्माना')}: Rs. ${penalty}`, 14, y);
 
     const groupedByMonth = groupBy(Dailydata, item => dayjs(item.created_on).format("MMMM YYYY"));
     const groupedByYear = groupBy(Dailydata, item => dayjs(item.created_on).format("YYYY"));
