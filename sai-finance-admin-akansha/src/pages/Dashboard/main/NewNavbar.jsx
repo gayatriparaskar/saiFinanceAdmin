@@ -91,7 +91,7 @@ const NewNavbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="w-full top-0 flex items-center justify-between bg-white p-2 shadow-lg fixed z-[1000] border-b-2 border-primary/10"
+      className="w-full top-0 flex items-center justify-between bg-white p-1 shadow-lg fixed z-[1000] border-b-2 border-primary/10"
     >
       {/* Logo with animation */}
       <motion.div 
@@ -121,7 +121,7 @@ const NewNavbar = () => {
           >
             <Link 
               to={item.path} 
-              className={`relative px-3 py-2 rounded-lg transition-all duration-300 ${
+              className={`relative px-3 py-1 rounded-lg transition-all duration-300 ${
                 isActive(item.path) 
                   ? "text-primary bg-primary/10 font-bold" 
                   : "text-gray-700 hover:text-primary hover:bg-primary/5"
@@ -153,7 +153,7 @@ const NewNavbar = () => {
           <motion.button 
             onClick={() => toggleDropdown("payment")} 
             whileTap={{ scale: 0.95 }}
-            className={`flex items-center gap-1 px-3 py-2 rounded-lg transition-all duration-300 ${
+            className={`flex items-center gap-1 px-3 py-1 rounded-lg transition-all duration-300 ${
               openDropdown === "payment" 
                 ? "text-primary bg-primary/10" 
                 : "text-gray-700 hover:text-primary hover:bg-primary/5"
@@ -174,7 +174,7 @@ const NewNavbar = () => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="absolute left-0 mt-2 w-48 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden"
+              className="absolute left-0 mt-1 w-48 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden"
             >
               <Link to="/dash/payment" onClick={closeDropdown}>
                 <motion.li 
@@ -207,7 +207,7 @@ const NewNavbar = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => toggleDropdown("language")}
-            className="flex items-center gap-2 text-sm bg-secondary rounded-xl p-2 text-white font-bold focus:ring-2 focus:ring-secondary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 text-sm bg-secondary rounded-xl p-1 text-white font-bold focus:ring-2 focus:ring-secondary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             <MdLanguage size={20} />
             <span className="text-xs">{currentLanguage === 'en' ? 'EN' : 'हि'}</span>
@@ -225,7 +225,7 @@ const NewNavbar = () => {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="absolute right-0 mt-2 w-32 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50"
+              className="absolute right-0 mt-1 w-32 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-50"
             >
               <motion.li
                 whileHover={{ backgroundColor: "#8b5cf6", color: "white" }}
@@ -254,7 +254,7 @@ const NewNavbar = () => {
           whileHover={{ scale: 1.05, rotate: 90 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsMenuOpen2(!isMenuOpen2)}
-          className="flex text-sm bg-primary rounded-xl p-2 text-white text-xl font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="flex text-sm bg-primary rounded-xl p-1 text-white text-xl font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           <IoSettings size={28} />
         </motion.button>
@@ -274,7 +274,7 @@ const NewNavbar = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               type="button"
-              className="absolute top-2 right-2 p-2 text-primary hover:text-primary/70 transition-colors duration-200"
+              className="absolute top-2 right-2 p-1 text-primary hover:text-primary/70 transition-colors duration-200"
               onClick={() => setIsMenuOpen2(false)}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -300,7 +300,7 @@ const NewNavbar = () => {
           <div className="p-4">
             <motion.div 
               whileHover={{ scale: 1.02 }}
-              className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-200 cursor-pointer group"
+              className="flex items-center justify-between p-1 bg-red-50 rounded-xl border border-red-200 cursor-pointer group"
               onClick={() => {
                 localStorage.removeItem("token");
                 navigate("/login");
