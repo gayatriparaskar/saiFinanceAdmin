@@ -395,7 +395,7 @@ const EnhancedDashHome = () => {
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <EnhancedChartOne monthsData={monthsData} monthlyAmtData={monthlyAmtData} />
+          <RevenueChart title="Financial Overview" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
