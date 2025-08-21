@@ -411,7 +411,7 @@ const EnhancedDashHome = () => {
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <EnhancedChartThree />
+          <PerformanceChart title="Key Performance Indicators" />
         </motion.div>
       </motion.div>
 
