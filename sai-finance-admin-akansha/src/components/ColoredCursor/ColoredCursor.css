@@ -1,4 +1,7 @@
-/* Default cursor restored - no hiding */
+/* Hide default cursor and show colored custom cursor */
+* {
+  cursor: none !important;
+}
 
 .colored-cursor {
   position: fixed;
@@ -8,10 +11,22 @@
 }
 
 .cursor-dot {
-  width: 10px;
-  height: 10px;
-  background: #3b82f6;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
   border-radius: 50%;
-  border: 1px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.4), 0 0 20px rgba(78, 205, 196, 0.3);
+  animation: cursorPulse 2s infinite;
+}
+
+@keyframes cursorPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
 }
