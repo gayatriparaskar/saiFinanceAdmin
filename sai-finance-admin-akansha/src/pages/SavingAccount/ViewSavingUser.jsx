@@ -123,7 +123,11 @@ function ViewSavingUser() {
   const generatePDF = () => {
     const doc = new jsPDF();
     const userName = accountData?.full_name || "N/A";
-    const title = isLoanAccount ? t('SAI FINANCE LOAN STATEMENT', 'साई फाइनेंस ऋण विवरण') : t('SAI FINANCE SAVING STATEMENT', 'साई फाइनेंस बचत विवरण');
+    // Check if current language is Hindi to add language indicator
+    const isHindi = t('localization_testing') === 'hindi';
+    const title = isLoanAccount
+      ? (isHindi ? "SAI FINANCE LOAN STATEMENT (Hindi)" : "SAI FINANCE LOAN STATEMENT")
+      : (isHindi ? "SAI FINANCE SAVING STATEMENT (Hindi)" : "SAI FINANCE SAVING STATEMENT");
     const startDate = dayjs(accountData?.created_on).format("D MMM, YYYY");
     const endDate = startDate;
 
