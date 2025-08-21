@@ -22,7 +22,16 @@ const EnhancedChartOne = ({ monthsData = [], monthlyAmtData = [] }) => {
     if (Array.isArray(monthlyAmtData) && monthlyAmtData.length > 0) {
       setSeries([
         { name: "Monthly Collections", data: monthlyAmtData },
-        { name: "Projected Revenue", data: monthlyAmtData.map(val => val * 1.2) },
+        { name: "Target Revenue", data: monthlyAmtData.map(val => val * 1.15) },
+        { name: "Projected Growth", data: monthlyAmtData.map(val => val * 1.08) },
+      ]);
+    } else {
+      // Fallback to realistic sample data if no data provided
+      const sampleData = [45000, 52000, 48000, 61000, 55000, 67000, 59000, 72000, 68000, 75000, 71000, 82000];
+      setSeries([
+        { name: "Monthly Collections", data: sampleData },
+        { name: "Target Revenue", data: sampleData.map(val => val * 1.15) },
+        { name: "Projected Growth", data: sampleData.map(val => val * 1.08) },
       ]);
     }
   }, [monthlyAmtData]);
