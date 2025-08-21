@@ -395,7 +395,7 @@ const EnhancedDashHome = () => {
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <RevenueChart title="Financial Overview" data={monthlyAmtData} />
+          <FinancialHeatmap title="Financial Activity Overview" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
