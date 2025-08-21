@@ -127,7 +127,7 @@ const retryWithFallback = async (originalConfig) => {
 // Add method to test connectivity
 instance.testConnectivity = async () => {
   try {
-    const response = await instance.get('health');
+    await instance.get('health');
     return { success: true, endpoint: instance.defaults.baseURL };
   } catch (error) {
     return { success: false, error: error.message };
