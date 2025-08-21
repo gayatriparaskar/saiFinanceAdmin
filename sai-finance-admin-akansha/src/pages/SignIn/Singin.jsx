@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import logo from "../../Images/SVG 1 1.png"
 import loginImage from "../../Images/college entrance exam-pana 1 (1).png"
@@ -7,28 +6,47 @@ const Signin = () => {
 
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
+  const [error,setError]=useState("")
+  const [loading,setLoading]=useState(false)
 
- const handleLogin= (e)=>{
+ const handleLogin= async (e)=>{
   e.preventDefault();
-  axios
-    .post("/adminLogin", { email, password })
-    .then((response) => {
+  setLoading(true);
+  setError("");
 
-      console.log(response)
+  try {
+    // Try multiple possible endpoints
+    let response;
+    try {
+      response = await axios.post("/adminLogin", { email, password });
+    } catch (firstError) {
+      console.log('First endpoint failed, trying alternative...');
+      response = await axios.post("admins/login", { user_name: email, password });
+    }
+
+    if (response.data && response.data.accessToken) {
       localStorage.setItem("token", response.data.accessToken);
-      
-      // toast.success("Login successfull");
-   if( response.data){
-    const homeUrl = `/dash`;
+      window.location.replace("/dash");
+    } else {
+      setError("Login failed: Invalid response from server");
+    }
+  } catch (error) {
+    console.error('Login error:', error);
 
-    window.location.replace(homeUrl);
-    console.log("bbbbbbbbbbbbbb")
-   }
-  
-    })
-    .catch(function (error) {
-    console.log(error)
-    });
+    if (error.isNetworkError) {
+      setError("Network error: Please check your internet connection and try again.");
+    } else if (error.response?.status === 401) {
+      setError("Invalid email or password. Please try again.");
+    } else if (error.response?.status === 404) {
+      setError("Login service not available. Please contact support.");
+    } else if (error.isTimeout) {
+      setError("Request timeout. Please try again.");
+    } else {
+      setError("Login failed. Please try again later.");
+    }
+  } finally {
+    setLoading(false);
+  }
  }
 
   return (
@@ -49,6 +67,12 @@ const Signin = () => {
               Admin Login
             </p>
           </div>
+
+          {error && (
+            <div className="w-2/3 m-auto mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm font-medium">{error}</p>
+            </div>
+          )}
 
           <form className="w-2/3 m-auto mt-8 space-y-6" method="POST" onSubmit={handleLogin}>
             <div className=" flex flex-col">
@@ -79,8 +103,12 @@ const Signin = () => {
             </div>
 
             <div className="bg-purple rounded-xl">
-              <button className="text-white p-2 text-xl font-bold" type="submit">
-                Login
+              <button
+                className="text-white p-2 text-xl font-bold w-full disabled:opacity-50"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? 'Logging in...' : 'Login'}
               </button>
             </div>
           </form>
