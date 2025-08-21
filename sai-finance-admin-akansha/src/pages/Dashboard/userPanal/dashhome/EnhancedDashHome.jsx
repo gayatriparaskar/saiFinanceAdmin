@@ -403,7 +403,7 @@ const EnhancedDashHome = () => {
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <EnhancedChartTwo weekDays={weekDays} weekAmtData={weekAmtData} />
+          <ActivityChart title="Weekly Performance" data={weekAmtData} />
         </motion.div>
 
         <motion.div
