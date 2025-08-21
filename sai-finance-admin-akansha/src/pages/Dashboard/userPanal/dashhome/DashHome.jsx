@@ -317,7 +317,7 @@ useEffect(() => {
           variants={chartVariants}
           className="col-span-12 xl:col-span-7"
         >
-          <ChartOne monthsData={monthsData} monthlyAmtData={monthlyAmtData} />
+          <RevenueChart title="Revenue Analytics Dashboard" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
