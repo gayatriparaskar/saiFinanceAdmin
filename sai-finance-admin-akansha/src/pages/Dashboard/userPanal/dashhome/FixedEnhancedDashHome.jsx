@@ -371,7 +371,7 @@ const FixedEnhancedDashHome = () => {
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <ChartOne monthsData={monthsData} monthlyAmtData={monthlyAmtData} />
+          <RevenueChart title="Monthly Revenue Analysis" data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
