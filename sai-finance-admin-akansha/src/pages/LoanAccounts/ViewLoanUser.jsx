@@ -239,7 +239,7 @@ function ViewLoanUser() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    const title = t("SAI FINANCE LOAN STATEMENT", "साई फाइनेंस ऋण विवरण");
+    const title = t("SAI FINANCE LOAN STATEMENT", "स��ई फाइनेंस ऋण विवरण");
     const titleWidth = doc.getTextWidth(title);
     doc.text(title, (pageWidth - titleWidth) / 2, 20);
 
@@ -292,24 +292,24 @@ function ViewLoanUser() {
       startY = doc.lastAutoTable.finalY + 4;
       doc.setFontSize(10);
       doc.text(`${t('Monthly Total EMI', 'मासिक कुल EMI')}: Rs. ${totalEMI}`, 14, startY);
-      doc.text(`${t('Monthly Total Penalty', 'मासिक कुल जुर्माना')}: Rs. ${totalPenalty}`, 100, startY);
+      doc.text(`${t('Monthly Total Penalty', 'मासिक कुल ज��र्माना')}: Rs. ${totalPenalty}`, 100, startY);
       startY += 10;
     });
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
-    doc.text(" Yearly Summary", 14, startY);
+    doc.text(t('Yearly Summary', 'वार्षिक सारांश'), 14, startY);
     startY += 6;
 
     const yearlyRows = Object.entries(groupedByYear).map(([year, records]) => {
       const totalEMI = records.reduce((sum, r) => sum + (r.amount || 0), 0);
       const totalPenalty = records.reduce((sum, r) => sum + (r.total_penalty_amount || 0), 0);
-      return [year, ` ${totalEMI}`, ` ${totalPenalty}`];
+      return [year, `Rs. ${totalEMI}`, `Rs. ${totalPenalty}`];
     });
 
     autoTable(doc, {
       startY,
-      head: [["Year", "Total EMI ", "Total Penalty "]],
+      head: [[t('Year', 'वर्ष'), t('Total EMI', 'कुल EMI'), t('Total Penalty', 'कुल जुर्माना')]],
       body: yearlyRows,
       headStyles: { fillColor: [255, 204, 0], fontStyle: 'bold' },
       styles: { fontSize: 10, cellPadding: 3 },
