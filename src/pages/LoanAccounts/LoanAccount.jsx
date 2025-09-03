@@ -55,13 +55,7 @@ function LoanAccount() {
   const usersPerPage = 10;
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpen2,
-    onOpen: onOpen2,
-    onClose: onClose2,
-  } = useDisclosure();
   const cancelRef = React.useRef();
-  const btnRef = React.useRef();
 
   useEffect(() => {
     async function fetchData() {
@@ -126,35 +120,82 @@ function LoanAccount() {
 
   const handleEditSave = async () => {
     try {
-      const res = await axios.put(`users/${editData._id}`, editData);
-      if (res.data) {
+      // Validate required fields
+      if (!editData?.full_name || !editData?.phone_number) {
         toast({
-          title: `User updated successfully`,
+          title: "Validation Error",
+          description: "Full name and phone number are required",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      // Update user details
+      const userUpdateData = {
+        full_name: editData.full_name,
+        phone_number: editData.phone_number,
+        email: editData.email || "",
+        address: editData.address || ""
+      };
+
+      // Update loan details
+      const loanUpdateData = {
+        loan_amount: editData.active_loan_id?.loan_amount || 0,
+        total_amount: editData.active_loan_id?.total_amount || 0,
+        emi_day: editData.active_loan_id?.emi_day || 0,
+        total_due_amount: editData.active_loan_id?.total_due_amount || 0,
+        interest_rate: editData.active_loan_id?.interest_rate || 0,
+        principle_amount: editData.active_loan_id?.principle_amount || 0,
+        total_penalty_amount: editData.active_loan_id?.total_penalty_amount || 0,
+        created_on: editData.active_loan_id?.created_on || new Date(),
+        end_date: editData.active_loan_id?.end_date || new Date()
+      };
+
+      // Update user details
+      const userResponse = await axios.put(`users/${editData._id}`, userUpdateData);
+      
+      // Update loan details using admin route
+      const loanResponse = await axios.put(`admins/edit-loan-user/${editData._id}`, {
+        ...userUpdateData,
+        ...loanUpdateData
+      });
+
+      if (userResponse.data && loanResponse.data) {
+        toast({
+          title: `User and Loan details updated successfully`,
           status: "success",
           duration: 4000,
           isClosable: true,
           position: "top"
         });
-        setData((prev) =>
-          prev.map((item) =>
-            item._id === editData._id ? { ...item, ...editData } : item
-          )
+
+        // Update local state with new data
+        const updatedData = data.map((item) =>
+          item._id === editData._id ? { ...item, ...editData } : item
         );
-        setFilteredData((prev) =>
-          prev.map((item) =>
-            item._id === editData._id ? { ...item, ...editData } : item
-          )
-        );
+        
+        setData(updatedData);
+        setFilteredData(updatedData);
         setIsEditing(false);
+        setEditData(null);
       }
     } catch (err) {
+      console.error("Update error:", err);
       toast({
         title: `Update Failed`,
+        description: err.response?.data?.message || "Failed to update user and loan details",
         status: "error",
         duration: 4000,
         isClosable: true,
       });
     }
+  };
+
+  const handleEditClose = () => {
+    setIsEditing(false);
+    setEditData(null);
   };
 
   const paginatedData = useMemo(() => {
@@ -176,6 +217,13 @@ function LoanAccount() {
         accessor: "full_name",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.full_name}`} bold={"bold"} />
+        ),
+      },
+      {
+        Header: t('Officer Alloted'),
+        accessor: "officer_name",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={original?.officer_id?.name || 'N/A'} />
         ),
       },
       {
@@ -208,10 +256,21 @@ function LoanAccount() {
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.total_due_amount}`} />,
       },
       {
-        Header: t('Date'),
+        Header: t('Start Date'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
+        ),
+      },
+      {
+        Header: t('End Date'),
+        accessor: "end_date",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={
+            original?.active_loan_id?.end_date 
+              ? dayjs(original?.active_loan_id?.end_date).format("D MMM, YYYY")
+              : dayjs(original?.active_loan_id?.created_on).add(120, 'day').format("D MMM, YYYY")
+          } />
         ),
       },
       {
@@ -238,7 +297,7 @@ function LoanAccount() {
                 {t('Actions')}
               </MenuButton>
               <MenuList>
-                <Link to={`/dash/view-user-details/${original?.active_loan_id?.user_id}`}>
+                <Link to={`/dash/view-loan-user/${original?.active_loan_id?.user_id}`}>
                   <MenuItem >
                     <HiStatusOnline className="mr-4" /> {t('View User')}
                   </MenuItem>
@@ -282,115 +341,155 @@ function LoanAccount() {
   };
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      className="min-h-screen bg-primaryBg flex flex-col pt-16"
-    >
+    <>
+      <style>
+        {`
+          .loan-header-responsive {
+            flex-direction: row;
+            align-items: center;
+          }
+          
+          @media (max-width: 1024px) {
+            .loan-header-responsive {
+              flex-direction: column;
+              align-items: stretch;
+              gap: 1rem;
+            }
+            
+            .loan-header-responsive > div {
+              width: 100%;
+            }
+            
+            .loan-header-responsive .search-section {
+              order: 2;
+            }
+            
+            .loan-header-responsive .actions-section {
+              order: 1;
+            }
+          }
+          
+          @media (max-width: 768px) {
+            .loan-header-responsive .search-section {
+              width: 100%;
+            }
+          }
+        `}
+      </style>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="min-h-screen bg-primaryBg flex flex-col pt-8"
+      >
       {/* Fixed Header Section */}
       <motion.div
         variants={itemVariants}
         className="flex-shrink-0 pb-0 px-4 mb-0"
       >
-        <section className="md:p-3">
-          <div className="py-4">
-            <motion.div 
-              variants={itemVariants}
-              className="flex justify-between items-center mb-0"
-            >
-              <motion.div
-                variants={itemVariants}
-                className="flex gap-2"
-              >
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme="blue"
-                    className="bg-primary hover:bg-primaryDark text-white "
-                    fontWeight={700}
-                    fontSize={14}
-                  >
-                    {t('Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
-                  </MenuButton>
-                </Menu>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme="purple"
-                    className="bg-secondary hover:bg-secondaryDark text-white "
-                    fontWeight={700}
-                    fontSize={14}
-                    ref={btnRef}
-                    onClick={onOpen2}
-                  >
-                    {t('Total Active User')} : {data.length}
-                  </MenuButton>
-                </Menu>
-              </motion.div>
+        <section className="md:p-0">
+          <div className="py-0">
+                         <motion.div 
+               variants={itemVariants}
+               className="flex justify-between items-center mb-0 loan-header-responsive"
+             >
+               {/* Stats Section */}
+               <motion.div
+                 variants={itemVariants}
+                 className="flex gap-2"
+               >
+                 <Menu>
+                   <MenuButton
+                     as={Button}
+                     colorScheme="blue"
+                     className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                     fontWeight={700}
+                   >
+                     {t('Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
+                   </MenuButton>
+                 </Menu>
+                 <Menu>
+                   <MenuButton
+                     as={Button}
+                     colorScheme="purple"
+                     className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                     fontWeight={700}
+                   >
+                     {t('Total Active User')} : {data.length}
+                   </MenuButton>
+                 </Menu>
+                 <Link to="/dash/overdue-loans">
+                   <Button
+                     colorScheme="red"
+                     className="bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                     fontWeight={700}
+                   >
+                     {t('Overdue Loans')} ⚠️
+                   </Button>
+                 </Link>
+               </motion.div>
 
-              <motion.div
-                variants={itemVariants}
-                className="w-96"
-              >
-                <InputGroup borderRadius={5} size="sm">
-                  <InputLeftElement pointerEvents="none" />
-                  <Input
-                    type="text"
-                    placeholder={t('Search...')}
-                    focusBorderColor="blue.500"
-                    border="1px solid #949494"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <InputRightAddon p={0} border="none">
-                    <Button
-                      className="bg-primary hover:bg-primaryDark"
-                      colorScheme="blue"
-                      size="sm"
-                      borderLeftRadius={0}
-                      borderRightRadius={3.3}
-                      border="1px solid #949494"
-                    >
-                      {t('Search')}
-                    </Button>
-                  </InputRightAddon>
-                </InputGroup>
-              </motion.div>
+               {/* Search Section */}
+               <motion.div
+                 variants={itemVariants}
+                 className="w-96 search-section"
+               >
+                 <InputGroup borderRadius={5} size="sm">
+                   <InputLeftElement pointerEvents="none" />
+                   <Input
+                     type="text"
+                     placeholder={t('Search...')}
+                     focusBorderColor="blue.500"
+                     border="1px solid #949494"
+                     value={searchTerm}
+                     onChange={(e) => setSearchTerm(e.target.value)}
+                   />
+                   <InputRightAddon p={0} border="none">
+                     <Button
+                       className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       colorScheme="blue"
+                       size="sm"
+                       borderLeftRadius={0}
+                       borderRightRadius={3.3}
+                       border="1px solid #949494"
+                     >
+                       {t('Search')}
+                     </Button>
+                   </InputRightAddon>
+                 </InputGroup>
+               </motion.div>
 
-              <motion.div
-                variants={itemVariants}
-                className="flex gap-2"
-              >
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme="gray"
-                    className="bg-gray-600 hover:bg-gray-700"
-                  >
-                    {t('Sort By', 'Sort By')}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem>{t('Amount High to Low')}</MenuItem>
-                    <MenuItem>{t('Amount Low to High')}</MenuItem>
-                    <MenuItem>{t('Name A-Z')}</MenuItem>
-                    <MenuItem>{t('Date Created')}</MenuItem>
-                  </MenuList>
-                </Menu>
+               {/* Actions Section */}
+               <motion.div
+                 variants={itemVariants}
+                 className="flex gap-2 actions-section"
+               >
+                 <Menu>
+                   <MenuButton
+                     as={Button}
+                     colorScheme="gray"
+                     className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                   >
+                     {t('Sort By', 'Sort By')}
+                   </MenuButton>
+                   <MenuList>
+                     <MenuItem>{t('Amount High to Low')}</MenuItem>
+                     <MenuItem>{t('Amount Low to High')}</MenuItem>
+                     <MenuItem>{t('Name A-Z')}</MenuItem>
+                     <MenuItem>{t('Date Created')}</MenuItem>
+                   </MenuList>
+                 </Menu>
 
-                <Menu>
-                  <Link to={`/dash/create-loan-account`}>
-                    <MenuButton
-                      as={Button}
-                      colorScheme="blue"
-                      className="bg-primary hover:bg-primaryDark"
-                    >
-                      {t('Add New User', 'Add New User')}
-                    </MenuButton>
-                  </Link>
-                </Menu>
-              </motion.div>
-            </motion.div>
+                 <Link to={`/dash/create-loan-user`} onClick={() => console.log('🔄 Navigating to create loan user...')}>
+                   <Button
+                     colorScheme="blue"
+                     className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                   >
+                     {t('Add New User', 'Add New User')}
+                   </Button>
+                 </Link>
+               </motion.div>
+             </motion.div>
           </div>
         </section>
       </motion.div>
@@ -398,7 +497,7 @@ function LoanAccount() {
       {/* Scrollable Table Section */}
       <motion.div
         variants={itemVariants}
-        className="flex-1 px-4 pb-0 overflow-hidden mt-0"
+        className="flex-1 px-4 pb-0 overflow-hidden mt-4"
       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
           
@@ -435,28 +534,7 @@ function LoanAccount() {
         </div>
       </motion.div>
 
-      {/* Drawers and Dialogs */}
-      <Drawer
-        isOpen={isOpen2}
-        placement="right"
-        onClose={onClose2}
-        finalFocusRef={btnRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>{t('Account Details', 'Account Details')}</DrawerHeader>
-          <DrawerBody>
-            <Input placeholder={t('Type here...', 'Type here...')} />
-          </DrawerBody>
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose2}>
-              {t('Cancel', 'Cancel')}
-            </Button>
-            <Button colorScheme="blue">{t('Save', 'Save')}</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+             {/* Drawers and Dialogs */}
 
       <AlertDialog
         isOpen={isOpen}
@@ -484,40 +562,233 @@ function LoanAccount() {
         </AlertDialogOverlay>
       </AlertDialog>
 
-      <Drawer isOpen={isEditing} placement="right" onClose={() => setIsEditing(false)}>
+      <Drawer isOpen={isEditing} placement="right" onClose={handleEditClose} size="lg">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Edit User', 'Edit User')}</DrawerHeader>
+          <DrawerHeader>{t('Edit User & Loan Details', 'Edit User & Loan Details')}</DrawerHeader>
           <DrawerBody>
-            <div className="space-y-4">
-              <Input
-                placeholder={t('Full Name', 'Full Name')}
-                value={editData?.full_name || ""}
-                onChange={(e) =>
-                  setEditData({ ...editData, full_name: e.target.value })
-                }
-              />
-              <Input
-                placeholder={t('Phone Number', 'Phone Number')}
-                value={editData?.phone_number || ""}
-                onChange={(e) =>
-                  setEditData({ ...editData, phone_number: e.target.value })
-                }
-              />
+            <div className="space-y-6">
+              {/* Personal Information */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-purple">{t('Personal Information')}</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Full Name')} *</label>
+                    <Input
+                      placeholder={t('Full Name', 'Full Name')}
+                      value={editData?.full_name || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, full_name: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Phone Number')} *</label>
+                    <Input
+                      placeholder={t('Phone Number', 'Phone Number')}
+                      value={editData?.phone_number || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, phone_number: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Email')}</label>
+                    <Input
+                      placeholder={t('Email', 'Email')}
+                      value={editData?.email || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, email: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Address')}</label>
+                    <Input
+                      placeholder={t('Address', 'Address')}
+                      value={editData?.address || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, address: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Loan Details */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-purple">{t('Loan Details')}</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Loan Amount')} (₹)</label>
+                    <Input
+                      placeholder={t('Loan Amount', 'Loan Amount')}
+                      type="number"
+                      value={editData?.active_loan_id?.loan_amount || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            loan_amount: Number(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Total Amount')} (₹)</label>
+                    <Input
+                      placeholder={t('Total Amount', 'Total Amount')}
+                      type="number"
+                      value={editData?.active_loan_id?.total_amount || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            total_amount: Number(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Daily EMI')} (₹)</label>
+                    <Input
+                      placeholder={t('Daily EMI', 'Daily EMI')}
+                      type="number"
+                      value={editData?.active_loan_id?.emi_day || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            emi_day: Number(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Total Due Amount')} (₹)</label>
+                    <Input
+                      placeholder={t('Total Due Amount', 'Total Due Amount')}
+                      type="number"
+                      value={editData?.active_loan_id?.total_due_amount || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            total_due_amount: Number(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Interest Rate')} (%)</label>
+                    <Input
+                      placeholder={t('Interest Rate (%)', 'Interest Rate (%)')}
+                      type="number"
+                      value={editData?.active_loan_id?.interest_rate || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            interest_rate: Number(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Principle Amount')} (₹)</label>
+                    <Input
+                      placeholder={t('Principle Amount', 'Principle Amount')}
+                      type="number"
+                      value={editData?.active_loan_id?.principle_amount || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            principle_amount: Number(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Total Penalty Amount')} (₹)</label>
+                    <Input
+                      placeholder={t('Total Penalty Amount', 'Total Penalty Amount')}
+                      type="number"
+                      value={editData?.active_loan_id?.total_penalty_amount || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            total_penalty_amount: Number(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Start Date')}</label>
+                    <Input
+                      placeholder={t('Start Date', 'Start Date')}
+                      type="date"
+                      value={editData?.active_loan_id?.created_on ? new Date(editData.active_loan_id.created_on).toISOString().split('T')[0] : ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            created_on: new Date(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('End Date')}</label>
+                    <Input
+                      placeholder={t('End Date', 'End Date')}
+                      type="date"
+                      value={editData?.active_loan_id?.end_date ? new Date(editData.active_loan_id.end_date).toISOString().split('T')[0] : ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          active_loan_id: {
+                            ...editData.active_loan_id,
+                            end_date: new Date(e.target.value)
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </DrawerBody>
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
+            <Button variant="outline" mr={3} onClick={handleEditClose}>
               {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              {t('Save', 'Save')}
+              {t('Save Changes', 'Save Changes')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </motion.div>
+    </>
   );
 }
 

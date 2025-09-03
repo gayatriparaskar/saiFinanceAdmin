@@ -30,7 +30,7 @@ const CreateSavingUser = () => {
     saving_details: {
       amount_to_be: 0,
       interest_rate: "",
-      emi_day: 0,
+      emi_day: 120,
       emi_amount: 0,
       total_interest_pay: 0,
       total_amount: 0,
@@ -52,10 +52,25 @@ const CreateSavingUser = () => {
 
   useEffect(() => {
     async function fetchData() {
+      console.log('🔄 Fetching collection officers for saving user creation...');
       axios.get("officers").then((response) => {
         if (response?.data) {
-          setOfficerData(response?.data?.result);
+          console.log('📊 All officers response:', response.data);
+          
+          // Filter to show only collection officers
+          const collectionOfficers = response.data.result?.filter(officer => 
+            officer.officer_type === 'collection_officer' && officer.is_active
+          ) || [];
+          
+          console.log('👥 Collection officers found:', collectionOfficers.length);
+          if (collectionOfficers.length > 0) {
+            console.log('👤 Sample collection officer:', collectionOfficers[0]);
+          }
+          
+          setOfficerData(collectionOfficers);
         }
+      }).catch(error => {
+        console.error('❌ Error fetching officers:', error);
       });
     }
     fetchData();
@@ -179,12 +194,12 @@ const CreateSavingUser = () => {
       errors.push(t("Interest Rate must be between 0 and 100"));
     }
 
-    // EMI Day validation
-    if (!formData.saving_details.emi_day) {
-      errors.push(t("EMI Day is required"));
-    } else if (isNaN(formData.saving_details.emi_day) || parseInt(formData.saving_details.emi_day) <= 0 || parseInt(formData.saving_details.emi_day) > 31) {
-      errors.push(t("EMI Day must be between 1 and 31"));
-    }
+    // // EMI Day validation
+    // if (!formData.saving_details.emi_day) {
+    //   errors.push(t("EMI Day is required"));
+    // } else if (isNaN(formData.saving_details.emi_day) || parseInt(formData.saving_details.emi_day) <= 0) {
+    //   errors.push(t("EMI Day must be a positive number"));
+    // }
 
     // Officer validation
     if (!formData.officer_id) {
@@ -282,19 +297,7 @@ const CreateSavingUser = () => {
               placeholder={t("Interest Rate")}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              {t("Daily Withdraw Limit")}
-            </label>
-            <input
-              className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"
-              name="daily_withdrawal_limit"
-              value={formData.saving_details.daily_withdrawal_limit}
-              type="number"
-              onChange={handleSavingDetailsChange}
-              placeholder={t("Withdraw Limit")}
-            />
-          </div>
+
           <div className="mt-4">
             <Button colorScheme="teal" onClick={() => setIsModalOpen(true)}>
               {t("Generate Details", "Generate Details")}
@@ -348,6 +351,16 @@ const CreateSavingUser = () => {
                 </option>
               ))}
             </select>
+            {officerData.length === 0 && (
+              <p className="text-sm text-red-600 mt-1">
+                No collection officers available. Please contact an administrator.
+              </p>
+            )}
+            {officerData.length > 0 && (
+              <p className="text-sm text-gray-500 mt-1">
+                Showing {officerData.length} collection officer(s) for account assignment
+              </p>
+            )}
           </div>
         </div>
 

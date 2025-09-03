@@ -56,24 +56,24 @@ function Officer() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const usersPerPage = 10;
   const toast = useToast();
   
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpen2,
-    onOpen: onOpen2,
-    onClose: onClose2,
-  } = useDisclosure();
-  const cancelRef = React.useRef();
-  const btnRef = React.useRef();
+     const { isOpen, onOpen, onClose } = useDisclosure();
+   const cancelRef = React.useRef();
 
   useEffect(() => {
     async function fetchData() {
       try {
+        console.log("Fetching officers data...");
+        console.log("Current token:", localStorage.getItem("token"));
+        
         const response = await axios.get("officers");
+        console.log("Officers API response:", response);
+        
         if (response?.data) {
           console.log("Fetched officers data:", response.data);
           
@@ -82,8 +82,13 @@ function Officer() {
         }
       } catch (error) {
         console.error("Error fetching officers:", error);
+        console.error("Error response:", error.response);
+        console.error("Error status:", error.response?.status);
+        console.error("Error data:", error.response?.data);
+        
         toast({
           title: "Error fetching officers",
+          description: error.response?.data?.message || error.message,
           status: "error",
           duration: 4000,
           isClosable: true,
@@ -94,23 +99,38 @@ function Officer() {
   }, [toast]);
 
   useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredData(data);
-    } else {
-      const result = data.filter(
+    let result = data;
+
+    // Apply search filter
+    if (searchTerm.trim() !== "") {
+      result = result.filter(
         (officer) =>
           officer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           officer._id?.toString().includes(searchTerm) ||
-          officer.department?.toLowerCase().includes(searchTerm.toLowerCase())
+          officer.officer_type?.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredData(result);
-      setCurrentPage(1);
     }
-  }, [searchTerm, data]);
+
+         // Apply status filter
+     if (statusFilter !== "all") {
+       result = result.filter((officer) => {
+         const isActive = officer.isActive || officer.is_active;
+         if (statusFilter === "active") {
+           return isActive === true;
+         } else if (statusFilter === "inactive") {
+           return isActive === false;
+         }
+         return true;
+       });
+     }
+
+    setFilteredData(result);
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, data]);
 
   const handleDelete = () => {
     axios
-      .delete(`officers/${newID}`)
+             .delete(`officers/${newID}`)
       .then((res) => {
         if (res.data) {
           toast({
@@ -136,32 +156,255 @@ function Officer() {
       });
   };
 
-  const handleEditSave = async () => {
+  const handleSort = (field) => {
+    const sortedData = [...filteredData].sort((a, b) => {
+      if (field === 'name') {
+        return (a.name || '').localeCompare(b.name || '');
+      } else if (field === 'officer_type') {
+        return (a.officer_type || '').localeCompare(b.officer_type || '');
+      } else if (field === 'created_on') {
+        return new Date(b.created_on || 0) - new Date(a.created_on || 0);
+             } else if (field === 'isActive') {
+         const aStatus = a.isActive || a.is_active;
+         const bStatus = b.isActive || b.is_active;
+         return (bStatus ? 1 : 0) - (aStatus ? 1 : 0);
+       }
+      return 0;
+    });
+    setFilteredData(sortedData);
+    setCurrentPage(1);
+  };
+
+  const handleBulkStatusChange = async (newStatus) => {
     try {
-      const res = await axios.put(`officers/${editData._id}`, editData);
+      // Show confirmation dialog
+      if (!window.confirm(t(`Are you sure you want to ${newStatus ? 'activate' : 'deactivate'} all officers?`))) {
+        return;
+      }
+
+             // Update all officers in the current filtered data
+            const updatePromises = filteredData.map(officer => 
+           axios.put(`officers/${officer._id}`, { is_active: newStatus })
+         );
+
+      await Promise.all(updatePromises);
+
+      toast({
+        title: t("Bulk Status Update"),
+        description: t(`All officers ${newStatus ? 'activated' : 'deactivated'} successfully`),
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+        position: "top"
+      });
+
+             // Update local state
+       setData((prev) =>
+         prev.map((item) => ({
+           ...item,
+           isActive: newStatus,
+           is_active: newStatus
+         }))
+       );
+       setFilteredData((prev) =>
+         prev.map((item) => ({
+           ...item,
+           isActive: newStatus,
+           is_active: newStatus
+         }))
+       );
+    } catch (err) {
+      console.error("Bulk status update error:", err);
+      toast({
+        title: t("Bulk Update Failed"),
+        description: t("Some officers could not be updated"),
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleToggleStatus = async (officer) => {
+    try {
+      const currentStatus = officer.isActive || officer.is_active;
+      const newStatus = !currentStatus;
+                           const res = await axios.put(`officers/${officer._id}`, {
+          is_active: newStatus  // Use backend field name
+        });
+      
       if (res.data) {
         toast({
-          title: `Officer updated successfully`,
+          title: t("Status Updated"),
+          description: t(`Officer ${newStatus ? 'activated' : 'deactivated'} successfully`),
           status: "success",
           duration: 4000,
           isClosable: true,
           position: "top"
         });
-        setData((prev) =>
-          prev.map((item) =>
-            item._id === editData._id ? { ...item, ...editData } : item
-          )
-        );
-        setFilteredData((prev) =>
-          prev.map((item) =>
-            item._id === editData._id ? { ...item, ...editData } : item
-          )
-        );
+        
+                 // Update local state
+         setData((prev) =>
+           prev.map((item) =>
+             item._id === officer._id ? { ...item, isActive: newStatus, is_active: newStatus } : item
+           )
+         );
+         setFilteredData((prev) =>
+           prev.map((item) =>
+             item._id === officer._id ? { ...item, isActive: newStatus, is_active: newStatus } : item
+           )
+         );
+      }
+    } catch (err) {
+      console.error("Status update error:", err);
+      toast({
+        title: t("Status Update Failed"),
+        description: err.response?.data?.message || t("Something went wrong"),
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleEditSave = async () => {
+    try {
+      // Comprehensive form validation
+      const errors = [];
+
+      // Officer Type validation
+      if (!editData.officer_type) {
+        errors.push(t("Officer Type is required"));
+      }
+
+      // Officer Code validation - only required for collection_officer
+      if (editData.officer_type === "collection_officer") {
+        if (!editData.officer_code || editData.officer_code.toString().trim() === "") {
+          errors.push(t("Officer Code is required for Collection Officers"));
+        } else if (isNaN(editData.officer_code) || parseInt(editData.officer_code) <= 0) {
+          errors.push(t("Officer Code must be a positive number"));
+        }
+      }
+
+      // Name validation
+      if (!editData.name?.trim()) {
+        errors.push(t("Name is required"));
+      } else if (editData.name.trim().length < 2) {
+        errors.push(t("Name must be at least 2 characters"));
+      }
+
+      // Phone number validation (10 digits only)
+      const phoneRegex = /^[0-9]{10}$/;
+      if (!editData.phone_number) {
+        errors.push(t("Phone Number is required"));
+      } else if (!phoneRegex.test(editData.phone_number)) {
+        errors.push(t("Phone Number must be exactly 10 digits"));
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!editData.email) {
+        errors.push(t("Email is required"));
+      } else if (!emailRegex.test(editData.email)) {
+        errors.push(t("Please enter a valid email address"));
+      }
+
+      // PAN Number validation (10 characters, alphanumeric)
+      const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+      if (!editData.pan) {
+        errors.push(t("PAN Number is required"));
+      } else if (!panRegex.test(editData.pan.toUpperCase())) {
+        errors.push(t("PAN Number must be in correct format (e.g., ABCDE1234F)"));
+      }
+
+      // Aadhar Number validation (12 digits)
+      const aadharRegex = /^[0-9]{12}$/;
+      if (!editData.aadhar) {
+        errors.push(t("Aadhar Number is required"));
+      } else if (!aadharRegex.test(editData.aadhar)) {
+        errors.push(t("Aadhar Number must be exactly 12 digits"));
+      }
+
+      // Date of Birth validation
+      if (!editData.dob) {
+        errors.push(t("Date of Birth is required"));
+      } else {
+        const dob = new Date(editData.dob);
+        const today = new Date();
+        const age = today.getFullYear() - dob.getFullYear();
+        if (age < 18 || age > 100) {
+          errors.push(t("Age must be between 18 and 100 years"));
+        }
+      }
+
+      // Show all validation errors
+      if (errors.length > 0) {
+        toast({
+          title: t("Validation Errors"),
+          description: errors.join(", "),
+          status: "error",
+          duration: 6000,
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
+
+             // Prepare data with proper formatting
+       const submitData = {
+         ...editData,
+         name: editData.name.trim(),
+         email: editData.email.toLowerCase(),
+         pan: editData.pan.toUpperCase(),
+         officer_type: editData.officer_type, // Ensure officer_type is included
+         is_active: editData.isActive, // Convert to backend field name
+       };
+
+             // Handle officer_code based on officer_type
+       if (editData.officer_type === "collection_officer") {
+         if (editData.officer_code && editData.officer_code.toString().trim() !== "") {
+           submitData.officer_code = editData.officer_code.toString().trim();
+         } else {
+           submitData.officer_code = null;
+         }
+       } else {
+         // For non-collection officers, completely exclude officer_code field
+         delete submitData.officer_code;
+       }
+
+               console.log("Submitting officer update data:", submitData);
+               const res = await axios.put(`officers/${editData._id}`, submitData);
+      if (res.data) {
+        toast({
+          title: t("Officer updated successfully"),
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+          position: "top"
+        });
+                 // Prepare the updated item with both field names for frontend compatibility
+         const updatedItem = {
+           ...submitData,
+           isActive: submitData.is_active, // Ensure frontend field is also updated
+         };
+         
+         setData((prev) =>
+           prev.map((item) =>
+             item._id === editData._id ? updatedItem : item
+           )
+         );
+         setFilteredData((prev) =>
+           prev.map((item) =>
+             item._id === editData._id ? updatedItem : item
+           )
+         );
         setIsEditing(false);
       }
     } catch (err) {
+      console.error("Update error:", err);
       toast({
-        title: `Update Failed`,
+        title: t("Update Failed"),
+        description: err.response?.data?.message || t("Something went wrong"),
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -191,46 +434,33 @@ function Officer() {
         ),
       },
       {
-
-        Header: t('Employee ID'),
+        Header: t('Officer Type'),
+        accessor: "officer_type",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={`${original?.officer_type ? original.officer_type.replace('_', ' ').toUpperCase() : 'N/A'}`} />
+        ),
+      },
+      {
+        Header: t('Officer Code'),
         accessor: "officer_code",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.officer_code || 'N/A'}`} />
         ),
       },
       {
-
         Header: t('Phone Number'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.phone_number || 'N/A'}`} />
         ),
       },
-      {
-
-        Header: t('Email'),
-        accessor: "email",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.email || 'N/A'}`} />
-        ),
-      },
-      {
-        Header: t('Join Date'),
-        accessor: "created_on",
-
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.created_on ? dayjs(original.created_on).format("D MMM, YYYY") : 'N/A'} />
-        ),
-      },
-      {
-
-        Header: t('Status'),
-        accessor: "isActive",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={t(original?.isActive || 'Active')} />
-
-        ),
-      },
+             {
+         Header: t('Status'),
+         accessor: "isActive",
+         Cell: ({ value, row: { original } }) => (
+           <Cell text={t(original?.isActive || original?.is_active ? 'Active' : 'Inactive')} />
+         ),
+       },
       {
         Header: t('Action'),
         accessor: "",
@@ -250,19 +480,32 @@ function Officer() {
                 <MenuList>
                   <MenuItem 
                     onClick={() => {
-                      console.log('Navigating to:', `/dash/officer-info/${original?._id}`);
-                      navigate(`/dash/officer-info/${original?._id}`);
+                      console.log('Navigating to:', `/dash/view-officer/${original?._id}`);
+                      navigate(`/dash/view-officer/${original?._id}`);
                     }}
                   >
-                    <HiStatusOnline className="mr-4" /> {t('View Account')}
+                    <GrOverview className="mr-4" /> {t('View Officer')}
                   </MenuItem>
-                  <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
-                    <MdEdit className="mr-4" /> {t('Edit')}
-                  </MenuItem>
-                  <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
-                    <MdDelete className="mr-4" />
-                    {t('Delete')}
-                  </MenuItem>
+                        <MenuItem onClick={() => { 
+                     console.log("Opening edit form for officer:", original);
+                     // Ensure we have both field names for compatibility
+                     const editOfficer = {
+                       ...original,
+                       isActive: original.isActive || original.is_active
+                     };
+                     setEditData(editOfficer); 
+                     setIsEditing(true); 
+                   }}>
+                     <MdEdit className="mr-4" /> {t('Edit')}
+                   </MenuItem>
+                   <MenuItem onClick={() => handleToggleStatus(original)}>
+                     <HiStatusOnline className="mr-4" />
+                     {original?.isActive ? t('Deactivate') : t('Activate')}
+                   </MenuItem>
+                   <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
+                     <MdDelete className="mr-4" />
+                     {t('Delete')}
+                   </MenuItem>
                   {/* <MenuItem onClick={onOpen2}>
                     <HiStatusOnline className="mr-4" /> {t('Status')}
                   </MenuItem> */}
@@ -294,102 +537,182 @@ function Officer() {
     }
   };
 
-  return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      className="min-h-screen bg-primaryBg flex flex-col pt-16"
-    >
-      {/* Fixed Header Section */}
-      <motion.div 
-        variants={itemVariants}
-        className="flex-shrink-0 pb-0 px-4"
-      >
-        <section className="md:p-3">
-          <div className="py-4">
-            <motion.div 
-              variants={itemVariants}
-              className="flex justify-between items-center mb-0"
-            >
-              <motion.div 
-                variants={itemVariants}
-                className="flex gap-2"
-              >
+     return (
+     <>
+       <style>
+         {`
+           .officer-header-responsive {
+             flex-direction: row;
+             align-items: center;
+           }
+           
+           @media (max-width: 1024px) {
+             .officer-header-responsive {
+               flex-direction: column;
+               align-items: stretch;
+               gap: 1rem;
+             }
+             
+             .officer-header-responsive > div {
+               width: 100%;
+             }
+             
+             .officer-header-responsive .search-section {
+               order: 2;
+             }
+             
+             .officer-header-responsive .actions-section {
+               order: 1;
+             }
+           }
+           
+           @media (max-width: 768px) {
+             .officer-header-responsive .search-section {
+               flex-direction: column;
+               gap: 0.5rem;
+             }
+             
+             .officer-header-responsive .search-section > div {
+               width: 100%;
+             }
+           }
+         `}
+       </style>
+       <motion.div
+         initial="hidden"
+         animate="visible"
+         variants={containerVariants}
+                   className="min-h-screen bg-primaryBg flex flex-col pt-8"
+       >
+             {/* Fixed Header Section */}
+       <motion.div 
+         variants={itemVariants}
+         className="flex-shrink-0 pb-0 px-4"
+       >
+                   <section className="md:p-0 mt-0">
+           <div className="py-0">
+                         <motion.div 
+               variants={itemVariants}
+               className="flex justify-between items-center mb-0 officer-header-responsive"
+             >
+               {/* Stats Section */}
+               <motion.div
+                 variants={itemVariants}
+                 className="flex gap-2"
+               >
                 <Menu>
                   <MenuButton
                     as={Button}
                     colorScheme="blue"
-                    className="bg-primary hover:bg-primaryDark text-white"
+                    className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                     fontWeight={700}
-                    fontSize={14}
                   >
                     {t('Total Officers')} : {data.length}
                   </MenuButton>
                 </Menu>
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme="purple"
-                    className="bg-secondary hover:bg-secondaryDark text-white"
-                    fontWeight={700}
-                    fontSize={14}
-                    ref={btnRef}
-                    onClick={onOpen2}
-                  >
-                    {t("Active Officers")} : {data.filter(of => of.is_active).length}
-                  </MenuButton>
-                </Menu>
+                
               </motion.div>
 
-              <motion.div 
-                variants={itemVariants}
-                className="w-96"
-              >
-                <InputGroup borderRadius={5} size="sm">
-                  <InputLeftElement
-                    pointerEvents="none"
-                  />
-                  <Input
-                    type="text"
-                    placeholder={t('Search officers...')}
-                    focusBorderColor="blue.500"
-                    border="1px solid #949494"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <InputRightAddon p={0} border="none">
-                    <Button
-                      className="bg-primary hover:bg-primaryDark"
-                      colorScheme="blue"
-                      size="sm"
-                      borderLeftRadius={0}
-                      borderRightRadius={3.3}
+                             {/* Search & Filters Section */}
+               <motion.div 
+                 variants={itemVariants}
+                 className="flex gap-2 search-section"
+               >
+                 {/* Search Input */}
+                 <div className="w-80">
+                  <InputGroup borderRadius={5} size="sm">
+                    <InputLeftElement
+                      pointerEvents="none"
+                    />
+                    <Input
+                      type="text"
+                      placeholder={t('Search officers...')}
+                      focusBorderColor="blue.500"
                       border="1px solid #949494"
-                    >
-                      {t('Search')}
-                    </Button>
-                  </InputRightAddon>
-                </InputGroup>
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <InputRightAddon p={0} border="none">
+                      <Button
+                        className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                        colorScheme="blue"
+                        size="sm"
+                        borderLeftRadius={0}
+                        borderRightRadius={3.3}
+                        border="1px solid #949494"
+                      >
+                        {t('Search')}
+                      </Button>
+                    </InputRightAddon>
+                  </InputGroup>
+                </div>
+
+                                 {/* Status Filter */}
+                 <div className="w-48">
+                  <select
+                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm p-2 border"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    <option value="all">{t('All Status')}</option>
+                    <option value="active">{t('Active Only')}</option>
+                    <option value="inactive">{t('Inactive Only')}</option>
+                  </select>
+                </div>
+
+                {/* Clear Filters Button */}
+                {(searchTerm || statusFilter !== "all") && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setSearchTerm("");
+                      setStatusFilter("all");
+                    }}
+                    className="text-gray-600 hover:text-gray-800 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                  >
+                    {t('Clear Filters')}
+                  </Button>
+                )}
               </motion.div>
 
-              <motion.div 
-                variants={itemVariants}
-                className="flex gap-2"
-              >
+                             {/* Actions Section */}
+               <motion.div 
+                 variants={itemVariants}
+                 className="flex gap-2 actions-section"
+               >
+
                 <Menu>
                   <MenuButton
                     as={Button}
                     colorScheme="gray"
-                    className="bg-gray-600 hover:bg-gray-700"
+                    className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                   >
                     {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>{t('Name A-Z')}</MenuItem>
-                    <MenuItem>{t('Department')}</MenuItem>
-                    <MenuItem>{t('Join Date')}</MenuItem>
-                    <MenuItem>{t('Status')}</MenuItem>
+                    <MenuItem onClick={() => handleSort('name')}>{t('Name A-Z')}</MenuItem>
+                    <MenuItem onClick={() => handleSort('officer_type')}>{t('Officer Type')}</MenuItem>
+                    <MenuItem onClick={() => handleSort('created_on')}>{t('Join Date')}</MenuItem>
+                    <MenuItem onClick={() => handleSort('isActive')}>{t('Status')}</MenuItem>
+                  </MenuList>
+                </Menu>
+
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    colorScheme="orange"
+                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                  >
+                    {t('Bulk Actions')}
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem onClick={() => handleBulkStatusChange(true)}>
+                      {t('Activate All')}
+                    </MenuItem>
+                                         <MenuItem onClick={() => handleBulkStatusChange(false)}>
+                       {t('Deactivate All')}
+                     </MenuItem>
                   </MenuList>
                 </Menu>
 
@@ -398,7 +721,7 @@ function Officer() {
                     <MenuButton
                       as={Button}
                       colorScheme="blue"
-                      className="bg-primary hover:bg-primaryDark"
+                      className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                     >
                       {t('Add New Officer', 'Add New Officer')}
                     </MenuButton>
@@ -410,11 +733,11 @@ function Officer() {
         </section>
       </motion.div>
 
-      {/* Scrollable Table Section */}
-      <motion.div 
-        variants={itemVariants}
-        className="flex-1 px-4 pb-4 overflow-hidden"
-      >
+             {/* Scrollable Table Section */}
+       <motion.div 
+         variants={itemVariants}
+         className="flex-1 px-4 pb-4 overflow-hidden mt-4"
+       >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
@@ -446,40 +769,7 @@ function Officer() {
         </div>
       </motion.div>
 
-      {/* Drawers and Dialogs */}
-      <Drawer
-        isOpen={isOpen2}
-        placement="right"
-        onClose={onClose2}
-        finalFocusRef={btnRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>{t('Officer Statistics', 'Officer Statistics')}</DrawerHeader>
-
-          <DrawerBody>
-            <div className="space-y-4">
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-bold text-blue-900">{t('Total Officers')}</h4>
-                <p className="text-2xl font-bold text-blue-600">{data.length}</p>
-              </div>
-              <div className="p-4 bg-green-50 rounded-lg">
-                <h4 className="font-bold text-green-900">{t('Active Officers')}</h4>
-                <p className="text-2xl font-bold text-green-600">
-                  {data.filter(officer => officer.status === 'Active').length}
-                </p>
-              </div>
-            </div>
-          </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose2}>
-              {t('Close', 'Close')}
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+             {/* Drawers and Dialogs */}
 
       <AlertDialog
         isOpen={isOpen}
@@ -509,48 +799,183 @@ function Officer() {
         </AlertDialogOverlay>
       </AlertDialog>
 
-      <Drawer isOpen={isEditing} placement="right" onClose={() => setIsEditing(false)}>
+      <Drawer isOpen={isEditing} placement="right" onClose={() => {
+        setIsEditing(false);
+        setEditData(null);
+      }} size="lg">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>{t('Edit Officer', 'Edit Officer')}</DrawerHeader>
           <DrawerBody>
-            <div className="space-y-4">
-              <Input
-                placeholder={t('Officer Name', 'Officer Name')}
-                value={editData?.name || ""}
-                onChange={(e) =>
-                  setEditData({ ...editData, name: e.target.value })
-                }
-              />
-              <Input
-                placeholder={t('Officer Code', 'Officer Code')}
-                value={editData?.officer_code || ""}
-                onChange={(e) =>
-                  setEditData({ ...editData, officer_code: e.target.value })
-                }
-              />
-              <Input
-                placeholder={t('Officer Status', 'Officer Status')}
-                value={editData?.is_active || ""}
-                onChange={(e) =>
-                  setEditData({ ...editData, is_active: e.target.value })
-                }
-              />
+            <div className="space-y-4 pt-4">
+              {/* Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('Name')} *
+                </label>
+                <Input
+                  placeholder={t('Enter officer name')}
+                  value={editData?.name || ""}
+                  onChange={(e) =>
+                    setEditData({ ...editData, name: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Phone Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('Phone Number')} *
+                </label>
+                <Input
+                  placeholder={t('Enter 10-digit phone number')}
+                  value={editData?.phone_number || ""}
+                  maxLength={10}
+                  onChange={(e) =>
+                    setEditData({ ...editData, phone_number: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('Email')} *
+                </label>
+                <Input
+                  placeholder={t('Enter email address')}
+                  type="email"
+                  value={editData?.email || ""}
+                  onChange={(e) =>
+                    setEditData({ ...editData, email: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* PAN Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('PAN Number')} *
+                </label>
+                <Input
+                  placeholder={t('Enter PAN Number')}
+                  value={editData?.pan || ""}
+                  maxLength={10}
+                  onChange={(e) =>
+                    setEditData({ ...editData, pan: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Aadhar Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('Aadhar Number')} *
+                </label>
+                <Input
+                  placeholder={t('Enter Aadhar Number')}
+                  value={editData?.aadhar || ""}
+                  maxLength={12}
+                  onChange={(e) =>
+                    setEditData({ ...editData, aadhar: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Date of Birth */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('Date of Birth')} *
+                </label>
+                <Input
+                  type="date"
+                  value={editData?.dob || ""}
+                  onChange={(e) =>
+                    setEditData({ ...editData, dob: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Officer Type */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('Officer Type')} *
+                </label>
+                <select
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm p-2 border"
+                  value={editData?.officer_type || "manager"}
+                                                                               onChange={(e) => {
+                        const newType = e.target.value;
+                        console.log("Changing officer type to:", newType);
+                        setEditData({ 
+                          ...editData, 
+                          officer_type: newType,
+                          // Clear officer_code if changing to non-collection_officer
+                          ...(newType !== "collection_officer" && { officer_code: null })
+                        });
+                      }}
+                >
+                  <option value="collection_officer">{t('Collection Officer')}</option>
+                  <option value="manager">{t('Manager')}</option>
+                  <option value="admin">{t('Admin')}</option>
+                  <option value="accounter">{t('Accounter')}</option>
+                </select>
+              </div>
+
+              {/* Officer Code - Only show for collection_officer */}
+              {(editData?.officer_type === "collection_officer") && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('Officer Code')} *
+                  </label>
+                  <Input
+                    placeholder={t('Enter officer code')}
+                    type="number"
+                    value={editData?.officer_code || ""}
+                    onChange={(e) =>
+                      setEditData({ ...editData, officer_code: e.target.value || null })
+                    }
+                  />
+                </div>
+              )}
+
+                             {/* Is Active */}
+               <div className="flex items-center">
+                 <label className="block text-sm font-medium text-gray-700 mr-2">
+                   {t('Is Active')}
+                 </label>
+                 <input
+                   type="checkbox"
+                   checked={editData?.isActive || false}
+                   onChange={(e) =>
+                     setEditData({ ...editData, isActive: e.target.checked })
+                   }
+                   className="accent-primary focus:ring-primary h-4 w-4 border-none rounded"
+                 />
+                 <span className="ml-2 text-sm text-gray-600">
+                   {editData?.isActive ? t('Officer is currently active') : t('Officer is currently inactive')}
+                 </span>
+               </div>
             </div>
           </DrawerBody>
           <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
+            <Button variant="outline" mr={3} onClick={() => {
+              setIsEditing(false);
+              setEditData(null);
+            }}>
               {t('Cancel', 'Cancel')}
             </Button>
             <Button colorScheme="blue" onClick={handleEditSave}>
-              {t('Save', 'Save')}
+              {t('Save Changes', 'Save Changes')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </motion.div>
+    </>
   );
 }
 
 export default Officer;
+

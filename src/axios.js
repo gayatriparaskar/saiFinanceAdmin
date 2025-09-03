@@ -1,12 +1,14 @@
 import axios from "axios";
 
-// Primary API endpoint
-const API_BASE_URL = "https://sai-finance.vercel.app/api/";
+// Primary API endpoint - Using local server for testing
+const API_BASE_URL = "http://localhost:3001/api/";
+// const API_BASE_URL = "https://saifinancebackend.onrender.com/api/";
 
 // Fallback endpoints in order of preference
 const FALLBACK_ENDPOINTS = [
-  "https://api.learn2ern.com/api/",
-  "https://learn2earn-alpha.vercel.app/"
+  "https://saifinancebackend.onrender.com/api/",
+  // "https://api.learn2ern.com/api/",
+  // "https://learn2earn-alpha.vercel.app/"
 ];
 
 const instance = axios.create({
@@ -27,7 +29,7 @@ instance.interceptors.request.use(
     // console.log(token)
     // console.log("token")
     if (token) {
-      config.headers.Authorization = `${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -104,7 +106,7 @@ const retryWithFallback = async (originalConfig) => {
       if (token) {
         fallbackConfig.headers = {
           ...fallbackConfig.headers,
-          Authorization: token
+          Authorization: `Bearer ${token}`
         };
       }
 

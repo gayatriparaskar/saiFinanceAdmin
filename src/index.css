@@ -6,6 +6,120 @@
 @import "~slick-carousel/slick/slick-theme.css";
 @import "./styles/GlobalAnimations.css";
 
+/* Responsive Utilities */
+@layer utilities {
+  /* Mobile-first responsive text sizes */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm;
+  }
+  
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+  
+  .text-responsive-base {
+    @apply text-base sm:text-lg;
+  }
+  
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl;
+  }
+  
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl;
+  }
+  
+  .text-responsive-2xl {
+    @apply text-2xl sm:text-3xl;
+  }
+  
+  .text-responsive-3xl {
+    @apply text-3xl sm:text-4xl;
+  }
+  
+  .text-responsive-4xl {
+    @apply text-4xl sm:text-5xl;
+  }
+  
+  /* Responsive spacing */
+  .space-responsive-xs {
+    @apply space-y-2 sm:space-y-3;
+  }
+  
+  .space-responsive-sm {
+    @apply space-y-3 sm:space-y-4;
+  }
+  
+  .space-responsive-base {
+    @apply space-y-4 sm:space-y-6;
+  }
+  
+  .space-responsive-lg {
+    @apply space-y-6 sm:space-y-8;
+  }
+  
+  /* Responsive padding */
+  .p-responsive-xs {
+    @apply p-2 sm:p-3;
+  }
+  
+  .p-responsive-sm {
+    @apply p-3 sm:p-4;
+  }
+  
+  .p-responsive-base {
+    @apply p-4 sm:p-6;
+  }
+  
+  .p-responsive-lg {
+    @apply p-6 sm:p-8;
+  }
+  
+  /* Responsive margins */
+  .m-responsive-xs {
+    @apply m-2 sm:m-3;
+  }
+  
+  .m-responsive-sm {
+    @apply m-3 sm:m-4;
+  }
+  
+  .m-responsive-base {
+    @apply m-4 sm:m-6;
+  }
+  
+  .m-responsive-lg {
+    @apply m-6 sm:m-8;
+  }
+  
+  /* Responsive grid columns */
+  .grid-responsive-1 {
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5;
+  }
+  
+  .grid-responsive-2 {
+    @apply grid-cols-1 lg:grid-cols-2;
+  }
+  
+  .grid-responsive-3 {
+    @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+  }
+  
+  /* Mobile-first container */
+  .container-responsive {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Responsive navigation */
+  .nav-responsive {
+    @apply h-16 sm:h-20;
+  }
+  
+  .nav-padding {
+    @apply pt-16 sm:pt-20;
+  }
+}
+
 .text-shadow {
   text-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
 }

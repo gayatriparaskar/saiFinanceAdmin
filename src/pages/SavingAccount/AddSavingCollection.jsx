@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import axios from "../../axios";
 import { useToast, Button, Menu, MenuButton, Select } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
@@ -7,6 +8,7 @@ import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const AddSavingCollection = () => {
   const { t } = useLocalTranslation();
+  const navigate = useNavigate();
   const { id } = useParams();
   const toast = useToast();
 
@@ -166,6 +168,11 @@ const AddSavingCollection = () => {
 
       // ✅ Update UI without reload
       await fetchUserData();
+      
+      // ✅ Redirect to officer page after successful collection
+      setTimeout(() => {
+        navigate("/dash/officer");
+      }, 2000);
     } catch (err) {
       console.error("API Error:", err);
       toast({

@@ -256,89 +256,91 @@ function ViewSavingUser() {
     <div className="lg:py-8 py-4 px-6 bg-primaryBg">
       <section className="md:p-1">
         <div className="py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex w-3/2 flex-col gap-2 text-start">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
+            {/* User Information Section */}
+            <div className="flex flex-col gap-4 text-start w-full lg:w-auto">
               <h2 className="text-xl font-bold text-purple">
                 {t("Full Name", "Full Name")}:{" "}
-                <span className="ml-4">{accountData?.user_id?.full_name}</span>
+                <span className="ml-2 lg:ml-4">{accountData?.user_id?.full_name}</span>
               </h2>
-              <div className="flex gap-20">
+              <div className="flex flex-col lg:flex-row gap-4 lg:gap-20">
                 <h2 className="text-lg font-bold text-purple">
                   {t("Start Date", "Start Date")}:{" "}
-                  <span className="ml-4">
+                  <span className="ml-2 lg:ml-4">
                     {dayjs(accountData?.created_on).format("D MMM, YYYY")}
                   </span>
                 </h2>
                 <h2 className="text-lg font-bold text-purple">
                   {t("End Date", "End Date")}:{" "}
-                  <span className="ml-4">
+                  <span className="ml-2 lg:ml-4">
                     {dayjs(accountData?.created_on).format("D MMM, YYYY")}
                   </span>
                 </h2>
               </div>
             </div>
 
-<div className="w-1/2 flex flex-col gap-2 items-end">
-  {/* Top row: summary buttons */}
-  <div className="flex gap-2">
-    <Button
-      className="bg-primaryDark hover:bg-primaryLight"
-      colorScheme="#FF782D"
-    >
-      {t("Total Amount", "Total Amount")}: Rs.{" "}
-      {(accountData.total_amount || 0) + (accountData.current_amount || 0)}
-    </Button>
+            {/* Buttons Section */}
+            <div className="flex flex-col gap-4 w-full lg:w-auto lg:items-end">
+              {/* Summary Buttons Row */}
+              <div className="flex flex-col sm:flex-row gap-2 lg:gap-4 w-full lg:w-auto">
+                <Button
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                  colorScheme="#FF782D"
+                >
+                  {t("Total Amount", "Total Amount")}: Rs.{" "}
+                  {(accountData.total_amount || 0) + (accountData.current_amount || 0)}
+                </Button>
 
-    <Button
-      className="bg-primaryDark hover:bg-primaryLight"
-      colorScheme="#FF782D"
-    >
-      {t("Total Withdraw", "Total Withdraw")}: Rs.{" "}
-      {accountData.total_withdrawal || 0}
-    </Button>
-  </div>
+                <Button
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                  colorScheme="#FF782D"
+                >
+                  {t("Total Withdraw", "Total Withdraw")}: Rs.{" "}
+                  {accountData.total_withdrawal || 0}
+                </Button>
+              </div>
 
-  {/* Bottom row: action buttons (centered under top row) */}
-  <div className="w-full flex gap-2 justify-center mt-0">
-    <Button
-      className="bg-primaryDark hover:bg-primaryLight"
-      colorScheme="#FF782D"
-      onClick={generatePDF}
-    >
-      {t("Download PDF", "Download PDF")}
-    </Button>
+              {/* Action Buttons Row */}
+              <div className="flex flex-col sm:flex-row gap-2 lg:gap-4 w-full lg:w-auto">
+                <Button
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                  colorScheme="#FF782D"
+                  onClick={generatePDF}
+                >
+                  {t("Download PDF", "Download PDF")}
+                </Button>
 
-    <Link to={`/dash/add-Saving-collection/${accountData?.user_id?._id}`}>
-      <Button className="bg-purple" colorScheme="#FF782D">
-        {t("Withdraw", "Withdraw")}
-      </Button>
-    </Link>
-  </div>
-</div>
-
-
-            <Drawer
-              isOpen={isOpen2}
-              placement="right"
-              onClose={onClose2}
-              finalFocusRef={btnRef}
-            >
-              <DrawerOverlay />
-              <DrawerContent>
-                <DrawerCloseButton />
-                <DrawerHeader>{t("Edit", "Edit")}</DrawerHeader>
-                <DrawerBody>
-                  <Input placeholder={t("Type here...", "Type here...")} />
-                </DrawerBody>
-                <DrawerFooter>
-                  <Button variant="outline" mr={3} onClick={onClose2}>
-                    {t("Cancel", "Cancel")}
+                <Link to={`/dash/add-Saving-collection/${accountData?.user_id?._id}`} className="w-full sm:w-auto">
+                  <Button className="bg-purple w-full" colorScheme="#FF782D">
+                    {t("Withdraw", "Withdraw")}
                   </Button>
-                  <Button colorScheme="blue">{t("Save", "Save")}</Button>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
+                </Link>
+              </div>
+            </div>
           </div>
+
+          {/* Drawer Component */}
+          <Drawer
+            isOpen={isOpen2}
+            placement="right"
+            onClose={onClose2}
+            finalFocusRef={btnRef}
+          >
+            <DrawerOverlay />
+            <DrawerContent>
+              <DrawerCloseButton />
+              <DrawerHeader>{t("Edit", "Edit")}</DrawerHeader>
+              <DrawerBody>
+                <Input placeholder={t("Type here...", "Type here...")} />
+              </DrawerBody>
+              <DrawerFooter>
+                <Button variant="outline" mr={3} onClick={onClose2}>
+                  {t("Cancel", "Cancel")}
+                </Button>
+                <Button colorScheme="blue">{t("Save", "Save")}</Button>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
 
           <div className="mt-2 overflow-x-auto scrollbar-hide">
             <Table data={transactions} columns={columns} />

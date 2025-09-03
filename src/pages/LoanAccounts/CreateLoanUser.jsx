@@ -58,10 +58,25 @@ const CreateLoanUser = () => {
 
   useEffect(() => {
     async function fetchData() {
+      console.log('🔄 Fetching collection officers for loan user creation...');
       axios.get("officers").then((response) => {
         if (response?.data) {
-          setOfficerData(response?.data?.result);
+          console.log('📊 All officers response:', response.data);
+          
+          // Filter to show only collection officers
+          const collectionOfficers = response.data.result?.filter(officer => 
+            officer.officer_type === 'collection_officer' && officer.is_active
+          ) || [];
+          
+          console.log('👥 Collection officers found:', collectionOfficers.length);
+          if (collectionOfficers.length > 0) {
+            console.log('👤 Sample collection officer:', collectionOfficers[0]);
+          }
+          
+          setOfficerData(collectionOfficers);
         }
+      }).catch(error => {
+        console.error('❌ Error fetching officers:', error);
       });
     }
     fetchData();
@@ -392,6 +407,16 @@ const CreateLoanUser = () => {
                 </option>
               ))}
             </select>
+            {officerData.length === 0 && (
+              <p className="text-sm text-red-600 mt-1">
+                No collection officers available. Please contact an administrator.
+              </p>
+            )}
+            {officerData.length > 0 && (
+              <p className="text-sm text-gray-500 mt-1">
+                Showing {officerData.length} collection officer(s) for account assignment
+              </p>
+            )}
           </div>
         </div>
 
@@ -443,6 +468,19 @@ const CreateLoanUser = () => {
             <p>
               <strong>{t("Daily EMI", "Daily EMI")}:</strong>{" "}
               {formData.loan_details.emi_day}
+            </p>
+            <hr className="my-3" />
+            <p>
+              <strong>{t("Loan Start Date", "Loan Start Date")}:</strong>{" "}
+              {new Date().toLocaleDateString()}
+            </p>
+            <p>
+              <strong>{t("Loan End Date", "Loan End Date")}:</strong>{" "}
+              {new Date(Date.now() + 120 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+            </p>
+            <p>
+              <strong>{t("Loan Duration", "Loan Duration")}:</strong>{" "}
+              120 days (4 months)
             </p>
           </ModalBody>
           <ModalFooter display={"flex"} gap={"10px"}>

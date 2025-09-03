@@ -3,6 +3,9 @@ import { Route, Routes, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import NewDashboard from '../pages/Dashboard/main/NewDashboard';
 import NewLogin from '../pages/SignIn/NewLogin';
+import ManagerDashboard from '../pages/Dashboard/ManagerDashboard';
+import AccounterDashboard from '../pages/Dashboard/AccounterDashboard';
+import CollectionOfficerDashboard from '../pages/Dashboard/CollectionOfficerDashboard';
 
 const MainRoute = () => {
   const [loading, setLoading] = useState(false);
@@ -110,6 +113,53 @@ const MainRoute = () => {
               </motion.div>
             }
           />
+
+          <Route 
+            path='/manager-dashboard' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <ManagerDashboard/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/accounter-dashboard' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <AccounterDashboard/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/collection-dashboard' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <CollectionOfficerDashboard/>
+              </motion.div>
+            }
+          />
+
+
         </Routes>
       </AnimatePresence>
     </>

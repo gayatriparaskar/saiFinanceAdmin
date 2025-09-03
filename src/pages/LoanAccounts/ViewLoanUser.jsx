@@ -196,7 +196,9 @@ function ViewLoanUser() {
     const doc = new jsPDF();
     const userName = userdata?.full_name || "N/A";
     const startDate = dayjs(userdata?.active_loan_id?.created_on).format("D MMM, YYYY");
-    const endDate = startDate;
+    const endDate = userdata?.active_loan_id?.end_date 
+      ? dayjs(userdata?.active_loan_id?.end_date).format("D MMM, YYYY")
+      : dayjs(userdata?.active_loan_id?.created_on).add(120, 'day').format("D MMM, YYYY");
     const loan = userdata?.active_loan_id?.loan_amount || 0;
     const due = userdata?.active_loan_id?.total_due_amount || 0;
     const penalty = userdata?.active_loan_id?.total_penalty_amount || 0;
@@ -296,119 +298,124 @@ function ViewLoanUser() {
     <div className="lg:py-8 py-4 px-6 bg-primaryBg mt-6">
       <section className=" md:p-1 ">
         <div className="py-6 ">
-          <div className="flex  justify-between items-center ">
-            <div className="flex w-3/2 flex-col gap-2 text-start">
-              <h2 className="text-xl font-bold   text-purple text-oswald">
-                {t('Name', 'Name')} :<span className="ml-4">{userdata?.full_name}</span>
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
+            {/* User Information Section */}
+            <div className="flex flex-col gap-4 text-start w-full lg:w-auto">
+              <h2 className="text-xl font-bold text-purple text-oswald">
+                {t('Name', 'Name')}: <span className="ml-2 lg:ml-4">{userdata?.full_name}</span>
               </h2>
-              <div className="flex gap-20">
-                <h2 className="text-lg font-bold   text-purple text-oswald">
-                  {t('Start Date', 'Start Date')} :
-                  <span className="ml-4">
+              <div className="flex flex-col lg:flex-row gap-4 lg:gap-20">
+                <h2 className="text-lg font-bold text-purple text-oswald">
+                  {t('Start Date', 'Start Date')}:
+                  <span className="ml-2 lg:ml-4">
                     {dayjs(userdata?.active_loan_id?.created_on).format(
                       "D MMM, YYYY"
                     )}
                   </span>
                 </h2>
-                <h2 className="text-lg font-bold   text-purple text-oswald">
-                  {t('End Date', 'End Date')} :
-                  <span className="ml-4">
-                    {dayjs(userdata?.active_loan_id?.created_on).format(
-                      "D MMM, YYYY"
-                    )}
+                <h2 className="text-lg font-bold text-purple text-oswald">
+                  {t('End Date', 'End Date')}:
+                  <span className="ml-2 lg:ml-4">
+                    {userdata?.active_loan_id?.end_date 
+                      ? dayjs(userdata?.active_loan_id?.end_date).format("D MMM, YYYY")
+                      : dayjs(userdata?.active_loan_id?.created_on).add(120, 'day').format("D MMM, YYYY")
+                    }
                   </span>
                 </h2>
               </div>
             </div>
 
-{/* Replace the existing w-1/2 block with this */}
-<div className="w-1/2 flex flex-col gap-2 items-end">
-  {/* Top row: right-aligned summary buttons */}
-  <div className="flex gap-4">
-    <Button
-      colorScheme="blue"
-      size="md"
-      borderRadius="md"
-      px={2}
-      className="bg-primaryDark hover:bg-primaryLight"
-    >
-      Total Loan {userdata?.active_loan_id?.loan_amount} Rs.
-    </Button>
+            {/* Buttons Section */}
+            <div className="flex flex-col gap-4 w-full lg:w-auto lg:items-end">
+              {/* Summary Buttons Row */}
+              <div className="flex flex-col sm:flex-row gap-2 lg:gap-4 w-full lg:w-auto">
+                <Button
+                  colorScheme="blue"
+                  size="md"
+                  borderRadius="md"
+                  px={2}
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                >
+                  Total Loan {userdata?.active_loan_id?.loan_amount} Rs.
+                </Button>
 
-    <Button
-      colorScheme="blue"
-      size="md"
-      borderRadius="md"
-      px={2}
-      className="bg-primaryDark hover:bg-primaryLight"
-    >
-      {t('Total Due Amount', 'Total Due Amount')}{" "}
-      {userdata?.active_loan_id?.total_due_amount} रु.
-    </Button>
+                <Button
+                  colorScheme="blue"
+                  size="md"
+                  borderRadius="md"
+                  px={2}
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                >
+                  {t('Total Due Amount', 'Total Due Amount')}{" "}
+                  {userdata?.active_loan_id?.total_due_amount} रु.
+                </Button>
 
-    <Button
-      colorScheme="blue"
-      size="md"
-      borderRadius="md"
-      px={2}
-      className="bg-primaryDark hover:bg-primaryLight"
-    >
-      {t('Total Penalty', 'Total Penalty')}{" "}
-      {userdata?.active_loan_id?.total_penalty_amount} रु.
-    </Button>
-  </div>
+                <Button
+                  colorScheme="blue"
+                  size="md"
+                  borderRadius="md"
+                  px={2}
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                >
+                  {t('Total Penalty', 'Total Penalty')}{" "}
+                  {userdata?.active_loan_id?.total_penalty_amount} रु.
+                </Button>
+              </div>
 
-  {/* Bottom row: centered under the top row */}
-  <div className="w-full flex gap-4 justify-center mt-3">
-    <Button
-      colorScheme="blue"
-      size="md"
-      borderRadius="md"
-      px={2}
-      onClick={generatePDF}
-    >
-      {t('Download PDF', 'Download PDF')}
-    </Button>
+              {/* Action Buttons Row */}
+              <div className="flex flex-col sm:flex-row gap-2 lg:gap-4 w-full lg:w-auto">
+                <Button
+                  colorScheme="blue"
+                  size="md"
+                  borderRadius="md"
+                  px={2}
+                  onClick={generatePDF}
+                  className="w-full sm:w-auto"
+                >
+                  {t('Download PDF', 'Download PDF')}
+                </Button>
 
-    <Link to={`/dash/add-daily-collection/${userdata?._id}`}>
-      <Button
-        colorScheme="purple"
-        size="md"
-        borderRadius="md"
-        px={2}
-      >
-        {t('Add Amount', 'Add Amount')}
-      </Button>
-    </Link>
-  </div>
-</div>
-
-
-            <Drawer
-              isOpen={isOpen2}
-              placement="right"
-              onClose={onClose2}
-              finalFocusRef={btnRef}
-            >
-              <DrawerOverlay />
-              <DrawerContent>
-                <DrawerCloseButton />
-                <DrawerHeader>Create your account</DrawerHeader>
-
-                <DrawerBody>
-                  <Input placeholder="Type here..." />
-                </DrawerBody>
-
-                <DrawerFooter>
-                  <Button variant="outline" mr={3} onClick={onClose2}>
-                    Cancel
+                <Link to={`/dash/add-daily-collection/${userdata?._id}`} className="w-full sm:w-auto">
+                  <Button
+                    colorScheme="purple"
+                    size="md"
+                    borderRadius="md"
+                    px={2}
+                    className="w-full"
+                  >
+                    {t('Add Amount', 'Add Amount')}
                   </Button>
-                  <Button colorScheme="blue">Save</Button>
-                </DrawerFooter>
-              </DrawerContent>
-            </Drawer>
+                </Link>
+              </div>
+            </div>
           </div>
-          <div className="mt-2 ">
+
+          {/* Drawer Component */}
+          <Drawer
+            isOpen={isOpen2}
+            placement="right"
+            onClose={onClose2}
+            finalFocusRef={btnRef}
+          >
+            <DrawerOverlay />
+            <DrawerContent>
+              <DrawerCloseButton />
+              <DrawerHeader>Create your account</DrawerHeader>
+
+              <DrawerBody>
+                <Input placeholder="Type here..." />
+              </DrawerBody>
+
+              <DrawerFooter>
+                <Button variant="outline" mr={3} onClick={onClose2}>
+                  Cancel
+                </Button>
+                <Button colorScheme="blue">Save</Button>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
+
+          <div className="mt-2">
             <Table
               // isLoading={isLoading}
               data={Dailydata || []}

@@ -60,13 +60,7 @@ function SavingAccount() {
   const usersPerPage = 10;
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpen2,
-    onOpen: onOpen2,
-    onClose: onClose2,
-  } = useDisclosure();
   const cancelRef = React.useRef();
-  const btnRef = React.useRef();
 
   useEffect(() => {
     const fetchData = createTimeoutAwareCall(
@@ -273,12 +267,38 @@ function SavingAccount() {
       },
       {
 
-        Header: t('Balance'),
-        accessor: "amount_to_be",
+        Header: t('Current Amount'),
+        accessor: "current_amount",
 
         Cell: ({ value, row: { original } }) => (
           <>
-            <Cell text={`₹ ${original?.saving_account_id?.amount_to_be?.toLocaleString()}`} />
+            <Cell text={`₹ ${original?.saving_account_id?.current_amount?.toLocaleString() || 0}`} />
+          </>
+        ),
+      },
+      {
+        Header: t('Remaining EMI'),
+        accessor: "remaining_emi",
+        Cell: ({ value, row: { original } }) => {
+          const emiDays = original?.saving_account_id?.emi_day || 0;
+          const createdOn = original?.saving_account_id?.created_on;
+          
+          if (!createdOn || emiDays === 0) return <Cell text="N/A" />;
+          
+          const createdDate = new Date(createdOn);
+          const currentDate = new Date();
+          const daysPassed = Math.floor((currentDate - createdDate) / (1000 * 60 * 60 * 24));
+          const remainingDays = Math.max(0, emiDays - daysPassed);
+          
+          return <Cell text={`${remainingDays} days`} />;
+        },
+      },
+      {
+        Header: t('Officer Alloted'),
+        accessor: "officer_name",
+        Cell: ({ value, row: { original } }) => (
+          <>
+            <Cell text={original?.officer_id?.name || 'N/A'} />
           </>
         ),
       },
@@ -328,11 +348,9 @@ function SavingAccount() {
                   {t('Actions')}
                 </MenuButton>
                 <MenuList>
-                  <Link to={`/dash/view-savingUser-details/${original?._id}`}>
-                    <MenuItem>
-                      <HiStatusOnline className="mr-4" /> {t('View Account')}
-                    </MenuItem>
-                  </Link>
+                  <MenuItem as={Link} to={`/dash/view-savingUser-details/${original?._id}`} onClick={() => console.log('🔄 Navigating to view saving user:', original?._id)}>
+                    <HiStatusOnline className="mr-4" /> {t('View Account')}
+                  </MenuItem>
                   <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
                     <MdEdit className="mr-4" /> {t('Edit')}
                   </MenuItem>
@@ -373,23 +391,59 @@ function SavingAccount() {
   };
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      className="min-h-screen bg-primaryBg flex flex-col pt-16"
-    >
+    <>
+      <style>
+        {`
+          .saving-header-responsive {
+            flex-direction: row;
+            align-items: center;
+          }
+          
+          @media (max-width: 1024px) {
+            .saving-header-responsive {
+              flex-direction: column;
+              align-items: stretch;
+              gap: 1rem;
+            }
+            
+            .saving-header-responsive > div {
+              width: 100%;
+            }
+            
+            .saving-header-responsive .search-section {
+              order: 2;
+            }
+            
+            .saving-header-responsive .actions-section {
+              order: 1;
+            }
+          }
+          
+          @media (max-width: 768px) {
+            .saving-header-responsive .search-section {
+              width: 100%;
+            }
+          }
+        `}
+      </style>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="min-h-screen bg-primaryBg flex flex-col pt-8"
+      >
       {/* Fixed Header Section */}
       <motion.div
         variants={itemVariants}
         className="flex-shrink-0 pb-0 px-4"
       >
-        <section className="md:p-3">
-          <div className="py-4">
+        <section className="md:p-0">
+          <div className="py-0">
             <motion.div
               variants={itemVariants}
-              className="flex justify-between items-center mb-0"
+              className="flex justify-between items-center mb-0 saving-header-responsive"
             >
+              {/* Stats Section */}
               <motion.div
                 variants={itemVariants}
                 className="flex gap-2"
@@ -398,9 +452,8 @@ function SavingAccount() {
                   <MenuButton
                     as={Button}
                     colorScheme="purple"
-                    className="bg-secondary hover:bg-secondaryDark text-white"
+                    className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                     fontWeight={700}
-                    fontSize={14}
                   >
                     {t('Total Savings')} : ₹ {"64300"}
                   </MenuButton>
@@ -409,20 +462,18 @@ function SavingAccount() {
                   <MenuButton
                     as={Button}
                     colorScheme="blue"
-                    className="bg-primary hover:bg-primaryDark text-white"
+                    className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                     fontWeight={700}
-                    fontSize={14}
-                    ref={btnRef}
-                    onClick={onOpen2}
                   >
                     {t('Total Active Users')} : {data.length}
                   </MenuButton>
                 </Menu>
               </motion.div>
 
+              {/* Search Section */}
               <motion.div
                 variants={itemVariants}
-                className="w-96"
+                className="w-96 search-section"
               >
                 <InputGroup borderRadius={5} size="sm">
                   <InputLeftElement
@@ -438,7 +489,7 @@ function SavingAccount() {
                   />
                   <InputRightAddon p={0} border="none">
                     <Button
-                      className="bg-primary hover:bg-primaryDark"
+                      className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                       colorScheme="blue"
                       size="sm"
                       borderLeftRadius={0}
@@ -451,37 +502,36 @@ function SavingAccount() {
                 </InputGroup>
               </motion.div>
 
+              {/* Actions Section */}
               <motion.div
                 variants={itemVariants}
-                className="flex gap-2"
+                className="flex gap-2 actions-section"
               >
                 <Menu>
                   <MenuButton
                     as={Button}
                     colorScheme="gray"
-                    className="bg-gray-600 hover:bg-gray-700"
+                    className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                   >
                     {t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>{t('Balance High to Low', 'Balance High to Low')}</MenuItem>
-                    <MenuItem>{t('Balance Low to High', 'Balance Low to High')}</MenuItem>
+                    <MenuItem>{t('Current Amount High to Low', 'Current Amount Low to High')}</MenuItem>
+                    <MenuItem>{t('Current Amount Low to High', 'Current Amount Low to High')}</MenuItem>
+                    <MenuItem>{t('Remaining EMI', 'Remaining EMI')}</MenuItem>
                     <MenuItem>{t('Name A-Z', 'Name A-Z')}</MenuItem>
                     <MenuItem>{t('Date Created', 'Date Created')}</MenuItem>
                   </MenuList>
                 </Menu>
 
-                <Menu>
-                  <Link to={`/dash/create-saving-account`}>
-                    <MenuButton
-                      as={Button}
-                      colorScheme="blue"
-                      className="bg-primary hover:bg-primaryDark"
-                    >
-                      {t('Add New Account', 'Add New Account')}
-                    </MenuButton>
-                  </Link>
-                </Menu>
+                <Link to={`/dash/create-saving-user`} onClick={() => console.log('🔄 Navigating to create saving user...')}>
+                  <Button
+                    colorScheme="blue"
+                    className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                  >
+                    {t('Add New Account', 'Add New Account')}
+                  </Button>
+                </Link>
               </motion.div>
             </motion.div>
           </div>
@@ -491,7 +541,7 @@ function SavingAccount() {
       {/* Scrollable Table Section */}
       <motion.div
         variants={itemVariants}
-        className="flex-1 px-4 pb-0 overflow-hidden mt-0"
+        className="flex-1 px-4 pb-0 overflow-hidden mt-4"
       >
 
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col mt-0">
@@ -541,29 +591,6 @@ function SavingAccount() {
       </motion.div>
 
       {/* Drawers and Dialogs */}
-      <Drawer
-        isOpen={isOpen2}
-        placement="right"
-        onClose={onClose2}
-        finalFocusRef={btnRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>{t('Account Details', 'Account Details')}</DrawerHeader>
-
-          <DrawerBody>
-            <Input placeholder={t('Account details...', 'Account details...')} />
-          </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose2}>
-              {t('Cancel', 'Cancel')}
-            </Button>
-            <Button colorScheme="blue">{t('Save', 'Save')}</Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
 
       <AlertDialog
         isOpen={isOpen}
@@ -628,6 +655,7 @@ function SavingAccount() {
         </DrawerContent>
       </Drawer>
     </motion.div>
+    </>
   );
 }
 

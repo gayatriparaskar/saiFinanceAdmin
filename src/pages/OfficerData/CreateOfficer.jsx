@@ -1,24 +1,29 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "../../axios";
-import { useToast } from "@chakra-ui/react";
+import { useToast, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/react";
 import { useLocalTranslation } from "../../hooks/useLocalTranslation";
 
 const CreateOfficer = () => {
   const { t } = useLocalTranslation();
+  const navigate = useNavigate();
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialFormState = {
-    officer_code: "",
     name: "",
     phone_number: "",
     email: "",
     pan: "",
     aadhar: "",
     dob: "",
+    officer_type: "manager",
+    officer_code: null,
     isActive: true,
   };
 
   const [formData, setFormData] = useState(initialFormState);
+  const [officerCodeError, setOfficerCodeError] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -28,6 +33,45 @@ const CreateOfficer = () => {
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
     }));
+
+    // Clear officer_code when officer_type changes to non-collection_officer
+    if (name === "officer_type" && value !== "collection_officer") {
+      setFormData((prevData) => ({
+        ...prevData,
+        officer_code: null,
+      }));
+    }
+
+    // Open popup for officer code when collection_officer is selected
+    if (name === "officer_type" && value === "collection_officer") {
+      onOpen();
+    }
+  };
+
+  const handleOfficerCodeSubmit = () => {
+    // Validate officer code
+    if (!formData.officer_code.trim()) {
+      setOfficerCodeError(t("Officer Code is required"));
+      return;
+    }
+    
+    if (isNaN(formData.officer_code) || parseInt(formData.officer_code) <= 0) {
+      setOfficerCodeError(t("Officer Code must be a positive number"));
+      return;
+    }
+
+    setOfficerCodeError("");
+    onClose();
+  };
+
+  const handleOfficerCodeChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      officer_code: e.target.value || null
+    }));
+    if (officerCodeError) {
+      setOfficerCodeError("");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -36,11 +80,18 @@ const CreateOfficer = () => {
     // Comprehensive form validation
     const errors = [];
 
-    // Officer Code validation
-    if (!formData.officer_code) {
-      errors.push(t("Officer Code is required"));
-    } else if (isNaN(formData.officer_code) || parseInt(formData.officer_code) <= 0) {
-      errors.push(t("Officer Code must be a positive number"));
+    // Officer Type validation
+    if (!formData.officer_type) {
+      errors.push(t("Officer Type is required"));
+    }
+
+    // Officer Code validation - only required for collection_officer
+    if (formData.officer_type === "collection_officer") {
+      if (!formData.officer_code || formData.officer_code.toString().trim() === "") {
+        errors.push(t("Officer Code is required for Collection Officers"));
+      } else if (isNaN(formData.officer_code) || parseInt(formData.officer_code) <= 0) {
+        errors.push(t("Officer Code must be a positive number"));
+      }
     }
 
     // Name validation
@@ -115,6 +166,18 @@ const CreateOfficer = () => {
       pan: formData.pan.toUpperCase(),
     };
 
+    // Handle officer_code based on officer_type
+    if (formData.officer_type === "collection_officer") {
+      if (formData.officer_code && formData.officer_code.trim() !== "") {
+        submitData.officer_code = formData.officer_code.trim();
+      } else {
+        submitData.officer_code = null;
+      }
+    } else {
+      // For non-collection officers, don't include officer_code field at all
+      delete submitData.officer_code;
+    }
+
     try {
       const res = await axios.post("officers", submitData);
       if (res.data) {
@@ -126,6 +189,11 @@ const CreateOfficer = () => {
           position: "top",
         });
         setFormData(initialFormState);
+        
+        // Redirect to officer page after successful creation
+        setTimeout(() => {
+          navigate("/dash/officer");
+        }, 1500);
       }
     } catch (err) {
       console.error("API Error:", err);
@@ -144,29 +212,14 @@ const CreateOfficer = () => {
     <div className="m-6 py-8 ">
       <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
         <h3 className="text-xl font-bold text-purple mb-4">
-          {t("Create Loan Officer")}
+          {t("Create Officer")}
         </h3>
 
         <div className="grid grid-cols-2 gap-4">
-          {/* Officer Code */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              {t("Officer Code")}
-            </label>
-            <input
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm"
-              name="officer_code"
-              onChange={handleChange}
-              value={formData.officer_code}
-              type="number"
-              required
-            />
-          </div>
-
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              {t("Name")}
+              {t("Name")} *
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm"
@@ -179,10 +232,10 @@ const CreateOfficer = () => {
             />
           </div>
 
-          {/* ✅ Phone Number */}
+          {/* Phone Number */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              {t("Phone Number")}
+              {t("Phone Number")} *
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm"
@@ -196,10 +249,11 @@ const CreateOfficer = () => {
               required
             />
           </div>
+
           {/* ✅ Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              {t("Email")}
+              {t("Email")} *
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm"
@@ -214,38 +268,39 @@ const CreateOfficer = () => {
           {/* ✅ Pan Number */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              {t("Pan Number")}
+              {t("PAN Number")} *
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm"
               name="pan"
               value={formData.pan}
               type="text"
+              maxLength={10}
               onChange={handleChange}
-              placeholder={t("Pan Number")}
+              placeholder={t("Enter PAN Number")}
               required
             />
           </div>
           {/* ✅ Aadhar Number */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              {t("Aadhar Number")}
+              {t("Aadhar Number")} *
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm"
               name="aadhar"
               value={formData.aadhar}
-              type="number"
+              type="text"
+              maxLength={12}
               onChange={handleChange}
-              placeholder={t("Aadhar Number")}
+              placeholder={t("Enter Aadhar Number")}
               required
             />
           </div>
-
           {/* ✅ Date of Birth */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              {t("Date of Birth")}
+              {t("Date of Birth")} *
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm"
@@ -256,6 +311,37 @@ const CreateOfficer = () => {
               required
             />
           </div>
+
+          {/* Officer Type */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              {t("Officer Type")} *
+            </label>
+            <select
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm"
+              name="officer_type"
+              value={formData.officer_type}
+              onChange={handleChange}
+              required
+            >
+              <option value="collection_officer">{t("Collection Officer")}</option>
+              <option value="manager">{t("Manager")}</option>
+              <option value="admin">{t("Admin")}</option>
+              <option value="accounter">{t("Accounter")}</option>
+            </select>
+          </div>
+
+                        {/* Officer Code Display - Only show for collection_officer */}
+              {formData.officer_type === "collection_officer" && formData.officer_code && formData.officer_code.toString().trim() !== "" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    {t("Officer Code")}
+                  </label>
+                  <div className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 px-3 py-2 text-sm">
+                    {formData.officer_code}
+                  </div>
+                </div>
+              )}
 
           {/* Is Active */}
           <div className="flex items-center mt-2">
@@ -281,6 +367,38 @@ const CreateOfficer = () => {
           </button>
         </div>
       </form>
+
+      {/* Officer Code Popup Modal */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{t("Enter Officer Code")}</ModalHeader>
+          <ModalBody>
+            <FormControl isInvalid={!!officerCodeError}>
+              <FormLabel>{t("Officer Code")} *</FormLabel>
+              <Input
+                type="number"
+                value={formData.officer_code}
+                onChange={handleOfficerCodeChange}
+                placeholder={t("Enter officer code")}
+                autoFocus
+              />
+              <FormErrorMessage>{officerCodeError}</FormErrorMessage>
+            </FormControl>
+            <p className="text-sm text-gray-600 mt-2">
+              {t("Officer Code is required for Collection Officers")}
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={onClose}>
+              {t("Cancel")}
+            </Button>
+            <Button colorScheme="blue" onClick={handleOfficerCodeSubmit}>
+              {t("Submit")}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

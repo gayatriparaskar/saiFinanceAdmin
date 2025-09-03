@@ -69,7 +69,7 @@ const AddDailyCollection = () => {
             position: "top",
           });
           // Redirect to ViewLoanUser page after successful submission
-          navigate(`/dash/view-user-details/${id}`);
+          navigate(`/dash/view-loan-user/${id}`);
         }
       })
       .catch((err) => {

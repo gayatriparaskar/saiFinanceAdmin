@@ -386,33 +386,44 @@ useEffect(() => {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-16 pb-6 px-4 relative overflow-hidden"
-    >
-      {/* Animated Header */}
+    <>
+      <style>
+        {`
+          .dashboard-card {
+            min-height: 160px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+          
+          @media (min-width: 640px) {
+            .dashboard-card {
+              min-height: 180px;
+            }
+          }
+          
+          @media (min-width: 1024px) {
+            .dashboard-card {
+              min-height: 200px;
+            }
+          }
+        `}
+      </style>
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className="text-center mb-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-8 pb-6 px-4 relative overflow-hidden"
       >
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-          {t("Financial Dashboard")}
-        </h1>
-        <p className="text-lg text-gray-600">
-          {t("Real-time analytics and insights for your finance management")}
-        </p>
-      </motion.div>
+
 
       {/* Enhanced Cards Section - 10 Cards in 2 rows with 5 columns each */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 mb-8 max-w-7xl mx-auto"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 mb-6 sm:mb-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         {/* First Row - 5 Cards */}
         <motion.div
@@ -422,7 +433,7 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Total Active Loan Users")}
@@ -456,7 +467,7 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Total Saving Collection")}
@@ -473,7 +484,7 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Total Loan Collection")}
@@ -490,7 +501,7 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Total Collection")}
@@ -508,7 +519,7 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Total Active Saving Users")}
@@ -525,11 +536,11 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Daily Loan Collection")}
-            total={`₹ ${dailyLoanCollection.toLocaleString()}`}
+            total={`₹ ${totalLoanCollection.toLocaleString()}`}
             rate="+6.7%"
             levelUp
           />
@@ -542,7 +553,7 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Daily Saving Collection")}
@@ -559,7 +570,7 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Daily Loan coming")}
@@ -576,7 +587,7 @@ useEffect(() => {
             boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
           }}
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
+          className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
             title={t("Total Daily Collection")}
@@ -593,10 +604,10 @@ useEffect(() => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.8 }}
-        className="grid grid-cols-12 gap-6"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         <motion.div
-          className="col-span-12 xl:col-span-6"
+          className="w-full"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -604,7 +615,7 @@ useEffect(() => {
         </motion.div>
 
         <motion.div
-          className="col-span-12 xl:col-span-6"
+          className="w-full"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -612,7 +623,7 @@ useEffect(() => {
         </motion.div>
 
         <motion.div
-          className="col-span-12 xl:col-span-6"
+          className="w-full"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -620,7 +631,7 @@ useEffect(() => {
         </motion.div>
 
         <motion.div
-          className="col-span-12 xl:col-span-6"
+          className="w-full"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
@@ -630,7 +641,7 @@ useEffect(() => {
 
       {/* Floating Action Button */}
       <motion.button
-        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-full shadow-2xl flex items-center justify-center text-white text-2xl z-50"
+        className="fixed bottom-4 sm:bottom-6 lg:bottom-8 right-4 sm:right-6 lg:right-8 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-primary to-secondary rounded-full shadow-xl sm:shadow-2xl flex items-center justify-center text-white text-sm sm:text-lg lg:text-2xl z-50"
         whileHover={{ 
           scale: 1.1,
           rotate: 360,
@@ -640,9 +651,10 @@ useEffect(() => {
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       >
         ↑
-      </motion.button>
-    </motion.div>
-  );
-};
+             </motion.button>
+       </motion.div>
+     </>
+   );
+ };
 
 export default DashHome;
