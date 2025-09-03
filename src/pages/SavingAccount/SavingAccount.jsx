@@ -57,6 +57,8 @@ function SavingAccount() {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
   const usersPerPage = 10;
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -155,18 +157,76 @@ function SavingAccount() {
   };
 
   useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredData(data);
-    } else {
-      const result = data.filter(
+    let result = data;
+    
+    // Apply search filter
+    if (searchTerm.trim() !== "") {
+      result = data.filter(
         (user) =>
-          user.account_holder_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.account_number?.toString().includes(searchTerm)
+          user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.saving_account_id?.account_number?.toString().includes(searchTerm)
       );
-      setFilteredData(result);
-      setCurrentPage(1);
     }
-  }, [searchTerm, data]);
+    
+    // Apply sorting
+    if (sortBy) {
+      result = [...result].sort((a, b) => {
+        let aValue, bValue;
+        
+        switch (sortBy) {
+          case "current_amount_high_to_low":
+            aValue = a.saving_account_id?.current_amount || 0;
+            bValue = b.saving_account_id?.current_amount || 0;
+            return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+            
+          case "current_amount_low_to_high":
+            aValue = a.saving_account_id?.current_amount || 0;
+            bValue = b.saving_account_id?.current_amount || 0;
+            return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+            
+          case "remaining_emi":
+            const aEmiDays = a.saving_account_id?.emi_day || 0;
+            const bEmiDays = b.saving_account_id?.emi_day || 0;
+            const aCreatedOn = a.saving_account_id?.created_on;
+            const bCreatedOn = b.saving_account_id?.created_on;
+            
+            if (!aCreatedOn || aEmiDays === 0) aValue = 0;
+            else {
+              const aCreatedDate = new Date(aCreatedOn);
+              const aCurrentDate = new Date();
+              const aDaysPassed = Math.floor((aCurrentDate - aCreatedDate) / (1000 * 60 * 60 * 24));
+              aValue = Math.max(0, aEmiDays - aDaysPassed);
+            }
+            
+            if (!bCreatedOn || bEmiDays === 0) bValue = 0;
+            else {
+              const bCreatedDate = new Date(bCreatedOn);
+              const bCurrentDate = new Date();
+              const bDaysPassed = Math.floor((bCurrentDate - bCreatedDate) / (1000 * 60 * 60 * 24));
+              bValue = Math.max(0, bEmiDays - bDaysPassed);
+            }
+            
+            return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+            
+          case "name_a_z":
+            aValue = a.full_name?.toLowerCase() || "";
+            bValue = b.full_name?.toLowerCase() || "";
+            return sortOrder === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+            
+          case "date_created":
+            aValue = new Date(a.createdAt || a.saving_account_id?.created_on || 0);
+            bValue = new Date(b.createdAt || b.saving_account_id?.created_on || 0);
+            return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+            
+          default:
+            return 0;
+        }
+      });
+    }
+    
+    setFilteredData(result);
+    setCurrentPage(1);
+  }, [searchTerm, data, sortBy, sortOrder]);
 
   const handleDelete = () => {
     axios
@@ -226,6 +286,36 @@ function SavingAccount() {
         duration: 4000,
         isClosable: true,
       });
+    }
+  };
+
+  // Handle sorting
+  const handleSort = (sortType) => {
+    if (sortBy === sortType) {
+      // Toggle sort order if same sort type is clicked
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // Set new sort type and default to ascending
+      setSortBy(sortType);
+      setSortOrder("asc");
+    }
+  };
+
+  // Get display name for sort type
+  const getSortDisplayName = (sortType) => {
+    switch (sortType) {
+      case "current_amount_high_to_low":
+        return t('Current Amount High to Low');
+      case "current_amount_low_to_high":
+        return t('Current Amount Low to High');
+      case "remaining_emi":
+        return t('Remaining EMI');
+      case "name_a_z":
+        return t('Name A-Z');
+      case "date_created":
+        return t('Date Created');
+      default:
+        return '';
     }
   };
 
@@ -423,6 +513,51 @@ function SavingAccount() {
             .saving-header-responsive .search-section {
               width: 100%;
             }
+            
+            .saving-header-responsive .actions-section {
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+            
+            .saving-header-responsive .actions-section > * {
+              width: 100%;
+            }
+            
+            .saving-header-responsive .actions-section Button,
+            .saving-header-responsive .actions-section a {
+              width: 100%;
+              justify-content: center;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .saving-header-responsive {
+              padding: 0.5rem;
+            }
+            
+            .saving-header-responsive .actions-section Button {
+              font-size: 0.75rem;
+              padding: 0.5rem 0.75rem;
+            }
+            
+            .saving-header-responsive .search-section {
+              margin: 0.5rem 0;
+            }
+            
+            .saving-header-responsive .search-section Input {
+              font-size: 0.875rem;
+            }
+          }
+          
+          @media (max-width: 360px) {
+            .saving-header-responsive {
+              padding: 0.25rem;
+            }
+            
+            .saving-header-responsive .actions-section Button {
+              font-size: 0.7rem;
+              padding: 0.375rem 0.5rem;
+            }
           }
         `}
       </style>
@@ -513,14 +648,29 @@ function SavingAccount() {
                     colorScheme="gray"
                     className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                   >
-                    {t('Sort By', 'Sort By')}
+                    {sortBy ? `${t('Sort By', 'Sort By')}: ${getSortDisplayName(sortBy)} ${sortOrder === 'asc' ? '↑' : '↓'}` : t('Sort By', 'Sort By')}
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>{t('Current Amount High to Low', 'Current Amount Low to High')}</MenuItem>
-                    <MenuItem>{t('Current Amount Low to High', 'Current Amount Low to High')}</MenuItem>
-                    <MenuItem>{t('Remaining EMI', 'Remaining EMI')}</MenuItem>
-                    <MenuItem>{t('Name A-Z', 'Name A-Z')}</MenuItem>
-                    <MenuItem>{t('Date Created', 'Date Created')}</MenuItem>
+                    <MenuItem onClick={() => handleSort('current_amount_high_to_low')}>
+                      {t('Current Amount High to Low')} {sortBy === 'current_amount_high_to_low' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    </MenuItem>
+                    <MenuItem onClick={() => handleSort('current_amount_low_to_high')}>
+                      {t('Current Amount Low to High')} {sortBy === 'current_amount_low_to_high' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    </MenuItem>
+                    <MenuItem onClick={() => handleSort('remaining_emi')}>
+                      {t('Remaining EMI')} {sortBy === 'remaining_emi' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    </MenuItem>
+                    <MenuItem onClick={() => handleSort('name_a_z')}>
+                      {t('Name A-Z')} {sortBy === 'name_a_z' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    </MenuItem>
+                    <MenuItem onClick={() => handleSort('date_created')}>
+                      {t('Date Created')} {sortBy === 'date_created' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    </MenuItem>
+                    {sortBy && (
+                      <MenuItem onClick={() => { setSortBy(''); setSortOrder('asc'); }}>
+                        {t('Clear Sort', 'Clear Sort')}
+                      </MenuItem>
+                    )}
                   </MenuList>
                 </Menu>
 

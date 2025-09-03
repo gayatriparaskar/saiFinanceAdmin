@@ -313,8 +313,8 @@ const NewNavbar = () => {
         </motion.button>
       </div>
 
-      {/* Center - Page Name (All Screen Sizes) */}
-      <div className="flex flex-col items-center text-center">
+      {/* Center - Page Name (Mobile Only) */}
+      <div className="lg:hidden flex flex-col items-center text-center">
         <h1 className="text-sm font-bold text-gray-800">{getCurrentPageName()}</h1>
         <p className="text-xs text-gray-600">Admin Dashboard</p>
       </div>

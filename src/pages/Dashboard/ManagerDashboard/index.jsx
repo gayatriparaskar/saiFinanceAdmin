@@ -391,22 +391,44 @@ const ManagerDashboard = () => {
     setEditingField(field);
   };
 
-  const handleSaveAmount = (officerId, field, value) => {
-    // Update the officer data in the state
-    setOfficers(prevOfficers => 
-      prevOfficers.map(officer => 
-        officer._id === officerId 
-          ? { ...officer, [field]: parseFloat(value) || 0 }
-          : officer
-      )
-    );
-    
-    // Here you would typically make an API call to save the changes
-    console.log(`💰 Updated ${field} for officer ${officerId} to ${value}`);
-    
-    // Clear editing state
-    setEditingOfficer(null);
-    setEditingField(null);
+  const handleSaveAmount = async (officerId, field, value) => {
+    try {
+      console.log(`💰 Updating ${field} for officer ${officerId} to ${value}`);
+      
+      // Prepare the update data based on the field
+      let updateData = {};
+      if (field === 'paidAmount') {
+        updateData.paidAmount = parseFloat(value) || 0;
+      } else if (field === 'remainingAmount') {
+        updateData.remainingAmount = parseFloat(value) || 0;
+      }
+      
+      // Call backend API to save the changes
+      const response = await axios.put(`http://localhost:3001/api/officers/${officerId}/collection-data`, updateData);
+
+      if (response.data.success) {
+        console.log('✅ Amount updated successfully:', response.data);
+        
+        // Update the officer data in the state
+        setOfficers(prevOfficers => 
+          prevOfficers.map(officer => 
+            officer._id === officerId 
+              ? { ...officer, [field]: parseFloat(value) || 0 }
+              : officer
+          )
+        );
+        
+        // Clear editing state
+        setEditingOfficer(null);
+        setEditingField(null);
+      } else {
+        console.error('❌ Failed to update amount:', response.data);
+        alert('Failed to save changes. Please try again.');
+      }
+    } catch (error) {
+      console.error('❌ Error updating amount:', error);
+      alert('Error saving changes. Please try again.');
+    }
   };
 
   const handleCancelEdit = () => {
@@ -414,16 +436,70 @@ const ManagerDashboard = () => {
     setEditingField(null);
   };
 
-  const handleAssignToSubmit = (officer, assignmentType) => {
-    console.log(`👤 Assigning ${officer.name} to ${assignmentType}`);
-    alert(`Officer ${officer.name} assigned to ${assignmentType}`);
-    setShowAssignTo(false);
+  const handleAssignToSubmit = async (officer, assignmentType) => {
+    try {
+      console.log(`👤 Assigning ${officer.name} to ${assignmentType}`);
+      
+      // Call backend API to save the assignment
+      const response = await axios.put(`http://localhost:3001/api/officers/${officer._id}/collection-data`, {
+        assignTo: assignmentType
+      });
+
+      if (response.data.success) {
+        console.log('✅ Assignment saved successfully:', response.data);
+        
+        // Update local state
+        setOfficers(prevOfficers => 
+          prevOfficers.map(o => 
+            o._id === officer._id 
+              ? { ...o, assignTo: assignmentType }
+              : o
+          )
+        );
+        
+        alert(`Officer ${officer.name} assigned to ${assignmentType}`);
+        setShowAssignTo(false);
+      } else {
+        console.error('❌ Failed to save assignment:', response.data);
+        alert('Failed to save assignment. Please try again.');
+      }
+    } catch (error) {
+      console.error('❌ Error saving assignment:', error);
+      alert('Error saving assignment. Please try again.');
+    }
   };
 
-  const handleStatusSubmit = (officer, status) => {
-    console.log(`📊 Updating status for ${officer.name} to ${status}`);
-    alert(`Status updated for ${officer.name} to ${status}`);
-    setShowStatus(false);
+  const handleStatusSubmit = async (officer, status) => {
+    try {
+      console.log(`📊 Updating status for ${officer.name} to ${status}`);
+      
+      // Call backend API to save the status
+      const response = await axios.put(`http://localhost:3001/api/officers/${officer._id}/collection-data`, {
+        status: status
+      });
+
+      if (response.data.success) {
+        console.log('✅ Status updated successfully:', response.data);
+        
+        // Update local state
+        setOfficers(prevOfficers => 
+          prevOfficers.map(o => 
+            o._id === officer._id 
+              ? { ...o, status: status }
+              : o
+          )
+        );
+        
+        alert(`Status updated for ${officer.name} to ${status}`);
+        setShowStatus(false);
+      } else {
+        console.error('❌ Failed to update status:', response.data);
+        alert('Failed to update status. Please try again.');
+      }
+    } catch (error) {
+      console.error('❌ Error updating status:', error);
+      alert('Error updating status. Please try again.');
+    }
   };
 
   const handleBankAssignmentSubmit = (officer, bank) => {

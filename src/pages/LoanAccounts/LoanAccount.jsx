@@ -37,6 +37,7 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -52,10 +53,92 @@ function LoanAccount() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [officers, setOfficers] = useState([]);
+  const [isLoadingOfficers, setIsLoadingOfficers] = useState(false);
+  const [isOfficerChangeModalOpen, setIsOfficerChangeModalOpen] = useState(false);
+  const [selectedUserForOfficerChange, setSelectedUserForOfficerChange] = useState(null);
+  const [newOfficerId, setNewOfficerId] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
   const usersPerPage = 10;
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
+
+  // Fetch officers data
+  const fetchOfficers = async () => {
+    try {
+      setIsLoadingOfficers(true);
+      const response = await axios.get("officers");
+      console.log('🔍 Raw officers response:', response?.data);
+      
+      if (response?.data?.result) {
+        // Filter to show only collection officers
+        const collectionOfficers = response.data.result.filter(officer => {
+          // Check multiple possible role fields and values
+          const role = officer.role || officer.role_type || officer.user_role || officer.type;
+          const isCollectionOfficer = role && (
+            role.toLowerCase().includes("collection") ||
+            role.toLowerCase().includes("officer") ||
+            role.toLowerCase().includes("field") ||
+            role.toLowerCase().includes("agent")
+          );
+          
+          // Also check if officer has collection-related permissions
+          const hasCollectionPermission = officer.permissions && 
+            (officer.permissions.includes("collection") || 
+             officer.permissions.includes("loan") ||
+             officer.permissions.includes("user_management"));
+          
+          return isCollectionOfficer || hasCollectionPermission;
+        });
+        
+        console.log('👥 All officers:', response.data.result.length);
+        console.log('👥 Collection officers found:', collectionOfficers.length);
+        console.log('👥 Sample officer data:', response.data.result[0]);
+        
+        setOfficers(collectionOfficers);
+        
+        if (collectionOfficers.length === 0) {
+          // If no collection officers found, show all officers for debugging
+          console.log('⚠️ No collection officers found, showing all officers');
+          setOfficers(response.data.result);
+          
+          // Show a toast to inform the user
+          toast({
+            title: "No collection officers found",
+            description: "Showing all available officers. Please check officer roles.",
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      } else if (response?.data?.officers) {
+        // Alternative data structure
+        const collectionOfficers = response.data.officers.filter(officer => {
+          const role = officer.role || officer.role_type || officer.user_role || officer.type;
+          return role && role.toLowerCase().includes("collection");
+        });
+        setOfficers(collectionOfficers);
+        console.log('👥 Officers from alternative structure:', collectionOfficers.length);
+      } else {
+        console.log('⚠️ No officers data found in response');
+        setOfficers([]);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching officers:', error);
+      toast({
+        title: "Error fetching officers",
+        description: "Failed to load officer data",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+      setOfficers([]);
+    } finally {
+      setIsLoadingOfficers(false);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -72,21 +155,56 @@ function LoanAccount() {
       });
     }
     fetchData();
+    fetchOfficers(); // Fetch officers when component mounts
   }, []);
 
   useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setFilteredData(data);
-    } else {
-      const result = data.filter(
+    let result = data;
+    
+    // Apply search filter
+    if (searchTerm.trim() !== "") {
+      result = data.filter(
         (user) =>
           user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           user.phone_number?.toString().includes(searchTerm)
       );
-      setFilteredData(result);
-      setCurrentPage(1);
     }
-  }, [searchTerm, data]);
+    
+    // Apply sorting
+    if (sortBy) {
+      result = [...result].sort((a, b) => {
+        let aValue, bValue;
+        
+        switch (sortBy) {
+          case "amount_high_to_low":
+            aValue = a.active_loan_id?.loan_amount || 0;
+            bValue = b.active_loan_id?.loan_amount || 0;
+            return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+            
+          case "amount_low_to_high":
+            aValue = a.active_loan_id?.loan_amount || 0;
+            bValue = b.active_loan_id?.loan_amount || 0;
+            return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+            
+          case "name_a_z":
+            aValue = a.full_name?.toLowerCase() || "";
+            bValue = b.full_name?.toLowerCase() || "";
+            return sortOrder === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+            
+          case "date_created":
+            aValue = new Date(a.createdAt || a.active_loan_id?.created_on || 0);
+            bValue = new Date(b.createdAt || b.active_loan_id?.created_on || 0);
+            return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+            
+          default:
+            return 0;
+        }
+      });
+    }
+    
+    setFilteredData(result);
+    setCurrentPage(1);
+  }, [searchTerm, data, sortBy, sortOrder]);
 
   const handleDelete = () => {
     axios
@@ -137,7 +255,8 @@ function LoanAccount() {
         full_name: editData.full_name,
         phone_number: editData.phone_number,
         email: editData.email || "",
-        address: editData.address || ""
+        address: editData.address || "",
+        officer_id: editData.officer_id?._id || editData.officer_id || null
       };
 
       // Update loan details
@@ -198,6 +317,76 @@ function LoanAccount() {
     setEditData(null);
   };
 
+  // Handle sorting
+  const handleSort = (sortType) => {
+    if (sortBy === sortType) {
+      // Toggle sort order if same sort type is clicked
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // Set new sort type and default to ascending
+      setSortBy(sortType);
+      setSortOrder("asc");
+    }
+  };
+
+  // Get display name for sort type
+  const getSortDisplayName = (sortType) => {
+    switch (sortType) {
+      case "amount_high_to_low":
+        return t('Amount High to Low');
+      case "amount_low_to_high":
+        return t('Amount Low to High');
+      case "name_a_z":
+        return t('Name A-Z');
+      case "date_created":
+        return t('Date Created');
+      default:
+        return '';
+    }
+  };
+
+  // Function to quickly change officer
+  const handleQuickOfficerChange = async (userId, newOfficerId) => {
+    try {
+      const response = await axios.put(`users/${userId}`, {
+        officer_id: newOfficerId
+      });
+
+      if (response.data) {
+        toast({
+          title: "Officer changed successfully",
+          description: "The loan account has been reassigned to a new officer",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+          position: "top"
+        });
+
+        // Update local state
+        const updatedData = data.map((item) =>
+          item._id === userId 
+            ? { 
+                ...item, 
+                officer_id: officers.find(officer => officer._id === newOfficerId) 
+              } 
+            : item
+        );
+        
+        setData(updatedData);
+        setFilteredData(updatedData);
+      }
+    } catch (error) {
+      console.error("Officer change error:", error);
+      toast({
+        title: "Failed to change officer",
+        description: error.response?.data?.message || "Something went wrong",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * usersPerPage;
     return filteredData.slice(startIndex, startIndex + usersPerPage);
@@ -222,9 +411,33 @@ function LoanAccount() {
       {
         Header: t('Officer Alloted'),
         accessor: "officer_name",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.officer_id?.name || 'N/A'} />
-        ),
+        Cell: ({ value, row: { original } }) => {
+          const officer = original?.officer_id;
+          if (!officer) {
+            return (
+              <div className="flex flex-col">
+                <Cell text="No Officer" />
+                <span className="text-xs text-red-500">Unassigned</span>
+              </div>
+            );
+          }
+          
+          return (
+            <div className="flex flex-col">
+              <Cell text={officer.name || officer.full_name || 'Unknown'} />
+              {officer.officer_code && (
+                <span className="text-xs text-gray-500">
+                  Code: {officer.officer_code}
+                </span>
+              )}
+              {officer.role && (
+                <span className="text-xs text-blue-500">
+                  Role: {officer.role}
+                </span>
+              )}
+            </div>
+          );
+        },
       },
       {
         Header: t('Loan Amount'),
@@ -305,6 +518,13 @@ function LoanAccount() {
                 <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
                   <MdEdit className="mr-4" /> {t('Edit')}
                 </MenuItem>
+                <MenuItem onClick={() => { 
+                  setSelectedUserForOfficerChange(original); 
+                  setNewOfficerId(original?.officer_id?._id || ""); 
+                  setIsOfficerChangeModalOpen(true); 
+                }}>
+                  <HiStatusOnline className="mr-4" /> {t('Change Officer')}
+                </MenuItem>
                 <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                   <MdDelete className="mr-4" />
                   {t('Delete')}
@@ -373,6 +593,66 @@ function LoanAccount() {
             .loan-header-responsive .search-section {
               width: 100%;
             }
+            
+            .loan-header-responsive .stats-section {
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+            
+            .loan-header-responsive .stats-section > * {
+              width: 100%;
+            }
+            
+            .loan-header-responsive .actions-section {
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+            
+            .loan-header-responsive .actions-section > * {
+              width: 100%;
+            }
+            
+            .loan-header-responsive .actions-section Button,
+            .loan-header-responsive .actions-section a {
+              width: 100%;
+              justify-content: center;
+            }
+          }
+          
+          @media (max-width: 480px) {
+            .loan-header-responsive {
+              padding: 0.5rem;
+            }
+            
+            .loan-header-responsive .stats-section Button {
+              font-size: 0.75rem;
+              padding: 0.5rem 0.75rem;
+            }
+            
+            .loan-header-responsive .actions-section Button {
+              font-size: 0.75rem;
+              padding: 0.5rem 0.75rem;
+            }
+            
+            .loan-header-responsive .search-section {
+              margin: 0.5rem 0;
+            }
+            
+            .loan-header-responsive .search-section Input {
+              font-size: 0.875rem;
+            }
+          }
+          
+          @media (max-width: 360px) {
+            .loan-header-responsive {
+              padding: 0.25rem;
+            }
+            
+            .loan-header-responsive .stats-section Button,
+            .loan-header-responsive .actions-section Button {
+              font-size: 0.7rem;
+              padding: 0.375rem 0.5rem;
+            }
           }
         `}
       </style>
@@ -393,102 +673,128 @@ function LoanAccount() {
                variants={itemVariants}
                className="flex justify-between items-center mb-0 loan-header-responsive"
              >
-               {/* Stats Section */}
-               <motion.div
-                 variants={itemVariants}
-                 className="flex gap-2"
-               >
-                 <Menu>
-                   <MenuButton
-                     as={Button}
-                     colorScheme="blue"
-                     className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                     fontWeight={700}
-                   >
-                     {t('Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}
-                   </MenuButton>
-                 </Menu>
-                 <Menu>
-                   <MenuButton
-                     as={Button}
-                     colorScheme="purple"
-                     className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                     fontWeight={700}
-                   >
-                     {t('Total Active User')} : {data.length}
-                   </MenuButton>
-                 </Menu>
-                 <Link to="/dash/overdue-loans">
-                   <Button
-                     colorScheme="red"
-                     className="bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                     fontWeight={700}
-                   >
-                     {t('Overdue Loans')} ⚠️
-                   </Button>
-                 </Link>
-               </motion.div>
+                               {/* Search Section */}
+                <motion.div
+                  variants={itemVariants}
+                  className="w-96 search-section"
+                >
+                  <InputGroup borderRadius={5} size="sm">
+                    <InputLeftElement pointerEvents="none" />
+                    <Input
+                      type="text"
+                      placeholder={t('Search...')}
+                      focusBorderColor="blue.500"
+                      border="1px solid #949494"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <InputRightAddon p={0} border="none">
+                      <Button
+                        className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                        colorScheme="blue"
+                        size="sm"
+                        borderLeftRadius={0}
+                        borderRightRadius={3.3}
+                        border="1px solid #949494"
+                      >
+                        {t('Search')}
+                      </Button>
+                    </InputRightAddon>
+                  </InputGroup>
+                </motion.div>
 
-               {/* Search Section */}
-               <motion.div
-                 variants={itemVariants}
-                 className="w-96 search-section"
-               >
-                 <InputGroup borderRadius={5} size="sm">
-                   <InputLeftElement pointerEvents="none" />
-                   <Input
-                     type="text"
-                     placeholder={t('Search...')}
-                     focusBorderColor="blue.500"
-                     border="1px solid #949494"
-                     value={searchTerm}
-                     onChange={(e) => setSearchTerm(e.target.value)}
-                   />
-                   <InputRightAddon p={0} border="none">
-                     <Button
-                       className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                                 {/* Stats Section */}
+                 <motion.div
+                   variants={itemVariants}
+                   className="flex gap-2 stats-section"
+                 >
+                   <Menu>
+                     <MenuButton
+                       as={Button}
                        colorScheme="blue"
-                       size="sm"
-                       borderLeftRadius={0}
-                       borderRightRadius={3.3}
-                       border="1px solid #949494"
+                       className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       fontWeight={700}
                      >
-                       {t('Search')}
+                       <span className="hidden sm:inline">{t('Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}</span>
+                       <span className="sm:hidden">Total: ₹{totalLoanAmt.toLocaleString()}</span>
+                     </MenuButton>
+                   </Menu>
+                   <Menu>
+                     <MenuButton
+                       as={Button}
+                       colorScheme="purple"
+                       className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       fontWeight={700}
+                     >
+                       <span className="hidden sm:inline">{t('Total Active User')} : {data.length}</span>
+                       <span className="sm:hidden">Active: {data.length}</span>
+                     </MenuButton>
+                   </Menu>
+                   <Link to="/dash/overdue-loans">
+                     <Button
+                       colorScheme="red"
+                       className="bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       fontWeight={700}
+                     >
+                       <span className="hidden sm:inline">{t('Overdue Loans')} ⚠️</span>
+                       <span className="sm:hidden">Overdue ⚠️</span>
                      </Button>
-                   </InputRightAddon>
-                 </InputGroup>
-               </motion.div>
+                   </Link>
+                 </motion.div>
 
-               {/* Actions Section */}
-               <motion.div
-                 variants={itemVariants}
-                 className="flex gap-2 actions-section"
-               >
-                 <Menu>
-                   <MenuButton
-                     as={Button}
-                     colorScheme="gray"
-                     className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                   >
-                     {t('Sort By', 'Sort By')}
-                   </MenuButton>
-                   <MenuList>
-                     <MenuItem>{t('Amount High to Low')}</MenuItem>
-                     <MenuItem>{t('Amount Low to High')}</MenuItem>
-                     <MenuItem>{t('Name A-Z')}</MenuItem>
-                     <MenuItem>{t('Date Created')}</MenuItem>
-                   </MenuList>
-                 </Menu>
+                 {/* Actions Section */}
+                 <motion.div
+                   variants={itemVariants}
+                   className="flex gap-2 actions-section"
+                 >
+                   <Menu>
+                     <MenuButton
+                       as={Button}
+                       colorScheme="gray"
+                       className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                     >
+                       {sortBy ? `${t('Sort By', 'Sort By')}: ${getSortDisplayName(sortBy)} ${sortOrder === 'asc' ? '↑' : '↓'}` : t('Sort By', 'Sort By')}
+                     </MenuButton>
+                     <MenuList>
+                       <MenuItem onClick={() => handleSort('amount_high_to_low')}>
+                         {t('Amount High to Low')} {sortBy === 'amount_high_to_low' && (sortOrder === 'asc' ? '↑' : '↓')}
+                       </MenuItem>
+                       <MenuItem onClick={() => handleSort('amount_low_to_high')}>
+                         {t('Amount Low to High')} {sortBy === 'amount_low_to_high' && (sortOrder === 'asc' ? '↑' : '↓')}
+                       </MenuItem>
+                       <MenuItem onClick={() => handleSort('name_a_z')}>
+                         {t('Name A-Z')} {sortBy === 'name_a_z' && (sortOrder === 'asc' ? '↑' : '↓')}
+                       </MenuItem>
+                       <MenuItem onClick={() => handleSort('date_created')}>
+                         {t('Date Created')} {sortBy === 'date_created' && (sortOrder === 'asc' ? '↑' : '↓')}
+                       </MenuItem>
+                       {sortBy && (
+                         <MenuItem onClick={() => { setSortBy(''); setSortOrder('asc'); }}>
+                           {t('Clear Sort', 'Clear Sort')}
+                         </MenuItem>
+                       )}
+                     </MenuList>
+                   </Menu>
 
-                 <Link to={`/dash/create-loan-user`} onClick={() => console.log('🔄 Navigating to create loan user...')}>
+                   <Link to={`/dash/create-loan-user`} onClick={() => console.log('🔄 Navigating to create loan user...')}>
+                     <Button
+                       colorScheme="blue"
+                       className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                     >
+                       <span className="hidden sm:inline">{t('Add New User', 'Add New User')}</span>
+                       <span className="sm:hidden">Add User</span>
+                     </Button>
+                   </Link>
                    <Button
-                     colorScheme="blue"
-                     className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                     colorScheme="gray"
+                     className="bg-gray-500 hover:bg-gray-600 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                     onClick={fetchOfficers}
+                     isLoading={isLoadingOfficers}
                    >
-                     {t('Add New User', 'Add New User')}
+                     <span className="hidden sm:inline">{t('Refresh Officers', 'Refresh Officers')}</span>
+                     <span className="sm:hidden">Refresh</span>
                    </Button>
-                 </Link>
-               </motion.div>
+                 </motion.div>
              </motion.div>
           </div>
         </section>
@@ -614,6 +920,39 @@ function LoanAccount() {
                     />
                   </div>
                 </div>
+              </div>
+
+              {/* Officer Selection */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-purple">{t('Officer Allocation')}</h3>
+                                 <Select
+                   placeholder={officers.length === 0 ? 'No officers available' : t('Select Officer', 'Select Officer')}
+                   value={editData?.officer_id?._id || ''}
+                   onChange={(e) =>
+                     setEditData({
+                       ...editData,
+                       officer_id: officers.find(officer => officer._id === e.target.value) || null
+                     })
+                   }
+                   isLoading={isLoadingOfficers}
+                   isDisabled={isLoadingOfficers || officers.length === 0}
+                 >
+                   {officers.length === 0 ? (
+                     <option value="" disabled>No officers available</option>
+                   ) : (
+                     officers.map((officer) => (
+                       <option key={officer._id} value={officer._id}>
+                         {officer.name || officer.full_name || 'Unknown Officer'} 
+                         {officer.officer_code && ` (${officer.officer_code})`}
+                       </option>
+                     ))
+                   )}
+                 </Select>
+                 {officers.length === 0 && (
+                   <div className="text-sm text-red-500 mt-1">
+                     No officers found. Please refresh or check officer data.
+                   </div>
+                 )}
               </div>
 
               {/* Loan Details */}
@@ -787,6 +1126,95 @@ function LoanAccount() {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
+
+      {/* Quick Officer Change Modal */}
+      <AlertDialog
+        isOpen={isOfficerChangeModalOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={() => setIsOfficerChangeModalOpen(false)}
+        isCentered
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              {t('Change Allotted Officer', 'Change Allotted Officer')}
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('Current Officer', 'Current Officer')}
+                  </label>
+                  <div className="p-3 bg-gray-100 rounded-md">
+                    {selectedUserForOfficerChange?.officer_id?.name || t('No Officer Assigned', 'No Officer Assigned')}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('New Officer', 'New Officer')} *
+                  </label>
+                                     <Select
+                     placeholder={officers.length === 0 ? 'No officers available' : t('Select New Officer', 'Select New Officer')}
+                     value={newOfficerId}
+                     onChange={(e) => setNewOfficerId(e.target.value)}
+                     isDisabled={isLoadingOfficers || officers.length === 0}
+                   >
+                     {officers.length === 0 ? (
+                       <option value="" disabled>No officers available</option>
+                     ) : (
+                       officers.map((officer) => (
+                         <option key={officer._id} value={officer._id}>
+                           {officer.name || officer.full_name || 'Unknown Officer'} 
+                           {officer.officer_code && ` (${officer.officer_code})`}
+                         </option>
+                       ))
+                     )}
+                   </Select>
+                   {officers.length === 0 && (
+                     <div className="text-sm text-red-500 mt-1">
+                       No officers found. Please refresh or check officer data.
+                     </div>
+                   )}
+                </div>
+                <div className="text-sm text-gray-600">
+                  <p><strong>{t('User', 'User')}:</strong> {selectedUserForOfficerChange?.full_name}</p>
+                  <p><strong>{t('Loan Amount', 'Loan Amount')}:</strong> ₹{selectedUserForOfficerChange?.active_loan_id?.loan_amount?.toLocaleString()}</p>
+                </div>
+              </div>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button 
+                ref={cancelRef} 
+                onClick={() => setIsOfficerChangeModalOpen(false)} 
+                variant="outline"
+              >
+                {t('Cancel', 'Cancel')}
+              </Button>
+              <Button 
+                colorScheme="blue" 
+                onClick={() => {
+                  if (newOfficerId) {
+                    handleQuickOfficerChange(selectedUserForOfficerChange._id, newOfficerId);
+                    setIsOfficerChangeModalOpen(false);
+                    setSelectedUserForOfficerChange(null);
+                    setNewOfficerId("");
+                  } else {
+                    toast({
+                      title: "Please select a new officer",
+                      status: "warning",
+                      duration: 3000,
+                      isClosable: true,
+                    });
+                  }
+                }} 
+                ml={3}
+              >
+                {t('Change Officer', 'Change Officer')}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </motion.div>
     </>
   );
