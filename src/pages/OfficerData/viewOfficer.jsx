@@ -136,7 +136,7 @@ function ViewOfficer() {
                   {t('Officer Name')}
                 </label>
                 <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.name || 'N/A'}
+                  {officerData?.name || '-'}
                 </p>
               </div>
               
@@ -145,7 +145,7 @@ function ViewOfficer() {
                   {t('Employee ID')}
                 </label>
                 <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.officer_code || 'N/A'}
+                  {officerData?.officer_code || '-'}
                 </p>
               </div>
               
@@ -154,7 +154,7 @@ function ViewOfficer() {
                   {t('Phone Number')}
                 </label>
                 <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.phone_number || 'N/A'}
+                  {officerData?.phone_number || '-'}
                 </p>
               </div>
             </div>
@@ -165,7 +165,7 @@ function ViewOfficer() {
                   {t('Email')}
                 </label>
                 <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.email || 'N/A'}
+                  {officerData?.email || '-'}
                 </p>
               </div>
               
@@ -174,7 +174,7 @@ function ViewOfficer() {
                   {t('Department')}
                 </label>
                 <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.department || 'N/A'}
+                  {officerData?.department || '-'}
                 </p>
               </div>
               
@@ -183,7 +183,7 @@ function ViewOfficer() {
                   {t('Join Date')}
                 </label>
                 <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.created_on ? dayjs(officerData.created_on).format("D MMM, YYYY") : 'N/A'}
+                  {officerData?.created_on ? dayjs(officerData.created_on).format("D MMM, YYYY") : '-'}
                 </p>
               </div>
             </div>
@@ -215,7 +215,7 @@ function ViewOfficer() {
                 {t('Last Updated')}
               </label>
               <p className="text-sm text-gray-600">
-                {officerData?.updated_on ? dayjs(officerData.updated_on).format("D MMM, YYYY h:mm A") : 'N/A'}
+                {officerData?.updated_on ? dayjs(officerData.updated_on).format("D MMM, YYYY h:mm A") : '-'}
               </p>
             </div>
           </div>

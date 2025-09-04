@@ -430,28 +430,28 @@ function Officer() {
         Header: t('Officer Name'),
         accessor: "name",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.name || 'N/A'}`} bold={"bold"} />
+          <Cell text={`${original?.name || '-'}`} bold={"bold"} />
         ),
       },
       {
         Header: t('Officer Type'),
         accessor: "officer_type",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.officer_type ? original.officer_type.replace('_', ' ').toUpperCase() : 'N/A'}`} />
+          <Cell text={`${original?.officer_type ? original.officer_type.replace('_', ' ').toUpperCase() : '-'}`} />
         ),
       },
       {
         Header: t('Officer Code'),
         accessor: "officer_code",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.officer_code || 'N/A'}`} />
+          <Cell text={`${original?.officer_code || '-'}`} />
         ),
       },
       {
         Header: t('Phone Number'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.phone_number || 'N/A'}`} />
+          <Cell text={`${original?.phone_number || '-'}`} />
         ),
       },
              {

@@ -373,7 +373,7 @@ function SavingAccount() {
           const emiDays = original?.saving_account_id?.emi_day || 0;
           const createdOn = original?.saving_account_id?.created_on;
           
-          if (!createdOn || emiDays === 0) return <Cell text="N/A" />;
+          if (!createdOn || emiDays === 0) return <Cell text="-" />;
           
           const createdDate = new Date(createdOn);
           const currentDate = new Date();
@@ -388,7 +388,7 @@ function SavingAccount() {
         accessor: "officer_name",
         Cell: ({ value, row: { original } }) => (
           <>
-            <Cell text={original?.officer_id?.name || 'N/A'} />
+            <Cell text={original?.officer_id?.name || '-'} />
           </>
         ),
       },
@@ -417,7 +417,7 @@ function SavingAccount() {
         Header: t('Phone', 'Phone'),
         accessor: "phone_number",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.phone_number || 'N/A'}`} />
+          <Cell text={`${original?.phone_number || '-'}`} />
         ),
       },
       {

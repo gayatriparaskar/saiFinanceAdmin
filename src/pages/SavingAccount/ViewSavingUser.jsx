@@ -63,7 +63,7 @@ function ViewSavingUser() {
         console.error("Error fetching account data:", error);
         // Set fallback data to prevent crashes
         setAccountData({
-          user_id: { full_name: "N/A" },
+          user_id: { full_name: "-" },
           created_on: new Date(),
           total_amount: 0,
           current_amount: 0,
@@ -126,7 +126,7 @@ function ViewSavingUser() {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-    const userName = accountData?.full_name || "N/A";
+    const userName = accountData?.full_name || "-";
     // Check if current language is Hindi to add language indicator
     const isHindi = t("localization_testing") === "hindi";
     const title = isLoanAccount

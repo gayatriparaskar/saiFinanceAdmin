@@ -39,7 +39,7 @@ const Modals = ({
                 <div className="border-b pb-4">
                   <h4 className="font-semibold text-gray-700 mb-2">{selectedOfficer.name || selectedOfficer.username}</h4>
                   <p className="text-sm text-gray-600">{selectedOfficer.email}</p>
-                  <p className="text-sm text-gray-600">Phone: {selectedOfficer.phone || 'N/A'}</p>
+                  <p className="text-sm text-gray-600">Phone: {selectedOfficer.phone || '-'}</p>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">

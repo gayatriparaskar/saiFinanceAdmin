@@ -194,7 +194,7 @@ function ViewLoanUser() {
 
   const generatePDF = () => {
     const doc = new jsPDF();
-    const userName = userdata?.full_name || "N/A";
+    const userName = userdata?.full_name || "-";
     const startDate = dayjs(userdata?.active_loan_id?.created_on).format("D MMM, YYYY");
     const endDate = userdata?.active_loan_id?.end_date 
       ? dayjs(userdata?.active_loan_id?.end_date).format("D MMM, YYYY")

@@ -404,7 +404,7 @@ const ManagerDashboard = () => {
       }
       
       // Call backend API to save the changes
-      const response = await axios.put(`http://localhost:3001/api/officers/${officerId}/collection-data`, updateData);
+      const response = await axios.put(`officers/${officerId}/collection-data`, updateData);
 
       if (response.data.success) {
         console.log('✅ Amount updated successfully:', response.data);
@@ -441,7 +441,7 @@ const ManagerDashboard = () => {
       console.log(`👤 Assigning ${officer.name} to ${assignmentType}`);
       
       // Call backend API to save the assignment
-      const response = await axios.put(`http://localhost:3001/api/officers/${officer._id}/collection-data`, {
+      const response = await axios.put(`officers/${officer._id}/collection-data`, {
         assignTo: assignmentType
       });
 
@@ -474,7 +474,7 @@ const ManagerDashboard = () => {
       console.log(`📊 Updating status for ${officer.name} to ${status}`);
       
       // Call backend API to save the status
-      const response = await axios.put(`http://localhost:3001/api/officers/${officer._id}/collection-data`, {
+      const response = await axios.put(`officers/${officer._id}/collection-data`, {
         status: status
       });
 
