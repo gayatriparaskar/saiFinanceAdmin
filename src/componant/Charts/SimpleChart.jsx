@@ -97,7 +97,7 @@ const SimpleChart = ({ title = "Financial Overview", data = [] }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
+      className="bg-white rounded-lg shadow-md p-3 xs:p-4 sm:p-6 hover:shadow-lg transition-shadow duration-300"
     >
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
@@ -107,12 +107,12 @@ const SimpleChart = ({ title = "Financial Overview", data = [] }) => {
         </div>
       </div>
       
-      <ReactApexChart 
-        options={options} 
-        series={chartData.series} 
-        type="line" 
-        height={350} 
-      />
+              <ReactApexChart 
+          options={options} 
+          series={chartData.series} 
+          type="line" 
+          height={window.innerWidth < 640 ? 250 : 350} 
+        />
     </motion.div>
   );
 };

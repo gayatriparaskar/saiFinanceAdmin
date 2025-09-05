@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { motion } from 'framer-motion';
 
 const PerformanceChart = ({ title = "Performance Metrics", data = null }) => {
   const [chartData, setChartData] = useState({
@@ -96,12 +95,7 @@ const PerformanceChart = ({ title = "Performance Metrics", data = null }) => {
   const performance = getPerformanceLevel(averageScore);
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6 }}
-      className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
-    >
+    <div className="bg-white rounded-xl shadow-lg p-3 xs:p-4 sm:p-6 hover:shadow-xl transition-shadow duration-300">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
         <div className="flex items-center space-x-2">
@@ -116,7 +110,7 @@ const PerformanceChart = ({ title = "Performance Metrics", data = null }) => {
           options={options} 
           series={chartData.series} 
           type="radialBar" 
-          height={350} 
+          height={window.innerWidth < 640 ? 250 : 350} 
         />
         
         <div className="absolute inset-0 flex items-center justify-center">
@@ -135,7 +129,7 @@ const PerformanceChart = ({ title = "Performance Metrics", data = null }) => {
           </div>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 };
 

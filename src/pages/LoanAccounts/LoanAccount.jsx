@@ -65,7 +65,7 @@ function LoanAccount() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
-  // Fetch officers data
+  // Fetch collection officers only
   const fetchOfficers = async () => {
     try {
       setIsLoadingOfficers(true);
@@ -73,24 +73,15 @@ function LoanAccount() {
       console.log('🔍 Raw officers response:', response?.data);
       
       if (response?.data?.result) {
-        // Filter to show only collection officers
+        // Filter to show ONLY collection officers
         const collectionOfficers = response.data.result.filter(officer => {
-          // Check multiple possible role fields and values
-          const role = officer.role || officer.role_type || officer.user_role || officer.type;
-          const isCollectionOfficer = role && (
-            role.toLowerCase().includes("collection") ||
-            role.toLowerCase().includes("officer") ||
-            role.toLowerCase().includes("field") ||
-            role.toLowerCase().includes("agent")
-          );
+          // Check officer_type field specifically (from backend model)
+          const officerType = officer.officer_type;
           
-          // Also check if officer has collection-related permissions
-          const hasCollectionPermission = officer.permissions && 
-            (officer.permissions.includes("collection") || 
-             officer.permissions.includes("loan") ||
-             officer.permissions.includes("user_management"));
+          // Only include officers with collection_officer type specifically
+          const isCollectionOfficer = officerType === "collection_officer";
           
-          return isCollectionOfficer || hasCollectionPermission;
+          return isCollectionOfficer;
         });
         
         console.log('👥 All officers:', response.data.result.length);
@@ -100,27 +91,29 @@ function LoanAccount() {
         setOfficers(collectionOfficers);
         
         if (collectionOfficers.length === 0) {
-          // If no collection officers found, show all officers for debugging
-          console.log('⚠️ No collection officers found, showing all officers');
-          setOfficers(response.data.result);
+          console.log('⚠️ No collection officers found');
+          setOfficers([]);
           
           // Show a toast to inform the user
           toast({
             title: "No collection officers found",
-            description: "Showing all available officers. Please check officer roles.",
+            description: "No officers with officer_type='collection_officer' found. Please check officer data.",
             status: "warning",
             duration: 5000,
             isClosable: true,
           });
         }
       } else if (response?.data?.officers) {
-        // Alternative data structure
+        // Alternative data structure - only collection officers
         const collectionOfficers = response.data.officers.filter(officer => {
-          const role = officer.role || officer.role_type || officer.user_role || officer.type;
-          return role && role.toLowerCase().includes("collection");
+          // Check officer_type field specifically (from backend model)
+          const officerType = officer.officer_type;
+          
+          // Only include officers with collection_officer type specifically
+          return officerType === "collection_officer";
         });
         setOfficers(collectionOfficers);
-        console.log('👥 Officers from alternative structure:', collectionOfficers.length);
+        console.log('👥 Collection officers from alternative structure:', collectionOfficers.length);
       } else {
         console.log('⚠️ No officers data found in response');
         setOfficers([]);
@@ -654,6 +647,121 @@ function LoanAccount() {
               padding: 0.375rem 0.5rem;
             }
           }
+          
+          /* Responsive dropdown styles */
+          .chakra-select__wrapper {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          .chakra-select {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          /* Mobile dropdown adjustments */
+          @media (max-width: 768px) {
+            .chakra-select {
+              font-size: 14px !important;
+              padding: 8px 12px !important;
+            }
+            
+            .chakra-select__icon-wrapper {
+              right: 8px !important;
+            }
+          }
+          
+          /* Tablet dropdown adjustments */
+          @media (min-width: 769px) and (max-width: 1024px) {
+            .chakra-select {
+              font-size: 15px !important;
+              padding: 10px 14px !important;
+            }
+          }
+          
+          /* Drawer responsive adjustments */
+          @media (max-width: 768px) {
+            .chakra-drawer__content {
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+          }
+          
+          @media (min-width: 769px) {
+            .chakra-drawer__content {
+              width: 600px !important;
+              max-width: 90vw !important;
+            }
+          }
+          
+          /* Fix dropdown overflow issues */
+          .chakra-drawer__content {
+            overflow: visible !important;
+            position: relative !important;
+            z-index: 1000 !important;
+          }
+          
+          .chakra-drawer__body {
+            overflow: visible !important;
+            position: relative !important;
+            z-index: 1000 !important;
+          }
+          
+          .chakra-select__menu {
+            z-index: 9999 !important;
+            position: fixed !important;
+            max-height: 200px !important;
+            overflow-y: auto !important;
+          }
+          
+          .chakra-select__menu-list {
+            max-height: 200px !important;
+            overflow-y: auto !important;
+          }
+          
+          /* Ensure dropdown stays within viewport */
+          .chakra-select__menu-portal {
+            z-index: 9999 !important;
+          }
+          
+          /* Mobile dropdown positioning */
+          @media (max-width: 768px) {
+            .chakra-select__menu {
+              max-height: 150px !important;
+              width: calc(100vw - 32px) !important;
+              left: 16px !important;
+              right: 16px !important;
+            }
+          }
+          
+          /* Additional dropdown overflow fixes */
+          .chakra-select__field {
+            position: relative !important;
+            z-index: 1 !important;
+          }
+          
+          .chakra-select__menu {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
+            background: white !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            max-height: 200px !important;
+            overflow-y: auto !important;
+          }
+          
+          /* Ensure dropdown doesn't go outside viewport */
+          .chakra-select__menu[data-popper-placement^="bottom"] {
+            transform: translateY(4px) !important;
+          }
+          
+          .chakra-select__menu[data-popper-placement^="top"] {
+            transform: translateY(-4px) !important;
+          }
         `}
       </style>
       <motion.div
@@ -925,34 +1033,39 @@ function LoanAccount() {
               {/* Officer Selection */}
               <div>
                 <h3 className="text-lg font-semibold mb-3 text-purple">{t('Officer Allocation')}</h3>
-                                 <Select
-                   placeholder={officers.length === 0 ? 'No officers available' : t('Select Officer', 'Select Officer')}
-                   value={editData?.officer_id?._id || ''}
-                   onChange={(e) =>
-                     setEditData({
-                       ...editData,
-                       officer_id: officers.find(officer => officer._id === e.target.value) || null
-                     })
-                   }
-                   isLoading={isLoadingOfficers}
-                   isDisabled={isLoadingOfficers || officers.length === 0}
-                 >
-                   {officers.length === 0 ? (
-                     <option value="" disabled>No officers available</option>
-                   ) : (
-                     officers.map((officer) => (
-                       <option key={officer._id} value={officer._id}>
-                         {officer.name || officer.full_name || 'Unknown Officer'} 
-                         {officer.officer_code && ` (${officer.officer_code})`}
-                       </option>
-                     ))
-                   )}
-                 </Select>
-                 {officers.length === 0 && (
-                   <div className="text-sm text-red-500 mt-1">
-                     No officers found. Please refresh or check officer data.
-                   </div>
-                 )}
+                <div className="w-full">
+                  <Select
+                    placeholder={officers.length === 0 ? 'No officers available' : t('Select Officer', 'Select Officer')}
+                    value={editData?.officer_id?._id || ''}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        officer_id: officers.find(officer => officer._id === e.target.value) || null
+                      })
+                    }
+                    isLoading={isLoadingOfficers}
+                    isDisabled={isLoadingOfficers || officers.length === 0}
+                    size="md"
+                    className="w-full"
+                    maxW="100%"
+                  >
+                    {officers.length === 0 ? (
+                      <option value="" disabled>No officers available</option>
+                    ) : (
+                      officers.map((officer) => (
+                        <option key={officer._id} value={officer._id}>
+                          {officer.name || officer.full_name || 'Unknown Officer'} 
+                          {officer.officer_code && ` (${officer.officer_code})`}
+                        </option>
+                      ))
+                    )}
+                  </Select>
+                  {officers.length === 0 && (
+                    <div className="text-sm text-red-500 mt-1">
+                      No officers found. Please refresh or check officer data.
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Loan Details */}
@@ -1153,12 +1266,16 @@ function LoanAccount() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     {t('New Officer', 'New Officer')} *
                   </label>
-                                     <Select
-                     placeholder={officers.length === 0 ? 'No officers available' : t('Select New Officer', 'Select New Officer')}
-                     value={newOfficerId}
-                     onChange={(e) => setNewOfficerId(e.target.value)}
-                     isDisabled={isLoadingOfficers || officers.length === 0}
-                   >
+                    <div className="w-full">
+                      <Select
+                        placeholder={officers.length === 0 ? 'No officers available' : t('Select New Officer', 'Select New Officer')}
+                        value={newOfficerId}
+                        onChange={(e) => setNewOfficerId(e.target.value)}
+                        isDisabled={isLoadingOfficers || officers.length === 0}
+                        size="md"
+                        className="w-full"
+                        maxW="100%"
+                      >
                      {officers.length === 0 ? (
                        <option value="" disabled>No officers available</option>
                      ) : (
@@ -1169,7 +1286,8 @@ function LoanAccount() {
                          </option>
                        ))
                      )}
-                   </Select>
+                      </Select>
+                    </div>
                    {officers.length === 0 && (
                      <div className="text-sm text-red-500 mt-1">
                        No officers found. Please refresh or check officer data.

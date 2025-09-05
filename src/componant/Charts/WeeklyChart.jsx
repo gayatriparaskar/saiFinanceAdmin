@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { motion } from 'framer-motion';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 
 const WeeklyChart = ({ title = "Weekly Statistics", data = [] }) => {
@@ -87,12 +86,7 @@ const WeeklyChart = ({ title = "Weekly Statistics", data = [] }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
-    >
+    <div className="bg-white rounded-lg shadow-md p-3 xs:p-4 sm:p-6 hover:shadow-lg transition-shadow duration-300">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
         <div className="flex items-center gap-2">
@@ -105,9 +99,9 @@ const WeeklyChart = ({ title = "Weekly Statistics", data = [] }) => {
         options={options} 
         series={chartData.series} 
         type="bar" 
-        height={350} 
+        height={window.innerWidth < 640 ? 250 : 350} 
       />
-    </motion.div>
+    </div>
   );
 };
 

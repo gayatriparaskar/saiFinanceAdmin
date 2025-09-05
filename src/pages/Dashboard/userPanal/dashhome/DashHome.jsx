@@ -31,6 +31,16 @@ const DashHome = () => {
   const [activeSavingUsers, setActiveSavingUsers] = useState(0);
   const [dailyLoanCollection, setDailyLoanCollection] = useState(0);
   const [dailySavingCollection, setDailySavingCollection] = useState(0);
+  const [dailyTotalCollection, setDailyTotalCollection] = useState(0);
+  
+  // Cumulative totals (calculated from daily collections)
+  const [cumulativeLoanCollection, setCumulativeLoanCollection] = useState(0);
+  const [cumulativeSavingCollection, setCumulativeSavingCollection] = useState(0);
+  const [cumulativeTotalCollection, setCumulativeTotalCollection] = useState(0);
+  
+  // Loading states for charts to prevent continuous API calls
+  const [monthlyStatsLoading, setMonthlyStatsLoading] = useState(false);
+  const [weeklyStatsLoading, setWeeklyStatsLoading] = useState(false);
 
   // Enhanced loading state animation
   useEffect(() => {
@@ -81,14 +91,14 @@ const DashHome = () => {
   useEffect(() => {
     const fetchDailyCollections = async () => {
       try {
-        const res = await axios.get(`/admins/totalCollectionsToday`);
+        const res = await axios.get(`admins/totalCollectionsToday`);
         if (res?.data?.result?.totalAmount !== undefined) {
           setDailyCollection(res.data.result.totalAmount);
         } else {
           setDailyCollection(0);
         }
       } catch (error) {
-        console.warn("API endpoint '/admins/totalCollectionsToday' not available:", error.message);
+        console.warn("API endpoint 'admins/totalCollectionsToday' not available:", error.message);
         // Gracefully handle API unavailability
         setDailyCollection(0);
       }
@@ -117,11 +127,11 @@ const DashHome = () => {
   // total saving Collection
   useEffect(() => {
     axios.get("users/").then((res) => {
-      if (res?.data) {
-        console.log(res?.data,"=>>saving user data");
+      if (res?.data?.result) {
+        console.log(res?.data?.result,"=>>saving user data");
         
-        setUserSaving(res?.data || []);
-        const sum = res?.data?.reduce((acc, item) => {
+        setUserSaving(res?.data?.result || []);
+        const sum = res?.data?.result?.reduce((acc, item) => {
           return acc + (item.saving_account_id?.current_amount || 0);
         }, 0);
         setTotalSavingAmt(sum);
@@ -134,25 +144,22 @@ const DashHome = () => {
     });
   }, []);
 
-  // total savings
-useEffect(() => {
-  axios.get("savingDailyCollections/totalSavingCollectionsToday")
-    .then((res) => {
-      if (res?.data) {
-        console.log("Total Savings:", res?.data?.result);
-        setTotalSavings(res?.data?.result?.totalAmount || 0);
-        setDailySavingCollection(res?.data?.result?.totalAmount || 0);
-      } else {
-        setTotalSavings(0);
+  // Daily Saving Collection (using the combined endpoint)
+  useEffect(() => {
+    axios.get("admins/totalCollectionsToday")
+      .then((res) => {
+        console.log("Daily Saving Collection API Response:", res?.data?.result);
+        if (res?.data?.result?.saving?.deposit !== undefined) {
+          setDailySavingCollection(res.data.result.saving.deposit);
+        } else {
+          setDailySavingCollection(0);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching daily saving collection:", error);
         setDailySavingCollection(0);
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching total savings:", error);
-      setTotalSavings(12500); // Fallback data for testing
-      setDailySavingCollection(0);
-    });
-}, []);
+      });
+  }, []);
 
   // Active Loan Users
   useEffect(() => {
@@ -175,7 +182,7 @@ useEffect(() => {
 
   // Total Loan Collection
   useEffect(() => {
-    axios.get("/admins/totalCollections")
+    axios.get("admins/totalCollections")
       .then((res) => {
         if (res?.data?.result?.totalAmount !== undefined) {
           console.log(res.data.result.totalAmount,"=>>total loan collection");
@@ -230,10 +237,11 @@ useEffect(() => {
 
   // Daily Loan Collection
   useEffect(() => {
-    axios.get("/admins/totalCollectionsToday")
+    axios.get("admins/totalCollectionsToday")
       .then((res) => {
-        if (res?.data?.result?.totalAmount !== undefined) {
-          setDailyLoanCollection(res.data.result.totalAmount);
+        console.log("Daily Loan Collection API Response:", res?.data?.result);
+        if (res?.data?.result?.loan?.amount !== undefined) {
+          setDailyLoanCollection(res.data.result.loan.amount);
         } else {
           setDailyLoanCollection(0);
         }
@@ -248,14 +256,14 @@ useEffect(() => {
   useEffect(() => {
     const fetchTotalCollections = async () => {
       try {
-        const res = await axios.get("/admins/totalCollections");
+        const res = await axios.get("admins/totalCollections");
         if (res?.data?.result?.totalAmount !== undefined) {
           setTotalCollection(res.data.result.totalAmount);
         } else {
           setTotalCollection(0);
         }
       } catch (error) {
-        console.warn("API endpoint '/admins/totalCollections' not available:", error.message);
+        console.warn("API endpoint 'admins/totalCollections' not available:", error.message);
         // Gracefully handle API unavailability with mock data
         setTotalCollection(0);
       }
@@ -263,6 +271,21 @@ useEffect(() => {
 
     fetchTotalCollections();
   }, []);
+
+  // Calculate Daily Total Collection (Loan + Saving)
+  useEffect(() => {
+    const dailyTotal = dailyLoanCollection + dailySavingCollection;
+    setDailyTotalCollection(dailyTotal);
+    console.log(`Daily Total Collection: ${dailyLoanCollection} + ${dailySavingCollection} = ${dailyTotal}`);
+  }, [dailyLoanCollection, dailySavingCollection]);
+
+  // Calculate Cumulative Totals (for now, we'll use daily collections as cumulative)
+  // In a real scenario, you would fetch historical data and sum all daily collections
+  useEffect(() => {
+    setCumulativeLoanCollection(dailyLoanCollection);
+    setCumulativeSavingCollection(dailySavingCollection);
+    setCumulativeTotalCollection(dailyTotalCollection);
+  }, [dailyLoanCollection, dailySavingCollection, dailyTotalCollection]);
 
   // Helper function to translate month names
   const translateMonth = (monthName) => {
@@ -296,23 +319,33 @@ useEffect(() => {
 
   // monthly stats
   useEffect(() => {
-    axios.get("/admins/totalCollectionsMonthlyStats").then((res) => {
+    if (monthlyStatsLoading) return; // Prevent multiple simultaneous calls
+    
+    setMonthlyStatsLoading(true);
+    axios.get("admins/totalCollectionsMonthlyStats").then((res) => {
+      console.log("Monthly Stats API Response:", res?.data?.result);
       if (res?.data?.result && Array.isArray(res.data.result)) {
         const months = res.data.result.map((e) => translateMonth(e.month || ""));
-        const monthsAmt = res.data.result.map((e) => Number(e.totalAmount || 0));
+        // Combine loan and saving amounts for total monthly collection
+        const monthsAmt = res.data.result.map((e) => Number((e.totalLoanAmount || 0) + (e.totalSavingAmount || 0)));
+        console.log("Processed months:", months);
+        console.log("Processed amounts:", monthsAmt);
         setMonthData(months.length > 0 ? months : [""]);
         setMonthlyAmtData(monthsAmt.length > 0 ? monthsAmt : [0]);
       } else {
+        console.log("No valid monthly data found");
         setMonthData([""]);
         setMonthlyAmtData([0]);
       }
     }).catch((error) => {
-      console.warn("API endpoint '/admins/totalCollectionsMonthlyStats' not available:", error.message);
+      console.warn("API endpoint 'admins/totalCollectionsMonthlyStats' not available:", error.message);
       // Provide fallback data for better user experience
-      setMonthData([t("Jan"), t("Feb"), t("Mar"), t("Apr"), t("May"), t("Jun")]);
+      setMonthData(["Jan", "Feb", "Mar", "Apr", "May", "Jun"]);
       setMonthlyAmtData([12000, 15000, 18000, 22000, 25000, 28000]);
+    }).finally(() => {
+      setMonthlyStatsLoading(false);
     });
-  }, [t]);
+  }, []); // Empty dependency array - runs only once on mount
 
   // Helper function to translate weekday names
   const translateWeekday = (dayName) => {
@@ -337,23 +370,33 @@ useEffect(() => {
 
   // weekly stats
   useEffect(() => {
-    axios.get("/admins/totalCollectionsWeeklyStats").then((res) => {
+    if (weeklyStatsLoading) return; // Prevent multiple simultaneous calls
+    
+    setWeeklyStatsLoading(true);
+    axios.get("admins/totalCollectionsWeeklyStats").then((res) => {
+      console.log("Weekly Stats API Response:", res?.data?.result);
       if (res?.data?.result?.dailyStats && Array.isArray(res.data.result.dailyStats)) {
         const weeks = res.data.result.dailyStats.map((e) => translateWeekday(e.day || ""));
-        const weeksAmt = res.data.result.dailyStats.map((e) => Number(e.totalAmount || 0));
+        // Combine loan and saving amounts for total daily collection
+        const weeksAmt = res.data.result.dailyStats.map((e) => Number((e.totalLoanAmount || 0) + (e.totalSavingAmount || 0)));
+        console.log("Processed week days:", weeks);
+        console.log("Processed week amounts:", weeksAmt);
         setWeekDays(weeks.length > 0 ? weeks : [""]);
         setWeekAmtData(weeksAmt.length > 0 ? weeksAmt : [0]);
       } else {
+        console.log("No valid weekly data found");
         setWeekDays([""]);
         setWeekAmtData([0]);
       }
     }).catch((error) => {
-      console.warn("API endpoint '/admins/totalCollectionsWeeklyStats' not available:", error.message);
+      console.warn("API endpoint 'admins/totalCollectionsWeeklyStats' not available:", error.message);
       // Provide fallback data for better user experience
-      setWeekDays([t("Mon"), t("Tue"), t("Wed"), t("Thu"), t("Fri"), t("Sat"), t("Sun")]);
+      setWeekDays(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
       setWeekAmtData([2500, 3200, 2800, 4100, 3600, 3900, 2200]);
+    }).finally(() => {
+      setWeeklyStatsLoading(false);
     });
-  }, [t]);
+  }, []); // Empty dependency array - runs only once on mount
 
   if (isLoading) {
     return (
@@ -408,24 +451,39 @@ useEffect(() => {
               min-height: 200px;
             }
           }
+          
+          /* Mobile-optimized hover effects */
+          @media (max-width: 768px) {
+            .dashboard-card:hover {
+              transform: translateY(-2px) scale(1.01);
+              box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+          }
+          
+          @media (min-width: 769px) {
+            .dashboard-card:hover {
+              transform: translateY(-5px) scale(1.03);
+              box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+          }
         `}
       </style>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-8 pb-6 px-4 relative overflow-hidden"
+        className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-12 xs:pt-16 sm:pt-20 md:pt-24 pb-4 xs:pb-6 px-2 xs:px-4 relative overflow-hidden"
       >
 
 
-      {/* Enhanced Cards Section - 10 Cards in 2 rows with 5 columns each */}
+      {/* Enhanced Cards Section - 8 Cards in 2 rows with 4 columns each */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 mb-6 sm:mb-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-6 mb-4 sm:mb-6 lg:mb-8 max-w-7xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8"
       >
-        {/* First Row - 5 Cards */}
+        {/* First Row - 4 Cards (API Data) */}
         <motion.div
           whileHover={{ 
             scale: 1.03, 
@@ -436,95 +494,9 @@ useEffect(() => {
           className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
-            title={t("Total Active Loan Users")}
+            title={t("Active Loan Users")}
             total={activeLoanUsers}
             rate="+2.1%"
-            levelUp
-          />
-        </motion.div>
-
-        <motion.div
-          whileHover={{ 
-            scale: 1.03, 
-            y: -5,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-          }}
-          transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300"
-        >
-          <CardDataStats
-            title={t("Total Loan Outgoing")}
-            total={`₹ ${totalLoanAmt.toLocaleString()}`}
-            rate="+2.5%"
-            levelUp
-          />
-        </motion.div>
-
-        <motion.div
-          whileHover={{ 
-            scale: 1.03, 
-            y: -5,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-          }}
-          transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300 dashboard-card"
-        >
-          <CardDataStats
-            title={t("Total Saving Collection")}
-            total={`₹ ${totalSavingCollection.toLocaleString()}`}
-            rate="+3.5%"
-            levelUp
-          />
-        </motion.div>
-
-        <motion.div
-          whileHover={{ 
-            scale: 1.03, 
-            y: -5,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-          }}
-          transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300 dashboard-card"
-        >
-          <CardDataStats
-            title={t("Total Loan Collection")}
-            total={`₹ ${dailyCollection.toLocaleString()}`}
-            rate="+5.2%"
-            levelUp
-          />
-        </motion.div>
-
-        <motion.div
-          whileHover={{ 
-            scale: 1.03, 
-            y: -5,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-          }}
-          transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300 dashboard-card"
-        >
-          <CardDataStats
-            title={t("Total Collection")}
-            total={`₹ ${totalCollection.toLocaleString()}`}
-            rate="+4.2%"
-            levelUp
-          />
-        </motion.div>
-
-        {/* Second Row - 5 Cards */}
-        <motion.div
-          whileHover={{ 
-            scale: 1.03, 
-            y: -5,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-          }}
-          transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          className="transform transition-all duration-300 dashboard-card"
-        >
-          <CardDataStats
-            title={t("Total Active Saving Users")}
-            total={activeSavingUsers}
-            rate="+1.8%"
             levelUp
           />
         </motion.div>
@@ -540,7 +512,7 @@ useEffect(() => {
         >
           <CardDataStats
             title={t("Daily Loan Collection")}
-            total={`₹ ${totalLoanCollection.toLocaleString()}`}
+            total={`₹ ${dailyLoanCollection.toLocaleString()}`}
             rate="+6.7%"
             levelUp
           />
@@ -573,9 +545,27 @@ useEffect(() => {
           className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
-            title={t("Daily Loan coming")}
-            total={`₹ ${totalSavingAmt.toLocaleString()}`}
-            rate="+3.8%"
+            title={t("Daily Total Collection")}
+            total={`₹ ${dailyTotalCollection.toLocaleString()}`}
+            rate="+7.1%"
+            levelUp
+          />
+        </motion.div>
+
+        {/* Second Row - 4 Cards (Calculated from Daily Collections) */}
+        <motion.div
+          whileHover={{ 
+            scale: 1.03, 
+            y: -5,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          className="transform transition-all duration-300 dashboard-card"
+        >
+          <CardDataStats
+            title={t("Active Saving Users")}
+            total={activeSavingUsers}
+            rate="+1.8%"
             levelUp
           />
         </motion.div>
@@ -590,9 +580,43 @@ useEffect(() => {
           className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
-            title={t("Total Daily Collection")}
-            total={`₹ ${totalSavings.toLocaleString()}`}
-            rate="+7.1%"
+            title={t("Total Loan Collection")}
+            total={`₹ ${cumulativeLoanCollection.toLocaleString()}`}
+            rate="+5.2%"
+            levelUp
+          />
+        </motion.div>
+
+        <motion.div
+          whileHover={{ 
+            scale: 1.03, 
+            y: -5,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          className="transform transition-all duration-300 dashboard-card"
+        >
+          <CardDataStats
+            title={t("Total Saving Collection")}
+            total={`₹ ${cumulativeSavingCollection.toLocaleString()}`}
+            rate="+3.5%"
+            levelUp
+          />
+        </motion.div>
+
+        <motion.div
+          whileHover={{ 
+            scale: 1.03, 
+            y: -5,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          className="transform transition-all duration-300 dashboard-card"
+        >
+          <CardDataStats
+            title={t("Total Collection")}
+            total={`₹ ${cumulativeTotalCollection.toLocaleString()}`}
+            rate="+4.2%"
             levelUp
           />
         </motion.div>
@@ -604,11 +628,11 @@ useEffect(() => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.8 }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3 xs:gap-4 sm:gap-6 max-w-7xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8"
       >
         <motion.div
           className="w-full"
-          whileHover={{ scale: 1.01 }}
+          whileHover={{ scale: window.innerWidth > 768 ? 1.01 : 1.005 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <SimpleChart title="Simple Overview" data={monthlyAmtData} />
@@ -616,7 +640,7 @@ useEffect(() => {
 
         <motion.div
           className="w-full"
-          whileHover={{ scale: 1.01 }}
+          whileHover={{ scale: window.innerWidth > 768 ? 1.01 : 1.005 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <MonthlyChart title="Monthly Statistics" data={monthlyAmtData} />
@@ -624,7 +648,7 @@ useEffect(() => {
 
         <motion.div
           className="w-full"
-          whileHover={{ scale: 1.01 }}
+          whileHover={{ scale: window.innerWidth > 768 ? 1.01 : 1.005 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <WeeklyChart title="Weekly Statistics" data={weekAmtData} />
@@ -632,7 +656,7 @@ useEffect(() => {
 
         <motion.div
           className="w-full"
-          whileHover={{ scale: 1.01 }}
+          whileHover={{ scale: window.innerWidth > 768 ? 1.01 : 1.005 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
           <PerformanceChart title="Performance Metrics" />
@@ -641,7 +665,7 @@ useEffect(() => {
 
       {/* Floating Action Button */}
       <motion.button
-        className="fixed bottom-4 sm:bottom-6 lg:bottom-8 right-4 sm:right-6 lg:right-8 w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-primary to-secondary rounded-full shadow-xl sm:shadow-2xl flex items-center justify-center text-white text-sm sm:text-lg lg:text-2xl z-50"
+        className="fixed bottom-3 xs:bottom-4 sm:bottom-6 lg:bottom-8 right-3 xs:right-4 sm:right-6 lg:right-8 w-10 h-10 xs:w-11 xs:h-11 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-primary to-secondary rounded-full shadow-lg xs:shadow-xl sm:shadow-2xl flex items-center justify-center text-white text-sm xs:text-base sm:text-lg lg:text-2xl z-50"
         whileHover={{ 
           scale: 1.1,
           rotate: 360,

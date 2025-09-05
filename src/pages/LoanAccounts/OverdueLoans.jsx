@@ -142,8 +142,8 @@ const OverdueLoans = () => {
       <div className="px-6 py-0">
         {/* Header Section */}
         <motion.div variants={itemVariants} className="mb-4">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-purple">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-purple">
               {t("Overdue Loans Management")}
             </h1>
             <Button
@@ -153,8 +153,10 @@ const OverdueLoans = () => {
               isLoading={applyingPenalties}
               loadingText={t("Applying Penalties...")}
               isDisabled={overdueLoans.length === 0}
+              className="whitespace-nowrap text-xs sm:text-sm md:text-base px-2 sm:px-4"
             >
-              {t("Apply Overdue Penalties")}
+              <span className="hidden sm:inline">{t("Apply Overdue Penalties")}</span>
+              <span className="sm:hidden">{t("Apply Penalties")}</span>
             </Button>
           </div>
 

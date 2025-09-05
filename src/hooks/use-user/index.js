@@ -10,7 +10,7 @@ export const useUser = () => {
       if (!token) {
         throw new Error('No authentication token found');
       }
-      const { data } = await axios.get("me");
+      const { data } = await axios.get("users/profile");
       return data?.result;
     },
     enabled: !!token, // Only run query if token exists

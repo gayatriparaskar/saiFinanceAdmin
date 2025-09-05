@@ -40,6 +40,8 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   useToast,
+  Text,
+  Select,
 } from "@chakra-ui/react";
 
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -55,6 +57,8 @@ function SavingAccount() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [officers, setOfficers] = useState([]);
+  const [isLoadingOfficers, setIsLoadingOfficers] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortBy, setSortBy] = useState("");
@@ -63,6 +67,74 @@ function SavingAccount() {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
+
+  // Fetch collection officers only
+  const fetchOfficers = async () => {
+    try {
+      setIsLoadingOfficers(true);
+      const response = await axios.get("officers");
+      console.log('🔍 Raw officers response:', response?.data);
+      
+      if (response?.data?.result) {
+        // Filter to show ONLY collection officers
+        const collectionOfficers = response.data.result.filter(officer => {
+          // Check officer_type field specifically (from backend model)
+          const officerType = officer.officer_type;
+          
+          // Only include officers with collection_officer type specifically
+          const isCollectionOfficer = officerType === "collection_officer";
+          
+          return isCollectionOfficer;
+        });
+        
+        console.log('👥 All officers:', response.data.result.length);
+        console.log('👥 Collection officers found:', collectionOfficers.length);
+        console.log('👥 Sample officer data:', response.data.result[0]);
+        
+        setOfficers(collectionOfficers);
+        
+        if (collectionOfficers.length === 0) {
+          console.log('⚠️ No collection officers found');
+          setOfficers([]);
+          
+          // Show a toast to inform the user
+          toast({
+            title: "No collection officers found",
+            description: "No officers with officer_type='collection_officer' found. Please check officer data.",
+            status: "warning",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      } else if (response?.data?.officers) {
+        // Alternative data structure - only collection officers
+        const collectionOfficers = response.data.officers.filter(officer => {
+          // Check officer_type field specifically (from backend model)
+          const officerType = officer.officer_type;
+          
+          // Only include officers with collection_officer type specifically
+          return officerType === "collection_officer";
+        });
+        setOfficers(collectionOfficers);
+        console.log('👥 Collection officers from alternative structure:', collectionOfficers.length);
+      } else {
+        console.log('⚠️ No officers data found in response');
+        setOfficers([]);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching officers:', error);
+      toast({
+        title: "Error fetching officers",
+        description: "Failed to load officer data",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+      setOfficers([]);
+    } finally {
+      setIsLoadingOfficers(false);
+    }
+  };
 
   useEffect(() => {
     const fetchData = createTimeoutAwareCall(
@@ -114,6 +186,7 @@ function SavingAccount() {
     };
 
     loadData();
+    fetchOfficers(); // Fetch collection officers when component mounts
   }, []);
 
   // Retry function for error recovery
@@ -258,8 +331,47 @@ function SavingAccount() {
 
   const handleEditSave = async () => {
     try {
-      const res = await axios.put(`users/${editData._id}`, editData);
-      if (res.data) {
+      // Validate required fields
+      if (!editData?.full_name || !editData?.phone_number) {
+        toast({
+          title: "Validation Error",
+          description: "Full name and phone number are required",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      // Update user details
+      const userUpdateData = {
+        full_name: editData.full_name,
+        phone_number: editData.phone_number,
+        email: editData.email || "",
+        address: editData.address || "",
+        officer_id: editData.officer_id?._id || editData.officer_id || null
+      };
+
+      // Update saving account details
+      const savingUpdateData = {
+        account_number: editData.saving_account_id?.account_number || "",
+        current_amount: editData.saving_account_id?.current_amount || 0,
+        interest_rate: editData.saving_account_id?.interest_rate || 0,
+        emi_day: editData.saving_account_id?.emi_day || 0,
+        created_on: editData.saving_account_id?.created_on || new Date(),
+        last_interest_applied_on: editData.saving_account_id?.last_interest_applied_on || new Date()
+      };
+
+      // Update user details
+      const userResponse = await axios.put(`users/${editData._id}`, userUpdateData);
+      
+      // Update saving account details using admin route
+      const savingResponse = await axios.put(`admins/edit-saving-user/${editData._id}`, {
+        ...userUpdateData,
+        ...savingUpdateData
+      });
+
+      if (userResponse.data && savingResponse.data) {
         toast({
           title: `Account updated successfully`,
           status: "success",
@@ -267,26 +379,32 @@ function SavingAccount() {
           isClosable: true,
           position: "top"
         });
-        setData((prev) =>
-          prev.map((item) =>
-            item._id === editData._id ? { ...item, ...editData } : item
-          )
+        
+        // Update local state with all changes
+        const updatedData = data.map((item) =>
+          item._id === editData._id ? { ...item, ...editData } : item
         );
-        setFilteredData((prev) =>
-          prev.map((item) =>
-            item._id === editData._id ? { ...item, ...editData } : item
-          )
-        );
+        
+        setData(updatedData);
+        setFilteredData(updatedData);
         setIsEditing(false);
+        setEditData(null);
       }
     } catch (err) {
+      console.error("Update error:", err);
       toast({
         title: `Update Failed`,
+        description: err.response?.data?.message || "Failed to update account information",
         status: "error",
         duration: 4000,
         isClosable: true,
       });
     }
+  };
+
+  const handleEditClose = () => {
+    setIsEditing(false);
+    setEditData(null);
   };
 
   // Handle sorting
@@ -559,6 +677,121 @@ function SavingAccount() {
               padding: 0.375rem 0.5rem;
             }
           }
+          
+          /* Responsive dropdown styles */
+          .chakra-select__wrapper {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          .chakra-select {
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          
+          /* Mobile dropdown adjustments */
+          @media (max-width: 768px) {
+            .chakra-select {
+              font-size: 14px !important;
+              padding: 8px 12px !important;
+            }
+            
+            .chakra-select__icon-wrapper {
+              right: 8px !important;
+            }
+          }
+          
+          /* Tablet dropdown adjustments */
+          @media (min-width: 769px) and (max-width: 1024px) {
+            .chakra-select {
+              font-size: 15px !important;
+              padding: 10px 14px !important;
+            }
+          }
+          
+          /* Drawer responsive adjustments */
+          @media (max-width: 768px) {
+            .chakra-drawer__content {
+              width: 100% !important;
+              max-width: 100% !important;
+            }
+          }
+          
+          @media (min-width: 769px) {
+            .chakra-drawer__content {
+              width: 600px !important;
+              max-width: 90vw !important;
+            }
+          }
+          
+          /* Fix dropdown overflow issues */
+          .chakra-drawer__content {
+            overflow: visible !important;
+            position: relative !important;
+            z-index: 1000 !important;
+          }
+          
+          .chakra-drawer__body {
+            overflow: visible !important;
+            position: relative !important;
+            z-index: 1000 !important;
+          }
+          
+          .chakra-select__menu {
+            z-index: 9999 !important;
+            position: fixed !important;
+            max-height: 200px !important;
+            overflow-y: auto !important;
+          }
+          
+          .chakra-select__menu-list {
+            max-height: 200px !important;
+            overflow-y: auto !important;
+          }
+          
+          /* Ensure dropdown stays within viewport */
+          .chakra-select__menu-portal {
+            z-index: 9999 !important;
+          }
+          
+          /* Mobile dropdown positioning */
+          @media (max-width: 768px) {
+            .chakra-select__menu {
+              max-height: 150px !important;
+              width: calc(100vw - 32px) !important;
+              left: 16px !important;
+              right: 16px !important;
+            }
+          }
+          
+          /* Additional dropdown overflow fixes */
+          .chakra-select__field {
+            position: relative !important;
+            z-index: 1 !important;
+          }
+          
+          .chakra-select__menu {
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 9999 !important;
+            background: white !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            max-height: 200px !important;
+            overflow-y: auto !important;
+          }
+          
+          /* Ensure dropdown doesn't go outside viewport */
+          .chakra-select__menu[data-popper-placement^="bottom"] {
+            transform: translateY(4px) !important;
+          }
+          
+          .chakra-select__menu[data-popper-placement^="top"] {
+            transform: translateY(-4px) !important;
+          }
         `}
       </style>
       <motion.div
@@ -770,36 +1003,221 @@ function SavingAccount() {
         </AlertDialogOverlay>
       </AlertDialog>
 
-      <Drawer isOpen={isEditing} placement="right" onClose={() => setIsEditing(false)}>
+      <Drawer isOpen={isEditing} placement="right" onClose={handleEditClose} size="lg">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>{t('Edit Account', 'Edit Account')}</DrawerHeader>
+          <DrawerHeader>{t('Edit User & Saving Account Details', 'Edit User & Saving Account Details')}</DrawerHeader>
           <DrawerBody>
-            <div className="space-y-4">
-              <Input
-                placeholder={t('Account Holder Name', 'Account Holder Name')}
-                value={editData?.full_name || ""}
-                onChange={(e) =>
-                  setEditData({ ...editData, full_name: e.target.value })
-                }
-              />
-              <Input
-                placeholder={t('Phone Number', 'Phone Number')}
-                value={editData?.phone_number || ""}
-                onChange={(e) =>
-                  setEditData({ ...editData, phone_number: e.target.value })
-                }
-              />
-             
+            <div className="space-y-6">
+              {/* Personal Information */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4 text-purple">{t('Personal Information')}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Full Name')} *</label>
+                    <Input
+                      placeholder={t('Full Name', 'Full Name')}
+                      value={editData?.full_name || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, full_name: e.target.value })
+                      }
+                      size="md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Phone Number')} *</label>
+                    <Input
+                      placeholder={t('Phone Number', 'Phone Number')}
+                      value={editData?.phone_number || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, phone_number: e.target.value })
+                      }
+                      size="md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Email')}</label>
+                    <Input
+                      placeholder={t('Email', 'Email')}
+                      value={editData?.email || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, email: e.target.value })
+                      }
+                      size="md"
+                    />
+                  </div>
+                                   {/* Officer Selection */}
+               <div>
+                 <h3 className="text-lg font-semibold mb-3 text-purple">{t('Officer Allocation')}</h3>
+                 <div className="w-full">
+                   <Select
+                     placeholder={officers.length === 0 ? 'No collection officers available' : t('Select Collection Officer', 'Select Collection Officer')}
+                     value={editData?.officer_id?._id || ''}
+                     onChange={(e) =>
+                       setEditData({
+                         ...editData,
+                         officer_id: officers.find(officer => officer._id === e.target.value) || null
+                       })
+                     }
+                     isLoading={isLoadingOfficers}
+                     isDisabled={isLoadingOfficers || officers.length === 0}
+                     size="md"
+                     className="w-full"
+                     maxW="100%"
+                   >
+                     {officers.length === 0 ? (
+                       <option value="" disabled>No collection officers available</option>
+                     ) : (
+                       officers.map((officer) => (
+                         <option key={officer._id} value={officer._id}>
+                           {officer.name || officer.full_name || 'Unknown Officer'} 
+                           {officer.officer_code && ` (${officer.officer_code})`}
+                         </option>
+                       ))
+                     )}
+                   </Select>
+                   {officers.length === 0 && (
+                     <div className="text-sm text-red-500 mt-1">
+                       No collection officers found. Please check officer_type='collection_officer' or refresh the page.
+                     </div>
+                   )}
+                 </div>
+               </div>
+                </div>
+              </div>
+
+              {/* Saving Account Information */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4 text-purple">{t('Saving Account Information')}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Account Number')}</label>
+                    <Input
+                      placeholder={t('Account Number', 'Account Number')}
+                      value={editData?.saving_account_id?.account_number || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          saving_account_id: {
+                            ...editData.saving_account_id,
+                            account_number: e.target.value
+                          }
+                        })
+                      }
+                      size="md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Current Amount')} (₹)</label>
+                    <Input
+                      placeholder={t('Current Amount', 'Current Amount')}
+                      type="number"
+                      value={editData?.saving_account_id?.current_amount || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          saving_account_id: {
+                            ...editData.saving_account_id,
+                            current_amount: Number(e.target.value)
+                          }
+                        })
+                      }
+                      size="md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Interest Rate')} (%)</label>
+                    <Input
+                      placeholder={t('Interest Rate (%)', 'Interest Rate (%)')}
+                      type="number"
+                      value={editData?.saving_account_id?.interest_rate || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          saving_account_id: {
+                            ...editData.saving_account_id,
+                            interest_rate: Number(e.target.value)
+                          }
+                        })
+                      }
+                      size="md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Daily EMI')} (₹)</label>
+                    <Input
+                      placeholder={t('Daily EMI', 'Daily EMI')}
+                      type="number"
+                      value={editData?.saving_account_id?.emi_day || ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          saving_account_id: {
+                            ...editData.saving_account_id,
+                            emi_day: Number(e.target.value)
+                          }
+                        })
+                      }
+                      size="md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Account Created Date')}</label>
+                    <Input
+                      placeholder={t('Start Date', 'Start Date')}
+                      type="date"
+                      value={editData?.saving_account_id?.created_on ? new Date(editData.saving_account_id.created_on).toISOString().split('T')[0] : ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          saving_account_id: {
+                            ...editData.saving_account_id,
+                            created_on: new Date(e.target.value)
+                          }
+                        })
+                      }
+                      size="md"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('Last Interest Applied')}</label>
+                    <Input
+                      placeholder={t('Last Interest Date', 'Last Interest Date')}
+                      type="date"
+                      value={editData?.saving_account_id?.last_interest_applied_on ? new Date(editData.saving_account_id.last_interest_applied_on).toISOString().split('T')[0] : ""}
+                      onChange={(e) =>
+                        setEditData({
+                          ...editData,
+                          saving_account_id: {
+                            ...editData.saving_account_id,
+                            last_interest_applied_on: new Date(e.target.value)
+                          }
+                        })
+                      }
+                      size="md"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </DrawerBody>
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
+          <DrawerFooter className="flex flex-col sm:flex-row gap-3 sm:gap-0">
+            <Button 
+              variant="outline" 
+              onClick={handleEditClose}
+              className="w-full sm:w-auto sm:mr-3"
+              size="md"
+            >
               {t('Cancel', 'Cancel')}
             </Button>
-            <Button colorScheme="blue" onClick={handleEditSave}>
-              {t('Save', 'Save')}
+            <Button 
+              colorScheme="blue" 
+              onClick={handleEditSave}
+              className="w-full sm:w-auto"
+              size="md"
+            >
+              {t('Save Changes', 'Save Changes')}
             </Button>
           </DrawerFooter>
         </DrawerContent>
