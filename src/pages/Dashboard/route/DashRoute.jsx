@@ -140,7 +140,7 @@ const DashRoute = () => {
         path="/view-officer/:id"
         element={
           <motion.div {...pageTransition}>
-            <ViewOfficerDetails />
+            <OfficerInfo />
           </motion.div>
         }
       />

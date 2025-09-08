@@ -37,8 +37,14 @@ function ViewOfficerDetails() {
         setIsLoading(true);
         const response = await axios.get(`officers/${id}`);
         if (response?.data?.result) {
-          setOfficerData(response.data.result);
-          setEditData(response.data.result);
+          const officerData = response.data.result;
+          // Map backend field names to frontend field names
+          const mappedData = {
+            ...officerData,
+            isActive: officerData.is_active, // Map is_active to isActive for frontend
+          };
+          setOfficerData(mappedData);
+          setEditData(mappedData);
         }
       } catch (error) {
         console.error("Error fetching officer data:", error);
@@ -61,7 +67,19 @@ function ViewOfficerDetails() {
 
   const handleEditSave = async () => {
     try {
-      const response = await axios.put(`officers/${id}`, editData);
+      // Map frontend field names to backend field names
+      const updateData = {
+        ...editData,
+        is_active: editData.isActive, // Map isActive to is_active for backend
+      };
+      
+      console.log("Saving officer data:", updateData);
+      console.log("Officer ID:", id);
+      
+      const response = await axios.put(`officers/${id}`, updateData);
+      
+      console.log("API Response:", response.data);
+      
       if (response?.data) {
         toast({
           title: "Officer updated successfully",
@@ -69,10 +87,13 @@ function ViewOfficerDetails() {
           duration: 4000,
           isClosable: true,
         });
-        setOfficerData(editData);
+        
+        // Update the officer data with the response
+        setOfficerData(response.data.result || editData);
         setIsEditing(false);
       }
     } catch (error) {
+      console.error("Update error:", error);
       toast({
         title: "Update failed",
         description: error.response?.data?.message || "Something went wrong",
@@ -95,10 +116,10 @@ function ViewOfficerDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-primaryBg py-8 px-6">
+    <div className="min-h-screen bg-primaryBg py-8 pt-20 px-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-12">
           <div className="flex items-center gap-4">
             <Link to="/dash/officer">
               <Button
