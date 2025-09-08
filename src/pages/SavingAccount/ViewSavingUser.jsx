@@ -23,6 +23,18 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  VStack,
+  HStack,
+  useToast,
 } from "@chakra-ui/react";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
@@ -40,7 +52,17 @@ function ViewSavingUser() {
     onOpen: onOpen2,
     onClose: onClose2,
   } = useDisclosure();
+  const {
+    isOpen: isDateModalOpen,
+    onOpen: onDateModalOpen,
+    onClose: onDateModalClose,
+  } = useDisclosure();
   const btnRef = React.useRef();
+  const toast = useToast();
+  
+  // Date range states
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const isLoanAccount = accountData?.account_type === "loan";
   // const accountData =
@@ -124,7 +146,7 @@ function ViewSavingUser() {
     []
   );
 
-  const generatePDF = () => {
+  const generatePDF = (customStartDate = null, customEndDate = null) => {
     const doc = new jsPDF();
     const userName = accountData?.full_name || "-";
     // Check if current language is Hindi to add language indicator
@@ -166,10 +188,20 @@ function ViewSavingUser() {
     y += 7;
     doc.text(`Total Penalty: Rs. ${penalty}`, 14, y);
 
-    const groupedByMonth = groupBy(transactions, (item) =>
+    // Filter data by date range if provided
+    let filteredData = transactions;
+    if (customStartDate && customEndDate) {
+      filteredData = transactions.filter(item => {
+        const itemDate = dayjs(item.created_on);
+        return itemDate.isAfter(dayjs(customStartDate).subtract(1, 'day')) && 
+               itemDate.isBefore(dayjs(customEndDate).add(1, 'day'));
+      });
+    }
+
+    const groupedByMonth = groupBy(filteredData, (item) =>
       dayjs(item.created_on).format("MMMM YYYY")
     );
-    const groupedByYear = groupBy(transactions, (item) =>
+    const groupedByYear = groupBy(filteredData, (item) =>
       dayjs(item.created_on).format("YYYY")
     );
 
@@ -244,24 +276,67 @@ function ViewSavingUser() {
       theme: "striped",
     });
 
-    const fileName = isHindi
-      ? `${userName}_Saving_Statement_Hindi.pdf`
-      : `${userName}_Saving_Statement.pdf`;
+    // Generate filename with date range if provided
+    let fileName;
+    if (customStartDate && customEndDate) {
+      const startStr = dayjs(customStartDate).format("DD-MM-YYYY");
+      const endStr = dayjs(customEndDate).format("DD-MM-YYYY");
+      fileName = isHindi 
+        ? `${userName}_Saving_Statement_${startStr}_to_${endStr}_Hindi.pdf` 
+        : `${userName}_Saving_Statement_${startStr}_to_${endStr}.pdf`;
+    } else {
+      fileName = isHindi
+        ? `${userName}_Saving_Statement_Hindi.pdf`
+        : `${userName}_Saving_Statement.pdf`;
+    }
     doc.save(fileName);
+  };
+
+  // Handle date range PDF generation
+  const handleDateRangePDF = () => {
+    if (!startDate || !endDate) {
+      toast({
+        title: "Please select both start and end dates",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (dayjs(startDate).isAfter(dayjs(endDate))) {
+      toast({
+        title: "Start date cannot be after end date",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    generatePDF(startDate, endDate);
+    onDateModalClose();
+    setStartDate("");
+    setEndDate("");
+  };
+
+  // Handle full PDF generation (all data)
+  const handleFullPDF = () => {
+    generatePDF();
   };
 
   console.log(accountData, "account data in view");
 
   return (
-    <div className="lg:py-8 py-4 px-6 bg-primaryBg">
+    <div className="lg:py-16 lg:pt-24 py-8 pt-20 px-6 bg-primaryBg">
       <section className="md:p-1">
         <div className="py-6">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
             {/* User Information Section */}
             <div className="flex flex-col gap-4 text-start w-full lg:w-auto">
-              <h2 className="text-xl font-bold text-purple">
+              <h2 className="text-lg sm:text-xl font-bold text-purple">
                 {t("Full Name", "Full Name")}:{" "}
-                <span className="ml-2 lg:ml-4">{accountData?.user_id?.full_name}</span>
+                <span className="ml-2 lg:ml-4 text-base sm:text-lg">{accountData?.user_id?.full_name}</span>
               </h2>
               <div className="flex flex-col lg:flex-row gap-4 lg:gap-20">
                 <h2 className="text-lg font-bold text-purple">
@@ -302,13 +377,24 @@ function ViewSavingUser() {
 
               {/* Action Buttons Row */}
               <div className="flex flex-col sm:flex-row gap-2 lg:gap-4 w-full lg:w-auto">
-                <Button
-                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
-                  colorScheme="#FF782D"
-                  onClick={generatePDF}
-                >
-                  {t("Download PDF", "Download PDF")}
-                </Button>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                    colorScheme="#FF782D"
+                    rightIcon={<span>▼</span>}
+                  >
+                    {t("Download PDF", "Download PDF")}
+                  </MenuButton>
+                  <MenuList bg="white" border="1px solid #e2e8f0" boxShadow="lg" zIndex={9999}>
+                    <MenuItem onClick={handleFullPDF} _hover={{ bg: "gray.100" }}>
+                      {t("Download All Data", "Download All Data")}
+                    </MenuItem>
+                    <MenuItem onClick={onDateModalOpen} _hover={{ bg: "gray.100" }}>
+                      {t("Download Date Range", "Download Date Range")}
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
 
                 <Link to={`/dash/add-Saving-collection/${accountData?.user_id?._id}`} className="w-full sm:w-auto">
                   <Button className="bg-purple w-full" colorScheme="#FF782D">
@@ -347,6 +433,45 @@ function ViewSavingUser() {
           </div>
         </div>
       </section>
+
+      {/* Date Range Modal */}
+      <Modal isOpen={isDateModalOpen} onClose={onDateModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{t('Select Date Range for PDF', 'Select Date Range for PDF')}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack spacing={4}>
+              <FormControl>
+                <FormLabel>{t('Start Date', 'Start Date')}</FormLabel>
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>{t('End Date', 'End Date')}</FormLabel>
+                <Input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </FormControl>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <HStack spacing={2}>
+              <Button variant="ghost" onClick={onDateModalClose}>
+                {t('Cancel', 'Cancel')}
+              </Button>
+              <Button colorScheme="blue" onClick={handleDateRangePDF}>
+                {t('Generate PDF', 'Generate PDF')}
+              </Button>
+            </HStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

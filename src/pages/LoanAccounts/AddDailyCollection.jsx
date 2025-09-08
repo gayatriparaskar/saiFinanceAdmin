@@ -84,27 +84,30 @@ const AddDailyCollection = () => {
   };
 
   return (
-    <div className="m-6 py-12">
+    <div className="mx-4 my-6 lg:m-6 lg:py-24 lg:pt-28 py-16">
       {/* Loan Info */}
       <div className="flex flex-col gap-4 py-4 ">
-        <div className="w-full flex gap-4 justify-end ">
+        <div className="w-full flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center sm:justify-end ">
           <Menu>
             <MenuButton
               as={Button}
-              className="bg-primaryDark hover:bg-primaryLight"
+              className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto text-xs sm:text-sm"
+              colorScheme="#FF782D"
             >
               {t("Total Loan")} {userData?.active_loan_id?.loan_amount} Rs.
             </MenuButton>
             <MenuButton
               as={Button}
-              className="bg-primaryDark hover:bg-primaryLight"
+              className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto text-xs sm:text-sm"
+              colorScheme="#FF782D"
             >
               {t("Total Due Amount")}{" "}
               {userData?.active_loan_id?.total_due_amount} Rs.
             </MenuButton>
             <MenuButton
               as={Button}
-              className="bg-primaryDark hover:bg-primaryLight"
+              className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto text-xs sm:text-sm"
+              colorScheme="#FF782D"
             >
               {t("Total Penalty")}{" "}
               {userData?.active_loan_id?.total_penalty_amount} Rs.
@@ -112,11 +115,12 @@ const AddDailyCollection = () => {
           </Menu>
         </div>
 
-        <div className="w-full flex gap-4 justify-end ">
+        <div className="w-full flex justify-center sm:justify-end ">
           <Menu>
             <MenuButton
               as={Button}
-              className="bg-primaryDark hover:bg-primaryLight"
+              className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto text-xs sm:text-sm"
+              colorScheme="#FF782D"
             >
               {t("Emi Amount")} {userData?.active_loan_id?.emi_day} Rs.
             </MenuButton>
@@ -130,7 +134,7 @@ const AddDailyCollection = () => {
           {t("Add Daily Collection")}
         </h3>
 
-        <div className="grid grid-cols-2 gap-4 mt-2 text-start">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2 text-start">
           {/* Officer Code */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -224,10 +228,10 @@ const AddDailyCollection = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-center sm:justify-end mt-6">
           <button
             type="submit"
-            className="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none"
+            className="w-full sm:w-auto px-6 py-3 bg-purple text-white font-medium rounded-md focus:outline-none"
           >
             {t("Submit Collection")}
           </button>

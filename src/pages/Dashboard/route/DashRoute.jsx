@@ -69,7 +69,7 @@ const DashRoute = () => {
         }
       />
       <Route
-        path="/add-daily-collection"
+        path="/add-daily-collection/:id"
         element={
           <motion.div {...pageTransition}>
             <AddDailyCollection />
@@ -113,7 +113,7 @@ const DashRoute = () => {
         }
       />
       <Route
-        path="/add-saving-collection"
+        path="/add-Saving-collection/:id"
         element={
           <motion.div {...pageTransition}>
             <AddSavingCollection />

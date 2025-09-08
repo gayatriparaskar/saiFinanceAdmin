@@ -39,6 +39,18 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  VStack,
+  HStack,
+  useToast,
 } from "@chakra-ui/react";
 
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -59,8 +71,18 @@ function ViewLoanUser() {
     onOpen: onOpen2,
     onClose: onClose2,
   } = useDisclosure();
+  const {
+    isOpen: isDateModalOpen,
+    onOpen: onDateModalOpen,
+    onClose: onDateModalClose,
+  } = useDisclosure();
   const cancelRef = React.useRef();
   const btnRef = React.useRef();
+  const toast = useToast();
+  
+  // Date range states
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -192,7 +214,7 @@ function ViewLoanUser() {
     [Dailydata]
   );
 
-  const generatePDF = () => {
+  const generatePDF = (customStartDate = null, customEndDate = null) => {
     const doc = new jsPDF();
     const userName = userdata?.full_name || "-";
     const startDate = dayjs(userdata?.active_loan_id?.created_on).format("D MMM, YYYY");
@@ -230,8 +252,18 @@ function ViewLoanUser() {
     y += 7;
     doc.text(`Total Penalty: Rs. ${penalty}`, 14, y);
 
-    const groupedByMonth = groupBy(Dailydata, item => dayjs(item.created_on).format("MMMM YYYY"));
-    const groupedByYear = groupBy(Dailydata, item => dayjs(item.created_on).format("YYYY"));
+    // Filter data by date range if provided
+    let filteredData = Dailydata;
+    if (customStartDate && customEndDate) {
+      filteredData = Dailydata.filter(item => {
+        const itemDate = dayjs(item.created_on);
+        return itemDate.isAfter(dayjs(customStartDate).subtract(1, 'day')) && 
+               itemDate.isBefore(dayjs(customEndDate).add(1, 'day'));
+      });
+    }
+
+    const groupedByMonth = groupBy(filteredData, item => dayjs(item.created_on).format("MMMM YYYY"));
+    const groupedByYear = groupBy(filteredData, item => dayjs(item.created_on).format("YYYY"));
 
     let startY = 70;
 
@@ -290,19 +322,60 @@ function ViewLoanUser() {
       theme: 'striped'
     });
 
-    const fileName = isHindi ? `${userName}_Loan_Statement_Hindi.pdf` : `${userName}_Loan_Statement.pdf`;
+    // Generate filename with date range if provided
+    let fileName;
+    if (customStartDate && customEndDate) {
+      const startStr = dayjs(customStartDate).format("DD-MM-YYYY");
+      const endStr = dayjs(customEndDate).format("DD-MM-YYYY");
+      fileName = isHindi ? `${userName}_Loan_Statement_${startStr}_to_${endStr}_Hindi.pdf` : `${userName}_Loan_Statement_${startStr}_to_${endStr}.pdf`;
+    } else {
+      fileName = isHindi ? `${userName}_Loan_Statement_Hindi.pdf` : `${userName}_Loan_Statement.pdf`;
+    }
     doc.save(fileName);
   };
 
+  // Handle date range PDF generation
+  const handleDateRangePDF = () => {
+    if (!startDate || !endDate) {
+      toast({
+        title: "Please select both start and end dates",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (dayjs(startDate).isAfter(dayjs(endDate))) {
+      toast({
+        title: "Start date cannot be after end date",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    generatePDF(startDate, endDate);
+    onDateModalClose();
+    setStartDate("");
+    setEndDate("");
+  };
+
+  // Handle full PDF generation (all data)
+  const handleFullPDF = () => {
+    generatePDF();
+  };
+
   return (
-    <div className="lg:py-8 py-4 px-6 bg-primaryBg mt-6">
+    <div className="lg:py-16 lg:pt-24 py-8 pt-20 px-6 bg-primaryBg mt-6">
       <section className=" md:p-1 ">
         <div className="py-6 ">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
             {/* User Information Section */}
             <div className="flex flex-col gap-4 text-start w-full lg:w-auto">
-              <h2 className="text-xl font-bold text-purple text-oswald">
-                {t('Name', 'Name')}: <span className="ml-2 lg:ml-4">{userdata?.full_name}</span>
+              <h2 className="text-lg sm:text-xl font-bold text-purple text-oswald">
+                {t('Name', 'Name')}: <span className="ml-2 lg:ml-4 text-base sm:text-lg">{userdata?.full_name}</span>
               </h2>
               <div className="flex flex-col lg:flex-row gap-4 lg:gap-20">
                 <h2 className="text-lg font-bold text-purple text-oswald">
@@ -364,16 +437,27 @@ function ViewLoanUser() {
 
               {/* Action Buttons Row */}
               <div className="flex flex-col sm:flex-row gap-2 lg:gap-4 w-full lg:w-auto">
-                <Button
-                  colorScheme="blue"
-                  size="md"
-                  borderRadius="md"
-                  px={2}
-                  onClick={generatePDF}
-                  className="w-full sm:w-auto"
-                >
-                  {t('Download PDF', 'Download PDF')}
-                </Button>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    colorScheme="blue"
+                    size="md"
+                    borderRadius="md"
+                    px={2}
+                    className="w-full sm:w-auto"
+                    rightIcon={<span>▼</span>}
+                  >
+                    {t('Download PDF', 'Download PDF')}
+                  </MenuButton>
+                  <MenuList bg="white" border="1px solid #e2e8f0" boxShadow="lg" zIndex={9999}>
+                    <MenuItem onClick={handleFullPDF} _hover={{ bg: "gray.100" }}>
+                      {t('Download All Data', 'Download All Data')}
+                    </MenuItem>
+                    <MenuItem onClick={onDateModalOpen} _hover={{ bg: "gray.100" }}>
+                      {t('Download Date Range', 'Download Date Range')}
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
 
                 <Link to={`/dash/add-daily-collection/${userdata?._id}`} className="w-full sm:w-auto">
                   <Button
@@ -425,6 +509,45 @@ function ViewLoanUser() {
           </div>
         </div>
       </section>
+
+      {/* Date Range Modal */}
+      <Modal isOpen={isDateModalOpen} onClose={onDateModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{t('Select Date Range for PDF', 'Select Date Range for PDF')}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack spacing={4}>
+              <FormControl>
+                <FormLabel>{t('Start Date', 'Start Date')}</FormLabel>
+                <Input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>{t('End Date', 'End Date')}</FormLabel>
+                <Input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </FormControl>
+            </VStack>
+          </ModalBody>
+          <ModalFooter>
+            <HStack spacing={2}>
+              <Button variant="ghost" onClick={onDateModalClose}>
+                {t('Cancel', 'Cancel')}
+              </Button>
+              <Button colorScheme="blue" onClick={handleDateRangePDF}>
+                {t('Generate PDF', 'Generate PDF')}
+              </Button>
+            </HStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }
