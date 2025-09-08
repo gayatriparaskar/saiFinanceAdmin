@@ -366,7 +366,7 @@ function SavingAccount() {
       const userResponse = await axios.put(`users/${editData._id}`, userUpdateData);
       
       // Update saving account details using admin route
-      const savingResponse = await axios.put(`admins/edit-saving-user/${editData._id}`, {
+      const savingResponse = await axios.put(`users/${editData._id}`, {
         ...userUpdateData,
         ...savingUpdateData
       });
@@ -405,6 +405,50 @@ function SavingAccount() {
   const handleEditClose = () => {
     setIsEditing(false);
     setEditData(null);
+  };
+
+  // Function to handle status change
+  const handleStatusChange = async (userId, newStatus) => {
+    try {
+      const response = await axios.put(`users/${userId}`, {
+        status: newStatus
+      });
+
+      if (response.data) {
+        toast({
+          title: t("Status updated successfully"),
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top"
+        });
+        
+        // Update the local state
+        const updatedData = data.map((item) =>
+          item._id === userId 
+            ? { 
+                ...item, 
+                saving_account_id: { 
+                  ...item.saving_account_id, 
+                  status: newStatus 
+                } 
+              } 
+            : item
+        );
+        
+        setData(updatedData);
+        setFilteredData(updatedData);
+      }
+    } catch (error) {
+      console.error("Status change error:", error);
+      toast({
+        title: t("Failed to update status"),
+        description: error.response?.data?.message || t("Something went wrong"),
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
   };
 
   // Handle sorting
@@ -520,9 +564,32 @@ function SavingAccount() {
       {
         Header: t('Status'),
         accessor: "status",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={t(original?.status || "Active")} />
-        ),
+        Cell: ({ value, row: { original } }) => {
+          const currentStatus = original?.saving_account_id?.status || original?.status || 'active';
+          return (
+            <Select
+              value={currentStatus}
+              onChange={(e) => handleStatusChange(original._id, e.target.value)}
+              size="sm"
+              width="120px"
+              bg="white"
+              color="gray.700"
+              borderColor="gray.300"
+              _hover={{ borderColor: "gray.400" }}
+              _focus={{ 
+                borderColor: currentStatus === 'active' ? "green.400" : "red.400",
+                boxShadow: `0 0 0 1px ${currentStatus === 'active' ? "#68D391" : "#FC8181"}`
+              }}
+              borderRadius="md"
+              fontSize="sm"
+              fontWeight="medium"
+              icon={<></>}
+            >
+              <option value="active">{t('Active')}</option>
+              <option value="inactive">{t('Inactive')}</option>
+            </Select>
+          );
+        },
       },
       {
         Header: t('Date Created', 'Date Created'),
@@ -798,7 +865,7 @@ function SavingAccount() {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="min-h-screen bg-primaryBg flex flex-col pt-8"
+        className="min-h-screen bg-primaryBg flex flex-col pt-24 sm:pt-28"
       >
       {/* Fixed Header Section */}
       <motion.div

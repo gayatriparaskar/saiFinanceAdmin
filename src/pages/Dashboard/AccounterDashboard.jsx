@@ -10,6 +10,7 @@ import { useOverdueCollections } from '../../hooks/useOverdueCollections';
 import StatsCards from '../../componant/Dashboard/StatsCards';
 import CollectionBreakdown from '../../componant/Dashboard/CollectionBreakdown';
 import OfficerTable from '../../componant/Dashboard/OfficerTable';
+import UserDataTable from '../../componant/Dashboard/UserDataTable';
 import QuickActions from '../../componant/Dashboard/QuickActions';
 import OverdueCollections from '../../componant/Dashboard/OverdueCollections';
 import AssignModal from '../../componant/Dashboard/AssignModal';
@@ -328,6 +329,14 @@ Generated on: ${new Date().toLocaleString()}
             editingData={editingData}
             setEditingData={setEditingData}
           />
+        </motion.div>
+
+        {/* User Data Table */}
+        <motion.div 
+          variants={itemVariants}
+          className="px-6 py-6"
+        >
+          <UserDataTable userType="all" />
         </motion.div>
 
         {/* Quick Actions */}

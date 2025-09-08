@@ -74,7 +74,7 @@ const OverdueLoans = () => {
         const result = response.data.result;
         toast({
           title: t("Success"),
-          description: `Applied penalties to ${result.updatedCount} loans. Total penalties: ₹${result.totalPenaltiesApplied}`,
+          description: `${t("Applied penalties to")} ${result.updatedCount} ${t("loans. Total penalties: ₹")}${result.totalPenaltiesApplied}`,
           status: "success",
           duration: 6000,
           isClosable: true,
@@ -137,7 +137,7 @@ const OverdueLoans = () => {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="min-h-screen bg-primaryBg flex flex-col pt-8"
+      className="min-h-screen bg-primaryBg flex flex-col pt-24 sm:pt-28"
     >
       <div className="px-6 py-0">
         {/* Header Section */}
@@ -169,7 +169,7 @@ const OverdueLoans = () => {
                   <StatNumber>{overdueLoans.length}</StatNumber>
                   <StatHelpText>
                     <StatArrow type="decrease" />
-                    {overdueLoans.length > 0 ? "Requires attention" : "All loans are current"}
+                    {overdueLoans.length > 0 ? t("Requires attention") : t("All loans are current")}
                   </StatHelpText>
                 </Stat>
               </CardBody>

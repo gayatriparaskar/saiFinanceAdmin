@@ -14,25 +14,31 @@ const SimpleChart = ({ title = "Financial Overview", data = [] }) => {
   });
 
   useEffect(() => {
+    // Month names array
+    const monthNames = [
+      t('Jan'), t('Feb'), t('Mar'), t('Apr'), t('May'), t('Jun'),
+      t('Jul'), t('Aug'), t('Sep'), t('Oct'), t('Nov'), t('Dec')
+    ];
+
     if (Array.isArray(data) && data.length > 0) {
       setChartData({
         series: [{
-          name: 'Amount',
+          name: t('Amount'),
           data: data
         }],
-        categories: data.map((_, index) => `Period ${index + 1}`)
+        categories: data.map((_, index) => monthNames[index] || `Month ${index + 1}`)
       });
     } else {
       // Default data
       setChartData({
         series: [{
-          name: 'Amount',
+          name: t('Amount'),
           data: [1200, 1500, 1800, 2200, 2500, 2800]
         }],
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+        categories: monthNames.slice(0, 6)
       });
     }
-  }, [data]);
+  }, [data, t]);
 
   const options = {
     chart: {

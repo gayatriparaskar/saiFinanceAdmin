@@ -421,7 +421,7 @@ const DashHome = () => {
             transition={{ duration: 1.5, repeat: Infinity }}
             className="text-2xl font-bold text-primary"
           >
-            Loading Dashboard...
+            {t("Loading Dashboard...")}
           </motion.h2>
         </motion.div>
       </div>
@@ -472,7 +472,7 @@ const DashHome = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-12 xs:pt-16 sm:pt-20 md:pt-24 pb-4 xs:pb-6 px-2 xs:px-4 relative overflow-hidden"
+        className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-24 sm:pt-28 pb-4 xs:pb-6 px-2 xs:px-4 relative overflow-hidden"
       >
 
 
@@ -635,7 +635,7 @@ const DashHome = () => {
           whileHover={{ scale: window.innerWidth > 768 ? 1.01 : 1.005 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <SimpleChart title="Simple Overview" data={monthlyAmtData} />
+          <SimpleChart title={t("Simple Overview")} data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
@@ -643,7 +643,7 @@ const DashHome = () => {
           whileHover={{ scale: window.innerWidth > 768 ? 1.01 : 1.005 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <MonthlyChart title="Monthly Statistics" data={monthlyAmtData} />
+          <MonthlyChart title={t("Monthly Statistics")} data={monthlyAmtData} />
         </motion.div>
 
         <motion.div
@@ -651,7 +651,7 @@ const DashHome = () => {
           whileHover={{ scale: window.innerWidth > 768 ? 1.01 : 1.005 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <WeeklyChart title="Weekly Statistics" data={weekAmtData} />
+          <WeeklyChart title={t("Weekly Statistics")} data={weekAmtData} />
         </motion.div>
 
         <motion.div
@@ -659,7 +659,7 @@ const DashHome = () => {
           whileHover={{ scale: window.innerWidth > 768 ? 1.01 : 1.005 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <PerformanceChart title="Performance Metrics" />
+          <PerformanceChart title={t("Performance Metrics")} />
         </motion.div>
       </motion.div>
 

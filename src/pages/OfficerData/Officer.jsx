@@ -42,6 +42,7 @@ import {
   AlertDialogHeader,
   AlertDialogBody,
   AlertDialogFooter,
+  Select,
 } from "@chakra-ui/react";
 
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -229,7 +230,7 @@ function Officer() {
     try {
       const currentStatus = officer.isActive || officer.is_active;
       const newStatus = !currentStatus;
-                           const res = await axios.put(`officers/${officer._id}`, {
+                           const res = await axios.put(`users/${officer._id}`, {
           is_active: newStatus  // Use backend field name
         });
       
@@ -259,6 +260,46 @@ function Officer() {
       console.error("Status update error:", err);
       toast({
         title: t("Status Update Failed"),
+        description: err.response?.data?.message || t("Something went wrong"),
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Function to handle status change from dropdown
+  const handleStatusChange = async (officerId, newStatus) => {
+    try {
+      const res = await axios.put(`officers/${officerId}`, {
+        is_active: newStatus
+      });
+      
+      if (res.data) {
+        toast({
+          title: t("Status updated successfully"),
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top"
+        });
+        
+        // Update local state
+        setData((prev) =>
+          prev.map((item) =>
+            item._id === officerId ? { ...item, isActive: newStatus, is_active: newStatus } : item
+          )
+        );
+        setFilteredData((prev) =>
+          prev.map((item) =>
+            item._id === officerId ? { ...item, isActive: newStatus, is_active: newStatus } : item
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Status change error:", err);
+      toast({
+        title: t("Failed to update status"),
         description: err.response?.data?.message || t("Something went wrong"),
         status: "error",
         duration: 4000,
@@ -373,7 +414,7 @@ function Officer() {
        }
 
                console.log("Submitting officer update data:", submitData);
-               const res = await axios.put(`officers/${editData._id}`, submitData);
+               const res = await axios.put(`users/${editData._id}`, submitData);
       if (res.data) {
         toast({
           title: t("Officer updated successfully"),
@@ -457,9 +498,32 @@ function Officer() {
              {
          Header: t('Status'),
          accessor: "isActive",
-         Cell: ({ value, row: { original } }) => (
-           <Cell text={t(original?.isActive || original?.is_active ? 'Active' : 'Inactive')} />
-         ),
+         Cell: ({ value, row: { original } }) => {
+           const currentStatus = original?.isActive || original?.is_active;
+           return (
+             <Select
+               value={currentStatus ? 'active' : 'inactive'}
+               onChange={(e) => handleStatusChange(original._id, e.target.value === 'active')}
+               size="sm"
+               width="120px"
+               bg="white"
+               color="gray.700"
+               borderColor="gray.300"
+               _hover={{ borderColor: "gray.400" }}
+               _focus={{ 
+                 borderColor: currentStatus ? "green.400" : "red.400",
+                 boxShadow: `0 0 0 1px ${currentStatus ? "#68D391" : "#FC8181"}`
+               }}
+               borderRadius="md"
+               fontSize="sm"
+               fontWeight="medium"
+               icon={<></>}
+             >
+               <option value="active">{t('Active')}</option>
+               <option value="inactive">{t('Inactive')}</option>
+             </Select>
+           );
+         },
        },
       {
         Header: t('Action'),
@@ -582,7 +646,7 @@ function Officer() {
          initial="hidden"
          animate="visible"
          variants={containerVariants}
-                   className="min-h-screen bg-primaryBg flex flex-col pt-8"
+                   className="min-h-screen bg-primaryBg flex flex-col pt-24 sm:pt-28"
        >
              {/* Fixed Header Section */}
        <motion.div 

@@ -57,9 +57,8 @@ const NewNavbar = () => {
   };
 
   const navVariants = {
-    hidden: { y: -100, opacity: 0 },
+    hidden: { opacity: 0 },
     visible: { 
-      y: 0, 
       opacity: 1,
       transition: { 
         duration: 0.6,
@@ -146,7 +145,7 @@ const NewNavbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="w-full flex items-center justify-between px-4 sm:px-6 py-0 shadow-lg fixed top-0 left-0 right-0 z-[9999] bg-white/95 backdrop-blur-md border-b-2 border-primary/10 h-16 sm:h-20 mb-0"
+      className="w-full flex items-center justify-between px-4 sm:px-6 py-0 shadow-lg fixed top-0 left-0 right-0 z-[99999] bg-white/95 backdrop-blur-md border-b-2 border-primary/10 h-16 sm:h-20"
     >
       {/* Logo with animation */}
       <motion.div 

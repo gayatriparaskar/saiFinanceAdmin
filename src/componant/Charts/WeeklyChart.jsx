@@ -16,7 +16,7 @@ const WeeklyChart = ({ title = "Weekly Statistics", data = [] }) => {
     if (Array.isArray(data) && data.length > 0) {
       setChartData({
         series: [{
-          name: 'Weekly Amount',
+          name: t('Weekly Amount'),
           data: data
         }],
         categories: data.map((_, index) => `Week ${index + 1}`)
@@ -25,7 +25,7 @@ const WeeklyChart = ({ title = "Weekly Statistics", data = [] }) => {
       // Default weekly data
       setChartData({
         series: [{
-          name: 'Weekly Amount',
+          name: t('Weekly Amount'),
           data: [2500, 3200, 2800, 4100, 3600, 3900, 2200]
         }],
         categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

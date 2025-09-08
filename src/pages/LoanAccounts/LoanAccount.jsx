@@ -96,8 +96,8 @@ function LoanAccount() {
           
           // Show a toast to inform the user
           toast({
-            title: "No collection officers found",
-            description: "No officers with officer_type='collection_officer' found. Please check officer data.",
+            title: t("No collection officers found"),
+            description: t("No officers with officer_type='collection_officer' found. Please check officer data."),
             status: "warning",
             duration: 5000,
             isClosable: true,
@@ -121,8 +121,8 @@ function LoanAccount() {
     } catch (error) {
       console.error('❌ Error fetching officers:', error);
       toast({
-        title: "Error fetching officers",
-        description: "Failed to load officer data",
+        title: t("Error fetching officers"),
+        description: t("Failed to load officer data"),
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -234,8 +234,8 @@ function LoanAccount() {
       // Validate required fields
       if (!editData?.full_name || !editData?.phone_number) {
         toast({
-          title: "Validation Error",
-          description: "Full name and phone number are required",
+          title: t("Validation Error"),
+          description: t("Full name and phone number are required"),
           status: "error",
           duration: 4000,
           isClosable: true,
@@ -269,7 +269,7 @@ function LoanAccount() {
       const userResponse = await axios.put(`users/${editData._id}`, userUpdateData);
       
       // Update loan details using admin route
-      const loanResponse = await axios.put(`admins/edit-loan-user/${editData._id}`, {
+      const loanResponse = await axios.put(`users/${editData._id}`, {
         ...userUpdateData,
         ...loanUpdateData
       });
@@ -297,7 +297,7 @@ function LoanAccount() {
       console.error("Update error:", err);
       toast({
         title: `Update Failed`,
-        description: err.response?.data?.message || "Failed to update user and loan details",
+        description: err.response?.data?.message || t("Failed to update user and loan details"),
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -347,8 +347,8 @@ function LoanAccount() {
 
       if (response.data) {
         toast({
-          title: "Officer changed successfully",
-          description: "The loan account has been reassigned to a new officer",
+          title: t("Officer changed successfully"),
+          description: t("The loan account has been reassigned to a new officer"),
           status: "success",
           duration: 4000,
           isClosable: true,
@@ -371,8 +371,52 @@ function LoanAccount() {
     } catch (error) {
       console.error("Officer change error:", error);
       toast({
-        title: "Failed to change officer",
-        description: error.response?.data?.message || "Something went wrong",
+        title: t("Failed to change officer"),
+        description: error.response?.data?.message || t("Something went wrong"),
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Function to handle status change
+  const handleStatusChange = async (userId, newStatus) => {
+    try {
+      const response = await axios.put(`users/${userId}`, {
+        status: newStatus
+      });
+
+      if (response.data) {
+        toast({
+          title: t("Status updated successfully"),
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "top"
+        });
+        
+        // Update the local state
+        const updatedData = data.map((item) =>
+          item._id === userId 
+            ? { 
+                ...item, 
+                active_loan_id: { 
+                  ...item.active_loan_id, 
+                  status: newStatus 
+                } 
+              } 
+            : item
+        );
+        
+        setData(updatedData);
+        setFilteredData(updatedData);
+      }
+    } catch (error) {
+      console.error("Status change error:", error);
+      toast({
+        title: t("Failed to update status"),
+        description: error.response?.data?.message || t("Something went wrong"),
         status: "error",
         duration: 4000,
         isClosable: true,
@@ -409,8 +453,8 @@ function LoanAccount() {
           if (!officer) {
             return (
               <div className="flex flex-col">
-                <Cell text="No Officer" />
-                <span className="text-xs text-red-500">Unassigned</span>
+                <Cell text={t("No Officer Assigned")} />
+                <span className="text-xs text-red-500">{t("Unassigned")}</span>
               </div>
             );
           }
@@ -485,6 +529,36 @@ function LoanAccount() {
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${Math.ceil(value)}`} />
         ),
+      },
+      {
+        Header: t('Status'),
+        accessor: "status",
+        Cell: ({ value, row: { original } }) => {
+          const currentStatus = original?.active_loan_id?.status || 'active';
+          return (
+            <Select
+              value={currentStatus}
+              onChange={(e) => handleStatusChange(original._id, e.target.value)}
+              size="sm"
+              width="120px"
+              bg="white"
+              color="gray.700"
+              borderColor="gray.300"
+              _hover={{ borderColor: "gray.400" }}
+              _focus={{ 
+                borderColor: currentStatus === 'active' ? "green.400" : "red.400",
+                boxShadow: `0 0 0 1px ${currentStatus === 'active' ? "#68D391" : "#FC8181"}`
+              }}
+              borderRadius="md"
+              fontSize="sm"
+              fontWeight="medium"
+              icon={<></>}
+            >
+              <option value="active">{t('Active')}</option>
+              <option value="inactive">{t('Inactive')}</option>
+            </Select>
+          );
+        },
       },
       {
         Header: t('Action'),
@@ -768,7 +842,7 @@ function LoanAccount() {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="min-h-screen bg-primaryBg flex flex-col pt-8"
+        className="min-h-screen bg-primaryBg flex flex-col pt-24 sm:pt-28"
       >
       {/* Fixed Header Section */}
       <motion.div
@@ -1318,7 +1392,7 @@ function LoanAccount() {
                     setNewOfficerId("");
                   } else {
                     toast({
-                      title: "Please select a new officer",
+                      title: t("Please select a new officer"),
                       status: "warning",
                       duration: 3000,
                       isClosable: true,

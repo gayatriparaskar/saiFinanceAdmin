@@ -5,6 +5,7 @@ import OfficerNavbar from '../../../components/OfficerNavbar';
 import StatsCards from './StatsCards';
 import OfficerTable from './OfficerTable';
 import Modals from './Modals';
+import UserDataTable from '../../../componant/Dashboard/UserDataTable';
 
 const ManagerDashboard = () => {
   const [officers, setOfficers] = useState([]);
@@ -556,6 +557,16 @@ const ManagerDashboard = () => {
           handleStatus={handleStatus}
           handleBankAssignment={handleBankAssignment}
         />
+
+        {/* User Data Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="px-6 py-6"
+        >
+          <UserDataTable userType="all" />
+        </motion.div>
 
         {/* Modals */}
         <Modals 
