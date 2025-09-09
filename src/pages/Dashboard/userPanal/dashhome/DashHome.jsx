@@ -279,12 +279,63 @@ const DashHome = () => {
     console.log(`Daily Total Collection: ${dailyLoanCollection} + ${dailySavingCollection} = ${dailyTotal}`);
   }, [dailyLoanCollection, dailySavingCollection]);
 
-  // Calculate Cumulative Totals (for now, we'll use daily collections as cumulative)
-  // In a real scenario, you would fetch historical data and sum all daily collections
+  // Load cumulative totals from localStorage on component mount
   useEffect(() => {
-    setCumulativeLoanCollection(dailyLoanCollection);
-    setCumulativeSavingCollection(dailySavingCollection);
-    setCumulativeTotalCollection(dailyTotalCollection);
+    const today = new Date().toDateString();
+    const lastUpdate = localStorage.getItem('lastCumulativeUpdate');
+    
+    // Load cumulative totals from localStorage
+    const savedCumulativeLoan = parseFloat(localStorage.getItem('cumulativeLoanCollection') || '0');
+    const savedCumulativeSaving = parseFloat(localStorage.getItem('cumulativeSavingCollection') || '0');
+    const savedCumulativeTotal = parseFloat(localStorage.getItem('cumulativeTotalCollection') || '0');
+    
+    setCumulativeLoanCollection(savedCumulativeLoan);
+    setCumulativeSavingCollection(savedCumulativeSaving);
+    setCumulativeTotalCollection(savedCumulativeTotal);
+    
+    // If it's a new day, reset daily collections but keep cumulative totals
+    if (lastUpdate !== today) {
+      // Reset daily collections for new day
+      setDailyLoanCollection(0);
+      setDailySavingCollection(0);
+      setDailyTotalCollection(0);
+      
+      // Update last update date
+      localStorage.setItem('lastCumulativeUpdate', today);
+    }
+  }, []);
+
+  // Update cumulative totals when daily collections change (accumulate, don't replace)
+  useEffect(() => {
+    // Only update if we have new daily collections and it's not the initial load
+    if (dailyLoanCollection > 0 || dailySavingCollection > 0) {
+      const today = new Date().toDateString();
+      const lastUpdate = localStorage.getItem('lastCumulativeUpdate');
+      
+      // Only accumulate if it's the same day and we have new data
+      if (lastUpdate === today) {
+        setCumulativeLoanCollection(prev => {
+          const newTotal = prev + dailyLoanCollection;
+          localStorage.setItem('cumulativeLoanCollection', newTotal.toString());
+          console.log(`Cumulative Loan Collection updated: ${prev} + ${dailyLoanCollection} = ${newTotal}`);
+          return newTotal;
+        });
+        
+        setCumulativeSavingCollection(prev => {
+          const newTotal = prev + dailySavingCollection;
+          localStorage.setItem('cumulativeSavingCollection', newTotal.toString());
+          console.log(`Cumulative Saving Collection updated: ${prev} + ${dailySavingCollection} = ${newTotal}`);
+          return newTotal;
+        });
+        
+        setCumulativeTotalCollection(prev => {
+          const newTotal = prev + dailyTotalCollection;
+          localStorage.setItem('cumulativeTotalCollection', newTotal.toString());
+          console.log(`Cumulative Total Collection updated: ${prev} + ${dailyTotalCollection} = ${newTotal}`);
+          return newTotal;
+        });
+      }
+    }
   }, [dailyLoanCollection, dailySavingCollection, dailyTotalCollection]);
 
   // Helper function to translate month names
