@@ -33,10 +33,6 @@ const DashHome = () => {
   const [dailySavingCollection, setDailySavingCollection] = useState(0);
   const [dailyTotalCollection, setDailyTotalCollection] = useState(0);
   
-  // Cumulative totals (calculated from daily collections)
-  const [cumulativeLoanCollection, setCumulativeLoanCollection] = useState(0);
-  const [cumulativeSavingCollection, setCumulativeSavingCollection] = useState(0);
-  const [cumulativeTotalCollection, setCumulativeTotalCollection] = useState(0);
   
   // Loading states for charts to prevent continuous API calls
   const [monthlyStatsLoading, setMonthlyStatsLoading] = useState(false);
@@ -279,21 +275,12 @@ const DashHome = () => {
     console.log(`Daily Total Collection: ${dailyLoanCollection} + ${dailySavingCollection} = ${dailyTotal}`);
   }, [dailyLoanCollection, dailySavingCollection]);
 
-  // Load cumulative totals from localStorage on component mount
+  // Reset daily collections on new day
   useEffect(() => {
     const today = new Date().toDateString();
     const lastUpdate = localStorage.getItem('lastCumulativeUpdate');
     
-    // Load cumulative totals from localStorage
-    const savedCumulativeLoan = parseFloat(localStorage.getItem('cumulativeLoanCollection') || '0');
-    const savedCumulativeSaving = parseFloat(localStorage.getItem('cumulativeSavingCollection') || '0');
-    const savedCumulativeTotal = parseFloat(localStorage.getItem('cumulativeTotalCollection') || '0');
-    
-    setCumulativeLoanCollection(savedCumulativeLoan);
-    setCumulativeSavingCollection(savedCumulativeSaving);
-    setCumulativeTotalCollection(savedCumulativeTotal);
-    
-    // If it's a new day, reset daily collections but keep cumulative totals
+    // If it's a new day, reset daily collections
     if (lastUpdate !== today) {
       // Reset daily collections for new day
       setDailyLoanCollection(0);
@@ -304,39 +291,6 @@ const DashHome = () => {
       localStorage.setItem('lastCumulativeUpdate', today);
     }
   }, []);
-
-  // Update cumulative totals when daily collections change (accumulate, don't replace)
-  useEffect(() => {
-    // Only update if we have new daily collections and it's not the initial load
-    if (dailyLoanCollection > 0 || dailySavingCollection > 0) {
-      const today = new Date().toDateString();
-      const lastUpdate = localStorage.getItem('lastCumulativeUpdate');
-      
-      // Only accumulate if it's the same day and we have new data
-      if (lastUpdate === today) {
-        setCumulativeLoanCollection(prev => {
-          const newTotal = prev + dailyLoanCollection;
-          localStorage.setItem('cumulativeLoanCollection', newTotal.toString());
-          console.log(`Cumulative Loan Collection updated: ${prev} + ${dailyLoanCollection} = ${newTotal}`);
-          return newTotal;
-        });
-        
-        setCumulativeSavingCollection(prev => {
-          const newTotal = prev + dailySavingCollection;
-          localStorage.setItem('cumulativeSavingCollection', newTotal.toString());
-          console.log(`Cumulative Saving Collection updated: ${prev} + ${dailySavingCollection} = ${newTotal}`);
-          return newTotal;
-        });
-        
-        setCumulativeTotalCollection(prev => {
-          const newTotal = prev + dailyTotalCollection;
-          localStorage.setItem('cumulativeTotalCollection', newTotal.toString());
-          console.log(`Cumulative Total Collection updated: ${prev} + ${dailyTotalCollection} = ${newTotal}`);
-          return newTotal;
-        });
-      }
-    }
-  }, [dailyLoanCollection, dailySavingCollection, dailyTotalCollection]);
 
   // Helper function to translate month names
   const translateMonth = (monthName) => {
@@ -632,7 +586,7 @@ const DashHome = () => {
         >
           <CardDataStats
             title={t("Total Loan Collection")}
-            total={`₹ ${cumulativeLoanCollection.toLocaleString()}`}
+            total={`₹ ${totalLoanCollection.toLocaleString()}`}
             rate="+5.2%"
             levelUp
           />
@@ -649,7 +603,7 @@ const DashHome = () => {
         >
           <CardDataStats
             title={t("Total Saving Collection")}
-            total={`₹ ${cumulativeSavingCollection.toLocaleString()}`}
+            total={`₹ ${totalSavingCollection.toLocaleString()}`}
             rate="+3.5%"
             levelUp
           />
@@ -666,7 +620,7 @@ const DashHome = () => {
         >
           <CardDataStats
             title={t("Total Collection")}
-            total={`₹ ${cumulativeTotalCollection.toLocaleString()}`}
+            total={`₹ ${totalCollection.toLocaleString()}`}
             rate="+4.2%"
             levelUp
           />
