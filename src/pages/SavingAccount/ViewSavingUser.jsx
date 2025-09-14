@@ -202,7 +202,7 @@ function ViewSavingUser() {
       dayjs(item.created_on).format("MMMM YYYY")
     );
     const groupedByYear = groupBy(filteredData, (item) =>
-      dayjs(item.created_on).format("YYYY")
+      dayjs(item.end_date).format("YYYY")
     );
 
     let startY = 70;
@@ -348,7 +348,7 @@ function ViewSavingUser() {
                 <h2 className="text-lg font-bold text-purple">
                   {t("End Date", "End Date")}:{" "}
                   <span className="ml-2 lg:ml-4">
-                    {dayjs(accountData?.created_on).format("D MMM, YYYY")}
+                    {accountData?.end_date ? dayjs(accountData.end_date).format("D MMM, YYYY") : 'N/A'}
                   </span>
                 </h2>
               </div>

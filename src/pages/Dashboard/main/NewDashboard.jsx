@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Routes, Route } from 'react-router-dom'
 import NewNavbar from './NewNavbar'
 import Layout from './Layout'
 import ManagerDashboard from '../ManagerDashboard'
 import AccounterDashboard from '../AccounterDashboard'
 import CollectionOfficerDashboard from '../CollectionOfficerDashboard'
+import DashRoute from '../route/DashRoute'
 
 function NewDashboard() {
   const navigate = useNavigate()
@@ -25,24 +26,8 @@ function NewDashboard() {
     setOfficerType(storedOfficerType || '')
     setLoading(false)
 
-    // If it's an officer, redirect to their specific dashboard
-    if (storedUserType === 'officer' && storedOfficerType) {
-      console.log('Redirecting officer to specific dashboard:', storedOfficerType)
-      
-      switch (storedOfficerType) {
-        case 'manager':
-          navigate('/manager-dashboard', { replace: true })
-          break
-        case 'accounter':
-          navigate('/accounter-dashboard', { replace: true })
-          break
-        case 'collection_officer':
-          navigate('/collection-dashboard', { replace: true })
-          break
-        default:
-          console.log('Unknown officer type, staying on general dashboard')
-      }
-    }
+    // Officers will be handled by the component render logic below
+    console.log('Officer type detected:', storedOfficerType)
   }, [navigate])
 
   // Show loading state
@@ -61,13 +46,18 @@ function NewDashboard() {
     )
   }
 
-  // If it's an officer, show their specific dashboard directly
+  // If it's an officer, show their specific dashboard with routing
   if (userType === 'officer') {
     const officerName = localStorage.getItem('officerName') || 'Officer';
     
     switch (officerType) {
       case 'manager':
-        return <ManagerDashboard />
+        return (
+          <Routes>
+            <Route path="/" element={<ManagerDashboard />} />
+            <Route path="/*" element={<DashRoute />} />
+          </Routes>
+        )
       case 'accounter':
         return <AccounterDashboard />
       case 'collection_officer':

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaUsers, FaDownload } from 'react-icons/fa';
+import { FaUsers, FaDownload, FaEllipsisV, FaEye, FaUserCheck, FaFlag, FaUniversity } from 'react-icons/fa';
 import { 
   Card, 
   CardBody, 
@@ -33,31 +33,86 @@ import {
 } from '@chakra-ui/react';
 import { SearchIcon, ViewIcon } from '@chakra-ui/icons';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
+import { updateOfficerCollectionData } from '../../services/officerService';
 import dayjs from 'dayjs';
 
 const OfficerTable = ({ 
   officers = [], 
   loading = false,
-  onEditClick,
-  onSaveEdit,
-  onCancelEdit,
   onAssignToClick,
   onStatusClick,
   onViewDetails,
-  editingOfficer,
-  editingData,
-  setEditingData
+  onPaymentProcess
 }) => {
   const { t } = useLocalTranslation();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Handle status update
+  const handleStatusUpdate = async (officerId, newStatus) => {
+    try {
+      console.log('🔄 Updating status for officer:', officerId, 'to:', newStatus);
+      
+      await updateOfficerCollectionData(officerId, {
+        status: newStatus
+      });
+      
+      console.log('✅ Status updated successfully');
+      
+      toast({
+        title: t('Success'),
+        description: t('Status updated successfully'),
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+      
+      // Refresh the data by calling the parent's refresh function if available
+      if (onStatusClick) {
+        onStatusClick(officerId, newStatus);
+      }
+    } catch (error) {
+      console.error('❌ Error updating status:', error);
+      toast({
+        title: t('Error'),
+        description: t('Failed to update status. Please try again.'),
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
   const [selectedOfficer, setSelectedOfficer] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRef = useRef(null);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [assignFilter, setAssignFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+
+  const toggleDropdown = (officerId) => {
+    setOpenDropdown(openDropdown === officerId ? null : officerId);
+  };
+
+  const closeDropdown = () => {
+    setOpenDropdown(null);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        closeDropdown();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const formatCurrency = (amount) => {
     return `₹${(amount || 0).toLocaleString()}`;
@@ -166,10 +221,15 @@ const OfficerTable = ({
     });
   };
 
-  // Handle view details
+  // Handle view details - use the prop function for redirect
   const handleViewDetails = (officer) => {
-    setSelectedOfficer(officer);
-    onOpen();
+    if (onViewDetails) {
+      onViewDetails(officer);
+    } else {
+      // Fallback to modal if no prop function provided
+      setSelectedOfficer(officer);
+      onOpen();
+    }
   };
 
   if (loading) {
@@ -233,9 +293,9 @@ const OfficerTable = ({
                   maxW="200px"
                 >
                   <option value="all">{t("All Status")}</option>
-                  <option value="approved by manager">{t("Approved by Manager")}</option>
-                  <option value="approved by accounter">{t("Approved by Accounter")}</option>
-                  <option value="deposited to bank">{t("Deposited to Bank")}</option>
+                  <option value="Pending">{t("Pending")}</option>
+                  <option value="In Process">{t("In Process")}</option>
+                  <option value="Complete">{t("Complete")}</option>
                 </Select>
                 
                 <Select
@@ -262,6 +322,7 @@ const OfficerTable = ({
                     <Th>{t("Total Collection")}</Th>
                     <Th>{t("Paid Amount")}</Th>
                     <Th>{t("Remaining Amount")}</Th>
+                    <Th>{t("Payment Process")}</Th>
                     <Th>{t("Assigned To")}</Th>
                     <Th>{t("Status")}</Th>
                     <Th>{t("Actions")}</Th>
@@ -279,34 +340,28 @@ const OfficerTable = ({
                         {formatCurrency(officer.totalCollection || 0)}
                       </Td>
                       <Td>
-                        {editingOfficer === officer.officer_id ? (
-                          <Input
-                            type="number"
-                            value={editingData.paidAmount}
-                            onChange={(e) => setEditingData({...editingData, paidAmount: parseFloat(e.target.value) || 0})}
-                            size="sm"
-                            width="100px"
-                          />
-                        ) : (
-                          <Text color="purple.600" fontWeight="medium">
-                            {formatCurrency(officer.paidAmount || 0)}
-                          </Text>
-                        )}
+                        <Text color="purple.600" fontWeight="medium">
+                          {formatCurrency(officer.paidAmount || 0)}
+                        </Text>
                       </Td>
                       <Td>
-                        {editingOfficer === officer.officer_id ? (
-                          <Input
-                            type="number"
-                            value={editingData.remainingAmount}
-                            onChange={(e) => setEditingData({...editingData, remainingAmount: parseFloat(e.target.value) || 0})}
-                            size="sm"
-                            width="100px"
-                          />
-                        ) : (
-                          <Text color="orange.600" fontWeight="medium">
-                            {formatCurrency(officer.remainingAmount || 0)}
-                          </Text>
-                        )}
+                        <Text color="orange.600" fontWeight="medium">
+                          {formatCurrency(officer.remainingAmount || 0)}
+                        </Text>
+                      </Td>
+                      <Td>
+                        <Select
+                          value={officer.paymentProcess || 'officer'}
+                          onChange={(e) => onPaymentProcess && onPaymentProcess(officer, e.target.value)}
+                          size="sm"
+                          width="150px"
+                        >
+                          <option value="officer">Officer</option>
+                          <option value="manager">Manager</option>
+                          <option value="deposite to bank">Deposite to Bank</option>
+                          <option value="accounter">Accounter</option>
+                          <option value="process complete">Process Complete</option>
+                        </Select>
                       </Td>
                       <Td>
                         <Button
@@ -319,52 +374,26 @@ const OfficerTable = ({
                         </Button>
                       </Td>
                       <Td>
-                        <Badge
-                          colorScheme={officer.status === 'approved by manager' ? 'green' : 
-                                     officer.status === 'approved by accounter' ? 'blue' : 
-                                     officer.status === 'deposited to bank' ? 'purple' : 'gray'}
+                        <Select
+                          value={officer.status || 'Pending'}
+                          onChange={(e) => handleStatusUpdate(officer.officer_id, e.target.value)}
+                          size="sm"
+                          variant="outline"
+                          minW="120px"
                         >
-                          {officer.status || t('Set Status')}
-                        </Badge>
+                          <option value="Pending">Pending</option>
+                          <option value="In Process">In Process</option>
+                          <option value="Complete">Complete</option>
+                        </Select>
                       </Td>
                       <Td>
-                        <HStack spacing={2}>
-                          {editingOfficer === officer.officer_id ? (
-                            <>
-                              <Button
-                                size="sm"
-                                colorScheme="green"
-                                onClick={() => onSaveEdit(officer.officer_id)}
-                              >
-                                {t('Save')}
-                              </Button>
-                              <Button
-                                size="sm"
-                                colorScheme="gray"
-                                onClick={() => onCancelEdit()}
-                              >
-                                {t('Cancel')}
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button
-                                size="sm"
-                                colorScheme="blue"
-                                onClick={() => onEditClick(officer)}
-                              >
-                                {t('Edit')}
-                              </Button>
-                              <Button
-                                size="sm"
-                                colorScheme="purple"
-                                onClick={() => handleViewDetails(officer)}
-                              >
-                                {t('View')}
-                              </Button>
-                            </>
-                          )}
-                        </HStack>
+                        <Button
+                          size="sm"
+                          colorScheme="purple"
+                          onClick={() => handleViewDetails(officer)}
+                        >
+                          {t('View')}
+                        </Button>
                       </Td>
                     </Tr>
                   ))}

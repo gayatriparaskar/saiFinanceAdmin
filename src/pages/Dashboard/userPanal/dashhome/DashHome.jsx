@@ -176,30 +176,30 @@ const DashHome = () => {
       });
   }, []);
 
-  // Total Loan Collection
+
+  // Total Saving Collection - Use proper API endpoint
   useEffect(() => {
     axios.get("admins/totalCollections")
       .then((res) => {
-        if (res?.data?.result?.totalAmount !== undefined) {
-          console.log(res.data.result.totalAmount,"=>>total loan collection");
-          setTotalLoanCollection(res.data.result.totalAmount);
+        if (res?.data?.result) {
+          // The API returns totalAmount for loan collections
+          // We need to get saving collections separately
+          setTotalLoanCollection(res.data.result.totalAmount || 0);
         } else {
           setTotalLoanCollection(0);
         }
       })
       .catch((error) => {
         console.error("Error fetching total loan collection:", error);
-        setTotalLoanCollection(0); // Fallback data
+        setTotalLoanCollection(0);
       });
-  }, []);
 
-  // Total Saving Collection
-  useEffect(() => {
-    axios.get("users/")
+    // Get total saving collection from saving daily collections
+    axios.get("savingDailyCollections/getAllSavings")
       .then((res) => {
         if (res?.data?.result && Array.isArray(res.data.result)) {
-          const totalSavingCollectionAmount = res.data.result.reduce((sum, user) => {
-            return sum + (user.saving_account_id?.current_amount || 0);
+          const totalSavingCollectionAmount = res.data.result.reduce((sum, collection) => {
+            return sum + (collection.deposit_amount || 0);
           }, 0);
           setTotalSavingCollection(totalSavingCollectionAmount);
         } else {
@@ -208,7 +208,7 @@ const DashHome = () => {
       })
       .catch((error) => {
         console.error("Error fetching total saving collection:", error);
-        setTotalSavingCollection(0); // Fallback data
+        setTotalSavingCollection(0);
       });
   }, []);
 
@@ -249,24 +249,12 @@ const DashHome = () => {
   }, []);
 
   // total collection
+  // Calculate Total Collection (Loan + Saving)
   useEffect(() => {
-    const fetchTotalCollections = async () => {
-      try {
-        const res = await axios.get("admins/totalCollections");
-        if (res?.data?.result?.totalAmount !== undefined) {
-          setTotalCollection(res.data.result.totalAmount);
-        } else {
-          setTotalCollection(0);
-        }
-      } catch (error) {
-        console.warn("API endpoint 'admins/totalCollections' not available:", error.message);
-        // Gracefully handle API unavailability with mock data
-        setTotalCollection(0);
-      }
-    };
-
-    fetchTotalCollections();
-  }, []);
+    const total = totalLoanCollection + totalSavingCollection;
+    setTotalCollection(total);
+    console.log(`Total Collection: ${totalLoanCollection} + ${totalSavingCollection} = ${total}`);
+  }, [totalLoanCollection, totalSavingCollection]);
 
   // Calculate Daily Total Collection (Loan + Saving)
   useEffect(() => {

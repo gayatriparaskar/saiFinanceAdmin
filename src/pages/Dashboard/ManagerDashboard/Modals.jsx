@@ -104,12 +104,16 @@ const Modals = ({
                     <span>Officer</span>
                   </label>
                   <label className="flex items-center space-x-3">
+                    <input type="radio" name="assignment" value="manager" className="text-blue-600" />
+                    <span>Manager</span>
+                  </label>
+                  <label className="flex items-center space-x-3">
                     <input type="radio" name="assignment" value="accounter" className="text-blue-600" />
                     <span>Accounter</span>
                   </label>
                   <label className="flex items-center space-x-3">
-                    <input type="radio" name="assignment" value="manager" className="text-blue-600" />
-                    <span>Manager</span>
+                    <input type="radio" name="assignment" value="payment complete" className="text-blue-600" />
+                    <span>Payment Complete</span>
                   </label>
                 </div>
                 

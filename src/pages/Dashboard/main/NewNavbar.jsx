@@ -119,6 +119,8 @@ const NewNavbar = () => {
     if (path.includes('/dash/overdue-loans')) return t('Overdue Loans');
     if (path.includes('/dash/saving-account')) return t('Saving Account');
     if (path.includes('/dash/officer')) return t('Officer Controls');
+    if (path.includes('/dash/weekly-report')) return t('Weekly Report');
+    if (path.includes('/dash/daily-report')) return t('Daily Report');
     if (path.includes('/dash/payment')) return t('Payment');
     if (path.includes('/dash/payment-request')) return t('Payment Request');
     if (path.includes('/dash/create-loan-user')) return t('Create Loan User');
@@ -137,7 +139,9 @@ const NewNavbar = () => {
     { name: t("Loan Account"), path: "/dash/loan-account" },
     { name: t("Overdue Loans"), path: "/dash/overdue-loans" },
     { name: t("Saving Account"), path: "/dash/saving-account" },
-    { name: t("Officer Controls"), path: "/dash/officer" }
+    { name: t("Officer Controls"), path: "/dash/officer" },
+    { name: t("Weekly Report"), path: "/dash/weekly-report" },
+    { name: t("Daily Report"), path: "/dash/daily-report" }
   ];
 
   return (
@@ -191,7 +195,7 @@ const NewNavbar = () => {
         ))}
 
         {/* Payment Controls Dropdown */}
-        <motion.li 
+        {/* <motion.li 
           className="relative flex items-center"
           custom={4}
           variants={menuItemVariants}
@@ -247,7 +251,7 @@ const NewNavbar = () => {
               </Link>
             </motion.ul>
           )}
-        </motion.li>
+        </motion.li> */}
       </ul>
 
       {/* Desktop Right Side Controls */}

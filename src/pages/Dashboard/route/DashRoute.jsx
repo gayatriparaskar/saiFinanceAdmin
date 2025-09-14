@@ -16,6 +16,8 @@ import ViewOfficerDetails from "../../OfficerData/ViewOfficerDetails";
 import OverdueLoans from "../../LoanAccounts/OverdueLoans";
 import DashHome from "../userPanal/dashhome/DashHome";
 import OfficerInfo from "../../SavingAccount/officerInfo";
+import WeeklyReport from "../../Reports/WeeklyReport";
+import DailyReport from "../../Reports/DailyReport";
 
 const pageTransition = {
   initial: { opacity: 0, x: -20 },
@@ -149,6 +151,22 @@ const DashRoute = () => {
         element={
           <motion.div {...pageTransition}>
             <OfficerInfo />
+          </motion.div>
+        }
+      />
+      <Route
+        path="/weekly-report"
+        element={
+          <motion.div {...pageTransition}>
+            <WeeklyReport />
+          </motion.div>
+        }
+      />
+      <Route
+        path="/daily-report"
+        element={
+          <motion.div {...pageTransition}>
+            <DailyReport />
           </motion.div>
         }
       />

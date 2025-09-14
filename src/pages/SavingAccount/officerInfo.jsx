@@ -27,6 +27,9 @@ function OfficerInfo() {
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  console.log('🔄 OfficerInfo component rendered with ID:', id);
+  console.log('🔄 Current URL:', window.location.href);
+
   const toast = useToast();
   
   const { isOpen, onOpen, onClose } = useDisclosure();

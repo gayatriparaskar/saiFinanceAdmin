@@ -6,6 +6,8 @@ import NewLogin from '../pages/SignIn/NewLogin';
 import ManagerDashboard from '../pages/Dashboard/ManagerDashboard';
 import AccounterDashboard from '../pages/Dashboard/AccounterDashboard';
 import CollectionOfficerDashboard from '../pages/Dashboard/CollectionOfficerDashboard';
+import OfficerInfo from '../pages/SavingAccount/officerInfo';
+import UserDetailPage from '../pages/UserDetailPage/UserDetailPage';
 
 const MainRoute = () => {
   const [loading, setLoading] = useState(false);
@@ -100,7 +102,7 @@ const MainRoute = () => {
           />
 
           <Route 
-            path='/dash/*' 
+            path='/view-officer/:id' 
             element={
               <motion.div
                 initial="initial"
@@ -108,6 +110,37 @@ const MainRoute = () => {
                 exit="out"
                 variants={pageVariants}
                 transition={pageTransition}
+              >
+                <OfficerInfo/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/view-user/:userId' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <UserDetailPage/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/dash/*' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transi
+                solve itemIDtion={pageTransition}
               >
                 <NewDashboard/>
               </motion.div>

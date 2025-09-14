@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from '../axios';
+import { updateOfficerCollectionData } from '../services/officerService';
 
 export const useOfficerManagement = () => {
   const [editingOfficer, setEditingOfficer] = useState(null);
@@ -24,29 +25,24 @@ export const useOfficerManagement = () => {
     try {
       console.log('🔄 Saving edit for officer:', officerId, editingData);
       
-      // Call backend API to save the data
-      const response = await axios.put(`officers/${officerId}/collection-data`, {
+      // Use the new service function
+      const updatedOfficer = await updateOfficerCollectionData(officerId, {
         paidAmount: editingData.paidAmount,
         remainingAmount: editingData.remainingAmount
       });
 
-      if (response.data.success) {
-        console.log('✅ Edit saved successfully:', response.data);
-        
-        // Update local state
-        setOfficers(prev => prev.map(officer => 
-          officer.officer_id === officerId 
-            ? { ...officer, ...editingData }
-            : officer
-        ));
-        
-        setEditingOfficer(null);
-        setEditingData({ paidAmount: 0, remainingAmount: 0 });
-        return { success: true };
-      } else {
-        console.error('❌ Failed to save edit:', response.data);
-        return { success: false, error: 'Failed to save changes. Please try again.' };
-      }
+      console.log('✅ Edit saved successfully:', updatedOfficer);
+      
+      // Update local state
+      setOfficers(prev => prev.map(officer => 
+        officer.officer_id === officerId 
+          ? { ...officer, ...editingData }
+          : officer
+      ));
+      
+      setEditingOfficer(null);
+      setEditingData({ paidAmount: 0, remainingAmount: 0 });
+      return { success: true };
     } catch (error) {
       console.error('❌ Error saving edit:', error);
       return { success: false, error: 'Error saving changes. Please try again.' };
@@ -69,8 +65,9 @@ export const useOfficerManagement = () => {
   };
 
   const handleViewDetails = (officer) => {
-    setSelectedOfficer(officer);
-    setShowDetailsModal(true);
+    console.log('🔄 AccounterDashboard - View Details clicked for officer:', officer);
+    // Redirect to officer info page
+    window.location.href = `/view-officer/${officer._id}`;
   };
 
   const handleAssignTo = async (assignment, officers, setOfficers) => {
@@ -78,28 +75,23 @@ export const useOfficerManagement = () => {
       try {
         console.log('🔄 Assigning officer to:', assignment);
         
-        // Call backend API to save the assignment
-        const response = await axios.put(`officers/${selectedOfficer.officer_id}/collection-data`, {
+        // Use the new service function
+        const updatedOfficer = await updateOfficerCollectionData(selectedOfficer.officer_id, {
           assignTo: assignment
         });
 
-        if (response.data.success) {
-          console.log('✅ Assignment saved successfully:', response.data);
-          
-          // Update local state
-          setOfficers(prev => prev.map(officer => 
-            officer.officer_id === selectedOfficer.officer_id 
-              ? { ...officer, assignTo: assignment }
-              : officer
-          ));
-          
-          setShowAssignModal(false);
-          setSelectedOfficer(null);
-          return { success: true };
-        } else {
-          console.error('❌ Failed to save assignment:', response.data);
-          return { success: false, error: 'Failed to save assignment. Please try again.' };
-        }
+        console.log('✅ Assignment saved successfully:', updatedOfficer);
+        
+        // Update local state
+        setOfficers(prev => prev.map(officer => 
+          officer.officer_id === selectedOfficer.officer_id 
+            ? { ...officer, assignTo: assignment }
+            : officer
+        ));
+        
+        setShowAssignModal(false);
+        setSelectedOfficer(null);
+        return { success: true };
       } catch (error) {
         console.error('❌ Error saving assignment:', error);
         return { success: false, error: 'Error saving assignment. Please try again.' };
@@ -112,28 +104,23 @@ export const useOfficerManagement = () => {
       try {
         console.log('🔄 Updating status to:', status);
         
-        // Call backend API to save the status
-        const response = await axios.put(`officers/${selectedOfficer.officer_id}/collection-data`, {
+        // Use the new service function
+        const updatedOfficer = await updateOfficerCollectionData(selectedOfficer.officer_id, {
           status: status
         });
 
-        if (response.data.success) {
-          console.log('✅ Status updated successfully:', response.data);
-          
-          // Update local state
-          setOfficers(prev => prev.map(officer => 
-            officer.officer_id === selectedOfficer.officer_id 
-              ? { ...officer, status: status }
-              : officer
-          ));
-          
-          setShowStatusModal(false);
-          setSelectedOfficer(null);
-          return { success: true };
-        } else {
-          console.error('❌ Failed to update status:', response.data);
-          return { success: false, error: 'Failed to update status. Please try again.' };
-        }
+        console.log('✅ Status updated successfully:', updatedOfficer);
+        
+        // Update local state
+        setOfficers(prev => prev.map(officer => 
+          officer.officer_id === selectedOfficer.officer_id 
+            ? { ...officer, status: status }
+            : officer
+        ));
+        
+        setShowStatusModal(false);
+        setSelectedOfficer(null);
+        return { success: true };
       } catch (error) {
         console.error('❌ Error updating status:', error);
         return { success: false, error: 'Error updating status. Please try again.' };

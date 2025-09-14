@@ -33,6 +33,15 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+  Select,
+  useToast,
 } from '@chakra-ui/react'
 
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -42,12 +51,25 @@ function ActiveUser() {
   
   const [newID, setNewID] = useState(null);
   const [data, setData] = useState([]);
+  const [officers, setOfficers] = useState([]);
+  const [selectedOfficer, setSelectedOfficer] = useState('');
+  const [reassignUserId, setReassignUserId] = useState(null);
+  const [reassignUserName, setReassignUserName] = useState('');
+  const [currentOfficer, setCurrentOfficer] = useState('');
   console.log(data);
   const {
     isOpen: isOpen2,
     onOpen: onOpen2,
     onClose: onClose2,
   } = useDisclosure();
+  
+  const {
+    isOpen: isReassignOpen,
+    onOpen: onReassignOpen,
+    onClose: onReassignClose,
+  } = useDisclosure();
+  
+  const toast = useToast();
   const cancelRef = React.useRef();
   const btnRef = React.useRef()
   useEffect(() => {
@@ -62,6 +84,124 @@ function ActiveUser() {
     }
     fetchData();
   }, []);
+
+  // Fetch officers for reassignment
+  useEffect(() => {
+    async function fetchOfficers() {
+      try {
+        const response = await axios.get("officers");
+        if (response?.data) {
+          const collectionOfficers = response.data.result?.filter(officer => 
+            officer.officer_type === 'collection_officer' && officer.is_active
+          ) || [];
+          setOfficers(collectionOfficers);
+        }
+      } catch (error) {
+        console.error('Error fetching officers:', error);
+      }
+    }
+    fetchOfficers();
+  }, []);
+
+  // Handle reassignment
+  const handleReassignOfficer = async () => {
+    if (!selectedOfficer || !reassignUserId) {
+      toast({
+        title: "Error",
+        description: "Please select an officer",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    console.log('🔄 Frontend - Reassigning user:', {
+      reassignUserId,
+      selectedOfficer,
+      reassignUserIdType: typeof reassignUserId,
+      selectedOfficerType: typeof selectedOfficer
+    });
+
+    try {
+      const requestData = {
+        userId: reassignUserId,
+        newOfficerId: selectedOfficer
+      };
+      
+      console.log('🔄 Frontend - Sending request data:', requestData);
+      
+      const response = await axios.post("officers/reassign-user", requestData);
+
+      if (response.data.success) {
+        console.log('✅ Reassignment successful:', response.data);
+        
+        toast({
+          title: "Success",
+          description: `User ${reassignUserName} successfully reassigned to new officer`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        
+        // Refresh data
+        try {
+          const refreshResponse = await axios.get("getPaidUsers");
+          if (refreshResponse?.data) {
+            setData(refreshResponse?.data?.result || []);
+            console.log('✅ User data refreshed after reassignment');
+          }
+        } catch (refreshError) {
+          console.error('❌ Error refreshing user data:', refreshError);
+        }
+        
+        onReassignClose();
+        setSelectedOfficer('');
+        setReassignUserId(null);
+        setReassignUserName('');
+        setCurrentOfficer('');
+      }
+    } catch (error) {
+      console.error('Error reassigning user:', error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to reassign user",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Open reassignment modal
+  const openReassignModal = (user) => {
+    console.log('🔄 Opening reassignment modal for user:', {
+      userId: user._id,
+      userName: user.full_name,
+      officerId: user.officer_id,
+      officerIdType: typeof user.officer_id,
+      isObject: user.officer_id && typeof user.officer_id === 'object'
+    });
+    
+    setReassignUserId(user._id);
+    setReassignUserName(user.full_name);
+    
+    // Handle both populated object and string ID
+    let currentOfficerId = '';
+    if (user.officer_id && typeof user.officer_id === 'object' && user.officer_id._id) {
+      currentOfficerId = user.officer_id._id;
+      console.log('✅ Using populated officer ID:', currentOfficerId);
+    } else if (user.officer_id && typeof user.officer_id === 'string') {
+      currentOfficerId = user.officer_id;
+      console.log('✅ Using string officer ID:', currentOfficerId);
+    } else {
+      console.warn('⚠️ No valid officer ID found for user:', user.officer_id);
+    }
+    
+    setCurrentOfficer(currentOfficerId);
+    setSelectedOfficer('');
+    onReassignOpen();
+  };
   const columns = React.useMemo(
     () => [
       {
@@ -190,6 +330,38 @@ function ActiveUser() {
           return <Cell text={`Rs. ${Math.round(rightCount * rate)}`} />;
         },
       },
+      {
+        Header: "Current Officer",
+        accessor: "officer_id",
+        Cell: ({ value, row: { original } }) => {
+          // Handle both populated object and string ID
+          let officerName = 'Unknown Officer';
+          let officerId = '';
+          let officerCode = '';
+          
+          if (value && typeof value === 'object' && value._id) {
+            // Officer is populated (object with _id and name)
+            officerName = value.name || 'Unknown Officer';
+            officerId = value._id;
+            // Try to find officer code from officers array
+            const officer = officers.find(o => o._id === value._id);
+            officerCode = officer ? officer.officer_code : '';
+          } else if (value && typeof value === 'string') {
+            // Officer is just an ID string
+            officerId = value;
+            const officer = officers.find(o => o._id === value);
+            officerName = officer ? officer.name : 'Unknown Officer';
+            officerCode = officer ? officer.officer_code : '';
+          }
+          
+          return (
+            <Cell 
+              text={`${officerName}${officerCode ? ` (${officerCode})` : ''}`}
+              subtext={`ID: ${officerId}`}
+            />
+          );
+        },
+      },
    
       {
         Header: "Action",
@@ -229,6 +401,10 @@ function ActiveUser() {
                     <GrOverview className="mr-4" /> Change Plan
                   </MenuItem>
                   </Link>
+                  
+                  <MenuItem onClick={() => openReassignModal(original)}>
+                    <HiStatusOnline className="mr-4" /> Reassign Officer
+                  </MenuItem>
                 </MenuList>
               </Menu>
             </>
@@ -351,6 +527,59 @@ function ActiveUser() {
           
         </div>
       </section>
+      
+      {/* Reassign Officer Modal */}
+      <Modal isOpen={isReassignOpen} onClose={onReassignClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Reassign Officer</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  User: {reassignUserName}
+                </label>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Select New Officer
+                </label>
+                <Select
+                  placeholder="Choose an officer"
+                  value={selectedOfficer}
+                  onChange={(e) => setSelectedOfficer(e.target.value)}
+                >
+                  {officers.map((officer) => (
+                    <option key={officer._id} value={officer._id}>
+                      {officer.name} ({officer.officer_code})
+                    </option>
+                  ))}
+                </Select>
+                {officers.length === 0 && (
+                  <p className="text-sm text-red-600 mt-1">
+                    No collection officers available
+                  </p>
+                )}
+              </div>
+            </div>
+          </ModalBody>
+          
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={onReassignClose}>
+              Cancel
+            </Button>
+            <Button 
+              colorScheme="blue" 
+              onClick={handleReassignOfficer}
+              isDisabled={!selectedOfficer}
+            >
+              Reassign Officer
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

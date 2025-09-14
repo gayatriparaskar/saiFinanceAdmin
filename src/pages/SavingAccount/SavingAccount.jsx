@@ -136,6 +136,49 @@ function SavingAccount() {
     }
   };
 
+  // Refresh function that can be called from the refresh button
+  const handleRefresh = async () => {
+    console.log('🔄 Refreshing saving accounts data...');
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.get("account/");
+      if (response?.data) {
+        setData(response?.data?.result || []);
+        setFilteredData(response?.data?.result || []);
+
+        const sum = (response.data.result || []).reduce((acc, item) => {
+          return acc + (item.amount_to_be || 0);
+        }, 0);
+        setTotalSavingAmt(sum);
+        
+        toast({
+          title: "Data refreshed successfully",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to refresh savings accounts:', error);
+      setError(error);
+      setData([]);
+      setFilteredData([]);
+      setTotalSavingAmt(0);
+      
+      toast({
+        title: "Failed to refresh data",
+        description: "Please check your connection and try again.",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = createTimeoutAwareCall(
       () => axios.get("account/"),
@@ -229,6 +272,7 @@ function SavingAccount() {
     loadData();
   };
 
+
   useEffect(() => {
     let result = data;
     
@@ -258,26 +302,8 @@ function SavingAccount() {
             return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
             
           case "remaining_emi":
-            const aEmiDays = a.saving_account_id?.emi_day || 0;
-            const bEmiDays = b.saving_account_id?.emi_day || 0;
-            const aCreatedOn = a.saving_account_id?.created_on;
-            const bCreatedOn = b.saving_account_id?.created_on;
-            
-            if (!aCreatedOn || aEmiDays === 0) aValue = 0;
-            else {
-              const aCreatedDate = new Date(aCreatedOn);
-              const aCurrentDate = new Date();
-              const aDaysPassed = Math.floor((aCurrentDate - aCreatedDate) / (1000 * 60 * 60 * 24));
-              aValue = Math.max(0, aEmiDays - aDaysPassed);
-            }
-            
-            if (!bCreatedOn || bEmiDays === 0) bValue = 0;
-            else {
-              const bCreatedDate = new Date(bCreatedOn);
-              const bCurrentDate = new Date();
-              const bDaysPassed = Math.floor((bCurrentDate - bCreatedDate) / (1000 * 60 * 60 * 24));
-              bValue = Math.max(0, bEmiDays - bDaysPassed);
-            }
+            aValue = a.saving_account_id?.remaining_emi_days || 0;
+            bValue = b.saving_account_id?.remaining_emi_days || 0;
             
             return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
             
@@ -529,20 +555,23 @@ function SavingAccount() {
         ),
       },
       {
-        Header: t('Remaining EMI'),
-        accessor: "remaining_emi",
+        Header: t('Daily EMI Amount'),
+        accessor: "daily_emi_amount",
+        Cell: ({ value, row: { original } }) => (
+          <>
+            <Cell text={`₹ ${original?.saving_account_id?.emi_day || 0}`} />
+          </>
+        ),
+      },
+      {
+        Header: t('Remaining EMI Days'),
+        accessor: "remaining_emi_days",
         Cell: ({ value, row: { original } }) => {
-          const emiDays = original?.saving_account_id?.emi_day || 0;
-          const createdOn = original?.saving_account_id?.created_on;
+          const remainingEmiDays = original?.saving_account_id?.remaining_emi_days || 0;
           
-          if (!createdOn || emiDays === 0) return <Cell text="-" />;
+          if (remainingEmiDays === 0) return <Cell text="-" />;
           
-          const createdDate = new Date(createdOn);
-          const currentDate = new Date();
-          const daysPassed = Math.floor((currentDate - createdDate) / (1000 * 60 * 60 * 24));
-          const remainingDays = Math.max(0, emiDays - daysPassed);
-          
-          return <Cell text={`${remainingDays} days`} />;
+          return <Cell text={`${remainingEmiDays} days`} />;
         },
       },
       {
@@ -557,6 +586,13 @@ function SavingAccount() {
       {
 
         Header: t('Total Amount'),
+        accessor: "amount_to_be",
+        Cell: ({ value, row: { original } }) => <Cell text={original?.saving_account_id?.amount_to_be} />,
+
+      },
+      {
+
+        Header: t('Total Due Amount'),
         accessor: "total_amount",
         Cell: ({ value, row: { original } }) => <Cell text={original?.saving_account_id?.total_amount} />,
 
@@ -596,6 +632,13 @@ function SavingAccount() {
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
           <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
+        ),
+      },
+      {
+        Header: t('End Date', 'End Date'),
+        accessor: "end_date",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={original?.saving_account_id?.end_date ? dayjs(original.saving_account_id.end_date).format("D MMM, YYYY") : 'N/A'} />
         ),
       },
       {
@@ -973,6 +1016,17 @@ function SavingAccount() {
                     )}
                   </MenuList>
                 </Menu>
+
+                <Button
+                  colorScheme="green"
+                  className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                  onClick={handleRefresh}
+                  isLoading={loading}
+                  loadingText={t('Refreshing...', 'Refreshing...')}
+                  leftIcon={<span>🔄</span>}
+                >
+                  {t('Refresh', 'Refresh')}
+                </Button>
 
                 <Link to={`/dash/create-saving-user`} onClick={() => console.log('🔄 Navigating to create saving user...')}>
                   <Button

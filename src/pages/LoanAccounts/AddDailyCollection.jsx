@@ -56,11 +56,15 @@ const AddDailyCollection = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitting:", formData);
+    console.log("EMI Days BEFORE payment:", userData?.active_loan_id?.emi_day);
 
     axios
       .post(`dailyCollections/byAdmin/${id}`, formData)
       .then((res) => {
         if (res.data) {
+          console.log("Payment successful! Response:", res.data);
+          console.log("EMI Days AFTER payment (from response):", res.data?.result?.emi_day);
+          
           toast({
             title: "Success! Collection Added Successfully",
             status: "success",

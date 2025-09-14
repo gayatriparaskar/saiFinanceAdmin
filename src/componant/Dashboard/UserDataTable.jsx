@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import axios from '../../axios';
 import dayjs from 'dayjs';
@@ -68,6 +69,7 @@ import {
  */
 const UserDataTable = ({ userType = 'all' }) => {
   const { t } = useLocalTranslation();
+  const navigate = useNavigate();
   const toast = useToast();
   
   // State management
@@ -329,11 +331,10 @@ const UserDataTable = ({ userType = 'all' }) => {
     }
   };
 
-  // Handle view user details
+  // Handle view user details - navigate to user detail page
   const handleViewDetails = (user) => {
-    setSelectedUser(user);
-    setShowUserDetails(true);
-    onOpen();
+    console.log('🔄 Navigating to user detail page for user:', user);
+    navigate(`/view-user/${user._id}`);
   };
 
   // Pagination

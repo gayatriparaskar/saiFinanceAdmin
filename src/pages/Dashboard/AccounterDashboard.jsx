@@ -5,6 +5,8 @@ import OfficerNavbar from '../../components/OfficerNavbar';
 import { useDashboardData } from '../../hooks/useDashboardData';
 import { useOfficerManagement } from '../../hooks/useOfficerManagement';
 import { useOverdueCollections } from '../../hooks/useOverdueCollections';
+import { updateOfficerCollectionData } from '../../services/officerService';
+import { getCurrentUserInfo } from '../../utils/authUtils';
 
 // Import new components
 import StatsCards from '../../componant/Dashboard/StatsCards';
@@ -20,6 +22,7 @@ import DetailsModal from '../../componant/Dashboard/DetailsModal';
 function AccounterDashboard() {
   const { t } = useLocalTranslation();
   const [officerName, setOfficerName] = useState('');
+  const [userInfo, setUserInfo] = useState(null);
   
   // Use custom hooks for data and state management
   const { 
@@ -67,9 +70,18 @@ function AccounterDashboard() {
   } = useOverdueCollections();
 
   useEffect(() => {
+    // Get current user info and check role
+    const currentUserInfo = getCurrentUserInfo();
+    setUserInfo(currentUserInfo);
+    
     // Get officer name from localStorage
     const storedOfficerName = localStorage.getItem('officerName') || 'Accounter';
     setOfficerName(storedOfficerName);
+    
+    // Check if user is accounter
+    if (currentUserInfo.role !== 'accounter') {
+      console.warn('⚠️ User is not an accounter, cannot access accounter dashboard');
+    }
   }, []);
 
   const containerVariants = {
@@ -229,6 +241,26 @@ Generated on: ${new Date().toLocaleString()}
     }
   };
 
+  const handlePaymentProcess = async (officer, paymentProcess) => {
+    try {
+      console.log(`🔄 Updating payment process for ${officer.officer_name} to ${paymentProcess}`);
+      
+      // Use the new service function
+      const updatedOfficer = await updateOfficerCollectionData(officer.officer_id, {
+        paymentProcess: paymentProcess
+      });
+
+      console.log('✅ Payment process updated successfully:', updatedOfficer);
+      
+      // Update local state
+      // Note: This would need to be handled by the parent component's state management
+      alert(`Payment process updated for ${officer.officer_name} to ${paymentProcess}`);
+    } catch (error) {
+      console.error('❌ Error updating payment process:', error);
+      alert('Error updating payment process. Please try again.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-primaryBg flex items-center justify-center">
@@ -280,6 +312,7 @@ Generated on: ${new Date().toLocaleString()}
           />
         </motion.div>
 
+
         {/* Collection Breakdown Section */}
         <motion.div 
           variants={itemVariants}
@@ -319,15 +352,10 @@ Generated on: ${new Date().toLocaleString()}
           <OfficerTable 
             officers={officers}
             loading={loading}
-            onEditClick={handleEditClick}
-            onSaveEdit={handleSaveEditWithFeedback}
-            onCancelEdit={handleCancelEdit}
             onAssignToClick={handleAssignToClick}
             onStatusClick={handleStatusClick}
             onViewDetails={handleViewDetails}
-            editingOfficer={editingOfficer}
-            editingData={editingData}
-            setEditingData={setEditingData}
+            onPaymentProcess={handlePaymentProcess}
           />
         </motion.div>
 

@@ -105,7 +105,8 @@ const CreateLoanUser = () => {
         const total_interest_pay =
           (loan_amount * interest_rate * duration_months) / 100;
         const total_amount = loan_amount + total_interest_pay;
-        const emi_day = total_amount / (duration_months * 30);
+        const emi_day = total_amount / 120; // Daily EMI amount = total_amount / 120 (fixed amount)
+        const remaining_emi_days = 120; // Remaining days countdown (starts at 120)
 
         updatedloan_details = {
           ...updatedloan_details,
@@ -113,6 +114,7 @@ const CreateLoanUser = () => {
           total_interest_pay: total_interest_pay.toFixed(2),
           total_amount: total_amount.toFixed(2),
           emi_day: Math.ceil(emi_day),
+          remaining_emi_days: remaining_emi_days,
           file_charge: file_charge,
         };
       }

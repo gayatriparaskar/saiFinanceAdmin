@@ -223,7 +223,29 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
 
           {/* Right side - Desktop Controls */}
           <div className="hidden md:flex items-center space-x-4">
-            
+            {/* Daily and Weekly Reports - Only for Managers */}
+            {officerType === 'manager' && (
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => {
+                    console.log('📊 Daily Report button clicked');
+                    navigate('/dash/daily-report');
+                  }}
+                  className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                >
+                  Daily Report
+                </button>
+                <button
+                  onClick={() => {
+                    console.log('📈 Weekly Report button clicked');
+                    navigate('/dash/weekly-report');
+                  }}
+                  className="px-3 py-1.5 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                >
+                  Weekly Report
+                </button>
+              </div>
+            )}
 
             {/* Profile */}
             <div className="relative" ref={profileRef}>
@@ -249,7 +271,6 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {console.log('🔄 Profile section rendered, showProfile:', showProfile)}
 
               {showProfile && (
                 <motion.div
@@ -259,7 +280,6 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                   className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-2xl border-2 border-blue-300 z-50"
                   style={{ zIndex: 9999 }}
                 >
-                  {console.log('🔄 Profile dropdown is visible - showProfile:', showProfile)}
                   <div className="p-4 bg-gradient-to-br from-white to-blue-50">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className={`w-12 h-12 rounded-full ${getOfficerTypeColor(officerType)} flex items-center justify-center text-white font-semibold text-lg`}>
@@ -274,7 +294,6 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                        onClick={(e) => {
                          e.preventDefault();
                          e.stopPropagation();
-                         console.log('🔄 Desktop profile logout button clicked...');
                          handleLogout();
                        }}
                        className="w-full flex items-center justify-center space-x-2 p-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 cursor-pointer font-medium shadow-md hover:shadow-lg transform hover:scale-105 border-2 border-red-600"
@@ -325,6 +344,34 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
               <span>Go to Dashboard</span>
             </button>
 
+            {/* Mobile Daily and Weekly Reports - Only for Managers */}
+            {officerType === 'manager' && (
+              <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    console.log('📊 Mobile Daily Report button clicked');
+                    navigate('/dash/daily-report');
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center justify-center space-x-3 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  <span>📊</span>
+                  <span>Daily Report</span>
+                </button>
+                <button
+                  onClick={() => {
+                    console.log('📈 Mobile Weekly Report button clicked');
+                    navigate('/dash/weekly-report');
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center justify-center space-x-3 p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                >
+                  <span>📈</span>
+                  <span>Weekly Report</span>
+                </button>
+              </div>
+            )}
+
             
 
             {/* Mobile Profile & Logout */}
@@ -342,9 +389,6 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                 {/* Mobile Logout Button - Simplified */}
                <button
                  onClick={() => {
-                   console.log('🔄 Mobile logout button clicked...');
-                   alert('Mobile logout button clicked! Proceeding with logout...');
-                   
                    // Close mobile menu first
                    closeMobileMenu();
                    

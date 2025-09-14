@@ -152,7 +152,10 @@ const AddSavingCollection = () => {
     }
 
     try {
+      console.log("Saving payment - EMI Days BEFORE:", userData?.emi_day);
       const res = await axios.post(apiUrl, payload);
+      console.log("Saving payment successful! Response:", res.data);
+      console.log("EMI Days AFTER payment (from response):", res.data?.result?.emi_day);
 
       toast({
         title: t('Success!', 'Success!'),

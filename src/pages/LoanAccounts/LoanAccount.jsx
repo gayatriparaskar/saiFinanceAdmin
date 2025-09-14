@@ -133,20 +133,25 @@ function LoanAccount() {
     }
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      axios.get("users/").then((response) => {
-        if (response?.data) {
-          setData(response?.data?.result);
-          console.log(response?.data?.result);
-          setFilteredData(response?.data?.result);
-        }
-        const sum = response.data.result.reduce((acc, item) => {
-          return acc + (item.active_loan_id?.total_amount || 0);
-        }, 0);
-        setTotalLoanAmt(sum)
-      });
+  // Function to fetch fresh data
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("users/");
+      if (response?.data) {
+        setData(response?.data?.result);
+        console.log("🔄 Fresh data fetched:", response?.data?.result);
+        setFilteredData(response?.data?.result);
+      }
+      const sum = response.data.result.reduce((acc, item) => {
+        return acc + (item.active_loan_id?.total_amount || 0);
+      }, 0);
+      setTotalLoanAmt(sum);
+    } catch (error) {
+      console.error("❌ Error fetching data:", error);
     }
+  };
+
+  useEffect(() => {
     fetchData();
     fetchOfficers(); // Fetch officers when component mounts
   }, []);
@@ -493,12 +498,12 @@ function LoanAccount() {
       {
         Header: t('Total EMI/Day'),
         accessor: "emi_day",
-        Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.emi_day}`} />,
+        Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.emi_day || 0}`} />,
       },
       {
         Header: t('Remaining Emi'),
         accessor: "remaining_emi",
-        Cell: ({ value, row: { original } }) => <Cell text={`${Math.ceil(original?.active_loan_id?.total_due_amount / original?.active_loan_id?.emi_day)}`} />,
+        Cell: ({ value, row: { original } }) => <Cell text={`${original?.active_loan_id?.remaining_emi_days || 120}`} />,
       },
       {
         Header: t('Total Due Amount'),
@@ -967,6 +972,14 @@ function LoanAccount() {
                        <span className="sm:hidden">Add User</span>
                      </Button>
                    </Link>
+                   <Button
+                     colorScheme="blue"
+                     className="bg-blue-500 hover:bg-blue-600 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 mr-2"
+                     onClick={fetchData}
+                   >
+                     <span className="hidden sm:inline">{t('Refresh Data', 'Refresh Data')}</span>
+                     <span className="sm:hidden">Refresh</span>
+                   </Button>
                    <Button
                      colorScheme="gray"
                      className="bg-gray-500 hover:bg-gray-600 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
