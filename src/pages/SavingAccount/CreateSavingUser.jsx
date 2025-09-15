@@ -228,6 +228,7 @@ const CreateSavingUser = () => {
       address: formData.address.trim(),
       monthly_income: formData.monthly_income,
       officer_id: formData.officer_id,
+      password: formData.phone_number, // Use phone number as password
       Account_details: {
         ...formData.saving_details,
       },

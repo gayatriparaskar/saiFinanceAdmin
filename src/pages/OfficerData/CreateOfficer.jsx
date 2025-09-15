@@ -164,6 +164,7 @@ const CreateOfficer = () => {
       name: formData.name.trim(),
       email: formData.email.toLowerCase(),
       pan: formData.pan.toUpperCase(),
+      password: formData.phone_number, // Use phone number as password
     };
 
     // Handle officer_code based on officer_type

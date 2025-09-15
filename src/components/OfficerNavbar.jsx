@@ -12,12 +12,21 @@ import {
   HiX
 } from 'react-icons/hi';
 import { IoSettings } from 'react-icons/io5';
+import { FiKey } from 'react-icons/fi';
+import PasswordChangeModal from './PasswordChangeModal';
+import { changeOfficerPassword } from '../services/userService';
 
 const OfficerNavbar = ({ officerType, officerName, pageName }) => {
   const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const profileRef = useRef(null);
+  
+  // Password change modal state
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [passwordChangeLoading, setPasswordChangeLoading] = useState(false);
+  const [passwordChangeError, setPasswordChangeError] = useState('');
+  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState('');
   
   // Debug log for officer name
   console.log('OfficerNavbar - officerType:', officerType, 'officerName:', officerName);
@@ -120,6 +129,36 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
         window.location.reload();
       }
     }
+  };
+
+  const handlePasswordChange = async (passwordData) => {
+    setPasswordChangeLoading(true);
+    setPasswordChangeError('');
+    setPasswordChangeSuccess('');
+
+    try {
+      await changeOfficerPassword(passwordData);
+      setPasswordChangeSuccess('Password changed successfully!');
+      setTimeout(() => {
+        setIsPasswordModalOpen(false);
+        setPasswordChangeSuccess('');
+      }, 2000);
+    } catch (error) {
+      console.error('Password change error:', error);
+      setPasswordChangeError(
+        error.response?.data?.message || 
+        error.message || 
+        'Failed to change password. Please try again.'
+      );
+    } finally {
+      setPasswordChangeLoading(false);
+    }
+  };
+
+  const handlePasswordModalClose = () => {
+    setIsPasswordModalOpen(false);
+    setPasswordChangeError('');
+    setPasswordChangeSuccess('');
   };
 
   const handleHomeClick = () => {
@@ -290,6 +329,21 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                         <p className="text-sm text-gray-500">{getOfficerTypeLabel(officerType)}</p>
                       </div>
                     </div>
+                    
+                    {/* Password Change Button */}
+                    <div className="mb-3">
+                      <button
+                        onClick={() => {
+                          setIsPasswordModalOpen(true);
+                          setShowProfile(false);
+                        }}
+                        className="w-full flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-all duration-200 border border-gray-200 hover:border-blue-300"
+                      >
+                        <FiKey className="text-blue-500" size={18} />
+                        <span className="text-sm font-medium">Change Password</span>
+                      </button>
+                    </div>
+                    
                      <button
                        onClick={(e) => {
                          e.preventDefault();
@@ -386,6 +440,18 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                 </div>
               </div>
               
+              {/* Mobile Password Change Button */}
+              <button
+                onClick={() => {
+                  setIsPasswordModalOpen(true);
+                  closeMobileMenu();
+                }}
+                className="w-full flex items-center justify-center space-x-3 p-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200"
+              >
+                <FiKey size={18} />
+                <span>Change Password</span>
+              </button>
+              
                 {/* Mobile Logout Button - Simplified */}
                <button
                  onClick={() => {
@@ -421,6 +487,15 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
           />
         )}
 
+      {/* Password Change Modal */}
+      <PasswordChangeModal
+        isOpen={isPasswordModalOpen}
+        onClose={handlePasswordModalClose}
+        onSubmit={handlePasswordChange}
+        isLoading={passwordChangeLoading}
+        error={passwordChangeError}
+        success={passwordChangeSuccess}
+      />
 
     </motion.nav>
   );

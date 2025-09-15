@@ -7,9 +7,12 @@ import { useUser } from "../../../hooks/use-user";
 import { IoSettings } from "react-icons/io5";
 import { MdLanguage } from "react-icons/md";
 import { HiMenu, HiX } from "react-icons/hi";
+import { FiKey } from "react-icons/fi";
 import Logo from "../../../Images/Sai-finance-logo.png"
 import { useTranslation } from "react-i18next";
 import { useLocalTranslation } from "../../../hooks/useLocalTranslation";
+import PasswordChangeModal from "../../../components/PasswordChangeModal";
+import { changeAdminPassword } from "../../../services/userService";
 
 const NewNavbar = () => {
   const { data: user } = useUser();
@@ -22,6 +25,12 @@ const NewNavbar = () => {
   const [isMenuOpen2, setIsMenuOpen2] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language || 'en');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  // Password change modal state
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [passwordChangeLoading, setPasswordChangeLoading] = useState(false);
+  const [passwordChangeError, setPasswordChangeError] = useState('');
+  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -54,6 +63,36 @@ const NewNavbar = () => {
     localStorage.setItem('language', lng);
     closeDropdown();
     closeMobileMenu();
+  };
+
+  const handlePasswordChange = async (passwordData) => {
+    setPasswordChangeLoading(true);
+    setPasswordChangeError('');
+    setPasswordChangeSuccess('');
+
+    try {
+      await changeAdminPassword(passwordData);
+      setPasswordChangeSuccess('Password changed successfully!');
+      setTimeout(() => {
+        setIsPasswordModalOpen(false);
+        setPasswordChangeSuccess('');
+      }, 2000);
+    } catch (error) {
+      console.error('Password change error:', error);
+      setPasswordChangeError(
+        error.response?.data?.message || 
+        error.message || 
+        'Failed to change password. Please try again.'
+      );
+    } finally {
+      setPasswordChangeLoading(false);
+    }
+  };
+
+  const handlePasswordModalClose = () => {
+    setIsPasswordModalOpen(false);
+    setPasswordChangeError('');
+    setPasswordChangeSuccess('');
   };
 
   const navVariants = {
@@ -439,6 +478,20 @@ const NewNavbar = () => {
                     <p className="text-xs text-gray-500">{user?.email || 'user@example.com'}</p>
                   </div>
                 </div>
+                
+                {/* Change Password Button */}
+                <button
+                  onClick={() => {
+                    setIsPasswordModalOpen(true);
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center justify-center space-x-2 p-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors text-xs mb-2"
+                >
+                  <FiKey size={14} />
+                  <span>Change Password</span>
+                </button>
+                
+                {/* Logout Button */}
                 <button
                   onClick={() => {
                     localStorage.removeItem("token");
@@ -493,10 +546,32 @@ const NewNavbar = () => {
             </div>
           </div>
 
-          <div className="p-4">
+          <div className="p-4 space-y-3">
+            {/* Change Password Button */}
             <motion.div 
               whileHover={{ scale: 1.02 }}
-              className="flex items-center justify-between p-1 bg-red-50 rounded-xl border border-red-200 cursor-pointer group"
+              className="flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-200 cursor-pointer group"
+              onClick={() => {
+                setIsPasswordModalOpen(true);
+                setIsMenuOpen2(false);
+              }}
+            >
+              <div>
+                <p className="text-sm text-blue-600 font-semibold">Change Password</p>
+                <p className="text-xs text-gray-500">Update your account password</p>
+              </div>
+              <motion.div 
+                whileHover={{ x: 5 }}
+                className="text-blue-500 group-hover:text-blue-600"
+              >
+                <FiKey size={20} />
+              </motion.div>
+            </motion.div>
+
+            {/* Logout Button */}
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-200 cursor-pointer group"
               onClick={() => {
                 localStorage.removeItem("token");
                 navigate("/login");
@@ -510,7 +585,7 @@ const NewNavbar = () => {
                 whileHover={{ x: 5 }}
                 className="text-red-500 group-hover:text-red-600"
               >
-                <IoMdLogOut size={24} />
+                <IoMdLogOut size={20} />
               </motion.div>
             </motion.div>
           </div>
@@ -538,6 +613,16 @@ const NewNavbar = () => {
           onClick={closeMobileMenu}
         />
       )}
+
+      {/* Password Change Modal */}
+      <PasswordChangeModal
+        isOpen={isPasswordModalOpen}
+        onClose={handlePasswordModalClose}
+        onSubmit={handlePasswordChange}
+        isLoading={passwordChangeLoading}
+        error={passwordChangeError}
+        success={passwordChangeSuccess}
+      />
     </motion.nav>
   );
 };

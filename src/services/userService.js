@@ -90,3 +90,53 @@ export const getActiveSavingDetails = async (savingId) => {
     throw error;
   }
 };
+
+/**
+ * Change admin password
+ * @param {Object} passwordData - Password change data
+ * @param {string} passwordData.currentPassword - Current password
+ * @param {string} passwordData.newPassword - New password
+ * @returns {Promise<Object>} Success response
+ */
+export const changeAdminPassword = async (passwordData) => {
+  try {
+    console.log('🔄 Changing admin password...');
+    
+    const response = await axios.put('admins/change-password', passwordData);
+    
+    if (response.data && response.data.message) {
+      console.log('✅ Admin password changed successfully');
+      return response.data;
+    } else {
+      throw new Error('Invalid response format');
+    }
+  } catch (error) {
+    console.error('❌ Error changing admin password:', error);
+    throw error;
+  }
+};
+
+/**
+ * Change officer password
+ * @param {Object} passwordData - Password change data
+ * @param {string} passwordData.currentPassword - Current password
+ * @param {string} passwordData.newPassword - New password
+ * @returns {Promise<Object>} Success response
+ */
+export const changeOfficerPassword = async (passwordData) => {
+  try {
+    console.log('🔄 Changing officer password...');
+    
+    const response = await axios.put('officers/change-password', passwordData);
+    
+    if (response.data && response.data.message) {
+      console.log('✅ Officer password changed successfully');
+      return response.data;
+    } else {
+      throw new Error('Invalid response format');
+    }
+  } catch (error) {
+    console.error('❌ Error changing officer password:', error);
+    throw error;
+  }
+};
