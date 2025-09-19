@@ -37,6 +37,13 @@ import {
   FormLabel,
   Select,
   useToast,
+  Table as ChakraTable,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
 } from "@chakra-ui/react";
 import { HiStatusOnline } from "react-icons/hi";
 
