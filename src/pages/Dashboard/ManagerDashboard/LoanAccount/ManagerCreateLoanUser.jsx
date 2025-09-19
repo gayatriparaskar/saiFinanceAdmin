@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../axios";
-import { useLocalTranslation } from "../../hooks/useLocalTranslation";
+import axios from "../../../../axios";
+import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import { useNavigate } from "react-router-dom";
 import {
   useToast,
@@ -14,7 +14,7 @@ import {
   ModalFooter,
 } from "@chakra-ui/react";
 
-const CreateLoanUser = () => {
+const ManagerCreateLoanUser = () => {
   const { t } = useLocalTranslation();
   const toast = useToast();
   const navigate = useNavigate();
@@ -234,8 +234,8 @@ const CreateLoanUser = () => {
             isClosable: true,
             position: "top",
           });
-          // Redirect to LoanAccount page after successful submission
-          navigate("/dash/loan-account");
+          // Redirect to Manager LoanAccount page after successful submission
+          navigate("/manager-dashboard/loan-account");
         }
       })
       .catch((error) => {
@@ -499,4 +499,4 @@ const CreateLoanUser = () => {
   );
 };
 
-export default CreateLoanUser;
+export default ManagerCreateLoanUser;

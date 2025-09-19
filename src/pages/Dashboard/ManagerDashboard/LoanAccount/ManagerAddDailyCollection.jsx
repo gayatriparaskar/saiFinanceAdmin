@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../axios";
-import { useLocalTranslation } from "../../hooks/useLocalTranslation";
+import axios from "../../../../axios";
+import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import { useParams, useNavigate } from "react-router-dom";
-import { useUser } from "../../hooks/use-user";
+import { useUser } from "../../../../hooks/use-user";
 import {
   useToast,
   Modal,
@@ -17,7 +17,7 @@ import {
   MenuButton,
 } from "@chakra-ui/react";
 
-const AddDailyCollection = () => {
+const ManagerAddDailyCollection = () => {
   const { t } = useLocalTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -126,12 +126,12 @@ const AddDailyCollection = () => {
             position: "top",
           });
           // Redirect to ViewLoanUser page after successful submission
-          navigate(`/dash/view-loan-user/${id}`);
+          navigate(`/manager-dashboard/view-loan-user/${id}`);
         }
       })
       .catch((err) => {
         toast({
-          title: "Something Went Wrong!",
+          title: "A transaction has already been made today for this loan. Please try again tomorrow.",
           status: "error",
           duration: 4000,
           isClosable: true,
@@ -143,7 +143,7 @@ const AddDailyCollection = () => {
   // If in user list mode and no user selected, show user selection
   if (isUserListMode && !selectedUser) {
     return (
-      <div className="mx-2 sm:mx-4 my-2 sm:my-4 lg:m-4 lg:py-4 lg:pt-6 py-2 pt-4">
+      <div className="mx-2 sm:mx-4 my-2 sm:my-4 lg:m-4 lg:py-4 lg:pt-6 py-2 pt-4 mt-4">
         <div className="bg-white shadow rounded-lg p-6">
           <h3 className="text-xl font-bold text-purple mb-4">
             {t("Select User for Daily Collection")}
@@ -158,10 +158,10 @@ const AddDailyCollection = () => {
                 <h4 className="font-semibold text-gray-900">{user.name}</h4>
                 <p className="text-sm text-gray-600">ID: {user._id}</p>
                 <p className="text-sm text-gray-600">
-                  Loan Amount: ₹{user.active_loan_id?.[0]?.loan_amount || 'N/A'}
+                  Loan Amount: ₹{user.active_loan_id?.[0]?.loan_amount }
                 </p>
                 <p className="text-sm text-gray-600">
-                  EMI: ₹{user.active_loan_id?.[0]?.emi_day || 'N/A'}
+                  EMI: ₹{user.active_loan_id?.[0]?.emi_day}
                 </p>
               </div>
             ))}
@@ -283,7 +283,7 @@ const AddDailyCollection = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2 text-start">
           {/* Officer Code */}
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               {t("Collected Officer Code")}
             </label>
@@ -295,7 +295,7 @@ const AddDailyCollection = () => {
               onChange={handleChange}
               placeholder={t("Officer Code")}
             />
-          </div>
+          </div> */}
 
           {/* Officer Name */}
           <div>
@@ -304,7 +304,7 @@ const AddDailyCollection = () => {
             </label>
             <input
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-              value="Admin Officer"
+              value="Manager"
               type="text"
               disabled
             />
@@ -420,4 +420,4 @@ const AddDailyCollection = () => {
   );
 };
 
-export default AddDailyCollection;
+export default ManagerAddDailyCollection;

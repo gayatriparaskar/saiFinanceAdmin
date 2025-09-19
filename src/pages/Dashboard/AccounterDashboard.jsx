@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import OfficerNavbar from '../../components/OfficerNavbar';
 import { useDashboardData } from '../../hooks/useDashboardData';
@@ -7,6 +8,7 @@ import { useOfficerManagement } from '../../hooks/useOfficerManagement';
 import { useOverdueCollections } from '../../hooks/useOverdueCollections';
 import { updateOfficerCollectionData } from '../../services/officerService';
 import { getCurrentUserInfo } from '../../utils/authUtils';
+import DashRoute from './route/DashRoute';
 
 // Import new components
 import StatsCards from '../../componant/Dashboard/StatsCards';
@@ -21,6 +23,7 @@ import DetailsModal from '../../componant/Dashboard/DetailsModal';
 
 function AccounterDashboard() {
   const { t } = useLocalTranslation();
+  const location = useLocation();
   const [officerName, setOfficerName] = useState('');
   const [userInfo, setUserInfo] = useState(null);
   
@@ -241,12 +244,19 @@ Generated on: ${new Date().toLocaleString()}
     }
   };
 
+  // Custom view details handler for accounter dashboard
+  const handleAccounterViewDetails = (officer) => {
+    console.log('🔄 AccounterDashboard - View Details clicked for officer:', officer);
+    // Redirect to officer info page within accounter dashboard
+    window.location.href = `/accounter-dashboard/view-officer/${officer._id}`;
+  };
+
   const handlePaymentProcess = async (officer, paymentProcess) => {
     try {
       console.log(`🔄 Updating payment process for ${officer.officer_name} to ${paymentProcess}`);
       
       // Use the new service function
-      const updatedOfficer = await updateOfficerCollectionData(officer.officer_id, {
+      const updatedOfficer = await updateOfficerCollectionData(officer._id, {
         paymentProcess: paymentProcess
       });
 
@@ -254,7 +264,7 @@ Generated on: ${new Date().toLocaleString()}
       
       // Update local state
       // Note: This would need to be handled by the parent component's state management
-      alert(`Payment process updated for ${officer.officer_name} to ${paymentProcess}`);
+      alert(`Payment process updated for ${officer.name} to ${paymentProcess}`);
     } catch (error) {
       console.error('❌ Error updating payment process:', error);
       alert('Error updating payment process. Please try again.');
@@ -290,6 +300,25 @@ Generated on: ${new Date().toLocaleString()}
     );
   }
 
+  const currentPath = location.pathname;
+
+  // If we're on a specific route (like daily-report or weekly-report), show the routed content
+  if (currentPath.includes('/daily-report') || currentPath.includes('/weekly-report') || 
+      currentPath.includes('/loan-account') || currentPath.includes('/saving-account') || 
+      currentPath.includes('/overdue-loans') || currentPath.includes('/view-officer/')) {
+    return (
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="min-h-screen bg-primaryBg"
+      >
+        <DashRoute />
+      </motion.div>
+    );
+  }
+
+  // Default dashboard view
   return (
     <>
       <OfficerNavbar officerType="accounter" officerName={officerName} pageName="Accounter Dashboard" />
@@ -354,8 +383,9 @@ Generated on: ${new Date().toLocaleString()}
             loading={loading}
             onAssignToClick={handleAssignToClick}
             onStatusClick={handleStatusClick}
-            onViewDetails={handleViewDetails}
+            onViewDetails={handleAccounterViewDetails}
             onPaymentProcess={handlePaymentProcess}
+            // onRefresh={refreshData}
           />
         </motion.div>
 
@@ -364,7 +394,7 @@ Generated on: ${new Date().toLocaleString()}
           variants={itemVariants}
           className="px-6 py-6"
         >
-          <UserDataTable userType="all" />
+          <UserDataTable userType="all"  />
         </motion.div>
 
         {/* Quick Actions */}

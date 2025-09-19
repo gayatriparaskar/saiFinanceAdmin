@@ -3,7 +3,7 @@ import ReactApexChart from 'react-apexcharts';
 import { motion } from 'framer-motion';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 
-const SimpleChart = ({ title = "Financial Overview", data = [] }) => {
+const SimpleChart = ({ title = "Financial Overview", data = [], showWeekdays = false }) => {
   const { t } = useLocalTranslation();
   const [chartData, setChartData] = useState({
     series: [{
@@ -20,25 +20,33 @@ const SimpleChart = ({ title = "Financial Overview", data = [] }) => {
       t('Jul'), t('Aug'), t('Sep'), t('Oct'), t('Nov'), t('Dec')
     ];
 
+    // Weekday names array
+    const weekdayNames = [
+      t('Mon'), t('Tue'), t('Wed'), t('Thu'), t('Fri'), t('Sat'), t('Sun')
+    ];
+
     if (Array.isArray(data) && data.length > 0) {
+      const labels = showWeekdays ? weekdayNames : monthNames;
       setChartData({
         series: [{
           name: t('Amount'),
           data: data
         }],
-        categories: data.map((_, index) => monthNames[index] || `Month ${index + 1}`)
+        categories: data.map((_, index) => labels[index] || (showWeekdays ? `Day ${index + 1}` : `Month ${index + 1}`))
       });
     } else {
       // Default data
+      const labels = showWeekdays ? weekdayNames : monthNames;
+      const defaultData = showWeekdays ? [1200, 1500, 1800, 2200, 2500, 2800, 3000] : [1200, 1500, 1800, 2200, 2500, 2800];
       setChartData({
         series: [{
           name: t('Amount'),
-          data: [1200, 1500, 1800, 2200, 2500, 2800]
+          data: defaultData
         }],
-        categories: monthNames.slice(0, 6)
+        categories: labels.slice(0, defaultData.length)
       });
     }
-  }, [data, t]);
+  }, [data, t, showWeekdays]);
 
   const options = {
     chart: {

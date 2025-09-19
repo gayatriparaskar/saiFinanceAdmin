@@ -8,6 +8,8 @@ import AccounterDashboard from '../pages/Dashboard/AccounterDashboard';
 import CollectionOfficerDashboard from '../pages/Dashboard/CollectionOfficerDashboard';
 import OfficerInfo from '../pages/SavingAccount/officerInfo';
 import UserDetailPage from '../pages/UserDetailPage/UserDetailPage';
+import ManagerViewLoanUser from '../pages/Dashboard/ManagerDashboard/LoanAccount/ManagerViewLoanUser';
+import ManagerViewSavingUser from '../pages/Dashboard/ManagerDashboard/SavingAccount/ManagerViewSavingUser';
 
 const MainRoute = () => {
   const [loading, setLoading] = useState(false);
@@ -132,6 +134,36 @@ const MainRoute = () => {
           />
 
           <Route 
+            path='/view-loan-user/:id' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <ManagerViewLoanUser/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/view-saving-user/:id' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <ManagerViewSavingUser/>
+              </motion.div>
+            }
+          />
+
+          <Route 
             path='/dash/*' 
             element={
               <motion.div
@@ -148,7 +180,7 @@ const MainRoute = () => {
           />
 
           <Route 
-            path='/manager-dashboard' 
+            path='/manager-dashboard/*' 
             element={
               <motion.div
                 initial="initial"
@@ -163,7 +195,22 @@ const MainRoute = () => {
           />
 
           <Route 
-            path='/accounter-dashboard' 
+            path='/manager/dashboard/*' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <ManagerDashboard/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/accounter-dashboard/*' 
             element={
               <motion.div
                 initial="initial"

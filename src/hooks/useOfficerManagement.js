@@ -14,7 +14,7 @@ export const useOfficerManagement = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const handleEditClick = (officer) => {
-    setEditingOfficer(officer.officer_id);
+    setEditingOfficer(officer._id);
     setEditingData({
       paidAmount: officer.paidAmount || 0,
       remainingAmount: officer.remainingAmount || 0
@@ -35,7 +35,7 @@ export const useOfficerManagement = () => {
       
       // Update local state
       setOfficers(prev => prev.map(officer => 
-        officer.officer_id === officerId 
+        officer._id === officerId 
           ? { ...officer, ...editingData }
           : officer
       ));
@@ -67,7 +67,7 @@ export const useOfficerManagement = () => {
   const handleViewDetails = (officer) => {
     console.log('🔄 AccounterDashboard - View Details clicked for officer:', officer);
     // Redirect to officer info page
-    window.location.href = `/view-officer/${officer._id}`;
+    window.location.href = `/manager-dashboard/view-officer/${officer._id}`;
   };
 
   const handleAssignTo = async (assignment, officers, setOfficers) => {
@@ -76,7 +76,7 @@ export const useOfficerManagement = () => {
         console.log('🔄 Assigning officer to:', assignment);
         
         // Use the new service function
-        const updatedOfficer = await updateOfficerCollectionData(selectedOfficer.officer_id, {
+        const updatedOfficer = await updateOfficerCollectionData(selectedOfficer._id, {
           assignTo: assignment
         });
 
@@ -84,7 +84,7 @@ export const useOfficerManagement = () => {
         
         // Update local state
         setOfficers(prev => prev.map(officer => 
-          officer.officer_id === selectedOfficer.officer_id 
+          officer._id === selectedOfficer._id 
             ? { ...officer, assignTo: assignment }
             : officer
         ));
@@ -105,7 +105,7 @@ export const useOfficerManagement = () => {
         console.log('🔄 Updating status to:', status);
         
         // Use the new service function
-        const updatedOfficer = await updateOfficerCollectionData(selectedOfficer.officer_id, {
+        const updatedOfficer = await updateOfficerCollectionData(selectedOfficer._id, {
           status: status
         });
 
@@ -113,7 +113,7 @@ export const useOfficerManagement = () => {
         
         // Update local state
         setOfficers(prev => prev.map(officer => 
-          officer.officer_id === selectedOfficer.officer_id 
+          officer._id === selectedOfficer._id 
             ? { ...officer, status: status }
             : officer
         ));

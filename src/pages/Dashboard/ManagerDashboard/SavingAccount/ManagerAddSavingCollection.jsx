@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import axios from "../../axios";
+import axios from "../../../../axios";
 import { useToast, Button, Menu, MenuButton, Select } from "@chakra-ui/react";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
-import { useLocalTranslation } from "../../hooks/useLocalTranslation";
-import { useUser } from "../../hooks/use-user";
+import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
+import { useUser } from "../../../../hooks/use-user";
 
-const AddSavingCollection = () => {
+const ManagerAddSavingCollection = () => {
   const { t } = useLocalTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -106,8 +106,6 @@ const AddSavingCollection = () => {
         errors.push(t("Deposit Amount is required"));
       } else if (isNaN(formData.deposit_amount) || parseFloat(formData.deposit_amount) <= 0) {
         errors.push(t("Deposit Amount must be a positive number"));
-      } else if (parseFloat(formData.deposit_amount) > 1000000) {
-        errors.push(t("Deposit Amount cannot exceed ₹10,00,000"));
       }
     } else if (transactionType === "withdraw") {
       // Withdraw Amount validation
@@ -117,9 +115,7 @@ const AddSavingCollection = () => {
         errors.push(t("Withdraw Amount must be a positive number"));
       } else if (parseFloat(formData.withdraw_amount) > (userData?.current_amount || 0)) {
         errors.push(t("Withdraw Amount cannot exceed current balance"));
-      } else if (parseFloat(formData.withdraw_amount) > 500000) {
-        errors.push(t("Withdraw Amount cannot exceed ₹5,00,000"));
-      }
+      } 
     }
 
     // Show all validation errors
@@ -185,9 +181,9 @@ const AddSavingCollection = () => {
       // ✅ Update UI without reload
       await fetchUserData();
       
-      // ✅ Redirect to officer page after successful collection
+      // ✅ Redirect to manager page after successful collection
       setTimeout(() => {
-        navigate("/dash/officer");
+        navigate("/manager-dashboard/view-saving-user/${id}");
       }, 2000);
     } catch (err) {
       console.error("API Error:", err);
@@ -439,4 +435,4 @@ const AddSavingCollection = () => {
   );
 };
 
-export default AddSavingCollection;
+export default ManagerAddSavingCollection;

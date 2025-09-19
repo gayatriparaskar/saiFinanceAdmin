@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaUsers, FaDownload, FaEllipsisV, FaEye, FaUserCheck, FaFlag, FaUniversity } from 'react-icons/fa';
+import { FaUsers, FaDownload, FaEllipsisV, FaEye, FaUserCheck, FaFlag, FaUniversity, FaSync } from 'react-icons/fa';
 import { 
   Card, 
   CardBody, 
@@ -42,7 +42,8 @@ const OfficerTable = ({
   onAssignToClick,
   onStatusClick,
   onViewDetails,
-  onPaymentProcess
+  onPaymentProcess,
+  onRefresh
 }) => {
   const { t } = useLocalTranslation();
   const toast = useToast();
@@ -174,14 +175,14 @@ const OfficerTable = ({
     // Data rows with proper formatting
     const dataRows = filteredOfficers.map((officer, index) => [
       index + 1, // Serial number
-      `"${officer.officer_name || 'N/A'}"`, // Quoted to handle names with commas
-      officer.officer_code || 'N/A',
+      `"${officer.name}"`, // Quoted to handle names with commas
+      officer.officer_code,
       (officer.todayCollection || 0).toLocaleString('en-IN'),
       (officer.totalCollection || 0).toLocaleString('en-IN'),
       (officer.paidAmount || 0).toLocaleString('en-IN'),
       (officer.remainingAmount || 0).toLocaleString('en-IN'),
       officer.assignTo || 'Unassigned',
-      officer.status || 'N/A',
+      officer.status,
       officer.created_on ? dayjs(officer.created_on).format('DD/MM/YYYY') : 'N/A'
     ]);
 
@@ -262,15 +263,28 @@ const OfficerTable = ({
                   {t("Officer Collection Overview")}
                 </Text>
               </HStack>
-              <Button
-                leftIcon={<FaDownload />}
-                colorScheme="blue"
-                variant="outline"
-                size="sm"
-                onClick={exportData}
-              >
-                {t("Export Data")}
-              </Button>
+              <HStack spacing={2}>
+                <Button
+                  leftIcon={<FaSync />}
+                  colorScheme="green"
+                  variant="outline"
+                  size="sm"
+                  onClick={onRefresh}
+                  isLoading={loading}
+                  loadingText={t("Refreshing...")}
+                >
+                  {t("Refresh")}
+                </Button>
+                <Button
+                  leftIcon={<FaDownload />}
+                  colorScheme="blue"
+                  variant="outline"
+                  size="sm"
+                  onClick={exportData}
+                >
+                  {t("Export Data")}
+                </Button>
+              </HStack>
             </HStack>
 
             {/* Search and Filters */}
@@ -331,7 +345,7 @@ const OfficerTable = ({
                 <Tbody>
                   {paginatedOfficers.map((officer, index) => (
                     <Tr key={index}>
-                      <Td fontWeight="medium">{officer.officer_name}</Td>
+                      <Td fontWeight="medium">{officer.name}</Td>
                       <Td>{officer.officer_code}</Td>
                       <Td fontWeight="medium" color="blue.600">
                         {formatCurrency(officer.todayCollection || 0)}
@@ -376,7 +390,7 @@ const OfficerTable = ({
                       <Td>
                         <Select
                           value={officer.status || 'Pending'}
-                          onChange={(e) => handleStatusUpdate(officer.officer_id, e.target.value)}
+                          onChange={(e) => handleStatusUpdate(officer._id, e.target.value)}
                           size="sm"
                           variant="outline"
                           minW="120px"

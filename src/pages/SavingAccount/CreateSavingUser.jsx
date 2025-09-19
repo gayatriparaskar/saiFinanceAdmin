@@ -212,7 +212,7 @@ const CreateSavingUser = () => {
         title: t("Validation Errors"),
         description: errors.join(", "),
         status: "error",
-        duration: 6000,
+        duration: 3000,
         isClosable: true,
         position: "top",
       });

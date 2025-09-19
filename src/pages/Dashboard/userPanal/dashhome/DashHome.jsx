@@ -32,6 +32,8 @@ const DashHome = () => {
   const [dailyLoanCollection, setDailyLoanCollection] = useState(0);
   const [dailySavingCollection, setDailySavingCollection] = useState(0);
   const [dailyTotalCollection, setDailyTotalCollection] = useState(0);
+  const [activeOfficersCount, setActiveOfficersCount] = useState(0);
+  const [dailyLoanOutgoing, setDailyLoanOutgoing] = useState(0);
   
   
   // Loading states for charts to prevent continuous API calls
@@ -248,6 +250,45 @@ const DashHome = () => {
       });
   }, []);
 
+  // Fetch active officers count
+  useEffect(() => {
+    const fetchActiveOfficers = async () => {
+      try {
+        const response = await axios.get('officers');
+        if (response?.data?.result) {
+          const activeOfficers = response.data.result.filter(officer => 
+            officer.is_active === true
+          );
+          setActiveOfficersCount(activeOfficers.length);
+        }
+      } catch (error) {
+        console.error('Error fetching officers:', error);
+        setActiveOfficersCount(0);
+      }
+    };
+
+    fetchActiveOfficers();
+  }, []);
+
+  // Fetch daily loan outgoing (same as daily loan collection)
+  useEffect(() => {
+    const fetchDailyLoanOutgoing = async () => {
+      try {
+        const response = await axios.get('admins/totalCollectionsToday');
+        if (response?.data?.result?.loan?.amount !== undefined) {
+          setDailyLoanOutgoing(response.data.result.loan.amount);
+        } else {
+          setDailyLoanOutgoing(0);
+        }
+      } catch (error) {
+        console.error('Error fetching daily loan outgoing:', error);
+        setDailyLoanOutgoing(0);
+      }
+    };
+
+    fetchDailyLoanOutgoing();
+  }, []);
+
   // total collection
   // Calculate Total Collection (Loan + Saving)
   useEffect(() => {
@@ -426,7 +467,8 @@ const DashHome = () => {
       <style>
         {`
           .dashboard-card {
-            min-height: 160px;
+            min-height: 80px;
+            max-height: 100px;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -435,13 +477,15 @@ const DashHome = () => {
           
           @media (min-width: 640px) {
             .dashboard-card {
-              min-height: 180px;
+              min-height: 90px;
+              max-height: 110px;
             }
           }
           
           @media (min-width: 1024px) {
             .dashboard-card {
-              min-height: 200px;
+              min-height: 100px;
+              max-height: 120px;
             }
           }
           
@@ -469,14 +513,14 @@ const DashHome = () => {
       >
 
 
-      {/* Enhanced Cards Section - 8 Cards in 2 rows with 4 columns each */}
+      {/* Enhanced Cards Section - 10 Cards in 2 rows with 5 columns each */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-6 mb-4 sm:mb-6 lg:mb-8 max-w-7xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8"
+        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1 xs:gap-2 sm:gap-3 mb-4 sm:mb-6 lg:mb-8 max-w-7xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8"
       >
-        {/* First Row - 4 Cards (API Data) */}
+        {/* First Row - 5 Cards (Daily Collection Data) */}
         <motion.div
           whileHover={{ 
             scale: 1.03, 
@@ -487,9 +531,9 @@ const DashHome = () => {
           className="transform transition-all duration-300 dashboard-card"
         >
           <CardDataStats
-            title={t("Active Loan Users")}
-            total={activeLoanUsers}
-            rate="+2.1%"
+            title={t("Daily Loan Outgoing")}
+            total={`₹ ${dailyLoanOutgoing.toLocaleString()}`}
+            rate="+6.7%"
             levelUp
           />
         </motion.div>
@@ -545,7 +589,41 @@ const DashHome = () => {
           />
         </motion.div>
 
-        {/* Second Row - 4 Cards (Calculated from Daily Collections) */}
+        <motion.div
+          whileHover={{ 
+            scale: 1.03, 
+            y: -5,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          className="transform transition-all duration-300 dashboard-card"
+        >
+          <CardDataStats
+            title={t("Total Active Officers")}
+            total={activeOfficersCount}
+            rate="+2.5%"
+            levelUp
+          />
+        </motion.div>
+
+        {/* Second Row - 5 Cards (Other Data) */}
+        <motion.div
+          whileHover={{ 
+            scale: 1.03, 
+            y: -5,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+          }}
+          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          className="transform transition-all duration-300 dashboard-card"
+        >
+          <CardDataStats
+            title={t("Active Loan Users")}
+            total={activeLoanUsers}
+            rate="+2.1%"
+            levelUp
+          />
+        </motion.div>
+
         <motion.div
           whileHover={{ 
             scale: 1.03, 

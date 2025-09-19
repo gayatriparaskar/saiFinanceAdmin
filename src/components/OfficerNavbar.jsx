@@ -262,13 +262,13 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
 
           {/* Right side - Desktop Controls */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Daily and Weekly Reports - Only for Managers */}
-            {officerType === 'manager' && (
+            {/* Daily and Weekly Reports - For Managers and Accounters */}
+            {(officerType === 'manager' || officerType === 'accounter') && (
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => {
                     console.log('📊 Daily Report button clicked');
-                    navigate('/dash/daily-report');
+                    navigate('/accounter-dashboard/daily-report');
                   }}
                   className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
                 >
@@ -277,7 +277,7 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                 <button
                   onClick={() => {
                     console.log('📈 Weekly Report button clicked');
-                    navigate('/dash/weekly-report');
+                    navigate('/accounter-dashboard/weekly-report');
                   }}
                   className="px-3 py-1.5 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
                 >
@@ -398,13 +398,13 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
               <span>Go to Dashboard</span>
             </button>
 
-            {/* Mobile Daily and Weekly Reports - Only for Managers */}
-            {officerType === 'manager' && (
+            {/* Mobile Daily and Weekly Reports - For Managers and Accounters */}
+            {(officerType === 'manager' || officerType === 'accounter') && (
               <div className="space-y-2">
                 <button
                   onClick={() => {
                     console.log('📊 Mobile Daily Report button clicked');
-                    navigate('/dash/daily-report');
+                    navigate('/accounter-dashboard/daily-report');
                     closeMobileMenu();
                   }}
                   className="w-full flex items-center justify-center space-x-3 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
@@ -415,7 +415,7 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                 <button
                   onClick={() => {
                     console.log('📈 Mobile Weekly Report button clicked');
-                    navigate('/dash/weekly-report');
+                    navigate('/accounter-dashboard/weekly-report');
                     closeMobileMenu();
                   }}
                   className="w-full flex items-center justify-center space-x-3 p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"

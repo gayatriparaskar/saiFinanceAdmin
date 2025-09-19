@@ -149,7 +149,7 @@ function SavingAccount() {
         setFilteredData(response?.data?.result || []);
 
         const sum = (response.data.result || []).reduce((acc, item) => {
-          return acc + (item.amount_to_be || 0);
+          return acc + (item?.saving_account_id?.current_amount || 0);
         }, 0);
         setTotalSavingAmt(sum);
         
@@ -201,9 +201,9 @@ function SavingAccount() {
           console.log(response.data.result);
           setFilteredData(response?.data?.result || []);
 
-          // Calculate total safely
-          const sum = (response.data.result?.saving_account_id?.total_amount || []).reduce((acc, item) => {
-            return acc + (item.amount_to_be || 0);
+          // Calculate total current amount from all users
+          const sum = (response.data.result || []).reduce((acc, item) => {
+            return acc + (item?.saving_account_id?.current_amount || 0);
           }, 0);
           setTotalSavingAmt(sum);
         }
@@ -255,7 +255,7 @@ function SavingAccount() {
           setFilteredData(response?.data?.result || []);
 
           const sum = (response.data.result || []).reduce((acc, item) => {
-            return acc + (item.amount_to_be || 0);
+            return acc + (item?.saving_account_id?.current_amount || 0);
           }, 0);
           setTotalSavingAmt(sum);
         }
@@ -933,7 +933,7 @@ function SavingAccount() {
                     className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
                     fontWeight={700}
                   >
-                    {t('Total Savings')} : ₹ {"64300"}
+                    {t('Total Savings')} : ₹ {loading ? '...' : totalSavingAmt.toLocaleString()}
                   </MenuButton>
                 </Menu>
                 <Menu>
@@ -951,7 +951,7 @@ function SavingAccount() {
               {/* Search Section */}
               <motion.div
                 variants={itemVariants}
-                className="w-96 search-section"
+                className="w-84 search-section"
               >
                 <InputGroup borderRadius={5} size="sm">
                   <InputLeftElement
@@ -989,29 +989,96 @@ function SavingAccount() {
                   <MenuButton
                     as={Button}
                     colorScheme="gray"
-                    className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                    className="bg-gray-600 hover:bg-gray-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2 rounded-lg shadow-md font-medium"
+                    rightIcon={<span className="text-xs">▼</span>}
                   >
-                    {sortBy ? `${t('Sort By', 'Sort By')}: ${getSortDisplayName(sortBy)} ${sortOrder === 'asc' ? '↑' : '↓'}` : t('Sort By', 'Sort By')}
+                    <span className="hidden sm:inline">📊 {t('Sort By', 'Sort By')}</span>
+                    <span className="sm:hidden">📊 Sort</span>
+                    {sortBy && (
+                      <span className="ml-1 text-xs bg-gray-500 px-2 py-1 rounded-full">
+                        {getSortDisplayName(sortBy)} {sortOrder === 'asc' ? '↑' : '↓'}
+                      </span>
+                    )}
                   </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={() => handleSort('current_amount_high_to_low')}>
-                      {t('Current Amount High to Low')} {sortBy === 'current_amount_high_to_low' && (sortOrder === 'asc' ? '↑' : '↓')}
+                  <MenuList 
+                    className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[200px] z-50"
+                    placement="bottom-start"
+                    zIndex={9999}
+                  >
+                    <MenuItem 
+                      onClick={() => handleSort('current_amount_high_to_low')}
+                      className="hover:bg-blue-50 px-4 py-2 text-sm"
+                    >
+                      <span className="flex items-center justify-between w-full">
+                        <span>💰 {t('Current Amount High to Low')}</span>
+                        {sortBy === 'current_amount_high_to_low' && (
+                          <span className="text-blue-600 font-bold">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </span>
                     </MenuItem>
-                    <MenuItem onClick={() => handleSort('current_amount_low_to_high')}>
-                      {t('Current Amount Low to High')} {sortBy === 'current_amount_low_to_high' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    <MenuItem 
+                      onClick={() => handleSort('current_amount_low_to_high')}
+                      className="hover:bg-blue-50 px-4 py-2 text-sm"
+                    >
+                      <span className="flex items-center justify-between w-full">
+                        <span>💰 {t('Current Amount Low to High')}</span>
+                        {sortBy === 'current_amount_low_to_high' && (
+                          <span className="text-blue-600 font-bold">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </span>
                     </MenuItem>
-                    <MenuItem onClick={() => handleSort('remaining_emi')}>
-                      {t('Remaining EMI')} {sortBy === 'remaining_emi' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    <MenuItem 
+                      onClick={() => handleSort('remaining_emi')}
+                      className="hover:bg-blue-50 px-4 py-2 text-sm"
+                    >
+                      <span className="flex items-center justify-between w-full">
+                        <span>📊 {t('Remaining EMI')}</span>
+                        {sortBy === 'remaining_emi' && (
+                          <span className="text-blue-600 font-bold">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </span>
                     </MenuItem>
-                    <MenuItem onClick={() => handleSort('name_a_z')}>
-                      {t('Name A-Z')} {sortBy === 'name_a_z' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    <MenuItem 
+                      onClick={() => handleSort('name_a_z')}
+                      className="hover:bg-blue-50 px-4 py-2 text-sm"
+                    >
+                      <span className="flex items-center justify-between w-full">
+                        <span>👤 {t('Name A-Z')}</span>
+                        {sortBy === 'name_a_z' && (
+                          <span className="text-blue-600 font-bold">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </span>
                     </MenuItem>
-                    <MenuItem onClick={() => handleSort('date_created')}>
-                      {t('Date Created')} {sortBy === 'date_created' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    <MenuItem 
+                      onClick={() => handleSort('date_created')}
+                      className="hover:bg-blue-50 px-4 py-2 text-sm"
+                    >
+                      <span className="flex items-center justify-between w-full">
+                        <span>📅 {t('Date Created')}</span>
+                        {sortBy === 'date_created' && (
+                          <span className="text-blue-600 font-bold">
+                            {sortOrder === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </span>
                     </MenuItem>
                     {sortBy && (
-                      <MenuItem onClick={() => { setSortBy(''); setSortOrder('asc'); }}>
-                        {t('Clear Sort', 'Clear Sort')}
+                      <MenuItem 
+                        onClick={() => { setSortBy(''); setSortOrder('asc'); }}
+                        className="hover:bg-red-50 px-4 py-2 text-sm border-t border-gray-200 mt-1"
+                      >
+                        <span className="flex items-center text-red-600">
+                          <span className="mr-2">🗑️</span>
+                          {t('Clear Sort', 'Clear Sort')}
+                        </span>
                       </MenuItem>
                     )}
                   </MenuList>

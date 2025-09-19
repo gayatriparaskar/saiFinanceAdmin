@@ -54,6 +54,7 @@ import {
   ChevronRightIcon,
   DownloadIcon
 } from '@chakra-ui/icons';
+import { FaSync } from 'react-icons/fa';
 
 /**
  * UserDataTable Component
@@ -67,7 +68,7 @@ import {
  * 
  * @param {string} userType - Type of users to display ('all', 'loan', 'saving', 'officer')
  */
-const UserDataTable = ({ userType = 'all' }) => {
+const UserDataTable = ({ userType = 'all', onRefresh }) => {
   const { t } = useLocalTranslation();
   const navigate = useNavigate();
   const toast = useToast();
@@ -331,10 +332,29 @@ const UserDataTable = ({ userType = 'all' }) => {
     }
   };
 
-  // Handle view user details - navigate to user detail page
+  // Handle view user details - navigate to appropriate user detail page based on user type
   const handleViewDetails = (user) => {
     console.log('🔄 Navigating to user detail page for user:', user);
-    navigate(`/view-user/${user._id}`);
+    console.log('🔄 User type:', user.user_type);
+    
+    // Navigate based on user type
+    if (user.user_type === 'loan' || user.user_type === 'both') {
+      // For loan users or users with both accounts, navigate to loan user page
+      console.log('🔄 Navigating to loan user page:', `/view-loan-user/${user._id}`);
+      navigate(`/view-loan-user/${user._id}`);
+    } else if (user.user_type === 'saving') {
+      // For saving users, navigate to saving user page
+      console.log('🔄 Navigating to saving user page:', `/view-saving-user/${user._id}`);
+      navigate(`/view-saving-user/${user._id}`);
+    } else if (user.user_type === 'officer') {
+      // For officers, navigate to officer view page
+      console.log('🔄 Navigating to officer page:', `/manager-dashboard/view-officer/${user._id}`);
+      navigate(`/manager-dashboard/view-officer/${user._id}`);
+    } else {
+      // Default fallback for other user types
+      console.log('🔄 Navigating to default user page:', `/view-user/${user._id}`);
+      navigate(`/view-user/${user._id}`);
+    }
   };
 
   // Pagination
@@ -517,7 +537,20 @@ const UserDataTable = ({ userType = 'all' }) => {
         <CardHeader>
           <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
             <Heading size="md">{t("All User Data")}</Heading>
-            <HStack>
+            <HStack spacing={2}>
+              {onRefresh && (
+                <Button
+                  leftIcon={<FaSync />}
+                  size="sm"
+                  colorScheme="green"
+                  variant="outline"
+                  onClick={onRefresh}
+                  isLoading={loading}
+                  loadingText={t("Refreshing...")}
+                >
+                  {t("Refresh")}
+                </Button>
+              )}
               <Button
                 leftIcon={<DownloadIcon />}
                 size="sm"

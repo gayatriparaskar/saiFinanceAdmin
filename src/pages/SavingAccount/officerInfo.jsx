@@ -17,6 +17,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { MdEdit, MdArrowBack, MdDownload } from "react-icons/md";
+import Table from "../../componant/Table/Table";
+import Cell from "../../componant/Table/cell";
+import OfficerNavbar from "../../components/OfficerNavbar";
 
 function OfficerInfo() {
   const { t } = useLocalTranslation();
@@ -34,7 +37,131 @@ function OfficerInfo() {
   
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // Table columns configuration
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: t('Sr No.', 'Sr No.'),
+        accessor: "srNo",
+        Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
+        width: 60,
+        minWidth: 60,
+      },
+      {
+        Header: t('User Name', 'User Name'),
+        accessor: "userName",
+        Cell: ({ value }) => <Cell text={value || '-'} />,
+        minWidth: 120,
+      },
+      {
+        Header: t('Phone', 'Phone'),
+        accessor: "phoneNumber",
+        Cell: ({ value }) => <Cell text={value || '-'} />,
+        minWidth: 100,
+      },
+      {
+        Header: t('Address', 'Address'),
+        accessor: "address",
+        Cell: ({ value }) => <Cell text={value || '-'} />,
+        minWidth: 120,
+      },
+      {
+        Header: t('Account Type', 'Account Type'),
+        accessor: "accountType",
+        Cell: ({ value }) => (
+          <Cell 
+            text={
+              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                value === 'loan account'
+                  ? 'bg-blue-100 text-blue-800' 
+                  : value === 'saving account'
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {value === 'loan account' ? t('Loan Account') : 
+                 value === 'saving account' ? t('Saving Account') : value}
+              </span>
+            } 
+          />
+        ),
+        minWidth: 100,
+      },
+      {
+        Header: t('Total Amount', 'Total Amount'),
+        accessor: "totalAmount",
+        Cell: ({ value }) => <Cell text={`₹${value?.toLocaleString() || '0'}`} />,
+        minWidth: 100,
+      },
+      {
+        Header: t('Due Amount', 'Due Amount'),
+        accessor: "dueAmount",
+        Cell: ({ value }) => <Cell text={`₹${value?.toLocaleString() || '0'}`} />,
+        minWidth: 100,
+      },
+      {
+        Header: t('Collected', 'Collected'),
+        accessor: "collectedAmount",
+        Cell: ({ value }) => <Cell text={`₹${value?.toLocaleString() || '0'}`} />,
+        minWidth: 100,
+      },
+      {
+        Header: t('Penalty', 'Penalty'),
+        accessor: "penalty",
+        Cell: ({ value }) => <Cell text={`₹${value?.toLocaleString() || '0'}`} />,
+        minWidth: 80,
+      },
+      {
+        Header: t('Remaining EMI', 'Remaining EMI'),
+        accessor: "remainingEmiDays",
+        Cell: ({ value }) => <Cell text={`${value || 0} days`} />,
+        minWidth: 100,
+      },
+      {
+        Header: t('Start Date', 'Start Date'),
+        accessor: "startDate",
+        Cell: ({ value }) => <Cell text={value || '-'} />,
+        minWidth: 90,
+      },
+      {
+        Header: t('End Date', 'End Date'),
+        accessor: "endDate",
+        Cell: ({ value }) => <Cell text={value || '-'} />,
+        minWidth: 90,
+      },
+      {
+        Header: t('Collection Date', 'Collection Date'),
+        accessor: "collectionDate",
+        Cell: ({ value }) => <Cell text={value || '-'} />,
+        minWidth: 90,
+      },
+    ],
+    [t]
+  );
 
+  // Transform collections data for table
+  const tableData = React.useMemo(() => {
+    return userCollections.map((collection) => ({
+      srNo: '', // Will be handled by the Cell component
+      userName: collection.name || collection.user_name || collection.user_id?.full_name || collection.account_holder_name || collection.user_id || '-',
+      phoneNumber: collection.phone_number || '-',
+      address: collection.address || '-',
+      accountType: collection.account_type || 'N/A',
+      totalAmount: collection.total_amount || 0,
+      dueAmount: collection.total_due_amount || 0,
+      collectedAmount: collection.collected_amount || collection.amount || collection.deposit_amount || collection.withdraw_amount || 0,
+      penalty: collection.penalty || 0,
+      remainingEmiDays: collection.remaining_emi_days || 0,
+      startDate: collection.start_date ? dayjs(collection.start_date).format("D MMM, YYYY") : '-',
+      endDate: collection.end_date ? dayjs(collection.end_date).format("D MMM, YYYY") : '-',
+      collectionDate: collection.collected_on ? dayjs(collection.collected_on).format("D MMM, YYYY") : 
+                     collection.collection_date ? dayjs(collection.collection_date).format("D MMM, YYYY") : 
+                     collection.created_on ? dayjs(collection.created_on).format("D MMM, YYYY") : '-',
+      type: collection.account_type === 'loan account' || collection.type === 'loan' || collection.transaction_type === 'loan' ? 'loan' : 
+            collection.type === 'withdraw' || collection.transaction_type === 'withdraw' ? 'withdraw' : 'savings',
+      status: collection.status === 'completed' || collection.status === 'success' ? 'completed' : 
+              collection.status === 'pending' ? 'pending' : 'active'
+    }));
+  }, [userCollections]);
 
   useEffect(() => {
     async function fetchOfficerData() {
@@ -176,37 +303,43 @@ Officer ID: ${officerData?.officer_code || '-'}
 Phone Number: ${officerData?.phone_number || '-'}
 Join Date: ${officerData?.created_on ? dayjs(officerData.created_on).format("D MMM, YYYY") : '-'}
 
-USER COLLECTIONS SUMMARY:
+ALLOTTED USERS SUMMARY:
 ========================
-Total Collections: ${userCollections.length}
-Total Amount: ₹ ${userCollections.reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0).toLocaleString()}
-Average Amount: ₹ ${userCollections.length > 0 
+Total Users Allotted: ${userCollections.length}
+Total Loan Amount: ₹ ${userCollections.reduce((sum, collection) => sum + (collection.total_amount || 0), 0).toLocaleString()}
+Total Collected Amount: ₹ ${userCollections.reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0).toLocaleString()}
+Total Due Amount: ₹ ${userCollections.reduce((sum, collection) => sum + (collection.total_due_amount || 0), 0).toLocaleString()}
+Average Collection: ₹ ${userCollections.length > 0 
   ? (userCollections.reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0) / userCollections.length).toLocaleString(undefined, {maximumFractionDigits: 0})
   : '0'}
 
-DETAILED COLLECTIONS:
-====================
+DETAILED USER INFORMATION:
+=========================
 `;
 
     if (userCollections.length > 0) {
       userCollections.forEach((collection, index) => {
         content += `
-${index + 1}. Collection Details:
+${index + 1}. User Details:
    User Name: ${collection.name || collection.user_name || collection.user_id?.full_name || collection.account_holder_name || collection.user_id || '-'}
    Phone Number: ${collection.phone_number || '-'}
-   Collection Amount: ₹ ${collection.collected_amount?.toLocaleString() || collection.amount?.toLocaleString() || '0'}
+   Address: ${collection.address || '-'}
+   Account Type: ${collection.account_type === 'loan account' ? 'Loan Account' : 
+     collection.account_type === 'saving account' ? 'Saving Account' : collection.account_type || 'N/A'}
+   Total Amount: ₹ ${collection.total_amount?.toLocaleString() || '0'}
+   Due Amount: ₹ ${collection.total_due_amount?.toLocaleString() || '0'}
+   Collected Amount: ₹ ${collection.collected_amount?.toLocaleString() || collection.amount?.toLocaleString() || '0'}
    Penalty: ₹ ${collection.penalty?.toLocaleString() || '0'}
+   Remaining EMI Days: ${collection.remaining_emi_days || 0} days
+   Start Date: ${collection.start_date ? dayjs(collection.start_date).format("D MMM, YYYY") : '-'}
+   End Date: ${collection.end_date ? dayjs(collection.end_date).format("D MMM, YYYY") : '-'}
    Collection Date: ${collection.collected_on ? dayjs(collection.collected_on).format("D MMM, YYYY") : 
      collection.collection_date ? dayjs(collection.collection_date).format("D MMM, YYYY") : 
      collection.created_on ? dayjs(collection.created_on).format("D MMM, YYYY") : '-'}
-   Account Type: ${collection.account_type === 'loan account' || collection.type === 'loan' || collection.transaction_type === 'loan' ? 'Loan Account' : 
-     collection.type === 'withdraw' || collection.transaction_type === 'withdraw' ? 'Withdraw' : 'Savings Account'}
-   Status: ${collection.status === 'completed' || collection.status === 'success' ? 'Completed' : 
-     collection.status === 'pending' ? 'Pending' : 'Active'}
 `;
       });
     } else {
-      content += `No collections found for this officer.\n`;
+      content += `No users allotted to this officer.\n`;
     }
 
     content += `
@@ -222,109 +355,109 @@ Generated by: SAI Finance Admin System
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-primaryBg flex items-center justify-center">
+      <div className="min-h-screen bg-primaryBg flex items-center justify-center py-20 px-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-gray-600">{t('Loading officer details...')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">{t('Loading officer details...')}</p>
         </div>
       </div>
     );
   }
 
+  // Determine officer type and name for navbar
+  const getOfficerType = () => {
+    // Check if this is a manager viewing officer details
+    const currentUserType = localStorage.getItem('userType');
+    const currentOfficerType = localStorage.getItem('officerType');
+    
+    if (currentUserType === 'manager' || currentOfficerType === 'manager') {
+      return 'manager';
+    } else if (currentUserType === 'accounter' || currentOfficerType === 'accounter') {
+      return 'accounter';
+    } else if (currentUserType === 'collection_officer' || currentOfficerType === 'collection_officer') {
+      return 'collection_officer';
+    }
+    
+    return 'manager'; // Default to manager
+  };
+
+  const getOfficerName = () => {
+    return localStorage.getItem('officerName') || 'Manager';
+  };
+
   return (
-    <div className="min-h-screen bg-primaryBg py-16 pt-24 px-4 lg:px-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Officer Information Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 border-b pb-3 gap-4">
-            <h2 className="text-xl font-semibold text-gray-800">
-              {t('Personal Information')}
-            </h2>
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              <Button
-                leftIcon={<MdDownload />}
-                colorScheme="green"
-                size="sm"
-                variant="outline"
-                className="w-full sm:w-auto"
-                onClick={handleDownloadPDF}
-              >
-                {t('Download PDF')}
-              </Button>
-              <Button
-                leftIcon={<MdEdit />}
-                colorScheme="blue"
-                size="sm"
-                className="bg-primary hover:bg-primaryDark w-full sm:w-auto"
-                onClick={() => {
-                  console.log("Opening edit form with data:", editData);
-                  setIsEditing(true);
-                }}
-              >
-                {t('Edit Officer')}
-              </Button>
+    <>
+      <OfficerNavbar 
+        officerType={getOfficerType()} 
+        officerName={getOfficerName()} 
+        pageName="Officer Details" 
+      />
+      <div className="min-h-screen bg-primaryBg py-4 pt-20 px-2 sm:px-4 lg:px-6">
+        <div className="max-w-6xl mx-auto">
+         
+        {/* Officer Information Section */}
+        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4">
+          {/* Officer Details */}
+          <div className="space-y-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <span className="text-sm font-medium text-gray-600">{t('Officer Name')}</span>
+                <p className="text-lg font-semibold text-gray-800">{officerData?.name || '-'}</p>
               </div>
-            </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  {t('Officer Name')}
-                </label>
-                <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.name || '-'}
-                </p>
+              <div className="space-y-1">
+                <span className="text-sm font-medium text-gray-600">{t('Officer ID')}</span>
+                <p className="text-lg font-semibold text-gray-800">{officerData?.officer_code || '-'}</p>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  {t('Officer ID')}
-                </label>
-                <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.officer_code || '-'}
-                </p>
+              <div className="space-y-1">
+                <span className="text-sm font-medium text-gray-600">{t('Phone')}</span>
+                <p className="text-lg font-semibold text-gray-800">{officerData?.phone_number || '-'}</p>
               </div>
-              
-              
-            </div>
-            
-            <div className="space-y-4">
-              {/* <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  {t('Email')}
-                </label>
-                <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.email || 'N/A'}
-                </p>
-              </div> */}
-{/*               
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  {t('Department')}
-                </label>
-                <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.department || 'N/A'}
-                </p>
-              </div> */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  {t('Phone Number')}
-                </label>
-                <p className="text-lg font-semibold text-gray-800">
-                  {officerData?.phone_number || '-'}
-                </p>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">
-                  {t('Join Date')}
-                </label>
+              <div className="space-y-1">
+                <span className="text-sm font-medium text-gray-600">{t('Join Date')}</span>
                 <p className="text-lg font-semibold text-gray-800">
                   {officerData?.created_on ? dayjs(officerData.created_on).format("D MMM, YYYY") : '-'}
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-blue-600">{userCollections.length}</div>
+              <div className="text-sm text-blue-600 font-medium">{t('Total Collections')}</div>
+            </div>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-green-600">
+                ₹ {userCollections.reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0).toLocaleString()}
+              </div>
+              <div className="text-sm text-green-600 font-medium">{t('Total Amount')}</div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              leftIcon={<MdDownload />}
+              colorScheme="blue"
+              size="md"
+              className="flex-1 sm:flex-none"
+              onClick={handleDownloadPDF}
+            >
+              {t('Download PDF')}
+            </Button>
+            <Button
+              leftIcon={<MdEdit />}
+              colorScheme="purple"
+              size="md"
+              className="flex-1 sm:flex-none bg-purple-600 hover:bg-purple-700"
+              onClick={() => {
+                console.log("Opening edit form with data:", editData);
+                setIsEditing(true);
+              }}
+            >
+              {t('Edit Officer')}
+            </Button>
           </div>
         </div>
 
@@ -359,392 +492,124 @@ Generated by: SAI Finance Admin System
           </div>
         </div> */}
 
-        {/* User Collections Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 border-b pb-3 text-center">
-            {t('User Collections')}
-          </h2>
-          
-          {/* Collection Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-blue-600 mb-1">{t('Total Collections')}</div>
-                  <div className="text-2xl font-bold text-blue-900">{userCollections.length}</div>
-                </div>
-                <div className="text-3xl ml-2">📊</div>
-              </div>
+        {/* Allotted Users Table */}
+        {userCollections.length > 0 ? (
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <div className="bg-blue-50 px-4 py-3 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {t('Allotted Users & Collection Details')}
+              </h3>
+              <p className="text-sm text-gray-600 mt-1">
+                {t('Users assigned to this officer and their collection information')}
+              </p>
             </div>
-            
-            <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border border-green-200 hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-green-600 mb-1">{t('Total Amount')}</div>
-                  <div className="text-2xl font-bold text-green-900">
-                    ₹ {userCollections.reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0).toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-3xl ml-2">💰</div>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200 hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-purple-600 mb-1">{t('Average Amount')}</div>
-                  <div className="text-2xl font-bold text-purple-900">
-                    ₹ {userCollections.length > 0 
-                      ? (userCollections.reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0) / userCollections.length).toLocaleString(undefined, {maximumFractionDigits: 0})
-                      : '0'
-                    }
-                  </div>
-                </div>
-                <div className="text-3xl ml-2">📈</div>
-              </div>
+            <div className="overflow-x-auto">
+              <Table
+                columns={columns}
+                data={tableData}
+                isLoading={isLoading}
+                className="min-w-full"
+              />
             </div>
           </div>
-
-          {/* Detailed Collection Type Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {/* Total Loan Collection */}
-            <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-orange-600">{t('Total Loan Collection')}</div>
-                  <div className="text-xl font-bold text-orange-900">
-                    ₹ {userCollections
-                      .filter(collection => 
-                        collection.account_type === 'loan account' || 
-                        collection.type === 'loan' || 
-                        collection.transaction_type === 'loan'
-                      )
-                      .reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0)
-                      .toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-2xl">🏦</div>
-              </div>
-            </div>
-
-            {/* Total Saving Collection */}
-            <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-4 rounded-lg border border-teal-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-teal-600">{t('Total Saving Collection')}</div>
-                  <div className="text-xl font-bold text-teal-900">
-                    ₹ {userCollections
-                      .filter(collection => 
-                        collection.account_type === 'saving account' || 
-                        collection.type === 'saving' || 
-                        collection.transaction_type === 'saving'
-                      )
-                      .reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0)
-                      .toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-2xl">💳</div>
-              </div>
-            </div>
-
-            {/* Total Collection (Both) */}
-            <div className="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border border-indigo-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-indigo-600">{t('Total Collection')}</div>
-                  <div className="text-xl font-bold text-indigo-900">
-                    ₹ {userCollections
-                      .reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0)
-                      .toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-2xl">📋</div>
-              </div>
-            </div>
-
-            {/* Total Penalty */}
-            <div className="bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg border border-red-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-red-600">{t('Total Penalty')}</div>
-                  <div className="text-xl font-bold text-red-900">
-                    ₹ {userCollections
-                      .reduce((sum, collection) => sum + (collection.penalty || 0), 0)
-                      .toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-2xl">⚠️</div>
-              </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+            <div className="text-gray-400 text-6xl mb-4">👥</div>
+            <p className="text-gray-500 text-lg font-medium mb-2">{t('No users allotted to this officer')}</p>
+            <p className="text-gray-400 text-sm mb-6">{t('Users will appear here when they are assigned to this officer')}</p>
+            <div className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg">
+              <span className="text-sm">💡 {t('Tip: Users are assigned to officers through the user management system')}</span>
             </div>
           </div>
-
-          {/* Daily Collection Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {/* Today's Loan Collection */}
-            <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-yellow-600">{t('Today Loan Collection')}</div>
-                  <div className="text-xl font-bold text-yellow-900">
-                    ₹ {userCollections
-                      .filter(collection => {
-                        const today = new Date();
-                        const collectionDate = new Date(collection.collected_on || collection.collection_date || collection.created_on);
-                        return (
-                          (collection.account_type === 'loan account' || 
-                           collection.type === 'loan' || 
-                           collection.transaction_type === 'loan') &&
-                          collectionDate.toDateString() === today.toDateString()
-                        );
-                      })
-                      .reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0)
-                      .toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-2xl">🌅</div>
-              </div>
-            </div>
-
-            {/* Today's Saving Collection */}
-            <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 p-4 rounded-lg border border-emerald-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-emerald-600">{t('Today Saving Collection')}</div>
-                  <div className="text-xl font-bold text-emerald-900">
-                    ₹ {userCollections
-                      .filter(collection => {
-                        const today = new Date();
-                        const collectionDate = new Date(collection.collected_on || collection.collection_date || collection.created_on);
-                        return (
-                          (collection.account_type === 'saving account' || 
-                           collection.type === 'saving' || 
-                           collection.transaction_type === 'saving') &&
-                          collectionDate.toDateString() === today.toDateString()
-                        );
-                      })
-                      .reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0)
-                      .toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-2xl">🌞</div>
-              </div>
-            </div>
-
-            {/* Today's Total Collection */}
-            <div className="bg-gradient-to-r from-pink-50 to-pink-100 p-4 rounded-lg border border-pink-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-pink-600">{t('Today Total Collection')}</div>
-                  <div className="text-xl font-bold text-pink-900">
-                    ₹ {userCollections
-                      .filter(collection => {
-                        const today = new Date();
-                        const collectionDate = new Date(collection.collected_on || collection.collection_date || collection.created_on);
-                        return collectionDate.toDateString() === today.toDateString();
-                      })
-                      .reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0)
-                      .toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-2xl">📅</div>
-              </div>
-            </div>
-
-            {/* Today's Penalty */}
-            <div className="bg-gradient-to-r from-rose-50 to-rose-100 p-4 rounded-lg border border-rose-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-medium text-rose-600">{t('Today Penalty')}</div>
-                  <div className="text-xl font-bold text-rose-900">
-                    ₹ {userCollections
-                      .filter(collection => {
-                        const today = new Date();
-                        const collectionDate = new Date(collection.collected_on || collection.collection_date || collection.created_on);
-                        return collectionDate.toDateString() === today.toDateString();
-                      })
-                      .reduce((sum, collection) => sum + (collection.penalty || 0), 0)
-                      .toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-2xl">🚨</div>
-              </div>
-            </div>
-          </div>
-          
-          {userCollections.length > 0 ? (
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('Sr No.')}
-                      </th>
-                                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                         {t('User Name')}
-                       </th>
-                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                         {t('Phone Number')}
-                       </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                         {t('Collection Amount')}
-                       </th>
-                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                         {t('Penalty')}
-                       </th>
-                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                         {t('Collection Date')}
-                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        {t('Type')}
-                      </th>
-                                                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          {t('Status')}
-                        </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {userCollections.map((collection, index) => (
-                      <tr key={index} className="hover:bg-gray-50 transition-colors duration-200">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {index + 1}
-                        </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                           {collection.name || collection.user_name || collection.user_id?.full_name || collection.account_holder_name || collection.user_id || '-'}
-                         </td>
-                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                           {collection.phone_number || '-'}
-                         </td>
-                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                           ₹ {collection.collected_amount?.toLocaleString() || collection.amount?.toLocaleString() || collection.deposit_amount?.toLocaleString() || collection.withdraw_amount?.toLocaleString() || '0'}
-                         </td>
-                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                           ₹ {collection.penalty?.toLocaleString() || '0'}
-                         </td>
-                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                           {collection.collected_on ? dayjs(collection.collected_on).format("D MMM, YYYY") : 
-                            collection.collection_date ? dayjs(collection.collection_date).format("D MMM, YYYY") : 
-                            collection.created_on ? dayjs(collection.created_on).format("D MMM, YYYY") : '-'}
-                         </td>
-                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                             collection.account_type === 'loan account' || collection.type === 'loan' || collection.transaction_type === 'loan'
-                               ? 'bg-blue-100 text-blue-800' 
-                               : collection.type === 'withdraw' || collection.transaction_type === 'withdraw'
-                               ? 'bg-red-100 text-red-800'
-                               : 'bg-green-100 text-green-800'
-                           }`}>
-                             {collection.account_type === 'loan account' || collection.type === 'loan' || collection.transaction_type === 'loan' ? t('Loan') : 
-                              collection.type === 'withdraw' || collection.transaction_type === 'withdraw' ? t('Withdraw') : t('Savings')}
-                           </span>
-                         </td>
-                                                                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              collection.status === 'completed' || collection.status === 'success'
-                                ? 'bg-green-100 text-green-800' 
-                                : collection.status === 'pending'
-                                ? 'bg-yellow-100 text-yellow-800'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}>
-                              {collection.status === 'completed' || collection.status === 'success' ? t('Completed') : 
-                               collection.status === 'pending' ? t('Pending') : t('Active')}
-                            </span>
-                          </td>
-                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">📊</div>
-              <p className="text-gray-500 text-lg font-medium">{t('No collections found for this officer')}</p>
-              <p className="text-gray-400 text-sm mt-2">{t('Collections will appear here when users make payments')}</p>
-              <div className="mt-6">
-                <div className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg">
-                  <span className="text-sm">💡 {t('Tip: Collections are automatically added when users make transactions')}</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
-             {/* Edit Officer Drawer */}
-       <Drawer isOpen={isEditing} placement="right" onClose={() => setIsEditing(false)} size="md">
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">
-            {t('Edit Officer Details')}
-          </DrawerHeader>
-          
-          <DrawerBody>
-            <div className="space-y-4 pt-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('Officer Name')}
-                </label>
-                <Input
-                  value={editData?.name || ""}
-                  onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                  placeholder={t('Enter officer name')}
-                />
+        {/* Edit Officer Drawer */}
+        <Drawer isOpen={isEditing} placement="right" onClose={() => setIsEditing(false)} size="md">
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader borderBottomWidth="1px">
+              <h2 className="text-lg font-semibold text-gray-800">{t('Edit Officer Details')}</h2>
+            </DrawerHeader>
+            
+            <DrawerBody className="px-4 py-6">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('Officer Name')}
+                  </label>
+                  <Input
+                    value={editData?.name || ""}
+                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                    placeholder={t('Enter officer name')}
+                    size="md"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('Employee ID')}
+                  </label>
+                  <Input
+                    value={editData?.officer_code || ""}
+                    onChange={(e) => setEditData({ ...editData, officer_code: e.target.value })}
+                    placeholder={t('Enter employee ID')}
+                    size="md"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('Phone Number')}
+                  </label>
+                  <Input
+                    value={editData?.phone_number || ""}
+                    onChange={(e) => setEditData({ ...editData, phone_number: e.target.value })}
+                    placeholder={t('Enter phone number')}
+                    size="md"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('Status')}
+                  </label>
+                  <select
+                    value={editData?.isActive ? "active" : "inactive"}
+                    onChange={(e) => setEditData({ ...editData, isActive: e.target.value === "active" })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  >
+                    <option value="active">{t('Active')}</option>
+                    <option value="inactive">{t('Inactive')}</option>
+                  </select>
+                </div>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('Employee ID')}
-                </label>
-                <Input
-                  value={editData?.officer_code || ""}
-                  onChange={(e) => setEditData({ ...editData, officer_code: e.target.value })}
-                  placeholder={t('Enter employee ID')}
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('Phone Number')}
-                </label>
-                <Input
-                  value={editData?.phone_number || ""}
-                  onChange={(e) => setEditData({ ...editData, phone_number: e.target.value })}
-                  placeholder={t('Enter phone number')}
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('Status')}
-                </label>
-                <select
-                  value={editData?.isActive ? "active" : "inactive"}
-                  onChange={(e) => setEditData({ ...editData, isActive: e.target.value === "active" })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            </DrawerBody>
+            
+            <DrawerFooter borderTopWidth="1px" className="px-4 py-4">
+              <div className="flex flex-col sm:flex-row gap-3 w-full">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsEditing(false)}
+                  className="flex-1 sm:flex-none"
                 >
-                  <option value="active">{t('Active')}</option>
-                  <option value="inactive">{t('Inactive')}</option>
-                </select>
+                  {t('Cancel')}
+                </Button>
+                <Button 
+                  colorScheme="blue" 
+                  onClick={handleEditSave}
+                  className="flex-1 sm:flex-none"
+                >
+                  {t('Save Changes')}
+                </Button>
               </div>
-            </div>
-          </DrawerBody>
-          
-          <DrawerFooter borderTopWidth="1px">
-            <Button variant="outline" mr={3} onClick={() => setIsEditing(false)}>
-              {t('Cancel')}
-            </Button>
-            <Button colorScheme="blue" onClick={handleEditSave}>
-              {t('Save Changes')}
-            </Button>
-          </DrawerFooter>
-                 </DrawerContent>
-       </Drawer>
-
-       
-     </div>
-   );
- }
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
+    </>
+  );
+}
 
 export default OfficerInfo;

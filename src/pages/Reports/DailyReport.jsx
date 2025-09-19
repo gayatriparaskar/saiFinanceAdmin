@@ -144,15 +144,15 @@ const DailyReport = () => {
   const handleViewOfficerDetails = (officer) => {
     console.log('🔄 Navigating to officer info page for:', officer._id);
     console.log('🔄 Officer name:', officer.name);
-    console.log('🔄 Target path:', `/view-officer/${officer._id}`);
+    console.log('🔄 Target path:', `/manager-dashboard/view-officer/${officer._id}`);
     
     try {
       // Use React Router navigation for smoother experience
-      navigate(`/view-officer/${officer._id}`);
+      navigate(`/manager-dashboard/view-officer/${officer._id}`);
     } catch (error) {
       console.error('❌ Error with React Router navigation:', error);
       // Fallback to window.location for compatibility
-      window.location.href = `/view-officer/${officer._id}`;
+      window.location.href = `/manager-dashboard/view-officer/${officer._id}`;
     }
   };
 
@@ -288,8 +288,8 @@ const DailyReport = () => {
 
   return (
     <>
-      <OfficerNavbar officerType="manager" officerName={officerName} pageName="Daily Report" />
-      <div className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg p-4 sm:p-6 pt-20 pb-12 overflow-x-hidden">
+      <OfficerNavbar officerType="accounter" officerName={officerName} pageName="Daily Report" />
+      <div className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg p-4 sm:p-6 pb-12 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
           {showErrorBanner}
         {/* Header */}
@@ -297,12 +297,10 @@ const DailyReport = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8"
+          className="mb-8 mt-2"
         >
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
-            {t('Daily Report')}
-          </h1>
-          <p className="text-gray-600 text-lg">
+         
+          <p className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2 mt-14">
             {t('Daily collection statistics and analytics')}
           </p>
         </motion.div>
@@ -314,9 +312,9 @@ const DailyReport = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-8"
         >
-          <Card className="bg-white shadow-lg">
+          <Card className="">
             <CardBody>
-              <VStack spacing={4} align="stretch">
+              <VStack spacing={4} align="self-start">
                 <Text className="text-lg font-semibold text-gray-700">
                   {t('Select Date')}
                 </Text>
@@ -340,16 +338,7 @@ const DailyReport = () => {
                       <span className="text-sm">Loading...</span>
                     </div>
                   )}
-                  <button
-                    onClick={() => {
-                      console.log('🧪 Manual test button clicked for date:', selectedDate);
-                      fetchDailyData();
-                    }}
-                    className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600"
-                    disabled={loading}
-                  >
-                    Test API
-                  </button>
+              
                 </HStack>
               </VStack>
             </CardBody>
@@ -363,7 +352,7 @@ const DailyReport = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
         >
-          <Card className="bg-white shadow-lg border-l-4 border-blue-500">
+          <Card className="">
             <CardBody>
               <Stat>
                 <StatLabel className="text-gray-600">{t('Total Daily Collection')}</StatLabel>
@@ -456,7 +445,7 @@ const DailyReport = () => {
                      <div className="flex items-center justify-between mb-4">
                        <div>
                          <h3 className="text-lg font-bold text-gray-800">{officer.name || officer.username}</h3>
-                         <p className="text-sm text-blue-600 font-semibold">{officer.officer_code || 'N/A'}</p>
+                         <p className="text-sm text-blue-600 font-semibold">{officer.officer_code}</p>
                        </div>
                        <div className="flex items-center space-x-2">
                          <span className={`px-3 py-1 rounded-full text-xs font-bold ${
@@ -466,19 +455,20 @@ const DailyReport = () => {
                          }`}>
                            {officer.is_active || officer.isActive ? 'Active' : 'Inactive'}
                          </span>
+                         <br></br>
                          <button
                            onClick={() => handleViewOfficerDetails(officer)}
                            className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-1 text-xs font-medium"
                            title="View Officer Details"
                          >
                            <FaEye className="w-3 h-3" />
-                           <span>View Details</span>
+                           <span>View </span>
                          </button>
                        </div>
                      </div>
                      
                      <div className="space-y-3">
-                       <div className="flex justify-between items-center py-2 px-3 bg-green-50 rounded-lg border border-green-200">
+                       {/* <div className="flex justify-between items-center py-2 px-3 bg-green-50 rounded-lg border border-green-200">
                          <span className="text-sm font-semibold text-green-700">{t('Today Loan')}</span>
                          <span className="text-lg font-bold text-green-800">₹{todayLoan.toLocaleString()}</span>
                        </div>
@@ -489,7 +479,7 @@ const DailyReport = () => {
                        <div className="flex justify-between items-center py-2 px-3 bg-blue-50 rounded-lg border border-blue-200">
                          <span className="text-sm font-semibold text-blue-700">{t('Today Saving')}</span>
                          <span className="text-lg font-bold text-blue-800">₹{todaySaving.toLocaleString()}</span>
-                       </div>
+                       </div> */}
                        <div className="border-t-2 border-gray-200 pt-3 space-y-2">
                          <div className="flex justify-between items-center py-2 px-3 bg-purple-50 rounded-lg border border-purple-200">
                            <span className="text-sm font-bold text-purple-700">{t('Daily Total')}</span>
@@ -502,7 +492,7 @@ const DailyReport = () => {
         <div className="flex justify-between items-center py-2 px-3 bg-orange-50 rounded-lg border border-orange-200">
           <span className="text-xs font-semibold text-orange-600">{t('Payment Process')}</span>
           <select
-            value={officer.paymentProcess || 'officer'}
+            value={officer.paymentProces}
             onChange={(e) => handlePaymentProcessUpdate(officer._id, e.target.value)}
             className="px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-blue-500 focus:border-transparent bg-white"
           >
@@ -542,23 +532,43 @@ const DailyReport = () => {
           
           {dailyData.length > 0 ? (
             <div className="space-y-6">
-              {/* Total Collection */}
-              <div className="bg-gradient-to-r from-purple-200 to-purple-300 rounded-lg p-6 text-black shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-purple-800 text-sm font-medium mb-2">
-                      {t('Total Daily Collection')}
-                    </p>
-                    <p className="text-4xl font-bold text-black drop-shadow-sm">
-                      ₹{totalDailyCollection.toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="text-purple-700">
-                    <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" />
-                    </svg>
+              {/* Summary Cards - Side by Side */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* Total Collection Card */}
+                <div className="bg-gradient-to-r from-purple-200 to-purple-300 rounded-lg p-6 text-black shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-800 text-sm font-medium mb-2">
+                        {t('Total Daily Collection')} :  ₹{totalDailyCollection.toLocaleString()}
+                      </p>
+                     
+                    </div>
+                    <div className="text-purple-700">
+                      <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
+
+                {/* Officers Summary Card */}
+                {officersData.length > 0 && (
+                  <div className="bg-gradient-to-r from-purple-500 to-purple-700 rounded-lg p-6 text-white shadow-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-purple-50 text-sm font-medium mb-2">
+                          {t('Total Officers')} : {officersData.length}
+                        </p>
+                       
+                      </div>
+                      <div className="text-purple-100">
+                        <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Detailed Breakdown */}
@@ -618,25 +628,6 @@ const DailyReport = () => {
               </div>
 
               {/* Officers Summary */}
-              {officersData.length > 0 && (
-                <div className="bg-gradient-to-r from-orange-600 to-orange-700 rounded-lg p-6 text-white shadow-lg mb-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-orange-50 text-sm font-medium mb-2">
-                        {t('Total Officers')}
-                      </p>
-                      <p className="text-4xl font-bold text-white drop-shadow-sm">
-                        {officersData.length}
-                      </p>
-                    </div>
-                    <div className="text-orange-100">
-                      <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           ) : (
             <div className="text-center py-8">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import OfficerNavbar from '../../components/OfficerNavbar';
 import {
   Box,
   VStack,
@@ -393,13 +394,29 @@ const UserDetailPage = () => {
   const totalSavingAmount = savingCollections.reduce((sum, collection) => sum + (collection.deposit_amount || 0), 0);
   const totalCollections = allCollections.length;
 
+  // Get officer info for navbar
+  const getOfficerType = () => {
+    return localStorage.getItem('officerType') || 'user';
+  };
+
+  const getOfficerName = () => {
+    return localStorage.getItem('officerName') || 'User';
+  };
+
   return (
-    <Box p={6} maxW="1400px" mx="auto">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+    <>
+      <OfficerNavbar 
+        officerType={getOfficerType()} 
+        officerName={getOfficerName()} 
+        pageName="User Details" 
+      />
+      <div className="min-h-screen bg-primaryBg py-4 pt-20 px-2 sm:px-4 lg:px-6">
+        <Box p={6} maxW="1400px" mx="auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
         {/* Header */}
         <VStack spacing={4} align="stretch" mb={8}>
           <HStack justify="space-between" align="center">
@@ -721,8 +738,10 @@ const UserDetailPage = () => {
           </CardBody>
         </Card>
 
-      </motion.div>
-    </Box>
+          </motion.div>
+        </Box>
+      </div>
+    </>
   );
 };
 

@@ -14,7 +14,7 @@ import { useLocalTranslation } from "../../../hooks/useLocalTranslation";
 import PasswordChangeModal from "../../../components/PasswordChangeModal";
 import { changeAdminPassword } from "../../../services/userService";
 
-const NewNavbar = () => {
+const ManagerNavbar = () => {
   const { data: user } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
@@ -153,34 +153,34 @@ const NewNavbar = () => {
 
   const getCurrentPageName = () => {
     const path = location.pathname;
-    if (path.includes('/dash/home')) return t('Home');
-    if (path.includes('/dash/loan-account')) return t('Loan Account');
-    if (path.includes('/dash/overdue-loans')) return t('Overdue Loans');
-    if (path.includes('/dash/saving-account')) return t('Saving Account');
-    if (path.includes('/dash/officer')) return t('Officer Controls');
-    if (path.includes('/dash/weekly-report')) return t('Weekly Report');
-    if (path.includes('/dash/daily-report')) return t('Daily Report');
-    if (path.includes('/dash/payment')) return t('Payment');
-    if (path.includes('/dash/payment-request')) return t('Payment Request');
-    if (path.includes('/dash/create-loan-user')) return t('Create Loan User');
-    if (path.includes('/dash/create-saving-user')) return t('Create Saving User');
-    if (path.includes('/dash/view-loan-user')) return t('View Loan User');
-    if (path.includes('/dash/view-saving-user')) return t('View Saving User');
-    if (path.includes('/dash/create-officer')) return t('Create Officer');
-    if (path.includes('/dash/view-officer')) return t('View Officer');
-    if (path.includes('/dash/add-daily-collection')) return t('Add Collection');
-    if (path.includes('/dash/add-Saving-collection')) return t('Add Saving Collection');
-    return t('Dashboard');
+    if (path.includes('/manager-dashboard') && path === '/manager-dashboard') return t('Home');
+    if (path.includes('/manager-dashboard/loan-account')) return t('Loan Account');
+    if (path.includes('/manager-dashboard/overdue-loans')) return t('Overdue Loans');
+    if (path.includes('/manager-dashboard/saving-account')) return t('Saving Account');
+    if (path.includes('/manager-dashboard/officer')) return t('Officer Controls');
+    if (path.includes('/manager-dashboard/weekly-report')) return t('Weekly Report');
+    if (path.includes('/manager-dashboard/daily-report')) return t('Daily Report');
+    if (path.includes('/manager-dashboard/payment')) return t('Payment');
+    if (path.includes('/manager-dashboard/payment-request')) return t('Payment Request');
+    if (path.includes('/manager-dashboard/create-loan-user')) return t('Create Loan User');
+    if (path.includes('/manager-dashboard/create-saving-user')) return t('Create Saving User');
+    if (path.includes('/manager-dashboard/view-loan-user')) return t('View Loan User');
+    if (path.includes('/manager-dashboard/view-saving-user')) return t('View Saving User');
+    if (path.includes('/manager-dashboard/create-officer')) return t('Create Officer');
+    if (path.includes('/manager-dashboard/view-officer')) return t('View Officer');
+    if (path.includes('/manager-dashboard/add-daily-collection')) return t('Add Collection');
+    if (path.includes('/manager-dashboard/add-saving-collection')) return t('Add Saving Collection');
+    return t('Manager Dashboard');
   };
 
   const navigationItems = [
-    { name: t("Home"), path: "/dash/home" },
-    { name: t("Loan Account"), path: "/dash/loan-account" },
-    { name: t("Overdue Loans"), path: "/dash/overdue-loans" },
-    { name: t("Saving Account"), path: "/dash/saving-account" },
-    { name: t("Officer Controls"), path: "/dash/officer" },
-    { name: t("Weekly Report"), path: "/dash/weekly-report" },
-    { name: t("Daily Report"), path: "/dash/daily-report" }
+    { name: t("Home"), path: "/manager-dashboard" },
+    { name: t("Loan Account"), path: "/manager-dashboard/loan-account" },
+    { name: t("Overdue Loans"), path: "/manager-dashboard/overdue-loans" },
+    { name: t("Saving Account"), path: "/manager-dashboard/saving-account" },
+    { name: t("Officer Controls"), path: "/manager-dashboard/officer" },
+    { name: t("Weekly Report"), path: "/manager-dashboard/weekly-report" },
+    { name: t("Daily Report"), path: "/manager-dashboard/daily-report" }
   ];
 
   return (
@@ -232,65 +232,6 @@ const NewNavbar = () => {
             </Link>
           </motion.li>
         ))}
-
-        {/* Payment Controls Dropdown */}
-        {/* <motion.li 
-          className="relative flex items-center"
-          custom={4}
-          variants={menuItemVariants}
-          initial="hidden"
-          animate="visible"
-          whileHover={{ y: -2 }}
-          transition={{ type: "spring", stiffness: 300, damping: 15 }}
-        >
-          <motion.button 
-            onClick={() => toggleDropdown("payment")} 
-            whileTap={{ scale: 0.95 }}
-            className={`flex items-center gap-1 px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 text-sm xl:text-base ${
-              openDropdown === "payment" 
-                ? "text-primary bg-primary/10" 
-                : "text-gray-700 hover:text-primary hover:bg-primary/5"
-            }`}
-          >
-            {t('Payment Controls')}
-            <motion.div
-              animate={{ rotate: openDropdown === "payment" ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center"
-            >
-              <MdKeyboardArrowDown size={18} className="sm:w-5 sm:h-5" />
-            </motion.div>
-          </motion.button>
-          
-          {openDropdown === "payment" && (
-            <motion.ul
-              variants={dropdownVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              className="absolute left-0 mt-2 w-40 sm:w-48 bg-white shadow-xl rounded-xl border border-gray-100 overflow-hidden z-[10000]"
-            >
-              <Link to="/dash/payment" onClick={closeDropdown}>
-                <motion.li 
-                  whileHover={{ backgroundColor: "#0d9488", color: "white" }}
-                  transition={{ duration: 0.2 }}
-                  className="p-3 hover:text-white cursor-pointer transition-all duration-200 text-sm"
-                >
-                  {t('Payment')}
-                </motion.li>
-              </Link>
-              <Link to="/dash/payment-request" onClick={closeDropdown}>
-                <motion.li 
-                  whileHover={{ backgroundColor: "#0d9488", color: "white" }}
-                  transition={{ duration: 0.2 }}
-                  className="p-3 hover:text-white cursor-pointer transition-all duration-200 text-sm"
-                >
-                  {t('Payment Request')}
-                </motion.li>
-              </Link>
-            </motion.ul>
-          )}
-        </motion.li> */}
       </ul>
 
       {/* Desktop Right Side Controls */}
@@ -358,7 +299,7 @@ const NewNavbar = () => {
       {/* Center - Page Name (Mobile Only) */}
       <div className="lg:hidden flex flex-col items-center text-center">
         <h1 className="text-sm font-bold text-gray-800">{getCurrentPageName()}</h1>
-        <p className="text-xs text-gray-600">Admin Dashboard</p>
+        <p className="text-xs text-gray-600">Manager Dashboard</p>
       </div>
 
       {/* Mobile Menu Button */}
@@ -405,23 +346,6 @@ const NewNavbar = () => {
                 </Link>
               </motion.div>
             ))}
-
-            {/* Mobile Payment Controls */}
-            {/* <div className="border-t border-gray-200 pt-3">
-              <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                {t('Payment Controls')}
-              </h3>
-              <Link to="/dash/payment" onClick={closeMobileMenu}>
-                <div className="px-3 py-2.5 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200 text-sm">
-                  {t('Payment')}
-                </div>
-              </Link>
-              <Link to="/dash/payment-request" onClick={closeMobileMenu}>
-                <div className="px-3 py-2.5 text-gray-700 hover:text-primary hover:bg-primary/5 rounded-lg transition-all duration-200 text-sm">
-                  {t('Payment Request')}
-                </div>
-              </Link>
-            </div> */}
 
             {/* Mobile Language Switcher */}
             <div className="border-t border-gray-200 pt-3">
@@ -471,11 +395,11 @@ const NewNavbar = () => {
               <div className="px-3 py-2.5">
                 <div className="flex items-center space-x-2.5 mb-2.5">
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-sm">
-                    {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    {user?.name ? user.name.charAt(0).toUpperCase() : 'M'}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 text-sm">{user?.name || 'User'}</p>
-                    <p className="text-xs text-gray-500">{user?.email || 'user@example.com'}</p>
+                    <p className="font-medium text-gray-900 text-sm">{user?.name || 'Manager'}</p>
+                    <p className="text-xs text-gray-500">{user?.email || 'manager@example.com'}</p>
                   </div>
                 </div>
                 
@@ -495,6 +419,9 @@ const NewNavbar = () => {
                 <button
                   onClick={() => {
                     localStorage.removeItem("token");
+                    localStorage.removeItem("userType");
+                    localStorage.removeItem("officerType");
+                    localStorage.removeItem("officerName");
                     navigate("/login");
                     closeMobileMenu();
                   }}
@@ -540,8 +467,8 @@ const NewNavbar = () => {
               </motion.div>
 
               <div className="text-gray-900">
-                <h1 className="text-lg font-bold">{user?.name}</h1>
-                <p className="text-sm text-gray-600">{user?.email}</p>
+                <h1 className="text-lg font-bold">{user?.name || 'Manager'}</h1>
+                <p className="text-sm text-gray-600">{user?.email || 'manager@example.com'}</p>
               </div>
             </div>
           </div>
@@ -574,6 +501,9 @@ const NewNavbar = () => {
               className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-200 cursor-pointer group"
               onClick={() => {
                 localStorage.removeItem("token");
+                localStorage.removeItem("userType");
+                localStorage.removeItem("officerType");
+                localStorage.removeItem("officerName");
                 navigate("/login");
               }}
             >
@@ -627,4 +557,4 @@ const NewNavbar = () => {
   );
 };
 
-export default NewNavbar;
+export default ManagerNavbar;

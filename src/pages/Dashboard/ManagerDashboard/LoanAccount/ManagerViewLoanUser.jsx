@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { Link, useParams } from "react-router-dom";
+import OfficerNavbar from "../../../../components/OfficerNavbar";
 
 // new for pdf
 
@@ -9,14 +10,14 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import groupBy from "lodash/groupBy"; // you need to install lodash
 
-import axios from "../../axios";
-import { useLocalTranslation } from "../../hooks/useLocalTranslation";
+import axios from "../../../../axios";
+import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import { FaArrowRightLong } from "react-icons/fa6";
-import Correct from "../../Images/Vector.png";
-import bgImage from "../../Images/Section (2).png";
-import Info from "../../Images/ph_info-duotone.png";
-import Table from "../../componant/Table/Table";
-import Cell from "../../componant/Table/cell";
+import Correct from "../../../../Images/Vector.png";
+import bgImage from "../../../../Images/Section (2).png";
+import Info from "../../../../Images/ph_info-duotone.png";
+import Table from "../../../../componant/Table/Table";
+import Cell from "../../../../componant/Table/cell";
 import {
   Menu,
   MenuButton,
@@ -53,10 +54,10 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import { MdEdit, MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
 import { GrOverview } from "react-icons/gr";
-function ViewLoanUser() {
+function ManagerViewLoanUser() {
   const { t } = useLocalTranslation();
   const { id } = useParams();
   console.log(id);
@@ -163,52 +164,6 @@ function ViewLoanUser() {
           </>
         ),
       },
-
-      // {
-      //   Header: t('Action', 'Action'),
-      //   accessor: "",
-      //   Cell: ({ value, row: { original } }) => {
-      //     return (
-      //       <>
-      //         <Menu>
-      //           <MenuButton
-      //             as={Button}
-      //             className="bg-purple "
-      //             colorScheme="bgBlue"
-      //             onClick={() => setNewID(original._id)}
-      //           >
-      //             {t('Actions', 'Actions')}
-      //           </MenuButton>
-      //           <MenuList>
-      //             <Link to={`/dash/edit-course/${original._id}`}>
-      //               <MenuItem>
-      //                 {" "}
-      //                 <HiStatusOnline className="mr-4" /> {t('View User', 'View User')}
-      //               </MenuItem>
-      //             </Link>
-
-      //             <Link to={`/dash/edit-course/${original._id}`}>
-      //               <MenuItem>
-      //                 {" "}
-      //                 <MdEdit className="mr-4" /> {t('Edit', 'Edit')}
-      //               </MenuItem>
-      //             </Link>
-
-      //             <MenuItem onClick={onOpen}>
-      //               {" "}
-      //               <MdDelete className="mr-4" />
-      //               {t('Delete', 'Delete')}
-      //             </MenuItem>
-      //             <MenuItem onClick={onOpen2}>
-      //               {" "}
-      //               <HiStatusOnline className="mr-4" /> {t('Status', 'Status')}
-      //             </MenuItem>
-      //           </MenuList>
-      //         </Menu>
-      //       </>
-      //     );
-      //   },
-      // },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [Dailydata]
@@ -367,11 +322,26 @@ function ViewLoanUser() {
     generatePDF();
   };
 
+  // Get officer info for navbar
+  const getOfficerType = () => {
+    return localStorage.getItem('officerType') || 'manager';
+  };
+
+  const getOfficerName = () => {
+    return localStorage.getItem('officerName') || 'Manager';
+  };
+
   return (
-    <div className="lg:py-16 lg:pt-24 py-8 pt-2 px-6 bg-primaryBg">
-      <section className=" md:p-1 ">
-        <div className="">
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
+    <>
+      <OfficerNavbar 
+        officerType={getOfficerType()} 
+        officerName={getOfficerName()} 
+        pageName="Loan User Details" 
+      />
+      <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-20">
+      <section className="md:p-1">
+        <div className="py-2">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 sm:gap-6">
             {/* User Information Section */}
             <div className="flex flex-col gap-4 text-start w-full lg:w-auto">
               <h2 className="text-lg sm:text-xl font-bold text-purple text-oswald">
@@ -399,52 +369,52 @@ function ViewLoanUser() {
             </div>
 
             {/* Buttons Section */}
-            <div className="flex flex-col gap-4 w-full lg:w-auto lg:items-end">
+            <div className="flex flex-col gap-3 sm:gap-4 w-full lg:w-auto lg:items-end">
               {/* Summary Buttons Row */}
-              <div className="flex flex-col sm:flex-row gap-2 lg:gap-4 w-full lg:w-auto">
+              <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 w-full lg:w-auto">
                 <Button
                   colorScheme="blue"
-                  size="md"
+                  size="sm"
                   borderRadius="md"
                   px={2}
-                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto text-xs sm:text-sm"
                 >
-                  Total Loan {userdata?.active_loan_id?.loan_amount} Rs.
+                  <span className="truncate">Total Loan {userdata?.active_loan_id?.loan_amount} Rs.</span>
                 </Button>
 
                 <Button
                   colorScheme="blue"
-                  size="md"
+                  size="sm"
                   borderRadius="md"
                   px={2}
-                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto text-xs sm:text-sm"
                 >
-                  {t('Total Due Amount', 'Total Due Amount')}{" "}
-                  {userdata?.active_loan_id?.total_due_amount} रु.
+                  <span className="truncate">{t('Total Due Amount', 'Total Due Amount')}{" "}
+                  {userdata?.active_loan_id?.total_due_amount} रु.</span>
                 </Button>
 
                 <Button
                   colorScheme="blue"
-                  size="md"
+                  size="sm"
                   borderRadius="md"
                   px={2}
-                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto"
+                  className="bg-primaryDark hover:bg-primaryLight w-full sm:w-auto text-xs sm:text-sm"
                 >
-                  {t('Total Penalty', 'Total Penalty')}{" "}
-                  {userdata?.active_loan_id?.total_penalty_amount} रु.
+                  <span className="truncate">{t('Total Penalty', 'Total Penalty')}{" "}
+                  {userdata?.active_loan_id?.total_penalty_amount} रु.</span>
                 </Button>
               </div>
 
               {/* Action Buttons Row */}
-              <div className="flex flex-col sm:flex-row gap-2 lg:gap-4 w-full lg:w-auto">
+              <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 w-full lg:w-auto">
                 <Menu>
                   <MenuButton
                     as={Button}
                     colorScheme="blue"
-                    size="md"
+                    size="sm"
                     borderRadius="md"
                     px={2}
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto text-xs sm:text-sm"
                     rightIcon={<span>▼</span>}
                   >
                     {t('Download PDF', 'Download PDF')}
@@ -459,15 +429,15 @@ function ViewLoanUser() {
                   </MenuList>
                 </Menu>
 
-                <Link to={`/dash/add-daily-collection/${userdata?._id}`} className="w-full sm:w-auto">
+                <Link to={`/manager-dashboard/manager-add-daily-collection/${userdata?._id}`} className="w-full sm:w-auto">
                   <Button
                     colorScheme="purple"
-                    size="md"
+                    size="sm"
                     borderRadius="md"
                     px={2}
-                    className="w-full"
+                    className="w-full text-xs sm:text-sm"
                   >
-                    {t('Add Amount', 'Add Amount')}
+                    {t('Add Daily Collection', 'Add Daily Collection')}
                   </Button>
                 </Link>
               </div>
@@ -548,8 +518,9 @@ function ViewLoanUser() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+      </div>
+    </>
   );
 }
 
-export default ViewLoanUser;
+export default ManagerViewLoanUser;

@@ -143,7 +143,7 @@ function LoanAccount() {
         setFilteredData(response?.data?.result);
       }
       const sum = response.data.result.reduce((acc, item) => {
-        return acc + (item.active_loan_id?.total_amount || 0);
+        return acc + (item.active_loan_id?.loan_amount || 0);
       }, 0);
       setTotalLoanAmt(sum);
     } catch (error) {
@@ -860,10 +860,40 @@ function LoanAccount() {
                variants={itemVariants}
                className="flex justify-between items-center mb-0 loan-header-responsive"
              >
-                               {/* Search Section */}
+
+              {/* Stats Section */}
+                 <motion.div
+                   variants={itemVariants}
+                   className="flex gap-2 stats-section"
+                 >
+                   <Menu>
+                     <MenuButton
+                       as={Button}
+                       colorScheme="blue"
+                       className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       fontWeight={700}
+                     >
+                       <span className="hidden sm:inline">{t('Total Loan Outgoing')} : ₹ {totalLoanAmt.toLocaleString()}</span>
+                       <span className="sm:hidden">Total: ₹{totalLoanAmt.toLocaleString()}</span>
+                     </MenuButton>
+                   </Menu>
+                   <Menu>
+                     <MenuButton
+                       as={Button}
+                       colorScheme="purple"
+                       className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       fontWeight={700}
+                     >
+                       <span className="hidden sm:inline">{t('Total Active User')} : {data.length}</span>
+                       <span className="sm:hidden">Active: {data.length}</span>
+                     </MenuButton>
+                   </Menu>
+                   
+                 </motion.div>
+                   {/* Search Section */}
                 <motion.div
                   variants={itemVariants}
-                  className="w-96 search-section"
+                  className="w-84 search-section"
                 >
                   <InputGroup borderRadius={5} size="sm">
                     <InputLeftElement pointerEvents="none" />
@@ -890,45 +920,6 @@ function LoanAccount() {
                   </InputGroup>
                 </motion.div>
 
-                                 {/* Stats Section */}
-                 <motion.div
-                   variants={itemVariants}
-                   className="flex gap-2 stats-section"
-                 >
-                   <Menu>
-                     <MenuButton
-                       as={Button}
-                       colorScheme="blue"
-                       className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                       fontWeight={700}
-                     >
-                       <span className="hidden sm:inline">{t('Total Collection')} : ₹ {totalLoanAmt.toLocaleString()}</span>
-                       <span className="sm:hidden">Total: ₹{totalLoanAmt.toLocaleString()}</span>
-                     </MenuButton>
-                   </Menu>
-                   <Menu>
-                     <MenuButton
-                       as={Button}
-                       colorScheme="purple"
-                       className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                       fontWeight={700}
-                     >
-                       <span className="hidden sm:inline">{t('Total Active User')} : {data.length}</span>
-                       <span className="sm:hidden">Active: {data.length}</span>
-                     </MenuButton>
-                   </Menu>
-                   <Link to="/dash/overdue-loans">
-                     <Button
-                       colorScheme="red"
-                       className="bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                       fontWeight={700}
-                     >
-                       <span className="hidden sm:inline">{t('Overdue Loans')} ⚠️</span>
-                       <span className="sm:hidden">Overdue ⚠️</span>
-                     </Button>
-                   </Link>
-                 </motion.div>
-
                  {/* Actions Section */}
                  <motion.div
                    variants={itemVariants}
@@ -938,26 +929,83 @@ function LoanAccount() {
                      <MenuButton
                        as={Button}
                        colorScheme="gray"
-                       className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       className="bg-gray-600 hover:bg-gray-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2 rounded-lg shadow-md font-medium"
+                       rightIcon={<span className="text-xs">▼</span>}
                      >
-                       {sortBy ? `${t('Sort By', 'Sort By')}: ${getSortDisplayName(sortBy)} ${sortOrder === 'asc' ? '↑' : '↓'}` : t('Sort By', 'Sort By')}
+                       <span className="hidden sm:inline">📊 {t('Sort By', 'Sort By')}</span>
+                       <span className="sm:hidden">📊 Sort</span>
+                       {sortBy && (
+                         <span className="ml-1 text-xs bg-gray-500 px-2 py-1 rounded-full">
+                           {getSortDisplayName(sortBy)} {sortOrder === 'asc' ? '↑' : '↓'}
+                         </span>
+                       )}
                      </MenuButton>
-                     <MenuList>
-                       <MenuItem onClick={() => handleSort('amount_high_to_low')}>
-                         {t('Amount High to Low')} {sortBy === 'amount_high_to_low' && (sortOrder === 'asc' ? '↑' : '↓')}
+                     <MenuList 
+                       className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[200px] z-50"
+                       placement="bottom-start"
+                       zIndex={9999}
+                     >
+                       <MenuItem 
+                         onClick={() => handleSort('amount_high_to_low')}
+                         className="hover:bg-blue-50 px-4 py-2 text-sm"
+                       >
+                         <span className="flex items-center justify-between w-full">
+                           <span>💰 {t('Amount High to Low')}</span>
+                           {sortBy === 'amount_high_to_low' && (
+                             <span className="text-blue-600 font-bold">
+                               {sortOrder === 'asc' ? '↑' : '↓'}
+                             </span>
+                           )}
+                         </span>
                        </MenuItem>
-                       <MenuItem onClick={() => handleSort('amount_low_to_high')}>
-                         {t('Amount Low to High')} {sortBy === 'amount_low_to_high' && (sortOrder === 'asc' ? '↑' : '↓')}
+                       <MenuItem 
+                         onClick={() => handleSort('amount_low_to_high')}
+                         className="hover:bg-blue-50 px-4 py-2 text-sm"
+                       >
+                         <span className="flex items-center justify-between w-full">
+                           <span>💰 {t('Amount Low to High')}</span>
+                           {sortBy === 'amount_low_to_high' && (
+                             <span className="text-blue-600 font-bold">
+                               {sortOrder === 'asc' ? '↑' : '↓'}
+                             </span>
+                           )}
+                         </span>
                        </MenuItem>
-                       <MenuItem onClick={() => handleSort('name_a_z')}>
-                         {t('Name A-Z')} {sortBy === 'name_a_z' && (sortOrder === 'asc' ? '↑' : '↓')}
+                       <MenuItem 
+                         onClick={() => handleSort('name_a_z')}
+                         className="hover:bg-blue-50 px-4 py-2 text-sm"
+                       >
+                         <span className="flex items-center justify-between w-full">
+                           <span>👤 {t('Name A-Z')}</span>
+                           {sortBy === 'name_a_z' && (
+                             <span className="text-blue-600 font-bold">
+                               {sortOrder === 'asc' ? '↑' : '↓'}
+                             </span>
+                           )}
+                         </span>
                        </MenuItem>
-                       <MenuItem onClick={() => handleSort('date_created')}>
-                         {t('Date Created')} {sortBy === 'date_created' && (sortOrder === 'asc' ? '↑' : '↓')}
+                       <MenuItem 
+                         onClick={() => handleSort('date_created')}
+                         className="hover:bg-blue-50 px-4 py-2 text-sm"
+                       >
+                         <span className="flex items-center justify-between w-full">
+                           <span>📅 {t('Date Created')}</span>
+                           {sortBy === 'date_created' && (
+                             <span className="text-blue-600 font-bold">
+                               {sortOrder === 'asc' ? '↑' : '↓'}
+                             </span>
+                           )}
+                         </span>
                        </MenuItem>
                        {sortBy && (
-                         <MenuItem onClick={() => { setSortBy(''); setSortOrder('asc'); }}>
-                           {t('Clear Sort', 'Clear Sort')}
+                         <MenuItem 
+                           onClick={() => { setSortBy(''); setSortOrder('asc'); }}
+                           className="hover:bg-red-50 px-4 py-2 text-sm border-t border-gray-200 mt-1"
+                         >
+                           <span className="flex items-center text-red-600">
+                             <span className="mr-2">🗑️</span>
+                             {t('Clear Sort', 'Clear Sort')}
+                           </span>
                          </MenuItem>
                        )}
                      </MenuList>
@@ -980,15 +1028,7 @@ function LoanAccount() {
                      <span className="hidden sm:inline">{t('Refresh Data', 'Refresh Data')}</span>
                      <span className="sm:hidden">Refresh</span>
                    </Button>
-                   <Button
-                     colorScheme="gray"
-                     className="bg-gray-500 hover:bg-gray-600 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                     onClick={fetchOfficers}
-                     isLoading={isLoadingOfficers}
-                   >
-                     <span className="hidden sm:inline">{t('Refresh Officers', 'Refresh Officers')}</span>
-                     <span className="sm:hidden">Refresh</span>
-                   </Button>
+                
                  </motion.div>
              </motion.div>
           </div>

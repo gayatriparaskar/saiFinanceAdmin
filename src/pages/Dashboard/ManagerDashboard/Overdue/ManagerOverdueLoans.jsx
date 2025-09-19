@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../axios";
-import { useLocalTranslation } from "../../hooks/useLocalTranslation";
+import axios from "../../../../axios";
+import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import { motion } from "framer-motion";
 import {
   Button,
@@ -30,7 +30,7 @@ import {
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 
-const OverdueLoans = () => {
+const ManagerOverdueLoans = () => {
   const { t } = useLocalTranslation();
   const toast = useToast();
   const [overdueLoans, setOverdueLoans] = useState([]);
@@ -136,10 +136,11 @@ const OverdueLoans = () => {
     <motion.div
       initial="hidden"
       animate="visible"
+      mt={0}
       variants={containerVariants}
-      className="min-h-screen bg-primaryBg flex flex-col pt-24 sm:pt-28"
+      className="min-h-screen bg-primaryBg flex flex-col"
     >
-      <div className="px-6 py-0">
+      <div className="px-6 py-4">
         {/* Header Section */}
         <motion.div variants={itemVariants} className="mb-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -344,4 +345,4 @@ const OverdueLoans = () => {
   );
 };
 
-export default OverdueLoans;
+export default ManagerOverdueLoans;

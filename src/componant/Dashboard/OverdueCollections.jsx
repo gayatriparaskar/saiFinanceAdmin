@@ -11,13 +11,13 @@ import {
 import dayjs from 'dayjs';
 
 const OverdueCollections = ({ 
-  overdueLoans, 
-  loading, 
-  error, 
-  getDaysOverdueColor, 
-  getPenaltyAmount,
-  totalOverdueAmount,
-  totalPenalties 
+  overdueLoans = [], 
+  loading = false, 
+  error = null, 
+  getDaysOverdueColor = () => 'yellow', 
+  getPenaltyAmount = () => 0,
+  totalOverdueAmount = 0,
+  totalPenalties = 0 
 }) => {
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -195,7 +195,7 @@ const OverdueCollections = ({
         {overdueLoans.length > 5 && (
           <div className="text-center pt-4">
             <button 
-              onClick={() => window.location.href = '/dash/overdue-loans'}
+              onClick={() => window.location.href = '/overdue-loans'}
               className="text-primary hover:text-primaryDark font-medium text-sm"
             >
               View all {overdueLoans.length} overdue loans →

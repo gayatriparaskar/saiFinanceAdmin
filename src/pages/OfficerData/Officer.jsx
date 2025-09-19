@@ -60,6 +60,8 @@ function Officer() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
   const usersPerPage = 10;
   const toast = useToast();
   
@@ -125,9 +127,22 @@ function Officer() {
        });
      }
 
+    // Apply sorting
+    if (sortBy) {
+      result = result.sort((a, b) => {
+        let comparison = 0;
+        
+        if (sortBy === 'name_asc' || sortBy === 'name_desc') {
+          comparison = (a.name || '').localeCompare(b.name || '');
+        }
+        
+        return sortOrder === 'asc' ? comparison : -comparison;
+      });
+    }
+
     setFilteredData(result);
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, data]);
+  }, [searchTerm, statusFilter, data, sortBy, sortOrder]);
 
   const handleDelete = () => {
     axios
@@ -157,23 +172,21 @@ function Officer() {
       });
   };
 
-  const handleSort = (field) => {
-    const sortedData = [...filteredData].sort((a, b) => {
-      if (field === 'name') {
-        return (a.name || '').localeCompare(b.name || '');
-      } else if (field === 'officer_type') {
-        return (a.officer_type || '').localeCompare(b.officer_type || '');
-      } else if (field === 'created_on') {
-        return new Date(b.created_on || 0) - new Date(a.created_on || 0);
-             } else if (field === 'isActive') {
-         const aStatus = a.isActive || a.is_active;
-         const bStatus = b.isActive || b.is_active;
-         return (bStatus ? 1 : 0) - (aStatus ? 1 : 0);
-       }
-      return 0;
-    });
-    setFilteredData(sortedData);
-    setCurrentPage(1);
+  const handleSort = (sortType) => {
+    setSortBy(sortType);
+    setSortOrder(sortType.includes('_desc') ? 'desc' : 'asc');
+  };
+
+  // Get display name for sort type
+  const getSortDisplayName = (sortType) => {
+    switch (sortType) {
+      case "name_asc":
+        return t('Name A-Z');
+      case "name_desc":
+        return t('Name Z-A');
+      default:
+        return '';
+    }
   };
 
   const handleBulkStatusChange = async (newStatus) => {
@@ -750,15 +763,56 @@ function Officer() {
                   <MenuButton
                     as={Button}
                     colorScheme="gray"
-                    className="bg-gray-600 hover:bg-gray-700 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                    className="bg-gray-600 hover:bg-gray-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2 rounded-lg shadow-md font-medium"
+                    rightIcon={<span className="text-xs">▼</span>}
                   >
-                    {t('Sort By', 'Sort By')}
+                    <span className="hidden sm:inline">📊 {t('Sort By', 'Sort By')}</span>
+                    <span className="sm:hidden">📊 Sort</span>
+                    {sortBy && (
+                      <span className="ml-1 text-xs bg-gray-500 px-2 py-1 rounded-full">
+                        {getSortDisplayName(sortBy)} {sortOrder === 'asc' ? '↑' : '↓'}
+                      </span>
+                    )}
                   </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={() => handleSort('name')}>{t('Name A-Z')}</MenuItem>
-                    <MenuItem onClick={() => handleSort('officer_type')}>{t('Officer Type')}</MenuItem>
-                    <MenuItem onClick={() => handleSort('created_on')}>{t('Join Date')}</MenuItem>
-                    <MenuItem onClick={() => handleSort('isActive')}>{t('Status')}</MenuItem>
+                  <MenuList 
+                    className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 min-w-[200px] z-50"
+                    placement="bottom-start"
+                    zIndex={9999}
+                  >
+                    <MenuItem 
+                      onClick={() => handleSort('name_asc')}
+                      className="hover:bg-blue-50 px-4 py-2 text-sm"
+                    >
+                      <span className="flex items-center justify-between w-full">
+                        <span>👤 {t('Name A-Z')}</span>
+                        {sortBy === 'name_asc' && (
+                          <span className="text-blue-600 font-bold">↑</span>
+                        )}
+                      </span>
+                    </MenuItem>
+                    <MenuItem 
+                      onClick={() => handleSort('name_desc')}
+                      className="hover:bg-blue-50 px-4 py-2 text-sm"
+                    >
+                      <span className="flex items-center justify-between w-full">
+                        <span>👤 {t('Name Z-A')}</span>
+                        {sortBy === 'name_desc' && (
+                          <span className="text-blue-600 font-bold">↓</span>
+                        )}
+                      </span>
+                    </MenuItem>
+                    
+                    {sortBy && (
+                      <MenuItem 
+                        onClick={() => { setSortBy(''); setSortOrder('asc'); }}
+                        className="hover:bg-red-50 px-4 py-2 text-sm border-t border-gray-200 mt-1"
+                      >
+                        <span className="flex items-center text-red-600">
+                          <span className="mr-2">🗑️</span>
+                          {t('Clear Sort', 'Clear Sort')}
+                        </span>
+                      </MenuItem>
+                    )}
                   </MenuList>
                 </Menu>
 

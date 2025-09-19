@@ -7,7 +7,7 @@ import {
   FaCalendar 
 } from 'react-icons/fa';
 
-const StatsCards = ({ stats, collectionData, loading = false }) => {
+const StatsCards = ({ stats = {}, collectionData = {}, loading = false }) => {
   const formatCurrency = (amount) => {
     return `₹${(amount || 0).toLocaleString()}`;
   };
@@ -50,9 +50,9 @@ const StatsCards = ({ stats, collectionData, loading = false }) => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-600">Today's Transactions</p>
-            <p className="text-3xl font-bold text-gray-900">{stats.totalTransactions}</p>
+            <p className="text-3xl font-bold text-gray-900">{stats?.totalTransactions || 0}</p>
             <p className="text-sm text-gray-500">
-              {collectionData.today?.loan?.count || 0} Loan + {collectionData.today?.saving?.count || 0} Saving
+              {collectionData?.today?.loan?.count || 0} Loan + {collectionData?.today?.saving?.count || 0} Saving
             </p>
           </div>
           <div className="p-3 bg-blue-100 rounded-full">
@@ -70,10 +70,10 @@ const StatsCards = ({ stats, collectionData, loading = false }) => {
           <div>
             <p className="text-sm font-medium text-gray-600">Today's Collection</p>
             <p className="text-3xl font-bold text-green-600">
-              {formatCurrency(collectionData.today?.grandTotal || 0)}
+              {formatCurrency(collectionData?.today?.grandTotal || 0)}
             </p>
             <p className="text-sm text-gray-500">
-              {formatCurrency(collectionData.today?.loan?.amount || 0)} Loan + {formatCurrency(collectionData.today?.saving?.net || 0)} Saving
+              {formatCurrency(collectionData?.today?.loan?.amount || 0)} Loan + {formatCurrency(collectionData?.today?.saving?.net || 0)} Saving
             </p>
           </div>
           <div className="p-3 bg-green-100 rounded-full">
@@ -91,10 +91,10 @@ const StatsCards = ({ stats, collectionData, loading = false }) => {
           <div>
             <p className="text-sm font-medium text-gray-600">Monthly Collection</p>
             <p className="text-3xl font-bold text-purple-600">
-              {formatCurrency(collectionData.monthly?.totalAmount || 0)}
+              {formatCurrency(collectionData?.monthly?.totalAmount || 0)}
             </p>
             <p className="text-sm text-gray-500">
-              {collectionData.monthly?.totalCount || 0} transactions
+              {collectionData?.monthly?.totalCount || 0} transactions
             </p>
           </div>
           <div className="p-3 bg-purple-100 rounded-full">
@@ -112,10 +112,10 @@ const StatsCards = ({ stats, collectionData, loading = false }) => {
           <div>
             <p className="text-sm font-medium text-gray-600">Yearly Collection</p>
             <p className="text-3xl font-bold text-orange-600">
-              {formatCurrency(collectionData.yearly?.totalAmount || 0)}
+              {formatCurrency(collectionData?.yearly?.totalAmount || 0)}
             </p>
             <p className="text-sm text-gray-500">
-              {collectionData.yearly?.totalCount || 0} transactions
+              {collectionData?.yearly?.totalCount || 0} transactions
             </p>
           </div>
           <div className="p-3 bg-orange-100 rounded-full">

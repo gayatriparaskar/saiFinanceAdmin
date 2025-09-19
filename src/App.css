@@ -36,6 +36,74 @@
   -ms-user-select: none;
 }
 
+/* Ensure dropdowns appear above table headers */
+.chakra-menu__menu-list {
+  z-index: 9999 !important;
+  position: relative !important;
+}
+
+/* Ensure table headers don't interfere with dropdowns */
+.table-header {
+  z-index: 1;
+}
+
+/* Fix z-index stacking context for dropdowns */
+.chakra-menu {
+  z-index: 9999 !important;
+}
+
+/* Ensure table sticky headers have lower z-index than dropdowns */
+.sticky {
+  z-index: 1 !important;
+}
+
+/* Fix toast z-index to appear above navbar and center it */
+.chakra-toast {
+  z-index: 100000 !important;
+  position: fixed !important;
+}
+
+.chakra-toast__manager {
+  z-index: 100000 !important;
+  position: fixed !important;
+  top: 80px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure toast container has highest z-index */
+.chakra-portal {
+  z-index: 100000 !important;
+}
+
+/* Additional toast positioning fixes */
+.chakra-toast__group {
+  z-index: 100000 !important;
+  position: fixed !important;
+  top: 80px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  pointer-events: auto !important;
+}
+
+.chakra-toast__inner {
+  z-index: 100000 !important;
+  position: fixed !important;
+}
+
+/* Ensure individual toasts are visible and centered */
+.chakra-toast {
+  position: fixed !important;
+  z-index: 100000 !important;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  top: 80px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
