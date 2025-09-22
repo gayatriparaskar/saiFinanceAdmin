@@ -78,21 +78,62 @@ function ManagerViewSavingUser() {
   const toast = useToast();
 
   useEffect(() => {
-    fetchAccountData();
-    fetchTransactions();
+    fetchAccountAndTransactionsData();
   }, [id]);
 
-  const fetchAccountData = async () => {
+  const fetchAccountAndTransactionsData = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`account/${id}`);
-      if (response?.data?.account) {
-        setAccountData(response.data.account);
+      console.log("🔍 Fetching data for ID:", id);
+      const response = await axios.get(`savingDailyCollections/${id}`);
+      console.log("🔍 Full API Response:", response);
+      console.log("🔍 Response Data:", response.data);
+      
+      if (response?.data?.result) {
+        const apiResult = response.data.result;
+        console.log("🔍 API Result:", apiResult);
+        console.log("🔍 Saving Account:", apiResult.saving_account);
+        console.log("🔍 Collections:", apiResult.collections);
+        
+        // Map the API response structure to match what the component expects
+        const mappedAccountData = {
+          ...apiResult,
+          // Map saving_account to the expected structure
+          user_id: {
+            full_name: apiResult.full_name,
+            phone_number: apiResult.phone_number,
+            address: apiResult.address
+          },
+          // Map saving_account fields to root level
+          current_amount: apiResult.saving_account?.current_amount,
+          total_interest_pay: apiResult.saving_account?.total_interest_pay,
+          emi_day: apiResult.saving_account?.emi_day,
+          account_number: apiResult.saving_account?.account_number,
+          created_on: apiResult.saving_account?.created_on,
+          end_date: apiResult.saving_account?.end_date,
+          // Keep all other saving_account fields
+          ...apiResult.saving_account
+        };
+        
+        console.log("🔍 Final Mapped Account Data:", mappedAccountData);
+        setAccountData(mappedAccountData);
+        
+        // Set transactions from collections
+        if (apiResult.collections) {
+          console.log("🔍 Setting Collections Data:", apiResult.collections);
+          setTransactions(Array.isArray(apiResult.collections) ? apiResult.collections : []);
+        } else {
+          console.log("🔍 No collections found, setting empty array");
+          setTransactions([]);
+        }
+      } else {
+        console.log("🔍 No result in response data");
       }
     } catch (error) {
-      console.error("Error fetching account data:", error);
+      console.error("❌ Error fetching account and transaction data:", error);
+      console.error("❌ Error response:", error.response);
       toast({
-        title: "Error fetching account data",
+        title: "Error fetching data",
         description: error.response?.data?.message || "Something went wrong",
         status: "error",
         duration: 4000,
@@ -100,39 +141,6 @@ function ManagerViewSavingUser() {
       });
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const fetchTransactions = async () => {
-    try {
-      const response = await axios.get(`savingDailyCollections/${id}`);
-      console.log("🔍 API Response:", response.data);
-      console.log("🔍 Response structure:", {
-        data: response.data,
-        result: response.data?.result,
-        type: typeof response.data?.result,
-        isArray: Array.isArray(response.data?.result)
-      });
-      
-      if (response?.data?.result) {
-        // Ensure we always set an array
-        const transactionData = Array.isArray(response.data.result) 
-          ? response.data.result 
-          : [response.data.result];
-        setTransactions(transactionData);
-      } else {
-        setTransactions([]);
-      }
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
-      setTransactions([]); // Set empty array on error
-      toast({
-        title: "Error fetching transactions",
-        description: error.response?.data?.message || "Something went wrong",
-        status: "error",
-        duration: 4000,
-        isClosable: true,
-      });
     }
   };
 
@@ -163,7 +171,7 @@ function ManagerViewSavingUser() {
           description: "",
         });
         onAddTransactionClose();
-        fetchTransactions();
+        fetchAccountAndTransactionsData(); // Refresh both account and transaction data
       }
     } catch (error) {
       console.error("Error adding transaction:", error);
@@ -261,13 +269,17 @@ function ManagerViewSavingUser() {
     },
     {
       Header: t('DATE'),
-      accessor: 'created_at',
+      accessor: 'created_on',
       Cell: ({ value }) => <Cell text={dayjs(value).format('DD MMM, YYYY h:mm A')} />
     },
     {
       Header: t('EMI AMOUNT/DAY'),
-      accessor: 'amount',
-      Cell: ({ value }) => <Cell text={`Rs. ${value}`} />
+      accessor: 'deposit_amount',
+      Cell: ({ value, row: { original } }) => {
+        // Show deposit amount if it exists, otherwise show withdraw amount
+        const amount = original.deposit_amount || original.withdraw_amount || 0;
+        return <Cell text={`Rs. ${amount}`} />
+      }
     },
     {
       Header: t('PENALTY AMOUNT'),
@@ -276,7 +288,7 @@ function ManagerViewSavingUser() {
     },
     {
       Header: t('COLLECTED BY'),
-      accessor: 'collected_by',
+      accessor: 'collected_officer_name',
       Cell: ({ value }) => <Cell text={value || '-'} />
     }
   ], [t]);
@@ -308,14 +320,14 @@ function ManagerViewSavingUser() {
         officerName={getOfficerName()} 
         pageName="Saving User Details" 
       />
-      <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-20">
+      <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-4">
       <section className="md:p-1">
         <div className="py-2">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 sm:gap-6">
             {/* User Information Section */}
             <div className="flex flex-col gap-4 text-start w-full lg:w-auto">
               <h2 className="text-lg sm:text-xl font-bold text-purple text-oswald">
-                {t('Name', 'Name')}: <span className="ml-2 lg:ml-4 text-base sm:text-lg">{accountData?.user_id?.full_name}</span>
+                {t('Name', 'Name')}: <span className="ml-2 lg:ml-4 text-base sm:text-lg">{accountData?.full_name}</span>
               </h2>
               <div className="flex flex-col lg:flex-row gap-4 lg:gap-20">
                 <h2 className="text-lg font-bold text-purple text-oswald">
@@ -390,7 +402,7 @@ function ManagerViewSavingUser() {
                   >
                     {t('Download PDF', 'Download PDF')}
                   </MenuButton>
-                  <MenuList bg="white" border="1px solid #e2e8f0" boxShadow="lg" zIndex={9999}>
+                  <MenuList bg="white" border="1px solid #e2e8f0" boxShadow="lg" zIndex={10000}>
                     <MenuItem onClick={handleFullPDF} _hover={{ bg: "gray.100" }}>
                       {t('Download All Data', 'Download All Data')}
                     </MenuItem>
@@ -418,7 +430,7 @@ function ManagerViewSavingUser() {
 
         <div className="mt-2">
           <Table
-            // isLoading={isLoading}
+            isLoading={isLoading}
             data={Array.isArray(transactions) ? transactions : []}
             columns={columns}
             // total={data?.total}

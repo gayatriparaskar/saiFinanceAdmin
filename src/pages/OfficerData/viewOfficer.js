@@ -93,7 +93,7 @@ function ViewOfficer() {
   }
 
   return (
-    <div className="min-h-screen bg-primaryBg py-8 px-6">
+    <div className="min-h-screen bg-primaryBg py-8 px-6 mt-20">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">

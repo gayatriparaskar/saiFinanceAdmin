@@ -338,7 +338,7 @@ function ManagerViewLoanUser() {
         officerName={getOfficerName()} 
         pageName="Loan User Details" 
       />
-      <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-20">
+      <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-4">
       <section className="md:p-1">
         <div className="py-2">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 sm:gap-6">
@@ -419,7 +419,7 @@ function ManagerViewLoanUser() {
                   >
                     {t('Download PDF', 'Download PDF')}
                   </MenuButton>
-                  <MenuList bg="white" border="1px solid #e2e8f0" boxShadow="lg" zIndex={9999}>
+                  <MenuList bg="white" border="1px solid #e2e8f0" boxShadow="lg" zIndex={10000}>
                     <MenuItem onClick={handleFullPDF} _hover={{ bg: "gray.100" }}>
                       {t('Download All Data', 'Download All Data')}
                     </MenuItem>

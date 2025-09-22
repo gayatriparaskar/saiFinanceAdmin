@@ -36,7 +36,9 @@ export const useDashboardData = () => {
         weeklyStatsResponse,
         monthlyStatsResponse,
         officerSummaryResponse,
-        officersResponse
+        officersResponse,
+        usersResponse,
+        savingUsersResponse
       ] = await Promise.allSettled([
         axios.get('admins/totalCollectionsToday'),
         axios.get('admins/totalCollectionsWeekly'),
@@ -45,7 +47,9 @@ export const useDashboardData = () => {
         axios.get('admins/totalCollectionsWeeklyStats'),
         axios.get('admins/totalCollectionsMonthlyStats'),
         axios.get('admins/todayOfficerSummary'),
-        axios.get('officers')
+        axios.get('officers'),
+        axios.get('users/'),
+        axios.get('account/')
       ]);
 
       // Process responses
@@ -57,6 +61,11 @@ export const useDashboardData = () => {
         weeklyStats: weeklyStatsResponse.status === 'fulfilled' ? weeklyStatsResponse.value?.data?.result : null,
         monthlyStats: monthlyStatsResponse.status === 'fulfilled' ? monthlyStatsResponse.value?.data?.result : null
       };
+
+      // Debug logging for collection data
+      console.log('🔍 useDashboardData - Today response:', todayResponse);
+      console.log('🔍 useDashboardData - Today data:', todayResponse.status === 'fulfilled' ? todayResponse.value?.data : null);
+      console.log('🔍 useDashboardData - Today result:', newCollectionData.today);
 
       setCollectionData(newCollectionData);
 
@@ -138,11 +147,38 @@ export const useDashboardData = () => {
       const outstandingAmounts = (newCollectionData.yearly?.totalAmount || 0) - 
                                 (newCollectionData.monthly?.totalAmount || 0);
 
+      // Calculate active users
+      const allLoanUsers = usersResponse.status === 'fulfilled' ? usersResponse.value?.data?.result || [] : [];
+      const allSavingUsers = savingUsersResponse.status === 'fulfilled' ? savingUsersResponse.value?.data?.result || [] : [];
+      
+      const loanUsers = allLoanUsers.filter(user => 
+        user.active_loan_id || user.user_type === 'loan' || user.account_type === 'loan account'
+      ).length;
+      
+      const savingUsers = allSavingUsers.filter(user => 
+        user.saving_account_id || user.user_type === 'saving' || user.account_type === 'saving account'
+      ).length;
+
+      // Calculate loan outgoing
+      let loanOutgoing = 0;
+      try {
+        const loanStatsResponse = await axios.get('admins/totalLoanDetails');
+        if (loanStatsResponse?.data?.result) {
+          loanOutgoing = loanStatsResponse.data.result.loan_amount || 0;
+        }
+      } catch (loanError) {
+        console.warn('⚠️ Could not fetch loan outgoing data:', loanError);
+      }
+
       setStats({
         totalTransactions,
         pendingApprovals: officerCollections.length || 0,
         monthlyRevenue,
-        outstandingAmounts
+        outstandingAmounts,
+        loanUsers,
+        savingUsers,
+        totalActiveUsers: loanUsers + savingUsers,
+        loanOutgoing
       });
 
       console.log('✅ Dashboard data fetched successfully');

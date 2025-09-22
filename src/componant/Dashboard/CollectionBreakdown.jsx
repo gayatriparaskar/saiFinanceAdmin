@@ -12,6 +12,12 @@ const CollectionBreakdown = ({ collectionData, loading = false }) => {
     return `₹${(amount || 0).toLocaleString()}`;
   };
 
+  // Debug log to check data structure
+  console.log('🔍 CollectionBreakdown - collectionData:', collectionData);
+  console.log('🔍 CollectionBreakdown - today data:', collectionData?.today);
+  console.log('🔍 CollectionBreakdown - today saving data:', collectionData?.today?.saving);
+  console.log('🔍 CollectionBreakdown - weekly data:', collectionData?.weekly);
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -69,6 +75,12 @@ const CollectionBreakdown = ({ collectionData, loading = false }) => {
                 {formatCurrency(collectionData.today.saving?.withdraw || 0)}
               </span>
             </div>
+            <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+              <span className="font-medium text-purple-800">Saving Net</span>
+              <span className="text-lg font-bold text-purple-600">
+                {formatCurrency(collectionData.today.saving?.net || 0)}
+              </span>
+            </div>
             <div className="flex justify-between items-center p-4 bg-gray-100 rounded-lg border-2 border-gray-300">
               <span className="font-bold text-gray-800">Net Total</span>
               <span className="text-xl font-bold text-gray-800">
@@ -98,13 +110,25 @@ const CollectionBreakdown = ({ collectionData, loading = false }) => {
             <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
               <span className="font-medium text-green-800">Week Total</span>
               <span className="text-lg font-bold text-green-600">
-                {formatCurrency(collectionData.weekly.totalAmount || 0)}
+                {formatCurrency(collectionData.weekly.grandTotal || 0)}
               </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-              <span className="font-medium text-blue-800">Transactions</span>
+              <span className="font-medium text-blue-800">Loan Collections</span>
               <span className="text-lg font-bold text-blue-600">
-                {collectionData.weekly.totalCount || 0}
+                {formatCurrency(collectionData.weekly.loan?.amount || 0)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg">
+              <span className="font-medium text-purple-800">Saving Net</span>
+              <span className="text-lg font-bold text-purple-600">
+                {formatCurrency(collectionData.weekly.saving?.net || 0)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg">
+              <span className="font-medium text-orange-800">Total Transactions</span>
+              <span className="text-lg font-bold text-orange-600">
+                {(collectionData.weekly.loan?.count || 0) + (collectionData.weekly.saving?.count || 0)}
               </span>
             </div>
             <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded-lg">

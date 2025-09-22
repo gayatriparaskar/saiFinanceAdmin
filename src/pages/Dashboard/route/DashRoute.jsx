@@ -18,6 +18,7 @@ import DashHome from "../userPanal/dashhome/DashHome";
 import OfficerInfo from "../../SavingAccount/officerInfo";
 import WeeklyReport from "../../Reports/WeeklyReport";
 import DailyReport from "../../Reports/DailyReport";
+import CombinedReport from "../../Reports/CombinedReport";
 
 const pageTransition = {
   initial: { opacity: 0, x: -20 },
@@ -26,6 +27,7 @@ const pageTransition = {
 };
 
 const DashRoute = () => {
+  console.log('🔍 DashRoute component rendered');
   return (
     <Routes>
       <Route
@@ -45,7 +47,7 @@ const DashRoute = () => {
         }
       />
       <Route
-        path="/loan-account"
+        path="/loan-accounts"
         element={
           <motion.div {...pageTransition}>
             <LoanAccount />
@@ -87,7 +89,7 @@ const DashRoute = () => {
         }
       />
       <Route
-        path="/saving-account"
+        path="/saving-accounts"
         element={
           <motion.div {...pageTransition}>
             <SavingAccount />
@@ -167,6 +169,22 @@ const DashRoute = () => {
         element={
           <motion.div {...pageTransition}>
             <DailyReport />
+          </motion.div>
+        }
+      />
+      <Route
+        path="/reports"
+        element={
+          <motion.div {...pageTransition}>
+            <CombinedReport />
+          </motion.div>
+        }
+      />
+      <Route
+        path="/officer-controls"
+        element={
+          <motion.div {...pageTransition}>
+            <Officer />
           </motion.div>
         }
       />

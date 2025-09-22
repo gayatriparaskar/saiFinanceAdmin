@@ -287,7 +287,7 @@ const NewLogin = () => {
                 </p>
                 
                 {/* Debug Test Button */}
-                <button
+                {/* <button
                   type="button"
                   onClick={async () => {
                     try {
@@ -303,7 +303,7 @@ const NewLogin = () => {
                   className="mt-2 text-xs text-blue-500 hover:text-blue-700 underline"
                 >
                   Test Officer Endpoint
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

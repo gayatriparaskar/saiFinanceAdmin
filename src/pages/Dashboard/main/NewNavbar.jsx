@@ -158,8 +158,7 @@ const NewNavbar = () => {
     if (path.includes('/dash/overdue-loans')) return t('Overdue Loans');
     if (path.includes('/dash/saving-account')) return t('Saving Account');
     if (path.includes('/dash/officer')) return t('Officer Controls');
-    if (path.includes('/dash/weekly-report')) return t('Weekly Report');
-    if (path.includes('/dash/daily-report')) return t('Daily Report');
+    if (path.includes('/dash/reports')) return t('Reports');
     if (path.includes('/dash/payment')) return t('Payment');
     if (path.includes('/dash/payment-request')) return t('Payment Request');
     if (path.includes('/dash/create-loan-user')) return t('Create Loan User');
@@ -179,8 +178,7 @@ const NewNavbar = () => {
     { name: t("Overdue Loans"), path: "/dash/overdue-loans" },
     { name: t("Saving Account"), path: "/dash/saving-account" },
     { name: t("Officer Controls"), path: "/dash/officer" },
-    { name: t("Weekly Report"), path: "/dash/weekly-report" },
-    { name: t("Daily Report"), path: "/dash/daily-report" }
+    { name: t("Reports"), path: "/dash/reports" }
   ];
 
   return (

@@ -29,6 +29,8 @@ function OfficerInfo() {
   const [isLoading, setIsLoading] = useState(true);
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [reportType, setReportType] = useState('daily'); // New state for report type
+  const [collectionData, setCollectionData] = useState({}); // New state for collection data
 
   console.log('🔄 OfficerInfo component rendered with ID:', id);
   console.log('🔄 Current URL:', window.location.href);
@@ -36,6 +38,36 @@ function OfficerInfo() {
   const toast = useToast();
   
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Function to fetch collection data based on report type
+  const fetchCollectionData = async (period) => {
+    try {
+      let endpoint = '';
+      switch (period) {
+        case 'daily':
+          endpoint = 'admins/userWiseDailyCollections';
+          break;
+        case 'weekly':
+          endpoint = 'admins/userWiseWeeklyCollections';
+          break;
+        case 'monthly':
+          endpoint = 'admins/userWiseMonthlyCollections';
+          break;
+        default:
+          endpoint = 'admins/userWiseDailyCollections';
+      }
+
+      const response = await axios.get(endpoint);
+      console.log(`📊 ${period} collection data:`, response.data);
+      
+      if (response.data?.result?.collections) {
+        setCollectionData(response.data.result.collections);
+      }
+    } catch (error) {
+      console.error(`Error fetching ${period} collection data:`, error);
+      setCollectionData([]);
+    }
+  };
 
   // Table columns configuration
   const columns = React.useMemo(
@@ -134,20 +166,43 @@ function OfficerInfo() {
         Cell: ({ value }) => <Cell text={value || '-'} />,
         minWidth: 90,
       },
+      {
+        Header: t('Total Collection', 'Total Collection'),
+        accessor: "totalCollection",
+        Cell: ({ value }) => <Cell text={`₹${value?.toLocaleString() || '0'}`} />,
+        minWidth: 120,
+      },
     ],
     [t]
   );
 
+  // Function to get collection amount for a user
+  const getUserCollectionAmount = (userId) => {
+    if (!collectionData || collectionData.length === 0) return 0;
+    
+    const userCollection = collectionData.find(item => 
+      item.user_id === userId || 
+      item.user_id?.toString() === userId?.toString()
+    );
+    
+    return userCollection ? (userCollection.total_amount || 0) : 0;
+  };
+
   // Transform collections data for table
   const tableData = React.useMemo(() => {
-    return userCollections.map((collection) => ({
-      srNo: '', // Will be handled by the Cell component
-      userName: collection.name || collection.user_name || collection.user_id?.full_name || collection.account_holder_name || collection.user_id || '-',
-      phoneNumber: collection.phone_number || '-',
-      address: collection.address || '-',
-      accountType: collection.account_type || 'N/A',
-      totalAmount: collection.total_amount || 0,
-      dueAmount: collection.total_due_amount || 0,
+    return userCollections.map((collection) => {
+      const userId = collection.user_id || collection.user_id?._id;
+      const totalCollection = getUserCollectionAmount(userId);
+      
+      return {
+        srNo: '', // Will be handled by the Cell component
+        userName: collection.name || collection.user_name || collection.user_id?.full_name || collection.account_holder_name || collection.user_id || '-',
+        phoneNumber: collection.phone_number || '-',
+        address: collection.address || '-',
+        accountType: collection.account_type || 'N/A',
+        totalAmount: collection.total_amount || 0,
+        dueAmount: collection.total_due_amount || 0,
+        totalCollection: totalCollection, // Add total collection amount
       collectedAmount: collection.collected_amount || collection.amount || collection.deposit_amount || collection.withdraw_amount || 0,
       penalty: collection.penalty || 0,
       remainingEmiDays: collection.remaining_emi_days || 0,
@@ -160,8 +215,9 @@ function OfficerInfo() {
             collection.type === 'withdraw' || collection.transaction_type === 'withdraw' ? 'withdraw' : 'savings',
       status: collection.status === 'completed' || collection.status === 'success' ? 'completed' : 
               collection.status === 'pending' ? 'pending' : 'active'
-    }));
-  }, [userCollections]);
+    };
+  });
+  }, [userCollections, collectionData]);
 
   useEffect(() => {
     async function fetchOfficerData() {
@@ -194,6 +250,7 @@ function OfficerInfo() {
           } else if (officerResponse.data.result.userCollections) {
             collections = officerResponse.data.result.userCollections;
           }
+          console.log(collections, "collections");  
           setUserCollections(Array.isArray(collections) ? collections : []);
         }
         
@@ -216,6 +273,13 @@ function OfficerInfo() {
       fetchOfficerData();
     }
   }, [id, toast]);
+
+  // Fetch collection data when report type changes
+  useEffect(() => {
+    if (id) {
+      fetchCollectionData(reportType);
+    }
+  }, [reportType, id]);
 
   const handleEditSave = async () => {
     try {
@@ -355,7 +419,7 @@ Generated by: SAI Finance Admin System
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-primaryBg flex items-center justify-center py-20 px-4">
+      <div className="min-h-screen bg-primaryBg flex items-center justify-center ">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600 text-lg">{t('Loading officer details...')}</p>
@@ -387,19 +451,19 @@ Generated by: SAI Finance Admin System
 
   return (
     <>
-      <OfficerNavbar 
+      {/* <OfficerNavbar 
         officerType={getOfficerType()} 
         officerName={getOfficerName()} 
         pageName="Officer Details" 
-      />
-      <div className="min-h-screen bg-primaryBg py-4 pt-20 px-2 sm:px-4 lg:px-6">
+      /> */}
+      <div className="min-h-screen bg-primaryBg py-4 pt-6 px-2 sm:px-4 lg:px-6">
         <div className="max-w-6xl mx-auto">
          
         {/* Officer Information Section */}
-        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 mb-4">
+        <div className=" p-4 sm:p-6">
           {/* Officer Details */}
           <div className="space-y-4 mb-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="space-y-1">
                 <span className="text-sm font-medium text-gray-600">{t('Officer Name')}</span>
                 <p className="text-lg font-semibold text-gray-800">{officerData?.name || '-'}</p>
@@ -421,19 +485,21 @@ Generated by: SAI Finance Admin System
             </div>
           </div>
 
+
+
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">{userCollections.length}</div>
-              <div className="text-sm text-blue-600 font-medium">{t('Total Collections')}</div>
+          <div className="flex gap-4 ">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg  text-center">
+              <div className="text-2xl font-bold text-blue-600">{t('Total Collections')} : {userCollections.length}</div>
+              {/* <div className="text-sm text-blue-600 font-medium">{t('Total Collections')}</div> */}
             </div>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+            <div className="bg-green-50 border border-green-200 rounded-lg   text-center">
               <div className="text-2xl font-bold text-green-600">
-                ₹ {userCollections.reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0).toLocaleString()}
+                {t('Total Amount')} : ₹ {userCollections.reduce((sum, collection) => sum + (collection.collected_amount || collection.amount || 0), 0).toLocaleString()}
               </div>
-              <div className="text-sm text-green-600 font-medium">{t('Total Amount')}</div>
+              {/* <div className="text-sm text-green-600 font-medium">{t('Total Amount')}</div> */}
             </div>
-          </div>
+       
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
@@ -459,6 +525,30 @@ Generated by: SAI Finance Admin System
               {t('Edit Officer')}
             </Button>
           </div>
+                    {/* Report Type Selection */}
+                    <div className="mb-6">
+            <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">
+                {t('Report Type')}:
+              </label>
+              <select
+                value={reportType}
+                onChange={(e) => setReportType(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              >
+                <option value="daily">{t('Daily')}</option>
+                <option value="weekly">{t('Weekly')}</option>
+                <option value="monthly">{t('Monthly')}</option>
+              </select>
+              <span className="text-sm text-gray-500">
+                {reportType === 'daily' ? t('Today') : 
+                 reportType === 'weekly' ? t('This Week') : 
+                 t('This Month')}
+              </span>
+            </div>
+            
+          </div>
+             </div>
         </div>
 
         {/* Status Card */}
@@ -494,26 +584,28 @@ Generated by: SAI Finance Admin System
 
         {/* Allotted Users Table */}
         {userCollections.length > 0 ? (
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-            <div className="bg-blue-50 px-4 py-3 border-b border-gray-200">
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden mt-0">
+            <div className="bg-blue-50  border-b border-gray-200 mt-0">
               <h3 className="text-lg font-semibold text-gray-800">
                 {t('Allotted Users & Collection Details')}
               </h3>
-              <p className="text-sm text-gray-600 mt-1">
+              {/* <p className="text-sm text-gray-600 mt-1">
                 {t('Users assigned to this officer and their collection information')}
-              </p>
+              </p> */}
             </div>
             <div className="overflow-x-auto">
               <Table
                 columns={columns}
                 data={tableData}
                 isLoading={isLoading}
-                className="min-w-full"
+                // className="min-w-full"
+                p={0}
+                m={0}
               />
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+          <div className="bg-white rounded-lg shadow-sm p-4 text-center">
             <div className="text-gray-400 text-6xl mb-4">👥</div>
             <p className="text-gray-500 text-lg font-medium mb-2">{t('No users allotted to this officer')}</p>
             <p className="text-gray-400 text-sm mb-6">{t('Users will appear here when they are assigned to this officer')}</p>

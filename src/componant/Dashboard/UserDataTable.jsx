@@ -94,6 +94,12 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
     fetchUserData();
   }, [userType]);
 
+  // Add state for collection data
+  const [collectionData, setCollectionData] = useState({
+    loanCollections: new Map(),
+    savingCollections: new Map()
+  });
+
   // Filter users based on search and filters
   useEffect(() => {
     console.log('🔍 Filtering users:', {
@@ -153,12 +159,73 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
     setCurrentPage(1); // Reset to first page when filters change
   }, [users, searchTerm, statusFilter, typeFilter]);
 
+  // Fetch collection data for all users
+  const fetchCollectionData = async () => {
+    try {
+      console.log('🔄 Fetching collection data...');
+      
+      // Fetch both loan and saving collections
+      const [loanCollectionsResponse, savingCollectionsResponse] = await Promise.all([
+        axios.get('dailyCollections'),
+        axios.get('savingDailyCollections/getAllSavings')
+      ]);
+      
+      const allLoanCollections = loanCollectionsResponse?.data?.result || [];
+      const allSavingCollections = savingCollectionsResponse?.data?.result || [];
+      
+      // Create maps for quick lookup
+      const loanCollectionMap = new Map();
+      const savingCollectionMap = new Map();
+      
+      // Process loan collections
+      allLoanCollections.forEach(collection => {
+        const userId = collection.user_id;
+        if (!loanCollectionMap.has(userId)) {
+          loanCollectionMap.set(userId, 0);
+        }
+        loanCollectionMap.set(userId, loanCollectionMap.get(userId) + (collection.amount || 0));
+      });
+      
+      // Process saving collections
+      allSavingCollections.forEach(collection => {
+        const userId = collection.user_id;
+        if (!savingCollectionMap.has(userId)) {
+          savingCollectionMap.set(userId, 0);
+        }
+        savingCollectionMap.set(userId, savingCollectionMap.get(userId) + (collection.deposit_amount || 0));
+      });
+      
+      setCollectionData({
+        loanCollections: loanCollectionMap,
+        savingCollections: savingCollectionMap
+      });
+      
+      console.log('📊 Collection data fetched:', {
+        loanCollectionsCount: allLoanCollections.length,
+        savingCollectionsCount: allSavingCollections.length,
+        loanCollectionMapSize: loanCollectionMap.size,
+        savingCollectionMapSize: savingCollectionMap.size
+      });
+      
+    } catch (error) {
+      console.warn('⚠️ Could not fetch collection data:', error);
+      // Continue without collection data
+      setCollectionData({
+        loanCollections: new Map(),
+        savingCollections: new Map()
+      });
+    }
+  };
+
   const fetchUserData = async () => {
     try {
       setLoading(true);
       setError(null);
 
       console.log('🔄 Fetching user data...');
+      
+      // Fetch collection data for all users
+      await fetchCollectionData();
       
       // Fetch data based on userType parameter
       if (userType === 'loan') {
@@ -337,15 +404,15 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
     console.log('🔄 Navigating to user detail page for user:', user);
     console.log('🔄 User type:', user.user_type);
     
-    // Navigate based on user type
+    // Navigate based on user type - use manager dashboard routes for consistency
     if (user.user_type === 'loan' || user.user_type === 'both') {
-      // For loan users or users with both accounts, navigate to loan user page
-      console.log('🔄 Navigating to loan user page:', `/view-loan-user/${user._id}`);
-      navigate(`/view-loan-user/${user._id}`);
+      // For loan users or users with both accounts, navigate to manager loan user page
+      console.log('🔄 Navigating to manager loan user page:', `/manager-dashboard/view-loan-user/${user._id}`);
+      navigate(`/manager-dashboard/view-loan-user/${user._id}`);
     } else if (user.user_type === 'saving') {
-      // For saving users, navigate to saving user page
-      console.log('🔄 Navigating to saving user page:', `/view-saving-user/${user._id}`);
-      navigate(`/view-saving-user/${user._id}`);
+      // For saving users, navigate to manager saving user page
+      console.log('🔄 Navigating to manager saving user page:', `/manager-dashboard/view-saving-user/${user._id}`);
+      navigate(`/manager-dashboard/view-saving-user/${user._id}`);
     } else if (user.user_type === 'officer') {
       // For officers, navigate to officer view page
       console.log('🔄 Navigating to officer page:', `/manager-dashboard/view-officer/${user._id}`);
@@ -383,18 +450,25 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
 
   const getDueAmount = (user) => {
     if (user.user_type === 'loan') {
-      return user.active_loan_id?.total_due_amount || user.total_due_amount || 0;
+      // For loan users, show loan_amount and amount_to_be
+      const loanAmount = user.active_loan_id?.loan_amount || user.loan_amount || 0;
+      const amountToBe = user.active_loan_id?.amount_to_be || user.amount_to_be || 0;
+      return loanAmount + amountToBe; // Sum of both fields
     } else if (user.user_type === 'saving') {
-      // For saving accounts, due amount might be calculated differently
-      return user.saving_account_id?.due_amount || 0;
+      // For saving users, show saving balance (current amount)
+      return user.saving_account_id?.current_amount || user.current_amount || 0;
     }
     return 0;
   };
 
   const getCurrentAmount = (user) => {
     if (user.user_type === 'loan') {
-      return user.active_loan_id?.loan_amount || user.loan_amount || 0;
+      // For loan users, show total_amount - loan_amount (remaining amount)
+      const totalAmount = user.active_loan_id?.total_amount || user.total_amount || 0;
+      const loanAmount = user.active_loan_id?.loan_amount || user.loan_amount || 0;
+      return Math.max(0, totalAmount - loanAmount);
     } else if (user.user_type === 'saving') {
+      // For saving users, show current amount (same as saving balance)
       return user.saving_account_id?.current_amount || user.current_amount || 0;
     }
     return 0;
@@ -440,8 +514,8 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
       'Account Type',
       'Officer Assigned',
       'Total Amount (₹)',
-      'Due Amount (₹)', 
-      'Current Amount (₹)',
+      'Loan/Saving', 
+      'Current Amount',
       'Account Created Date',
       'Status',
       'Email',
@@ -610,7 +684,7 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
                   <Th>{t("Type")}</Th>
                   <Th>{t("Officer")}</Th>
                   <Th>{t("Total Amount")}</Th>
-                  <Th>{t("Due Amount")}</Th>
+                  <Th>{t("Loan/Saving")}</Th>
                   <Th>{t("Current Amount")}</Th>
                   <Th>{t("Created Date")}</Th>
                   <Th>{t("Status")}</Th>

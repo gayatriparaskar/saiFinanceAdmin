@@ -51,6 +51,7 @@ import {
 
 import { MdEdit } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
+import { FaPlus } from "react-icons/fa";
 
 function ManagerLoanAccount() {
   const { t } = useLocalTranslation();
@@ -494,16 +495,19 @@ function ManagerLoanAccount() {
       Header: t('STATUS'),
       accessor: "status",
       Cell: ({ value, row: { original } }) => {
-        const status = original?.active_loan_id?.is_active || value;
+        // For loan accounts, check if user has an active loan (active_loan_id exists)
+        const hasActiveLoan = original?.active_loan_id && original.active_loan_id !== null;
+        const isActive = hasActiveLoan;
+        
         return (
           <div className="flex items-center space-x-2">
-            <HiStatusOnline className={`h-4 w-4 ${status === 'true' ? 'text-green-500' : 'text-red-500'}`} />
+            <HiStatusOnline className={`h-4 w-4 ${isActive ? 'text-green-500' : 'text-red-500'}`} />
             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-              status === 'true' 
+              isActive 
                 ? 'bg-green-100 text-green-800' 
                 : 'bg-red-100 text-red-800'
             }`}>
-              {status === 'active' ? t('Active') : t('Inactive')}
+              {isActive ? t('Active') : t('Inactive')}
             </span>
           </div>
         );
@@ -530,7 +534,7 @@ function ManagerLoanAccount() {
             className="text-secondary hover:text-secondaryDark p-1"
             title="Add Collection"
           >
-            <MdEdit />
+            <FaPlus />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}

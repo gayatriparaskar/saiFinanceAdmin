@@ -3,39 +3,30 @@ import axios from "../../../../axios";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 import {
   useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
   Button,
-  ModalFooter,
 } from "@chakra-ui/react";
 
 const ManagerCreateSavingUser = () => {
   const { t } = useLocalTranslation();
   const toast = useToast();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const initialFormState = {
-    full_name: "",
-    phone_number: "",
-    dob: "",
-    address: "",
-    aadhar_no: "",
-    pan_no: "",
-    monthly_income: "",
-    officer_id: "",
-    saving_details: {
-      amount_to_be: 0,
-      interest_rate: "",
-      emi_day: 120,
-      emi_amount: 0,
-      total_interest_pay: 0,
-      total_amount: 0,
-    },
-  };
+      const initialFormState = {
+        full_name: "",
+        phone_number: "",
+        dob: "",
+        address: "",
+        aadhar_no: "",
+        pan_no: "",
+        monthly_income: "",
+        officer_id: "",
+        saving_details: {
+          amount_to_be: 0, // This will be the daily EMI amount
+          interest_rate: "0", // Default interest rate
+          emi_day: 120, // Fixed at 120 days
+          emi_amount: 0,
+          total_amount: 0,
+        },
+      };
 
   const fieldLabels = {
     full_name: t("Full Name", "Full Name"),
@@ -86,61 +77,79 @@ const ManagerCreateSavingUser = () => {
     }
   };
 
-  const calculateSavingDetails = () => {
-    const { amount_to_be, interest_rate, emi_day } = formData.saving_details;
-    
-    if (amount_to_be && interest_rate && emi_day) {
-      const principal = parseFloat(amount_to_be);
-      const rate = parseFloat(interest_rate) / 100;
-      const days = parseInt(emi_day);
-      
-      const totalInterest = principal * rate * (days / 365);
-      const totalAmount = principal + totalInterest;
-      const emiAmount = totalAmount / days;
-      
-      setFormData((prevData) => ({
-        ...prevData,
-        saving_details: {
-          ...prevData.saving_details,
-          total_interest_pay: totalInterest,
-          total_amount: totalAmount,
-          emi_amount: emiAmount,
-        },
-      }));
-    }
-  };
+      const calculateSavingDetails = () => {
+        const { amount_to_be } = formData.saving_details;
+        
+        if (amount_to_be) {
+          const dailyEmiAmount = parseFloat(amount_to_be) || 0; // This is the daily EMI
+          const emi_day = 120; // Fixed at 120 days
+
+          // For simple saving account:
+          // - amount_to_be = daily EMI amount
+          // - total_amount = daily EMI * 120 days
+          // - emi_amount = daily EMI amount (same as amount_to_be)
+          const total_amount = dailyEmiAmount * emi_day;
+          const emi_amount = dailyEmiAmount; // Daily EMI is the same as amount_to_be
+          
+          setFormData((prevData) => ({
+            ...prevData,
+            saving_details: {
+              ...prevData.saving_details,
+              emi_day: emi_day, // Fixed at 120
+              total_amount: Math.ceil(total_amount),
+              emi_amount: Math.ceil(emi_amount),
+            },
+          }));
+        }
+      };
 
   useEffect(() => {
     calculateSavingDetails();
-  }, [formData.saving_details.amount_to_be, formData.saving_details.interest_rate, formData.saving_details.emi_day]);
+  }, [formData.saving_details.amount_to_be]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await axios.post("account/", formData);
+      // Prepare payload in the same format as admin controller expects
+      const payload = {
+        phone_number: formData.phone_number,
+        aadhar_no: formData.aadhar_no,
+        pan_no: formData.pan_no.toUpperCase(),
+        full_name: formData.full_name.trim(),
+        dob: formData.dob,
+        address: formData.address.trim(),
+        monthly_income: formData.monthly_income,
+        officer_id: formData.officer_id,
+        password: formData.phone_number, // Use phone number as password
+        Account_details: {
+          ...formData.saving_details,
+        },
+      };
+
+      const response = await axios.post("admins/createAccountUser", payload);
       
-      if (response.data.success) {
+      if (response.data) {
         toast({
-          title: t("Success"),
-          description: t("Saving account created successfully"),
+          title: t("Success! Saving User Created"),
           status: "success",
-          duration: 3000,
+          duration: 4000,
           isClosable: true,
+          position: "top",
         });
         
         setFormData(initialFormState);
-        setIsModalOpen(false);
       }
     } catch (error) {
       console.error("Error creating saving account:", error);
       toast({
-        title: t("Error"),
-        description: error.response?.data?.message || t("Failed to create saving account"),
+        title: t("Something Went Wrong!"),
+        description: error.response?.data?.message || t("Please try again"),
         status: "error",
-        duration: 3000,
+        duration: 4000,
         isClosable: true,
+        position: "top",
       });
     } finally {
       setIsLoading(false);
@@ -149,277 +158,100 @@ const ManagerCreateSavingUser = () => {
 
   const resetForm = () => {
     setFormData(initialFormState);
-    setIsModalOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">{t("Create Saving User")}</h1>
-            <Button
-              colorScheme="blue"
-              onClick={() => setIsModalOpen(true)}
-              size="lg"
-            >
-              {t("Create New Saving Account")}
-            </Button>
-          </div>
+    <div className="m-6 py-8">
+      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
+        <h3 className="text-xl font-bold text-purple mb-4 text-center">
+          {t("Create Saving Customer")}
+        </h3>
 
-          <div className="text-center py-12">
-            <div className="text-gray-500 text-lg mb-4">
-              {t("Click the button above to create a new saving account")}
-            </div>
+        <h4 className="text-lg font-bold mt-6 text-center">
+          {t("Saving Account Details")}
+        </h4>
+        <div className="grid grid-cols-3 gap-4 mt-2 text-start">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              {t("Daily EMI Amount")}
+            </label>
+            <input
+              className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"
+              name="saving_details.amount_to_be"
+              value={formData.saving_details.amount_to_be}
+              type="number"
+              onChange={handleChange}
+              placeholder="Daily EMI Amount"
+            />
           </div>
         </div>
-      </div>
 
-      {/* Create Saving Account Modal */}
-      <Modal isOpen={isModalOpen} onClose={resetForm} size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{t("Create Saving Account")}</ModalHeader>
-          <ModalCloseButton />
-          <form onSubmit={handleSubmit}>
-            <ModalBody>
-              <div className="space-y-6">
-                {/* Personal Information */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-700">
-                    {t("Personal Information")}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {fieldLabels.full_name} *
-                      </label>
-                      <input
-                        type="text"
-                        name="full_name"
-                        value={formData.full_name}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {fieldLabels.phone_number} *
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone_number"
-                        value={formData.phone_number}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {fieldLabels.dob} *
-                      </label>
-                      <input
-                        type="date"
-                        name="dob"
-                        value={formData.dob}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {fieldLabels.aadhar_no} *
-                      </label>
-                      <input
-                        type="text"
-                        name="aadhar_no"
-                        value={formData.aadhar_no}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {fieldLabels.pan_no} *
-                      </label>
-                      <input
-                        type="text"
-                        name="pan_no"
-                        value={formData.pan_no}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {fieldLabels.monthly_income} *
-                      </label>
-                      <input
-                        type="number"
-                        name="monthly_income"
-                        value={formData.monthly_income}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="mt-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t("Address")} *
-                    </label>
-                    <textarea
-                      name="address"
-                      value={formData.address}
-                      onChange={handleChange}
-                      required
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
+        <hr className="my-4" />
 
-                {/* Officer Assignment */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-700">
-                    {t("Officer Assignment")}
-                  </h3>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      {t("Assign Officer")} *
-                    </label>
-                    <select
-                      name="officer_id"
-                      value={formData.officer_id}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">{t("Select Officer")}</option>
-                      {officers.map((officer) => (
-                        <option key={officer._id} value={officer._id}>
-                          {officer.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+        <h4 className="text-lg font-bold mt-6 text-center">{t("Personal Details")}</h4>
+        <div className="grid grid-cols-3 gap-4 text-start">
+          {Object.keys(fieldLabels).map((key) => (
+            <div key={key}>
+              <label className="block text-sm font-medium text-gray-700">
+                {fieldLabels[key]}
+              </label>
+              <input
+                className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"
+                name={key}
+                value={formData[key]}
+                type={key === "dob" ? "date" : "text"}
+                maxLength={
+                  key === "phone_number" ? 10 : key === "aadhar_no" ? 12 : undefined
+                }
+                pattern={
+                  key === "phone_number"
+                    ? "[0-9]{10}"
+                    : key === "aadhar_no"
+                    ? "[0-9]{12}"
+                    : undefined
+                }
+                required={key === "phone_number" || key === "aadhar_no"}
+                onChange={handleChange}
+                placeholder={fieldLabels[key]}
+              />
+            </div>
+          ))}
+          <div className="grid grid-cols-1">
+            <label className="text-sm font-medium text-gray-700">
+              {t("Select Officers", "Select Officers")}
+            </label>
+            <select
+              className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"
+              name="officer_id"
+              value={formData.officer_id}
+              onChange={handleChange}
+            >
+              <option value="">{t("Select Officer", "Select Officer")}</option>
+              {officers.map((officer) => (
+                <option key={officer._id} value={officer._id}>
+                  {officer.name}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              {t("Showing")} {officers.length} {t("collection officer(s) for account assignment")}
+            </p>
+          </div>
+        </div>
 
-                {/* Saving Details */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-gray-700">
-                    {t("Saving Details")}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t("Amount to be Saved")} *
-                      </label>
-                      <input
-                        type="number"
-                        name="saving_details.amount_to_be"
-                        value={formData.saving_details.amount_to_be}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t("Interest Rate (%)")} *
-                      </label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        name="saving_details.interest_rate"
-                        value={formData.saving_details.interest_rate}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t("EMI Days")} *
-                      </label>
-                      <input
-                        type="number"
-                        name="saving_details.emi_day"
-                        value={formData.saving_details.emi_day}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t("Daily EMI Amount")}
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.saving_details.emi_amount}
-                        readOnly
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t("Total Interest")}
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.saving_details.total_interest_pay}
-                        readOnly
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        {t("Total Amount")}
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.saving_details.total_amount}
-                        readOnly
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button variant="ghost" mr={3} onClick={resetForm}>
-                {t("Cancel")}
-              </Button>
-              <Button
-                type="submit"
-                colorScheme="blue"
-                isLoading={isLoading}
-                loadingText={t("Creating...")}
-              >
-                {t("Create Account")}
-              </Button>
-            </ModalFooter>
-          </form>
-        </ModalContent>
-      </Modal>
+
+        <div className="flex justify-center mt-8">
+          <Button
+            type="submit"
+            colorScheme="blue"
+            isLoading={isLoading}
+            loadingText={t("Creating...")}
+            size="lg"
+          >
+            {t("Create Saving Account")}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// Primary API endpoint - Using Render deployment
+// Primary API endpoint - Using localhost for development
 const API_BASE_URL = "https://saifinancebackend.onrender.com/api/";
 // const API_BASE_URL = "http://localhost:3001/api/";
 

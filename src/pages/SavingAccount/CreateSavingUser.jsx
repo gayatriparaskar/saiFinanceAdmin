@@ -28,9 +28,9 @@ const CreateSavingUser = () => {
     monthly_income: "",
     officer_id: "",
     saving_details: {
-      amount_to_be: 0,
-      interest_rate: "",
-      emi_day: 120,
+      amount_to_be: 0, // This will be the daily EMI amount
+      interest_rate: "0",
+      emi_day: 120, // Fixed at 120 days
       emi_amount: 0,
       total_interest_pay: 0,
       total_amount: 0,
@@ -91,19 +91,24 @@ const CreateSavingUser = () => {
 
       if (
         name === "amount_to_be" ||
-        name === "interest_rate" ||
-        name === "emi_day"
+        name === "interest_rate"
       ) {
-        const amount = parseFloat(updatedDetails.amount_to_be) || 0;
+        const dailyEmiAmount = parseFloat(updatedDetails.amount_to_be) || 0; // This is the daily EMI
         const rate = parseFloat(updatedDetails.interest_rate) || 0;
-        const emi_day = parseInt(updatedDetails.emi_day) || 1;
+        const emi_day = 120; // Fixed at 120 days
 
-        const total_interest_pay = (amount * rate * 4) / 100;
-        const total_amount = amount + total_interest_pay;
-        const emi_amount = total_amount / (emi_day || 1);
+        // For simple saving account:
+        // - amount_to_be = daily EMI amount
+        // - total_amount = daily EMI * 120 days
+        // - emi_amount = daily EMI amount (same as amount_to_be)
+        // - total_interest_pay = total_amount * interest_rate * (4 months / 12 months)
+        const total_amount = dailyEmiAmount * emi_day;
+        const total_interest_pay = (total_amount * rate * 4) / 100; // 4 months interest
+        const emi_amount = dailyEmiAmount; // Daily EMI is the same as amount_to_be
 
         updatedDetails = {
           ...updatedDetails,
+          emi_day: emi_day, // Fixed at 120
           total_interest_pay: Math.ceil(total_interest_pay),
           total_amount: Math.ceil(total_amount),
           emi_amount: Math.ceil(emi_amount),
@@ -180,11 +185,11 @@ const CreateSavingUser = () => {
       errors.push(t("Monthly Income must be a positive number"));
     }
 
-    // Saving Amount validation
+    // Daily EMI Amount validation
     if (!formData.saving_details.amount_to_be) {
-      errors.push(t("Saving Amount is required"));
+      errors.push(t("Daily EMI Amount is required"));
     } else if (isNaN(formData.saving_details.amount_to_be) || parseFloat(formData.saving_details.amount_to_be) <= 0) {
-      errors.push(t("Saving Amount must be a positive number"));
+      errors.push(t("Daily EMI Amount must be a positive number"));
     }
 
     // Interest Rate validation
@@ -274,7 +279,7 @@ const CreateSavingUser = () => {
         <div className=" grid grid-cols-3 gap-4 mt-2 text-start">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              {t("Saving Amount")}
+              {t("Daily EMI Amount")} <span className="text-red-500">*</span>
             </label>
             <input
               className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm sm:text-sm"
@@ -282,10 +287,13 @@ const CreateSavingUser = () => {
               value={formData.saving_details.amount_to_be}
               type="number"
               onChange={handleSavingDetailsChange}
-              placeholder="Amount To Be"
+              placeholder="Daily EMI Amount"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              {t("This will be the daily payment amount for 120 days")}
+            </p>
           </div>
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700">
               {t("Interest Rate (%)")}
             </label>
@@ -297,7 +305,7 @@ const CreateSavingUser = () => {
               onChange={handleSavingDetailsChange}
               placeholder={t("Interest Rate")}
             />
-          </div>
+          </div> */}
 
           <div className="mt-4">
             <Button colorScheme="teal" onClick={() => setIsModalOpen(true)}>
@@ -305,6 +313,41 @@ const CreateSavingUser = () => {
             </Button>
           </div>
         </div>
+
+        {/* Calculated Values Display */}
+        {/* {(formData.saving_details.amount_to_be > 0 || formData.saving_details.interest_rate > 0) && (
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h5 className="text-md font-semibold text-blue-800 mb-3">
+              {t("Calculated Values")}
+            </h5>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-medium text-gray-700">{t("Daily EMI Amount")}:</span>
+                <span className="ml-2 text-green-600 font-semibold">
+                  ₹{formData.saving_details.amount_to_be || 0}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium text-gray-700">{t("Total Amount (120 days)")}:</span>
+                <span className="ml-2 text-blue-600 font-semibold">
+                  ₹{formData.saving_details.total_amount || 0}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium text-gray-700">{t("Interest Amount (4 months)")}:</span>
+                <span className="ml-2 text-purple-600 font-semibold">
+                  ₹{formData.saving_details.total_interest_pay || 0}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium text-gray-700">{t("Duration")}:</span>
+                <span className="ml-2 text-gray-600 font-semibold">
+                  {formData.saving_details.emi_day || 120} {t("days")}
+                </span>
+              </div>
+            </div>
+          </div>
+        )} */}
 
         <hr className="my-4" />
 
@@ -376,38 +419,41 @@ const CreateSavingUser = () => {
       </form>
 
       {/* Modal for Saving Details */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} isCentered>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Saving Calculation Details</ModalHeader>
+        <ModalContent maxW="md" mx={4}>
+          <ModalHeader textAlign="center">Saving Calculation Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <p>
-              <strong>Amount To Be:</strong>{" "}
-              {formData.saving_details.amount_to_be}
-            </p>
-            <p>
-              <strong>{t("Interest Rate:")}:</strong>{" "}
-              {formData.saving_details.interest_rate}%
-            </p>
-            <p>
-              <strong>Total Interest:</strong>{" "}
-              {formData.saving_details.total_interest_pay}
-            </p>
-            <p>
-              <strong>Total Amount:</strong>{" "}
-              {formData.saving_details.total_amount}
-            </p>
-            <p>
-              <strong>EMI Day:</strong> {formData.saving_details.emi_day}
-            </p>
-            <p>
-              <strong>EMI Amount:</strong>{" "}
-              {formData.saving_details.emi_amount}
-            </p>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <strong>Amount To Be:</strong>
+                <span className="text-blue-600 font-semibold">
+                  ₹{formData.saving_details.amount_to_be || 0}
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <strong>Total Amount:</strong>
+                <span className="text-green-600 font-semibold">
+                  ₹{formData.saving_details.total_amount || 0}
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <strong>EMI Day:</strong>
+                <span className="text-purple-600 font-semibold">
+                  {formData.saving_details.emi_day || 120} days
+                </span>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <strong>EMI Amount:</strong>
+                <span className="text-orange-600 font-semibold">
+                  ₹{formData.saving_details.emi_amount || 0}
+                </span>
+              </div>
+            </div>
           </ModalBody>
-          <ModalFooter>
-            <Button onClick={() => setIsModalOpen(false)} colorScheme="red">
+          <ModalFooter justifyContent="center" gap={4}>
+            <Button onClick={() => setIsModalOpen(false)} colorScheme="red" variant="outline">
               Cancel
             </Button>
             <Button onClick={() => setIsModalOpen(false)} colorScheme="green">

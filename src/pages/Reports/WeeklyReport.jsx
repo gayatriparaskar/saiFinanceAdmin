@@ -2,20 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
-import { updateOfficerCollectionData } from '../../services/officerService';
 import axios from '../../axios';
 import WeeklyChart from '../../componant/Charts/WeeklyChart';
 import { Card, CardBody } from '@chakra-ui/react';
-import { Text, Stat, StatLabel, StatNumber, StatHelpText, StatArrow } from '@chakra-ui/react';
-import OfficerNavbar from '../../components/OfficerNavbar';
-import { FaEye } from 'react-icons/fa';
+import { Text, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Badge } from '@chakra-ui/react';
+import { FaEye, FaUser, FaRupeeSign } from 'react-icons/fa';
 import SimpleChart from "../../componant/Charts/SimpleChart";
 
 const WeeklyReport = () => {
   const { t } = useLocalTranslation();
   const navigate = useNavigate();
   const [weeklyData, setWeeklyData] = useState([]);
-  const [officersData, setOfficersData] = useState([]);
+  const [userWiseData, setUserWiseData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalWeeklyCollection, setTotalWeeklyCollection] = useState(0);
@@ -24,27 +22,27 @@ const WeeklyReport = () => {
   
   // Monthly data states
   const [monthlyData, setMonthlyData] = useState([]);
-  const [monthlyOfficersData, setMonthlyOfficersData] = useState([]);
+  const [monthlyUserWiseData, setMonthlyUserWiseData] = useState([]);
   const [totalMonthlyCollection, setTotalMonthlyCollection] = useState(0);
   const [averageDailyMonthlyCollection, setAverageDailyMonthlyCollection] = useState(0);
   const [isMonthlyView, setIsMonthlyView] = useState(false);
 
-  // Handle payment process update
-  const handlePaymentProcessUpdate = async (officerId, newPaymentProcess) => {
+  // Fetch user-wise weekly collections
+  const fetchUserWiseData = async () => {
     try {
-      console.log('🔄 Updating payment process for officer:', officerId, 'to:', newPaymentProcess);
+      console.log('📈 Fetching user-wise weekly data');
+      const response = await axios.get(`admins/userWiseWeeklyCollections`);
       
-      await updateOfficerCollectionData(officerId, {
-        paymentProcess: newPaymentProcess
-      });
-      
-      console.log('✅ Payment process updated successfully');
-      
-      // Refresh the data
-      fetchWeeklyData();
+      if (response?.data?.result) {
+        console.log('📈 User-wise weekly data response:', response.data.result);
+        setUserWiseData(response.data.result);
+      } else {
+        console.log('📈 No user-wise weekly data received');
+        setUserWiseData([]);
+      }
     } catch (error) {
-      console.error('❌ Error updating payment process:', error);
-      alert('Failed to update payment process. Please try again.');
+      console.error('Error fetching user-wise weekly data:', error);
+      setUserWiseData([]);
     }
   };
 
@@ -54,9 +52,9 @@ const WeeklyReport = () => {
     const name = localStorage.getItem('officerName') || 'Manager';
     setOfficerName(name);
     fetchWeeklyData();
-    fetchOfficersData();
+    fetchUserWiseData();
     fetchMonthlyData();
-    fetchMonthlyOfficersData();
+    fetchMonthlyUserWiseData();
   }, []);
 
   const fetchWeeklyData = async () => {
@@ -116,22 +114,24 @@ const WeeklyReport = () => {
     }
   };
 
-   const fetchOfficersData = async () => {
-     try {
-       const response = await axios.get('admins/weeklyOfficerCollections');
-       if (response?.data?.result) {
-         console.log('📈 Weekly officer collections data loaded:', response.data.result.length, 'officers');
-         setOfficersData(response.data.result);
-       } else {
-         console.warn('No weekly officer collections data received from API');
-         setOfficersData([]);
-       }
-     } catch (error) {
-       console.error('Error fetching weekly officer collections data:', error);
-       setOfficersData([]);
-       // Don't set error state here as it's not critical for the main functionality
-     }
-   };
+  // Fetch user-wise monthly collections
+  const fetchMonthlyUserWiseData = async () => {
+    try {
+      console.log('📈 Fetching user-wise monthly data');
+      const response = await axios.get(`admins/userWiseMonthlyCollections`);
+      
+      if (response?.data?.result) {
+        console.log('📈 User-wise monthly data response:', response.data.result);
+        setMonthlyUserWiseData(response.data.result);
+      } else {
+        console.log('📈 No user-wise monthly data received');
+        setMonthlyUserWiseData([]);
+      }
+    } catch (error) {
+      console.error('Error fetching user-wise monthly data:', error);
+      setMonthlyUserWiseData([]);
+    }
+  };
 
    const fetchMonthlyData = async () => {
      try {
@@ -246,14 +246,14 @@ const WeeklyReport = () => {
          
          if (Array.isArray(result) && result.length > 0) {
            console.log('✅ Monthly officer collections data loaded:', result.length, 'officers');
-           setMonthlyOfficersData(result);
+           setMonthlyUserWiseData(result);
          } else {
            console.warn('⚠️ No officer data found in response');
-           setMonthlyOfficersData([]);
+           setMonthlyUserWiseData([]);
          }
        } else {
          console.warn('⚠️ No result data in monthly officers API response');
-         setMonthlyOfficersData([]);
+         setMonthlyUserWiseData([]);
        }
      } catch (error) {
        console.error('❌ Error fetching monthly officer collections data:', error);
@@ -262,7 +262,7 @@ const WeeklyReport = () => {
          status: error.response?.status,
          data: error.response?.data
        });
-       setMonthlyOfficersData([]);
+       setMonthlyUserWiseData([]);
      }
    };
 
@@ -303,7 +303,7 @@ const WeeklyReport = () => {
           onClick={() => {
             setError(null);
             fetchWeeklyData();
-            fetchOfficersData();
+            fetchUserWiseData();
           }}
           className="ml-auto px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm"
         >
@@ -314,9 +314,7 @@ const WeeklyReport = () => {
   );
 
   return (
-    <>
-      <OfficerNavbar officerType="accounter" officerName={officerName} pageName="Weekly Report" />
-      <div className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg p-4 sm:p-6 pt-28">
+    <div className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg  sm:p-6 ">
         <div className="max-w-7xl mx-auto ">
           {showErrorBanner}
         {/* Header */}
@@ -324,13 +322,13 @@ const WeeklyReport = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8 mt-2"
+          className="mb-8"
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <p className="text-3xl sm:text-3xl font-bold text-gray-800 mb-2 mt-14">
+            {/* <p className="text-3xl sm:text-3xl font-bold text-gray-800 mb-2 ">
               {isMonthlyView ? t('Monthly collection statistics and analytics') : t('Weekly collection statistics and analytics')}
-            </p>
-            <div className="flex gap-2 mt-14">
+            </p> */}
+            {/* <div className="flex gap-2 mt-14">
               <button
                 onClick={() => setIsMonthlyView(false)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -351,7 +349,7 @@ const WeeklyReport = () => {
               >
                 {t('Monthly')}
               </button>
-            </div>
+            </div> */}
           </div>
         </motion.div>
 
@@ -440,38 +438,30 @@ const WeeklyReport = () => {
              {isMonthlyView ? t('Officer Monthly Collections') : t('Officer Weekly Collections')} - {isMonthlyView ? t('This Month') : t('This Week')}
            </h2>
            
-           {(isMonthlyView ? monthlyOfficersData : officersData).length > 0 ? (
+           {(isMonthlyView ? monthlyUserWiseData : userWiseData).length > 0 ? (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-               {(isMonthlyView ? monthlyOfficersData : officersData).map((officer) => {
-                 // Calculate totals for this officer from the collections API
-                 const loanAmount = isMonthlyView ? (officer.monthlyLoanAmount || 0) : (officer.weeklyLoanAmount || 0);
-                 const penaltyAmount = isMonthlyView ? (officer.monthlyPenalty || 0) : (officer.weeklyPenalty || 0);
-                 const savingAmount = isMonthlyView ? (officer.monthlySavingAmount || 0) : (officer.weeklySavingAmount || 0);
+               {(isMonthlyView ? monthlyUserWiseData : userWiseData).map((user) => {
+                 // Calculate totals for this user from the collections API
+                 const loanAmount = user.loanAmount || 0;
+                 const penaltyAmount = user.penaltyAmount || 0;
+                 const savingAmount = user.savingAmount || 0;
                  const totalAmount = loanAmount + penaltyAmount + savingAmount;
                  
                  return (
-                   <div key={officer._id} className="bg-gradient-to-br from-white to-gray-50 rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+                   <div key={user._id || user.id} className="bg-gradient-to-br from-white to-gray-50 rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
                      <div className="flex items-center justify-between mb-4">
                        <div>
-                         <h3 className="text-lg font-semibold text-gray-800">{officer.name || officer.username}</h3>
-                         <p className="text-sm text-blue-600 font-medium">{officer.officer_code}</p>
+                         <h3 className="text-lg font-semibold text-gray-800">{user.name || user.username}</h3>
+                         <p className="text-sm text-blue-600 font-medium">{user.phone}</p>
                        </div>
                        <div className="flex items-center space-x-2">
                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                           officer.is_active || officer.isActive 
+                           user.status === 'active' 
                              ? 'bg-green-100 text-green-800' 
                              : 'bg-red-100 text-red-800'
                          }`}>
-                           {officer.is_active || officer.isActive ? 'Active' : 'Inactive'}
+                           {user.status === 'active' ? 'Active' : 'Inactive'}
                          </span>
-                         <button
-                           onClick={() => handleViewOfficerDetails(officer)}
-                           className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-1 text-xs font-medium"
-                           title="View Officer Details"
-                         >
-                           <FaEye className="w-3 h-3" />
-                           <span>View </span>
-                         </button>
                        </div>
                      </div>
                      
@@ -543,25 +533,22 @@ const WeeklyReport = () => {
             {isMonthlyView ? t('Monthly Collection Summary') : t('Weekly Collection Summary')} - {isMonthlyView ? t('This Month') : t('This Week')}
           </h2>
           
-          {(isMonthlyView ? monthlyOfficersData : officersData).length > 0 ? (
+          {(isMonthlyView ? monthlyUserWiseData : userWiseData).length > 0 ? (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                {(() => {
                  // Use collections data from the API based on view
-                 const currentData = isMonthlyView ? monthlyOfficersData : officersData;
-                 const totalLoan = currentData.reduce((sum, officer) => {
-                   const loanAmount = isMonthlyView ? (officer.monthlyLoanAmount || 0) : (officer.weeklyLoanAmount || 0);
-                   return sum + loanAmount;
+                 const currentData = isMonthlyView ? monthlyUserWiseData : userWiseData;
+                 const totalLoan = currentData.reduce((sum, user) => {
+                   return sum + (user.loanAmount || 0);
                  }, 0);
-                 const totalPenalty = currentData.reduce((sum, officer) => {
-                   const penaltyAmount = isMonthlyView ? (officer.monthlyPenalty || 0) : (officer.weeklyPenalty || 0);
-                   return sum + penaltyAmount;
+                 const totalPenalty = currentData.reduce((sum, user) => {
+                   return sum + (user.penaltyAmount || 0);
                  }, 0);
-                 const totalSaving = currentData.reduce((sum, officer) => {
-                   const savingAmount = isMonthlyView ? (officer.monthlySavingAmount || 0) : (officer.weeklySavingAmount || 0);
-                   return sum + savingAmount;
+                 const totalSaving = currentData.reduce((sum, user) => {
+                   return sum + (user.savingAmount || 0);
                  }, 0);
-                 const totalAllTimeLoan = currentData.reduce((sum, officer) => sum + (officer.totalLoanAmount || 0), 0);
-                 const totalAllTimeSaving = currentData.reduce((sum, officer) => sum + (officer.totalSavingAmount || 0), 0);
+                 const totalAllTimeLoan = currentData.reduce((sum, user) => sum + (user.totalLoanAmount || 0), 0);
+                 const totalAllTimeSaving = currentData.reduce((sum, user) => sum + (user.totalSavingAmount || 0), 0);
                  
                  const totalAll = totalLoan + totalPenalty + totalSaving;
                  const totalAllTimeAll = totalAllTimeLoan + totalAllTimeSaving;
@@ -601,7 +588,7 @@ const WeeklyReport = () => {
                       {/* <p className="text-2xl font-bold text-orange-600">₹{totalAllTimeAll.toLocaleString()}</p> */}
                     </div>
                     <div className="bg-gray-50 p-2 rounded-lg border border-gray-200">
-                      <h3 className="text-sm font-medium text-gray-800 ">{t('Active Officers')} : {officersData.filter(officer => officer.is_active || officer.isActive).length}</h3>
+                      <h3 className="text-sm font-medium text-gray-800 ">{t('Active Users')} : {userWiseData.filter(user => user.status === 'active').length}</h3>
                     </div>
                   </>
                 );
@@ -618,7 +605,6 @@ const WeeklyReport = () => {
 
         </div>
       </div>
-    </>
   );
 };
 

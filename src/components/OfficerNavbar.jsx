@@ -5,7 +5,8 @@ import {
   FaSignOutAlt, 
   FaUserCircle, 
   FaCog,
-  FaHome
+  FaHome,
+  FaChevronDown
 } from 'react-icons/fa';
 import { 
   HiMenu,
@@ -20,7 +21,9 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
   const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isReportsDropdownOpen, setIsReportsDropdownOpen] = useState(false);
   const profileRef = useRef(null);
+  const reportsRef = useRef(null);
   
   // Password change modal state
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
@@ -211,24 +214,28 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
     setShowProfile(newState);
   };
 
-  // Handle clicking outside profile dropdown
+  // Handle clicking outside dropdowns
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         console.log('🔄 Clicking outside profile dropdown, closing...');
         setShowProfile(false);
       }
+      if (reportsRef.current && !reportsRef.current.contains(event.target)) {
+        console.log('🔄 Clicking outside reports dropdown, closing...');
+        setIsReportsDropdownOpen(false);
+      }
     };
 
-    if (showProfile) {
+    if (showProfile || isReportsDropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      console.log('🔄 Profile dropdown opened, click outside listener added');
+      console.log('🔄 Dropdown opened, click outside listener added');
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showProfile]);
+  }, [showProfile, isReportsDropdownOpen]);
 
   return (
     <motion.nav 
@@ -261,29 +268,100 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
           </div>
 
           {/* Right side - Desktop Controls */}
-          <div className="hidden md:flex items-center space-x-4">
-            {/* Daily and Weekly Reports - For Managers and Accounters */}
-            {(officerType === 'manager' || officerType === 'accounter') && (
-              <div className="flex items-center space-x-2">
+          <div className="hidden md:flex items-center space-x-3">
+            {/* Navigation Items - For Managers (Full Navigation) */}
+            {officerType === 'manager' && (
+              <>
                 <button
                   onClick={() => {
-                    console.log('📊 Daily Report button clicked');
-                    navigate('/accounter-dashboard/daily-report');
+                    console.log('🔍 Loan Account button clicked');
+                    navigate('/manager-dashboard/loan-accounts');
                   }}
-                  className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                  className="px-4 py-2 text-sm font-medium bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
                 >
-                  Daily Report
+                  <span className="text-lg">💰</span>
+                  <span>Loan Account</span>
                 </button>
+                
+                <button
+                  onClick={() => navigate('/manager-dashboard/overdue-loans')}
+                  className="px-4 py-2 text-sm font-medium bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
+                >
+                  <span className="text-lg">⚠️</span>
+                  <span>Overdue Loan</span>
+                </button>
+                
+                <button
+                  onClick={() => navigate('/manager-dashboard/saving-accounts')}
+                  className="px-4 py-2 text-sm font-medium bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
+                >
+                  <span className="text-lg">🏦</span>
+                  <span>Saving Account</span>
+                </button>
+                
                 <button
                   onClick={() => {
-                    console.log('📈 Weekly Report button clicked');
-                    navigate('/accounter-dashboard/weekly-report');
+                    console.log('🔍 Officer Control button clicked');
+                    navigate('/manager-dashboard/officer-controls');
                   }}
-                  className="px-3 py-1.5 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                  className="px-4 py-2 text-sm font-medium bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
                 >
-                  Weekly Report
+                  <span className="text-lg">👥</span>
+                  <span>Officer Control</span>
                 </button>
-              </div>
+                
+                <button
+                  onClick={() => {
+                    console.log('📊 Reports button clicked');
+                    navigate('/manager-dashboard/reports');
+                  }}
+                  className="px-4 py-2 text-sm font-medium bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
+                >
+                  <span className="text-lg">📊</span>
+                  <span>Reports</span>
+                </button>
+              </>
+            )}
+
+            {/* Navigation Items - For Accounter (Officer Control + Reports) */}
+            {officerType === 'accounter' && (
+              <>
+                <button
+                  onClick={() => {
+                    console.log('👥 Officer Control button clicked');
+                    navigate('/accounter-dashboard/officer-controls');
+                  }}
+                  className="px-4 py-2 text-sm font-medium bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
+                >
+                  <span className="text-lg">👥</span>
+                  <span>Officer Control</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    console.log('📊 Reports button clicked');
+                    navigate('/accounter-dashboard/reports');
+                  }}
+                  className="px-4 py-2 text-sm font-medium bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
+                >
+                  <span className="text-lg">📊</span>
+                  <span>Reports</span>
+                </button>
+              </>
+            )}
+
+            {/* Navigation Items - For Collection Officer (Only Reports) */}
+            {officerType === 'collection_officer' && (
+              <button
+                onClick={() => {
+                  console.log('📊 Reports button clicked');
+                  navigate('/collection-dashboard/reports');
+                }}
+                className="px-4 py-2 text-sm font-medium bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
+              >
+                <span className="text-lg">📊</span>
+                <span>Reports</span>
+              </button>
             )}
 
             {/* Profile */}
@@ -398,32 +476,109 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
               <span>Go to Dashboard</span>
             </button>
 
-            {/* Mobile Daily and Weekly Reports - For Managers and Accounters */}
-            {(officerType === 'manager' || officerType === 'accounter') && (
-              <div className="space-y-2">
+            {/* Mobile Navigation Items - For Managers (Full Navigation) */}
+            {officerType === 'manager' && (
+              <>
                 <button
                   onClick={() => {
-                    console.log('📊 Mobile Daily Report button clicked');
-                    navigate('/accounter-dashboard/daily-report');
+                    navigate('/manager-dashboard/loan-accounts');
                     closeMobileMenu();
                   }}
-                  className="w-full flex items-center justify-center space-x-3 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  className="w-full flex items-center space-x-4 p-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors shadow-md hover:shadow-lg"
                 >
-                  <span>📊</span>
-                  <span>Daily Report</span>
+                  <span className="text-xl">💰</span>
+                  <span className="font-medium">Loan Account</span>
                 </button>
+                
                 <button
                   onClick={() => {
-                    console.log('📈 Mobile Weekly Report button clicked');
-                    navigate('/accounter-dashboard/weekly-report');
+                    navigate('/manager-dashboard/overdue-loans');
                     closeMobileMenu();
                   }}
-                  className="w-full flex items-center justify-center space-x-3 p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                  className="w-full flex items-center space-x-4 p-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-md hover:shadow-lg"
                 >
-                  <span>📈</span>
-                  <span>Weekly Report</span>
+                  <span className="text-xl">⚠️</span>
+                  <span className="font-medium">Overdue Loan</span>
                 </button>
-              </div>
+                
+                <button
+                  onClick={() => {
+                    navigate('/manager-dashboard/saving-accounts');
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center space-x-4 p-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors shadow-md hover:shadow-lg"
+                >
+                  <span className="text-xl">🏦</span>
+                  <span className="font-medium">Saving Account</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    navigate('/manager-dashboard/officer-controls');
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center space-x-4 p-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
+                >
+                  <span className="text-xl">👥</span>
+                  <span className="font-medium">Officer Control</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    console.log('📊 Mobile Reports button clicked');
+                    navigate('/manager-dashboard/reports');
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center space-x-4 p-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors shadow-md hover:shadow-lg"
+                >
+                  <span className="text-xl">📊</span>
+                  <span className="font-medium">Reports</span>
+                </button>
+              </>
+            )}
+
+            {/* Mobile Navigation Items - For Accounter (Officer Control + Reports) */}
+            {officerType === 'accounter' && (
+              <>
+                <button
+                  onClick={() => {
+                    console.log('👥 Mobile Officer Control button clicked');
+                    navigate('/accounter-dashboard/officer-controls');
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center space-x-4 p-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
+                >
+                  <span className="text-xl">👥</span>
+                  <span className="font-medium">Officer Control</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    console.log('📊 Mobile Reports button clicked');
+                    navigate('/accounter-dashboard/reports');
+                    closeMobileMenu();
+                  }}
+                  className="w-full flex items-center space-x-4 p-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors shadow-md hover:shadow-lg"
+                >
+                  <span className="text-xl">📊</span>
+                  <span className="font-medium">Reports</span>
+                </button>
+              </>
+            )}
+
+            {/* Mobile Navigation Items - For Collection Officer (Only Reports) */}
+            {officerType === 'collection_officer' && (
+              <button
+                onClick={() => {
+                  console.log('📊 Mobile Reports button clicked');
+                  navigate('/collection-dashboard/reports');
+                  closeMobileMenu();
+                }}
+                className="w-full flex items-center space-x-4 p-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors shadow-md hover:shadow-lg"
+              >
+                <span className="text-xl">📊</span>
+                <span className="font-medium">Reports</span>
+              </button>
             )}
 
             

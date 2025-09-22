@@ -510,7 +510,17 @@ const ManagerDashboardContent = () => {
       className="min-h-screen bg-primaryBg"
     >
       {/* Stats Cards */}
-      <div className=" p-4 "> <StatsCards stats={stats} collectionData={collectionData} loading={loading} /> </div>
+      <div className="p-4">
+        <StatsCards 
+          stats={stats} 
+          collectionData={collectionData} 
+          loading={loading}
+          onReportTypeChange={(reportType) => {
+            console.log('📊 Report type changed to:', reportType);
+            // You can add additional logic here if needed
+          }}
+        />
+      </div>
       
 
       {/* Assigned Collections Section */}
@@ -564,6 +574,7 @@ const ManagerDashboardContent = () => {
       {/* Officer Table */}
       <div className="mt-4 p-4"> <OfficerTable 
         officers={officers}
+        activeOfficersCount={stats.activeOfficers}
         editingOfficer={editingOfficer}
         editingField={editingField}
         handleEditAmount={handleEditAmount}

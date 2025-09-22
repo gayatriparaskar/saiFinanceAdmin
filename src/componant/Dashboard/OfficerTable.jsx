@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaUsers, FaDownload, FaEllipsisV, FaEye, FaUserCheck, FaFlag, FaUniversity, FaSync } from 'react-icons/fa';
+import { FaUsers, FaDownload, FaEllipsisV, FaEye, FaUserCheck, FaFlag, FaUniversity, FaSync, FaCalendarDay, FaCalendarWeek, FaCalendarAlt } from 'react-icons/fa';
+import axios from '../../axios';
 import { 
   Card, 
   CardBody, 
@@ -43,11 +44,169 @@ const OfficerTable = ({
   onStatusClick,
   onViewDetails,
   onPaymentProcess,
-  onRefresh
+  onRefresh,
+  activeOfficersCount = 0
 }) => {
   const { t } = useLocalTranslation();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Collection data state
+  const [collectionData, setCollectionData] = useState({
+    daily: [],
+    weekly: [],
+    monthly: []
+  });
+  const [collectionLoading, setCollectionLoading] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState('daily');
+
+  // Fetch officer collection data
+  const fetchOfficerCollections = async (period) => {
+    try {
+      setCollectionLoading(true);
+      console.log(`📊 Fetching ${period} officer collections...`);
+      
+      let endpoint = '';
+      let params = {};
+      
+      if (period === 'daily') {
+        endpoint = 'admins/officerWiseDailyCollections';
+        params = { date: dayjs().format('YYYY-MM-DD') };
+      } else if (period === 'weekly') {
+        endpoint = 'admins/officerWiseWeeklyCollections';
+      } else if (period === 'monthly') {
+        endpoint = 'admins/officerWiseMonthlyCollections';
+      }
+      
+      const response = await axios.get(endpoint, { params });
+      console.log(`📊 ${period} officer collections response:`, response.data);
+      
+      const collections = response.data.result?.collections || [];
+      
+      console.log(`📊 ${period} officer collections:`, collections);
+      console.log(`📊 ${period} collections count:`, collections.length);
+      console.log(`📊 ${period} total amount:`, response.data.result?.totalAmount || 0);
+      
+      // Debug officer IDs in collections
+      if (collections.length > 0) {
+        console.log(`📊 Officer IDs in collections:`, collections.map(c => ({
+          officer_id: c.officer_id,
+          officer_name: c.officer_name,
+          total_amount: c.total_amount
+        })));
+      } else {
+        console.log(`📊 No collections found for ${period}`);
+      }
+      
+      setCollectionData(prev => ({
+        ...prev,
+        [period]: collections
+      }));
+      
+    } catch (error) {
+      console.error(`❌ Error fetching ${period} officer collections:`, error);
+      toast({
+        title: t('Error'),
+        description: t(`Failed to fetch ${period} collections`),
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setCollectionLoading(false);
+    }
+  };
+
+  // Get collection amount for an officer
+  const getOfficerCollectionAmount = (officerId, period) => {
+    const collections = collectionData[period] || [];
+    console.log(`🔍 Getting collection amount for officer ${officerId} (${period}):`, {
+      collections: collections,
+      officerId: officerId,
+      period: period
+    });
+    
+    // Try different ID matching strategies
+    console.log(`🔍 Trying to match officer ID: ${officerId} (type: ${typeof officerId})`);
+    console.log(`🔍 Available collection officer IDs:`, collections.map(c => ({
+      officer_id: c.officer_id,
+      officer_id_type: typeof c.officer_id,
+      officer_name: c.officer_name
+    })));
+    
+    let officerCollection = collections.find(c => c.officer_id === officerId);
+    if (!officerCollection) {
+      // Try string comparison
+      officerCollection = collections.find(c => String(c.officer_id) === String(officerId));
+    }
+    if (!officerCollection) {
+      // Try with _id field
+      officerCollection = collections.find(c => c._id === officerId);
+    }
+    if (!officerCollection) {
+      // Try with ObjectId comparison
+      officerCollection = collections.find(c => c.officer_id?.toString() === officerId?.toString());
+    }
+    
+    console.log(`🔍 Found officer collection:`, officerCollection);
+    
+    const amount = officerCollection?.total_amount || 0;
+    console.log(`🔍 Collection amount:`, amount);
+    
+    return amount;
+  };
+
+  // Fetch collections when component mounts or period changes
+  useEffect(() => {
+    fetchOfficerCollections(selectedPeriod);
+  }, [selectedPeriod]);
+
+  // Test backend endpoint on component mount
+  useEffect(() => {
+    const testBackendEndpoint = async () => {
+      try {
+        console.log('🧪 Testing backend endpoint...');
+        console.log('🧪 Officers data:', officers);
+        console.log('🧪 Officer IDs:', officers.map(o => ({ name: o.name, id: o._id, idType: typeof o._id })));
+        
+        const testResponse = await axios.get('admins/officerWiseDailyCollections', {
+          params: { date: dayjs().format('YYYY-MM-DD') }
+        });
+        console.log('🧪 Backend test response:', testResponse.data);
+        
+        // Also test with a different date (yesterday)
+        const yesterdayResponse = await axios.get('admins/officerWiseDailyCollections', {
+          params: { date: dayjs().subtract(1, 'day').format('YYYY-MM-DD') }
+        });
+        console.log('🧪 Yesterday test response:', yesterdayResponse.data);
+        
+        // Test weekly endpoint
+        const weeklyResponse = await axios.get('admins/officerWiseWeeklyCollections');
+        console.log('🧪 Weekly test response:', weeklyResponse.data);
+        
+        // Test collections data endpoint
+        const testDataResponse = await axios.get('admins/testCollectionsData');
+        console.log('🧪 Test collections data response:', testDataResponse.data);
+        
+        // Test raw collections to see if they have collected_by field
+        const rawCollectionsResponse = await axios.get('dailyCollections');
+        console.log('🧪 Raw collections sample:', rawCollectionsResponse.data?.result?.slice(0, 3));
+        
+        // Test if basic admin endpoint works
+        const basicTestResponse = await axios.get('admins/totalCollectionsToday');
+        console.log('🧪 Basic admin endpoint test:', basicTestResponse.data);
+        
+        // Test simple endpoint without authentication
+        const simpleTestResponse = await axios.get('admins/testSimple');
+        console.log('🧪 Simple test endpoint:', simpleTestResponse.data);
+        
+      } catch (error) {
+        console.error('🧪 Backend test error:', error);
+      }
+    };
+    
+    testBackendEndpoint();
+  }, [officers]);
 
   // Handle status update
   const handleStatusUpdate = async (officerId, newStatus) => {
@@ -162,9 +321,7 @@ const OfficerTable = ({
     const headers = [
       'Sr. No.',
       'Officer Name', 
-      'Officer Code',
-      'Today\'s Collection (₹)',
-      'Total Collection (₹)',
+      `${selectedPeriod === 'daily' ? 'Today\'s' : selectedPeriod === 'weekly' ? 'Weekly' : 'Monthly'} Collection (₹)`,
       'Paid Amount (₹)',
       'Remaining Amount (₹)',
       'Assigned To',
@@ -173,18 +330,19 @@ const OfficerTable = ({
     ];
 
     // Data rows with proper formatting
-    const dataRows = filteredOfficers.map((officer, index) => [
-      index + 1, // Serial number
-      `"${officer.name}"`, // Quoted to handle names with commas
-      officer.officer_code,
-      (officer.todayCollection || 0).toLocaleString('en-IN'),
-      (officer.totalCollection || 0).toLocaleString('en-IN'),
-      (officer.paidAmount || 0).toLocaleString('en-IN'),
-      (officer.remainingAmount || 0).toLocaleString('en-IN'),
-      officer.assignTo || 'Unassigned',
-      officer.status,
-      officer.created_on ? dayjs(officer.created_on).format('DD/MM/YYYY') : 'N/A'
-    ]);
+    const dataRows = filteredOfficers.map((officer, index) => {
+      const collectionAmount = getOfficerCollectionAmount(officer._id, selectedPeriod);
+      return [
+        index + 1, // Serial number
+        `"${officer.name}"`, // Quoted to handle names with commas
+        collectionAmount.toLocaleString('en-IN'),
+        (officer.paidAmount || 0).toLocaleString('en-IN'),
+        (officer.remainingAmount || 0).toLocaleString('en-IN'),
+        officer.assignTo || 'Unassigned',
+        officer.status,
+        officer.created_on ? dayjs(officer.created_on).format('DD/MM/YYYY') : 'N/A'
+      ];
+    });
 
     // Combine all data
     const csvData = [
@@ -224,6 +382,10 @@ const OfficerTable = ({
 
   // Handle view details - use the prop function for redirect
   const handleViewDetails = (officer) => {
+    console.log('🔍 OfficerTable - View Details clicked for officer:', officer);
+    console.log('🔍 OfficerTable - Officer ID:', officer._id);
+    console.log('🔍 OfficerTable - onViewDetails function:', onViewDetails);
+    
     if (onViewDetails) {
       onViewDetails(officer);
     } else {
@@ -255,15 +417,36 @@ const OfficerTable = ({
       <Card>
         <CardBody>
           <VStack spacing={6} align="stretch">
-            {/* Header */}
-            <HStack justify="space-between" align="center">
+            {/* Header - Responsive */}
+            <VStack spacing={4} align="stretch" className="sm:flex-row sm:justify-between sm:items-center">
               <HStack>
                 <FaUsers className="text-purple-600" />
-                <Text fontSize="xl" fontWeight="semibold" color="gray.900">
+                <Text fontSize="lg sm:xl" fontWeight="semibold" color="gray.900">
                   {t("Officer Collection Overview")}
                 </Text>
               </HStack>
-              <HStack spacing={2}>
+              <HStack spacing={2} className="flex-wrap">
+                <Select
+                  value={selectedPeriod}
+                  onChange={(e) => setSelectedPeriod(e.target.value)}
+                  size="sm"
+                  width="120px"
+                >
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </Select>
+                <Button
+                  leftIcon={<FaUserCheck />}
+                  colorScheme="purple"
+                  variant="solid"
+                  size="sm"
+                  isDisabled
+                  _disabled={{ opacity: 1, cursor: 'default' }}
+                  className="hidden sm:flex"
+                >
+                  Active: {activeOfficersCount}
+                </Button>
                 <Button
                   leftIcon={<FaSync />}
                   colorScheme="green"
@@ -273,7 +456,8 @@ const OfficerTable = ({
                   isLoading={loading}
                   loadingText={t("Refreshing...")}
                 >
-                  {t("Refresh")}
+                  <span className="hidden sm:inline">{t("Refresh")}</span>
+                  <span className="sm:hidden">↻</span>
                 </Button>
                 <Button
                   leftIcon={<FaDownload />}
@@ -282,12 +466,13 @@ const OfficerTable = ({
                   size="sm"
                   onClick={exportData}
                 >
-                  {t("Export Data")}
+                  <span className="hidden sm:inline">{t("Export Data")}</span>
+                  <span className="sm:hidden">↓</span>
                 </Button>
               </HStack>
-            </HStack>
+            </VStack>
 
-            {/* Search and Filters */}
+            {/* Search and Filters - Responsive */}
             <VStack spacing={4} align="stretch">
               <InputGroup>
                 <InputLeftElement pointerEvents="none">
@@ -300,11 +485,12 @@ const OfficerTable = ({
                 />
               </InputGroup>
               
-              <HStack spacing={4}>
+              <HStack spacing={4} className="flex-wrap">
                 <Select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   maxW="200px"
+                  minW="150px"
                 >
                   <option value="all">{t("All Status")}</option>
                   <option value="Pending">{t("Pending")}</option>
@@ -316,6 +502,7 @@ const OfficerTable = ({
                   value={assignFilter}
                   onChange={(e) => setAssignFilter(e.target.value)}
                   maxW="200px"
+                  minW="150px"
                 >
                   <option value="all">{t("All Assignments")}</option>
                   <option value="officer">{t("Officer")}</option>
@@ -325,39 +512,67 @@ const OfficerTable = ({
               </HStack>
             </VStack>
 
-            {/* Table */}
-            <TableContainer>
-              <Table variant="simple" size="sm">
+            {/* Table - Responsive */}
+            <TableContainer overflowX="auto" className="w-full">
+              <Table variant="simple" size="sm" minW="800px">
                 <Thead>
                   <Tr>
-                    <Th>{t("Officer Name")}</Th>
-                    <Th>{t("Officer Code")}</Th>
-                    <Th>{t("Today's Collection")}</Th>
-                    <Th>{t("Total Collection")}</Th>
-                    <Th>{t("Paid Amount")}</Th>
-                    <Th>{t("Remaining Amount")}</Th>
-                    <Th>{t("Payment Process")}</Th>
-                    <Th>{t("Assigned To")}</Th>
-                    <Th>{t("Status")}</Th>
-                    <Th>{t("Actions")}</Th>
+                    <Th minW="120px">{t("Officer Name")}</Th>
+                    <Th minW="140px">
+                      {t("Collection Amount")} 
+                      <Text fontSize="xs" color="gray.500" mt={1}>
+                        ({selectedPeriod === 'daily' ? 'Today' : selectedPeriod === 'weekly' ? 'This Week' : 'This Month'})
+                      </Text>
+                    </Th>
+                    <Th minW="100px">{t("Paid Amount")}</Th>
+                    <Th minW="120px">{t("Remaining Amount")}</Th>
+                    <Th minW="150px">{t("Payment Process")}</Th>
+                    <Th minW="100px">{t("Assigned To")}</Th>
+                    <Th minW="100px">{t("Status")}</Th>
+                    <Th minW="80px">{t("Actions")}</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {paginatedOfficers.map((officer, index) => (
-                    <Tr key={index}>
-                      <Td fontWeight="medium">{officer.name}</Td>
-                      <Td>{officer.officer_code}</Td>
-                      <Td fontWeight="medium" color="blue.600">
-                        {formatCurrency(officer.todayCollection || 0)}
-                      </Td>
-                      <Td fontWeight="medium" color="green.600">
-                        {formatCurrency(officer.totalCollection || 0)}
-                      </Td>
-                      <Td>
-                        <Text color="purple.600" fontWeight="medium">
-                          {formatCurrency(officer.paidAmount || 0)}
-                        </Text>
-                      </Td>
+                  {paginatedOfficers.map((officer, index) => {
+                    console.log(`🔍 Processing officer ${index + 1}:`, {
+                      name: officer.name,
+                      id: officer._id,
+                      period: selectedPeriod
+                    });
+                    const collectionAmount = getOfficerCollectionAmount(officer._id, selectedPeriod);
+                    return (
+                      <Tr key={index}>
+                        <Td fontWeight="medium">
+                          <Button
+                            variant="link"
+                            colorScheme="blue"
+                            fontWeight="medium"
+                            onClick={() => handleViewDetails(officer)}
+                            _hover={{ textDecoration: "underline" }}
+                            p={0}
+                            h="auto"
+                            textAlign="left"
+                          >
+                            {officer.name}
+                          </Button>
+                        </Td>
+                        <Td>
+                          <HStack>
+                            <Text color="green.600" fontWeight="bold">
+                              {formatCurrency(collectionAmount)}
+                            </Text>
+                            {collectionAmount > 0 && (
+                              <Text fontSize="xs" color="green.500">
+                                ✓
+                              </Text>
+                            )}
+                          </HStack>
+                        </Td>
+                        <Td>
+                          <Text color="purple.600" fontWeight="medium">
+                            {formatCurrency(officer.paidAmount || 0)}
+                          </Text>
+                        </Td>
                       <Td>
                         <Text color="orange.600" fontWeight="medium">
                           {formatCurrency(officer.remainingAmount || 0)}
@@ -369,6 +584,7 @@ const OfficerTable = ({
                           onChange={(e) => onPaymentProcess && onPaymentProcess(officer, e.target.value)}
                           size="sm"
                           width="150px"
+                          minW="120px"
                         >
                           <option value="officer">Officer</option>
                           <option value="manager">Manager</option>
@@ -383,8 +599,10 @@ const OfficerTable = ({
                           colorScheme="blue"
                           variant="outline"
                           onClick={() => onAssignToClick(officer)}
+                          className="w-full sm:w-auto"
                         >
-                          {officer.assignTo || t('Assign')}
+                          <span className="hidden sm:inline">{officer.assignTo || t('Assign')}</span>
+                          <span className="sm:hidden">Assign</span>
                         </Button>
                       </Td>
                       <Td>
@@ -405,28 +623,33 @@ const OfficerTable = ({
                           size="sm"
                           colorScheme="purple"
                           onClick={() => handleViewDetails(officer)}
+                          className="w-full sm:w-auto"
                         >
-                          {t('View')}
+                          <span className="hidden sm:inline">{t('View')}</span>
+                          <span className="sm:hidden">👁</span>
                         </Button>
                       </Td>
                     </Tr>
-                  ))}
+                  );
+                  })}
                 </Tbody>
               </Table>
             </TableContainer>
 
-            {/* Pagination */}
+            {/* Pagination - Responsive */}
             {totalPages > 1 && (
-              <HStack justify="center" spacing={2}>
+              <HStack justify="center" spacing={2} className="flex-wrap">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   isDisabled={currentPage === 1}
+                  className="w-full sm:w-auto"
                 >
-                  {t('Previous')}
+                  <span className="hidden sm:inline">{t('Previous')}</span>
+                  <span className="sm:hidden">←</span>
                 </Button>
-                <Text fontSize="sm">
+                <Text fontSize="sm" className="text-center">
                   {t('Page')} {currentPage} {t('of')} {totalPages}
                 </Text>
                 <Button
@@ -434,8 +657,10 @@ const OfficerTable = ({
                   variant="outline"
                   onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                   isDisabled={currentPage === totalPages}
+                  className="w-full sm:w-auto"
                 >
-                  {t('Next')}
+                  <span className="hidden sm:inline">{t('Next')}</span>
+                  <span className="sm:hidden">→</span>
                 </Button>
               </HStack>
             )}
@@ -462,22 +687,12 @@ const OfficerTable = ({
                   <Text fontWeight="bold">{t("Officer Name")}:</Text>
                   <Text>{selectedOfficer.officer_name}</Text>
                 </Box>
-                <Box>
-                  <Text fontWeight="bold">{t("Officer Code")}:</Text>
-                  <Text>{selectedOfficer.officer_code}</Text>
-                </Box>
-                <Box>
+                {/* <Box>
                   <Text fontWeight="bold">{t("Today's Collection")}:</Text>
                   <Text color="blue.600" fontWeight="medium">
                     {formatCurrency(selectedOfficer.todayCollection || 0)}
                   </Text>
-                </Box>
-                <Box>
-                  <Text fontWeight="bold">{t("Total Collection")}:</Text>
-                  <Text color="green.600" fontWeight="medium">
-                    {formatCurrency(selectedOfficer.totalCollection || 0)}
-                  </Text>
-                </Box>
+                </Box> */}
                 <Box>
                   <Text fontWeight="bold">{t("Paid Amount")}:</Text>
                   <Text color="purple.600" fontWeight="medium">

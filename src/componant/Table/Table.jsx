@@ -48,7 +48,7 @@ const Table = ({
                       <th
                         key={headerKey || cIdx}
                         {...headerProps}
-                        className="px-3 py-2 font-bold uppercase text-xs text-gray-900 sticky top-0 z-1 bg-blue-200 text-center border-r border-gray-300 last:border-r-0"
+                        className=" font-bold uppercase text-xs text-gray-900 sticky top-0 z-1 bg-blue-200 text-center border-r border-gray-300 last:border-r-0"
                       >
                         {column.render("Header")}
                       </th>

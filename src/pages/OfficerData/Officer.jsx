@@ -59,6 +59,8 @@ function Officer() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [editData, setEditData] = useState(null);
+  const [collectionData, setCollectionData] = useState({});
+  const [reportType, setReportType] = useState('daily');
   const [isEditing, setIsEditing] = useState(false);
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
@@ -67,6 +69,41 @@ function Officer() {
   
      const { isOpen, onOpen, onClose } = useDisclosure();
    const cancelRef = React.useRef();
+
+  // Function to fetch collection data
+  const fetchCollectionData = async (period) => {
+    try {
+      let endpoint = '';
+      if (period === 'daily') {
+        endpoint = 'admins/officerWiseDailyCollections';
+      } else if (period === 'weekly') {
+        endpoint = 'admins/officerWiseWeeklyCollections';
+      } else if (period === 'monthly') {
+        endpoint = 'admins/officerWiseMonthlyCollections';
+      }
+
+      const response = await axios.get(endpoint);
+      console.log(`📊 ${period} officer collections response:`, response.data);
+      
+      const collections = response.data.result?.collections || [];
+      setCollectionData(prev => ({
+        ...prev,
+        [period]: collections
+      }));
+    } catch (error) {
+      console.error(`Error fetching ${period} collection data:`, error);
+    }
+  };
+
+  // Function to get collection amount for an officer
+  const getOfficerCollectionAmount = (officerId, period) => {
+    const collections = collectionData[period] || [];
+    const officerCollection = collections.find(c => 
+      c.officer_id === officerId || 
+      c.officer_id?.toString() === officerId?.toString()
+    );
+    return officerCollection ? (officerCollection.total_amount || 0) : 0;
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -101,8 +138,16 @@ function Officer() {
     fetchData();
   }, [toast]);
 
+  // Fetch collection data when report type changes
   useEffect(() => {
-    let result = data;
+    fetchCollectionData(reportType);
+  }, [reportType]);
+
+  useEffect(() => {
+    let result = data.map(officer => ({
+      ...officer,
+      total_collection: getOfficerCollectionAmount(officer._id, reportType)
+    }));
 
     // Apply search filter
     if (searchTerm.trim() !== "") {
@@ -142,7 +187,7 @@ function Officer() {
 
     setFilteredData(result);
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, data, sortBy, sortOrder]);
+  }, [searchTerm, statusFilter, data, sortBy, sortOrder, collectionData, reportType]);
 
   const handleDelete = () => {
     axios
@@ -479,6 +524,8 @@ function Officer() {
         Header: t('Sr No.'),
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
+        minWidth: 60,
+        width: 60,
       },
       {
         Header: t('Officer Name'),
@@ -486,6 +533,7 @@ function Officer() {
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.name || '-'}`} bold={"bold"} />
         ),
+        minWidth: 120,
       },
       {
         Header: t('Officer Type'),
@@ -493,6 +541,7 @@ function Officer() {
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.officer_type ? original.officer_type.replace('_', ' ').toUpperCase() : '-'}`} />
         ),
+        minWidth: 140,
       },
       {
         Header: t('Officer Code'),
@@ -500,6 +549,7 @@ function Officer() {
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.officer_code || '-'}`} />
         ),
+        minWidth: 100,
       },
       {
         Header: t('Phone Number'),
@@ -507,10 +557,20 @@ function Officer() {
         Cell: ({ value, row: { original } }) => (
           <Cell text={`${original?.phone_number || '-'}`} />
         ),
+        minWidth: 120,
+      },
+      {
+        Header: t('Total Collection'),
+        accessor: "total_collection",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={`₹${original?.total_collection?.toLocaleString() || '0'}`} />
+        ),
+        minWidth: 140,
       },
              {
          Header: t('Status'),
          accessor: "isActive",
+         minWidth: 120,
          Cell: ({ value, row: { original } }) => {
            const currentStatus = original?.isActive || original?.is_active;
            return (
@@ -541,16 +601,15 @@ function Officer() {
       {
         Header: t('Action'),
         accessor: "",
+        minWidth: 100,
         Cell: ({ value, row: { original } }) => {
           return (
             <Menu>
               <MenuButton
                 as={Button}
-                className="bg-purple"
-                colorScheme="bgBlue hover:bg-secondaryLight"
+                size="sm"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-md shadow-sm font-medium"
                 onClick={() => setNewID(original._id)}
-                p={2}   // padding 0
-                m={0.5}   // margin 0
               >
                 {t('Actions')}
               </MenuButton>
@@ -657,113 +716,48 @@ function Officer() {
        </style>
        <motion.div
          initial="hidden"
-         animate="visible"
-         variants={containerVariants}
-                   className="min-h-screen bg-primaryBg flex flex-col pt-24 sm:pt-28"
-       >
+           animate="visible"
+           variants={containerVariants}
+                    className="min-h-screen bg-primaryBg flex flex-col pt-10 sm:pt-10"
+         >
              {/* Fixed Header Section */}
        <motion.div 
          variants={itemVariants}
          className="flex-shrink-0 pb-0 px-4"
        >
                    <section className="md:p-0 mt-0">
-           <div className="py-0">
+           <div className="py-0 pt-2">
                          <motion.div 
                variants={itemVariants}
-               className="flex justify-between items-center mb-0 officer-header-responsive"
+               className="space-y-4 mb-0 officer-header-responsive"
              >
-               {/* Stats Section */}
+               {/* First Row - Total Officers and Action Buttons */}
                <motion.div
                  variants={itemVariants}
-                 className="flex gap-2"
+                 className="flex flex-wrap gap-4 items-center justify-between"
                >
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme="blue"
-                    className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                    fontWeight={700}
-                  >
-                    {t('Total Officers')} : {data.length}
-                  </MenuButton>
-                </Menu>
-                
-              </motion.div>
+                 {/* Total Officers */}
+                 <div className="flex gap-2">
+                   <Menu>
+                     <MenuButton
+                       as={Button}
+                       colorScheme="blue"
+                       size="sm"
+                       className="bg-primary hover:bg-primaryDark text-white px-4 py-2 font-medium rounded-md shadow-sm"
+                     >
+                       {t('Total Officers')} : {data.length}
+                     </MenuButton>
+                   </Menu>
+                 </div>
 
-                             {/* Search & Filters Section */}
-               <motion.div 
-                 variants={itemVariants}
-                 className="flex gap-2 search-section"
-               >
-                 {/* Search Input */}
-                 <div className="w-80">
-                  <InputGroup borderRadius={5} size="sm">
-                    <InputLeftElement
-                      pointerEvents="none"
-                    />
-                    <Input
-                      type="text"
-                      placeholder={t('Search officers...')}
-                      focusBorderColor="blue.500"
-                      border="1px solid #949494"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                    <InputRightAddon p={0} border="none">
-                      <Button
-                        className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                        colorScheme="blue"
-                        size="sm"
-                        borderLeftRadius={0}
-                        borderRightRadius={3.3}
-                        border="1px solid #949494"
-                      >
-                        {t('Search')}
-                      </Button>
-                    </InputRightAddon>
-                  </InputGroup>
-                </div>
-
-                                 {/* Status Filter */}
-                 <div className="w-48">
-                  <select
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary sm:text-sm p-2 border"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                  >
-                    <option value="all">{t('All Status')}</option>
-                    <option value="active">{t('Active Only')}</option>
-                    <option value="inactive">{t('Inactive Only')}</option>
-                  </select>
-                </div>
-
-                {/* Clear Filters Button */}
-                {(searchTerm || statusFilter !== "all") && (
-                  <Button
+                 {/* Action Buttons */}
+                 <div className="flex flex-wrap gap-3">
+                   <Menu>
+                     <MenuButton
+                       as={Button}
+                       colorScheme="gray"
                     size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setSearchTerm("");
-                      setStatusFilter("all");
-                    }}
-                    className="text-gray-600 hover:text-gray-800 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                  >
-                    {t('Clear Filters')}
-                  </Button>
-                )}
-              </motion.div>
-
-                             {/* Actions Section */}
-               <motion.div 
-                 variants={itemVariants}
-                 className="flex gap-2 actions-section"
-               >
-
-                <Menu>
-                  <MenuButton
-                    as={Button}
-                    colorScheme="gray"
-                    className="bg-gray-600 hover:bg-gray-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2 rounded-lg shadow-md font-medium"
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md shadow-sm font-medium min-w-[120px]"
                     rightIcon={<span className="text-xs">▼</span>}
                   >
                     <span className="hidden sm:inline">📊 {t('Sort By', 'Sort By')}</span>
@@ -820,7 +814,8 @@ function Officer() {
                   <MenuButton
                     as={Button}
                     colorScheme="orange"
-                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                    size="sm"
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md shadow-sm font-medium min-w-[120px]"
                   >
                     {t('Bulk Actions')}
                   </MenuButton>
@@ -834,18 +829,98 @@ function Officer() {
                   </MenuList>
                 </Menu>
 
-                <Menu>
-                  <Link to={`/dash/create-officer`}>
-                    <MenuButton
-                      as={Button}
-                      colorScheme="blue"
-                      className="bg-primary hover:bg-primaryDark text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
-                    >
-                      {t('Add New Officer', 'Add New Officer')}
-                    </MenuButton>
-                  </Link>
-                </Menu>
-              </motion.div>
+                <Link to={`/dash/create-officer`}>
+                  <Button
+                    colorScheme="blue"
+                    size="sm"
+                    className="bg-primary hover:bg-primaryDark text-white px-4 py-2 rounded-md shadow-sm font-medium min-w-[140px]"
+                  >
+                    {t('Add New Officer', 'Add New Officer')}
+                  </Button>
+                </Link>
+                 </div>
+               </motion.div>
+
+               {/* Second Row - Search and Status Filter */}
+               <motion.div 
+                 variants={itemVariants}
+                 className="flex flex-wrap gap-4 items-center justify-between"
+               >
+                 {/* Left Side - Search and Status */}
+                 <div className="flex flex-wrap gap-4 items-center">
+                   {/* Search Input */}
+                   <div className="w-full sm:w-80">
+                     <InputGroup borderRadius={5} size="sm">
+                       <InputLeftElement
+                         pointerEvents="none"
+                       />
+                       <Input
+                         type="text"
+                         placeholder={t('Search officers...')}
+                         focusBorderColor="blue.500"
+                         border="1px solid #949494"
+                         value={searchTerm}
+                         onChange={(e) => setSearchTerm(e.target.value)}
+                       />
+                       <InputRightAddon p={0} border="none">
+                         <Button
+                           className="bg-primary hover:bg-primaryDark text-white px-4 py-2 font-medium"
+                           colorScheme="blue"
+                           size="sm"
+                           borderLeftRadius={0}
+                           borderRightRadius={3.3}
+                           border="1px solid #949494"
+                         >
+                           {t('Search')}
+                         </Button>
+                       </InputRightAddon>
+                     </InputGroup>
+                   </div>
+
+                   {/* Status Filter */}
+                   <div className="w-full sm:w-48">
+                     <select
+                       className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-primary text-sm p-2 border"
+                       value={statusFilter}
+                       onChange={(e) => setStatusFilter(e.target.value)}
+                     >
+                       <option value="all">{t('All Status')}</option>
+                       <option value="active">{t('Active Only')}</option>
+                       <option value="inactive">{t('Inactive Only')}</option>
+                     </select>
+                   </div>
+
+                   {/* Clear Filters Button */}
+                   {(searchTerm || statusFilter !== "all") && (
+                     <Button
+                       size="sm"
+                       variant="outline"
+                       onClick={() => {
+                         setSearchTerm("");
+                         setStatusFilter("all");
+                       }}
+                       className="text-gray-600 hover:text-gray-800 px-4 py-2 rounded-md border-gray-300 hover:border-gray-400 font-medium min-w-[120px]"
+                     >
+                       {t('Clear Filters')}
+                     </Button>
+                   )}
+                 </div>
+
+                 {/* Right Side - Report Type */}
+                 <div className="w-full sm:w-48">
+                   <Select
+                     value={reportType}
+                     onChange={(e) => setReportType(e.target.value)}
+                     size="sm"
+                     border="1px solid #949494"
+                     focusBorderColor="blue.500"
+                   >
+                     <option value="daily">{t('Daily')}</option>
+                     <option value="weekly">{t('Weekly')}</option>
+                     <option value="monthly">{t('Monthly')}</option>
+                   </Select>
+                 </div>
+               </motion.div>
             </motion.div>
           </div>
         </section>
@@ -854,35 +929,45 @@ function Officer() {
              {/* Scrollable Table Section */}
        <motion.div 
          variants={itemVariants}
-         className="flex-1 px-4 pb-4 overflow-hidden mt-4"
+         className="flex-1 px-2 sm:px-4 pb-4 overflow-hidden mt-4"
        >
         <div className="bg-white rounded-xl shadow-lg h-full flex flex-col">
           {/* Only the table content scrolls */}
           <div className="flex-1 overflow-auto">
-            <Table data={paginatedData} columns={columns} />
+            <div className="overflow-x-auto min-w-full">
+              <div className="min-w-[800px]">
+                <Table data={paginatedData} columns={columns} />
+              </div>
+            </div>
           </div>
 
           {/* Fixed Pagination */}
-          <div className="flex-shrink-0 flex justify-center p-4 border-t gap-4 items-center bg-gray-50">
-            <Button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              isDisabled={currentPage === 1}
-              colorScheme="blue"
-              variant="outline"
-            >
-              {t('Previous')}
-            </Button>
-            <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium">
-              {currentPage} {t('of')} {totalPages}
-            </span>
-            <Button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              isDisabled={currentPage === totalPages}
-              colorScheme="blue"
-              variant="outline"
-            >
-              {t('Next')}
-            </Button>
+          <div className="flex-shrink-0 flex flex-col sm:flex-row justify-center p-4 border-t gap-4 items-center bg-gray-50">
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                isDisabled={currentPage === 1}
+                colorScheme="blue"
+                variant="outline"
+                size="sm"
+                className="w-full sm:w-auto px-4 py-2 rounded-md font-medium"
+              >
+                {t('Previous')}
+              </Button>
+              <span className="text-sm bg-primary text-white px-4 py-2 rounded-md font-medium flex items-center min-w-[80px] justify-center">
+                {currentPage} {t('of')} {totalPages}
+              </span>
+              <Button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                isDisabled={currentPage === totalPages}
+                colorScheme="blue"
+                variant="outline"
+                size="sm"
+                className="w-full sm:w-auto px-4 py-2 rounded-md font-medium"
+              >
+                {t('Next')}
+              </Button>
+            </div>
           </div>
         </div>
       </motion.div>

@@ -2,20 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
-import { updateOfficerCollectionData } from '../../services/officerService';
 import axios from '../../axios';
 import { Card, CardBody } from '@chakra-ui/react';
-import { Text, VStack, HStack, Stat, StatLabel, StatNumber, StatHelpText, StatArrow } from '@chakra-ui/react';
-import OfficerNavbar from '../../components/OfficerNavbar';
+import { Text, VStack, HStack, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Badge } from '@chakra-ui/react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { FaEye } from 'react-icons/fa';
+import { FaEye, FaUser, FaRupeeSign } from 'react-icons/fa';
 
 const DailyReport = () => {
   const { t } = useLocalTranslation();
   const navigate = useNavigate();
   const [dailyData, setDailyData] = useState([]);
-  const [officersData, setOfficersData] = useState([]);
+  const [userWiseData, setUserWiseData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalDailyCollection, setTotalDailyCollection] = useState(0);
@@ -25,31 +23,35 @@ const DailyReport = () => {
 
   console.log('📊 DailyReport component rendered');
 
-  // Handle payment process update
-  const handlePaymentProcessUpdate = async (officerId, newPaymentProcess) => {
+  // Fetch user-wise daily collections
+  const fetchUserWiseData = useCallback(async () => {
     try {
-      console.log('🔄 Updating payment process for officer:', officerId, 'to:', newPaymentProcess);
+      console.log('📊 Fetching user-wise daily data for date:', selectedDate);
+      const response = await axios.get(`admins/userWiseDailyCollections?date=${selectedDate}`);
       
-      await updateOfficerCollectionData(officerId, {
-        paymentProcess: newPaymentProcess
-      });
-      
-      console.log('✅ Payment process updated successfully');
-      
-      // Refresh the data
-      fetchDailyData();
+      if (response?.data?.result) {
+        console.log('📊 User-wise data response:', response.data.result);
+        setUserWiseData(response.data.result);
+      } else {
+        console.log('📊 No user-wise data received');
+        setUserWiseData([]);
+      }
     } catch (error) {
-      console.error('❌ Error updating payment process:', error);
-      alert('Failed to update payment process. Please try again.');
+      console.error('Error fetching user-wise data:', error);
+      setUserWiseData([]);
     }
-  };
+  }, [selectedDate]);
 
   const fetchDailyData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null); // Clear any previous errors
       
+      // Check authentication token
+      const token = localStorage.getItem('token');
+      console.log('📊 Auth token:', token ? 'Present' : 'Missing');
       console.log('📊 Fetching daily data for date:', selectedDate);
+      
       const response = await axios.get(`admins/totalByDate?date=${selectedDate}`);
       
       console.log('📊 Daily data response:', response.data);
@@ -84,18 +86,21 @@ const DailyReport = () => {
       }
     } catch (error) {
       console.error('Error fetching daily data:', error);
+      console.error('Error response:', error.response);
+      console.error('Error status:', error.response?.status);
+      console.error('Error message:', error.message);
       
       // Set appropriate error message based on error type
       if (error.response?.status >= 500) {
-        setError('Server error: Unable to fetch daily data. Please try again later.');
+        setError(`Server error: Unable to fetch daily data. Status: ${error.response.status}. Please try again later.`);
       } else if (error.response?.status === 404) {
-        setError('Daily data endpoint not found. Please contact administrator.');
+        setError(`Daily data endpoint not found. Status: ${error.response.status}. Please contact administrator.`);
       } else if (error.response?.status === 401 || error.response?.status === 403) {
-        setError('Access denied: You do not have permission to view daily data.');
+        setError(`Access denied: You do not have permission to view daily data. Status: ${error.response.status}. Please login again.`);
       } else if (error.code === 'NETWORK_ERROR' || !navigator.onLine) {
         setError('Network error: Please check your internet connection.');
       } else {
-        setError('Failed to load daily data. Please try again.');
+        setError(`Failed to load daily data. Error: ${error.message}. Please try again.`);
       }
       
       setTotalDailyCollection(0);
@@ -110,25 +115,9 @@ const DailyReport = () => {
     setOfficerName(name);
     console.log('📊 useEffect triggered for date:', selectedDate);
     fetchDailyData();
-    fetchOfficersData();
-  }, [selectedDate, fetchDailyData]);
+    fetchUserWiseData();
+  }, [selectedDate, fetchDailyData, fetchUserWiseData]);
 
-   const fetchOfficersData = async () => {
-     try {
-       const response = await axios.get('officers');
-       if (response?.data?.result) {
-         console.log('📊 Officers data loaded:', response.data.result.length, 'officers');
-         setOfficersData(response.data.result);
-       } else {
-         console.warn('No officers data received from API');
-         setOfficersData([]);
-       }
-     } catch (error) {
-       console.error('Error fetching officers data:', error);
-       setOfficersData([]);
-       // Don't set error state here as it's not critical for the main functionality
-    }
-  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -140,21 +129,6 @@ const DailyReport = () => {
     });
   };
 
-  // Handle view officer details
-  const handleViewOfficerDetails = (officer) => {
-    console.log('🔄 Navigating to officer info page for:', officer._id);
-    console.log('🔄 Officer name:', officer.name);
-    console.log('🔄 Target path:', `/manager-dashboard/view-officer/${officer._id}`);
-    
-    try {
-      // Use React Router navigation for smoother experience
-      navigate(`/manager-dashboard/view-officer/${officer._id}`);
-    } catch (error) {
-      console.error('❌ Error with React Router navigation:', error);
-      // Fallback to window.location for compatibility
-      window.location.href = `/manager-dashboard/view-officer/${officer._id}`;
-    }
-  };
 
   const exportToPDF = async () => {
     try {
@@ -203,32 +177,32 @@ const DailyReport = () => {
         });
       }
       
-      // Officers Section
-      if (officersData.length > 0) {
+      // Users Section
+      if (userWiseData.length > 0) {
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
-        doc.text('Officer Collections', 20, doc.lastAutoTable.finalY + 20);
+        doc.text('User Collections', 20, doc.lastAutoTable.finalY + 20);
         
-        const officerData = officersData.map(officer => {
-          const todayLoan = officer.todayLoanAmount || 0;
-          const todayPenalty = officer.todayPenalty || 0;
-          const todaySaving = officer.todaySavingAmount || 0;
-          const dailyTotal = todayLoan + todayPenalty + todaySaving;
+        const userData = userWiseData.map(user => {
+          const loanAmount = user.loanAmount || 0;
+          const savingAmount = user.savingAmount || 0;
+          const totalAmount = loanAmount + savingAmount;
           
           return [
-            officer.name || officer.username || 'N/A',
-            officer.officer_code || 'N/A',
-            `₹${todayLoan.toFixed(2)}`,
-            `₹${todayPenalty.toFixed(2)}`,
-            `₹${todaySaving.toFixed(2)}`,
-            `₹${dailyTotal.toFixed(2)}`
+            user.name || user.username || 'N/A',
+            user.phone || 'N/A',
+            user.officerName || 'N/A',
+            `₹${loanAmount.toFixed(2)}`,
+            `₹${savingAmount.toFixed(2)}`,
+            `₹${totalAmount.toFixed(2)}`,
+            user.status || 'N/A'
           ];
         });
         
         autoTable(doc, {
           startY: doc.lastAutoTable.finalY + 25,
-          head: [['Officer Name', 'Code', 'Today Loan', 'Today Penalty', 'Today Saving', 'Daily Total']],
-          body: officerData,
+          head: [['User Name', 'Phone', 'Officer', 'Loan Amount', 'Saving Amount', 'Total Collection', 'Status']],
+          body: userData,
           theme: 'grid',
           headStyles: { fillColor: [128, 0, 128] },
           styles: { fontSize: 9 }
@@ -276,7 +250,7 @@ const DailyReport = () => {
           onClick={() => {
             setError(null);
             fetchDailyData();
-            fetchOfficersData();
+            fetchUserWiseData();
           }}
           className="ml-auto px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm"
         >
@@ -287,9 +261,7 @@ const DailyReport = () => {
   );
 
   return (
-    <>
-      <OfficerNavbar officerType="accounter" officerName={officerName} pageName="Daily Report" />
-      <div className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg p-4 sm:p-6 pb-12 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg  sm:p-6 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
           {showErrorBanner}
         {/* Header */}
@@ -297,12 +269,12 @@ const DailyReport = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8 mt-2"
+          className="mb-4"
         >
          
-          <p className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2 mt-14">
+          {/* <p className="text-3xl sm:text-4xl font-bold text-gray-800 mb-2 ">
             {t('Daily collection statistics and analytics')}
-          </p>
+          </p> */}
         </motion.div>
 
         {/* Date Selector */}
@@ -310,7 +282,7 @@ const DailyReport = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-8"
+          className="mb-4"
         >
           <Card className="">
             <CardBody>
@@ -350,7 +322,7 @@ const DailyReport = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 mt-4"
         >
           <Card className="">
             <CardBody>
@@ -399,121 +371,93 @@ const DailyReport = () => {
             </CardBody>
           </Card>
 
-          <Card className="bg-white shadow-lg border-l-4 border-indigo-500">
-            <CardBody>
-              <Stat>
-                <StatLabel className="text-gray-600">{t('Active Officers')}</StatLabel>
-                <StatNumber className="text-2xl font-bold text-indigo-600">
-                  {officersData.filter(officer => officer.is_active || officer.isActive).length}
-                </StatNumber>
-                <StatHelpText>
-                  <StatArrow type="increase" />
-                  {t('Out of')} {officersData.length} {t('total')}
-                </StatHelpText>
-              </Stat>
-            </CardBody>
-          </Card>
+                  <Card className="bg-white shadow-lg border-l-4 border-indigo-500">
+                    <CardBody>
+                      <Stat>
+                        <StatLabel className="text-gray-600">{t('Total Users')}</StatLabel>
+                        <StatNumber className="text-2xl font-bold text-indigo-600">
+                          {userWiseData.length}
+                        </StatNumber>
+                        <StatHelpText>
+                          <StatArrow type="increase" />
+                          {t('With collections today')}
+                        </StatHelpText>
+                      </Stat>
+                    </CardBody>
+                  </Card>
         </motion.div>
 
-         {/* Officer Daily Collection Summary */}
+         {/* User Daily Collection Summary */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
            transition={{ duration: 0.6, delay: 0.5 }}
-           className="bg-white rounded-xl shadow-lg p-6 mb-8"
+           className="bg-white rounded-xl shadow-lg p-6 mb-6 mt-2"
         >
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
-             {t('Officer Daily Collections')} - {formatDate(selectedDate)}
+             {t('User Daily Collections')} - {formatDate(selectedDate)}
           </h2>
           
-           {officersData.length > 0 ? (
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-               {officersData.map((officer) => {
-                 // Use officer's aggregated data instead of individual user collections
-                 const todayLoan = officer.todayLoanAmount || 0;
-                 const todayPenalty = officer.todayPenalty || 0;
-                 const todaySaving = officer.todaySavingAmount || 0;
-                 const dailyTotal = todayLoan + todayPenalty + todaySaving;
-                 
-                 // Use officer's total amounts
-                 const totalLoan = officer.totalLoanAmount || 0;
-                 const totalSaving = officer.totalSavingAmount || 0;
-                 const totalCollection = totalLoan + totalSaving;
-                 
-                 return (
-                   <div key={officer._id} className="bg-gradient-to-br from-white to-blue-50 rounded-xl border-2 border-blue-100 p-6 hover:shadow-xl hover:border-blue-300 transition-all duration-300">
-                     <div className="flex items-center justify-between mb-4">
-                       <div>
-                         <h3 className="text-lg font-bold text-gray-800">{officer.name || officer.username}</h3>
-                         <p className="text-sm text-blue-600 font-semibold">{officer.officer_code}</p>
-                       </div>
-                       <div className="flex items-center space-x-2">
-                         <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                           officer.is_active || officer.isActive 
-                             ? 'bg-green-200 text-green-800 border border-green-300' 
-                             : 'bg-red-200 text-red-800 border border-red-300'
-                         }`}>
-                           {officer.is_active || officer.isActive ? 'Active' : 'Inactive'}
-                         </span>
-                         <br></br>
-                         <button
-                           onClick={() => handleViewOfficerDetails(officer)}
-                           className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-1 text-xs font-medium"
-                           title="View Officer Details"
+           {userWiseData.length > 0 ? (
+             <TableContainer>
+               <Table variant="simple" size="sm">
+                 <Thead>
+                   <Tr>
+                     <Th className="text-gray-700 font-bold">{t('User Name')}</Th>
+                     <Th className="text-gray-700 font-bold">{t('Phone')}</Th>
+                     <Th className="text-gray-700 font-bold">{t('Officer')}</Th>
+                     <Th className="text-gray-700 font-bold">{t('Loan Amount')}</Th>
+                     <Th className="text-gray-700 font-bold">{t('Saving Amount')}</Th>
+                     <Th className="text-gray-700 font-bold">{t('Total Collection')}</Th>
+                     <Th className="text-gray-700 font-bold">{t('Status')}</Th>
+                   </Tr>
+                 </Thead>
+                 <Tbody>
+                   {userWiseData.map((user, index) => (
+                     <Tr key={user._id || index} className="hover:bg-gray-50">
+                       <Td className="font-medium text-gray-800">
+                         <div className="flex items-center space-x-2">
+                           <FaUser className="text-blue-500" />
+                           <span>{user.name || user.username || 'N/A'}</span>
+                         </div>
+                       </Td>
+                       <Td className="text-gray-600">{user.phone || 'N/A'}</Td>
+                       <Td className="text-gray-600">{user.officerName || 'N/A'}</Td>
+                       <Td className="text-green-600 font-semibold">
+                         <div className="flex items-center space-x-1">
+                           <FaRupeeSign className="text-green-500" />
+                           <span>₹{(user.loanAmount || 0).toLocaleString()}</span>
+                         </div>
+                       </Td>
+                       <Td className="text-blue-600 font-semibold">
+                         <div className="flex items-center space-x-1">
+                           <FaRupeeSign className="text-blue-500" />
+                           <span>₹{(user.savingAmount || 0).toLocaleString()}</span>
+                         </div>
+                       </Td>
+                       <Td className="text-purple-600 font-bold">
+                         <div className="flex items-center space-x-1">
+                           <FaRupeeSign className="text-purple-500" />
+                           <span>₹{((user.loanAmount || 0) + (user.savingAmount || 0)).toLocaleString()}</span>
+                         </div>
+                       </Td>
+                       <Td>
+                         <Badge 
+                           colorScheme={user.status === 'active' ? 'green' : 'red'}
+                           variant="subtle"
                          >
-                           <FaEye className="w-3 h-3" />
-                           <span>View </span>
-                         </button>
-                       </div>
-                     </div>
-                     
-                     <div className="space-y-3">
-                       {/* <div className="flex justify-between items-center py-2 px-3 bg-green-50 rounded-lg border border-green-200">
-                         <span className="text-sm font-semibold text-green-700">{t('Today Loan')}</span>
-                         <span className="text-lg font-bold text-green-800">₹{todayLoan.toLocaleString()}</span>
-                       </div>
-                       <div className="flex justify-between items-center py-2 px-3 bg-red-50 rounded-lg border border-red-200">
-                         <span className="text-sm font-semibold text-red-700">{t('Today Penalty')}</span>
-                         <span className="text-lg font-bold text-red-800">₹{todayPenalty.toLocaleString()}</span>
-                       </div>
-                       <div className="flex justify-between items-center py-2 px-3 bg-blue-50 rounded-lg border border-blue-200">
-                         <span className="text-sm font-semibold text-blue-700">{t('Today Saving')}</span>
-                         <span className="text-lg font-bold text-blue-800">₹{todaySaving.toLocaleString()}</span>
-                       </div> */}
-                       <div className="border-t-2 border-gray-200 pt-3 space-y-2">
-                         <div className="flex justify-between items-center py-2 px-3 bg-purple-50 rounded-lg border border-purple-200">
-                           <span className="text-sm font-bold text-purple-700">{t('Daily Total')}</span>
-                           <span className="text-xl font-bold text-purple-800">₹{dailyTotal.toLocaleString()}</span>
-                         </div>
-                         <div className="flex justify-between items-center py-2 px-3 bg-indigo-50 rounded-lg border border-indigo-200">
-                           <span className="text-xs font-semibold text-indigo-600">{t('All Time Total')}</span>
-                           <span className="text-sm font-bold text-indigo-800">₹{totalCollection.toLocaleString()}</span>
-                         </div>
-        <div className="flex justify-between items-center py-2 px-3 bg-orange-50 rounded-lg border border-orange-200">
-          <span className="text-xs font-semibold text-orange-600">{t('Payment Process')}</span>
-          <select
-            value={officer.paymentProces}
-            onChange={(e) => handlePaymentProcessUpdate(officer._id, e.target.value)}
-            className="px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-blue-500 focus:border-transparent bg-white"
-          >
-            <option value="officer">Officer</option>
-            <option value="manager">Manager</option>
-            <option value="deposite to bank">Deposit to Bank</option>
-            <option value="accounter">Accounter</option>
-            <option value="reassign to officer">Reassign to Officer</option>
-            <option value="process complete">Process Complete</option>
-          </select>
-        </div>
-                       </div>
-                     </div>
-                   </div>
-                 );
-               })}
-             </div>
+                           {user.status || 'N/A'}
+                         </Badge>
+                       </Td>
+                     </Tr>
+                   ))}
+                 </Tbody>
+               </Table>
+             </TableContainer>
           ) : (
             <div className="text-center py-12">
               <Text className="text-gray-500 text-lg">
-                 {t('No officers data available')}
+                 {t('No user data available for selected date')}
               </Text>
             </div>
           )}
@@ -524,7 +468,7 @@ const DailyReport = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-          className="bg-white rounded-xl shadow-lg p-6 mb-8"
+          className="bg-white rounded-xl shadow-lg p-6 mb-6 mt-2"
         >
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             {t('Daily Collection Summary')} - {formatDate(selectedDate)}
@@ -551,19 +495,21 @@ const DailyReport = () => {
                   </div>
                 </div>
 
-                {/* Officers Summary Card */}
-                {officersData.length > 0 && (
+                {/* Users Summary Card */}
+                {userWiseData.length > 0 && (
                   <div className="bg-gradient-to-r from-purple-500 to-purple-700 rounded-lg p-6 text-white shadow-lg">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-purple-50 text-sm font-medium mb-2">
-                          {t('Total Officers')} : {officersData.length}
+                          {t('Total Users')} : {userWiseData.length}
                         </p>
-                       
+                        <p className="text-purple-100 text-xs">
+                          {t('With collections today')}
+                        </p>
                       </div>
                       <div className="text-purple-100">
                         <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                         </svg>
                       </div>
                     </div>
@@ -703,7 +649,6 @@ const DailyReport = () => {
         </motion.div>
         </div>
     </div>
-    </>
   );
 };
 

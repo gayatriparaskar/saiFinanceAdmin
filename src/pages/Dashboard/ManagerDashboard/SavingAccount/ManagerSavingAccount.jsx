@@ -404,16 +404,20 @@ const ManagerSavingAccount = () => {
       Header: t('STATUS'),
       accessor: "status",
       Cell: ({ value, row: { original } }) => {
-        const status = original?.saving_account_id?.is_active || value;
+        // For saving accounts, check if user has a saving account and if it's active
+        const hasSavingAccount = original?.saving_account_id && original.saving_account_id !== null;
+        const isAccountActive = original?.saving_account_id?.is_active === true || original?.saving_account_id?.is_active === 'true';
+        const isActive = hasSavingAccount && isAccountActive;
+        
         return (
           <div className="flex items-center space-x-2">
-            <HiStatusOnline className={`h-4 w-4 ${status === 'active' ? 'text-green-500' : 'text-red-500'}`} />
+            <HiStatusOnline className={`h-4 w-4 ${isActive ? 'text-green-500' : 'text-red-500'}`} />
             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-              status === 'active' 
+              isActive 
                 ? 'bg-green-100 text-green-800' 
                 : 'bg-red-100 text-red-800'
             }`}>
-              {status === 'active' ? t('Active') : t('Inactive')}
+              {isActive ? t('Active') : t('Inactive')}
             </span>
           </div>
         );
@@ -440,7 +444,7 @@ const ManagerSavingAccount = () => {
             className="text-secondary hover:text-secondaryDark p-1"
             title="Add Collection"
           >
-            <MdEdit />
+            <FaPlus />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}

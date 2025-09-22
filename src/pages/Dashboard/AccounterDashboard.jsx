@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import OfficerNavbar from '../../components/OfficerNavbar';
 import { useDashboardData } from '../../hooks/useDashboardData';
@@ -24,6 +24,7 @@ import DetailsModal from '../../componant/Dashboard/DetailsModal';
 function AccounterDashboard() {
   const { t } = useLocalTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const [officerName, setOfficerName] = useState('');
   const [userInfo, setUserInfo] = useState(null);
   
@@ -104,6 +105,19 @@ function AccounterDashboard() {
       y: 0,
       transition: { duration: 0.5 }
     }
+  };
+
+  // Function to get page name based on current path
+  const getPageName = (path) => {
+    if (path.includes('/loan-accounts')) return 'Loan Accounts';
+    if (path.includes('/saving-accounts')) return 'Saving Accounts';
+    if (path.includes('/overdue-loans')) return 'Overdue Loans';
+    if (path.includes('/officer-controls')) return 'Officer Control';
+    if (path.includes('/reports')) return 'Reports';
+    if (path.includes('/daily-report')) return 'Daily Report';
+    if (path.includes('/weekly-report')) return 'Weekly Report';
+    if (path.includes('/view-officer/')) return 'Officer Details';
+    return 'Accounter Dashboard';
   };
 
   // Handler for quick actions
@@ -247,8 +261,14 @@ Generated on: ${new Date().toLocaleString()}
   // Custom view details handler for accounter dashboard
   const handleAccounterViewDetails = (officer) => {
     console.log('🔄 AccounterDashboard - View Details clicked for officer:', officer);
-    // Redirect to officer info page within accounter dashboard
-    window.location.href = `/accounter-dashboard/view-officer/${officer._id}`;
+    console.log('🔄 AccounterDashboard - Officer ID:', officer._id);
+    console.log('🔄 AccounterDashboard - Current location:', location.pathname);
+    
+    const targetPath = `/accounter-dashboard/view-officer/${officer._id}`;
+    console.log('🔄 AccounterDashboard - Navigating to:', targetPath);
+    
+    // Navigate to officer info page within accounter dashboard
+    navigate(targetPath);
   };
 
   const handlePaymentProcess = async (officer, paymentProcess) => {
@@ -273,48 +293,65 @@ Generated on: ${new Date().toLocaleString()}
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-primaryBg flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Accounter Dashboard...</p>
+      <>
+        <OfficerNavbar officerType="accounter" officerName={officerName} pageName="Accounter Dashboard" />
+        <div className="min-h-screen bg-primaryBg pt-16 flex items-center justify-center">
+          <div className="text-center px-4">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-gray-600 text-sm sm:text-base">Loading Accounter Dashboard...</p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-primaryBg flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Dashboard</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={refetch}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors"
-          >
-            Retry
-          </button>
+      <>
+        <OfficerNavbar officerType="accounter" officerName={officerName} pageName="Accounter Dashboard" />
+        <div className="min-h-screen bg-primaryBg pt-16 flex items-center justify-center">
+          <div className="text-center px-4 max-w-md mx-auto">
+            <div className="text-red-500 text-4xl sm:text-6xl mb-4">⚠️</div>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Error Loading Dashboard</h2>
+            <p className="text-gray-600 mb-4 text-sm sm:text-base">{error}</p>
+            <button 
+              onClick={refetch}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition-colors text-sm sm:text-base"
+            >
+              Retry
+            </button>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   const currentPath = location.pathname;
+  
+  console.log('🔍 AccounterDashboard - Current path:', currentPath);
+  console.log('🔍 AccounterDashboard - Location:', location);
 
   // If we're on a specific route (like daily-report or weekly-report), show the routed content
   if (currentPath.includes('/daily-report') || currentPath.includes('/weekly-report') || 
-      currentPath.includes('/loan-account') || currentPath.includes('/saving-account') || 
-      currentPath.includes('/overdue-loans') || currentPath.includes('/view-officer/')) {
+      currentPath.includes('/loan-accounts') || currentPath.includes('/saving-accounts') || 
+      currentPath.includes('/overdue-loans') || currentPath.includes('/view-officer/') ||
+      currentPath.includes('/officer-controls') || currentPath.includes('/reports')) {
+    
+    console.log('🔍 AccounterDashboard - Rendering DashRoute for path:', currentPath);
     return (
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="min-h-screen bg-primaryBg"
-      >
-        <DashRoute />
-      </motion.div>
+      <>
+        <OfficerNavbar officerType="accounter" officerName={officerName} pageName={getPageName(currentPath)} />
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="min-h-screen bg-primaryBg pt-16"
+        >
+          <div className="w-full max-w-7xl mx-auto">
+            <DashRoute />
+          </div>
+        </motion.div>
+      </>
     );
   }
 
@@ -328,82 +365,81 @@ Generated on: ${new Date().toLocaleString()}
         variants={containerVariants}
         className="min-h-screen bg-primaryBg pt-16"
       >
-
-        {/* Stats Cards */}
-        <motion.div 
-          variants={itemVariants}
-          className="px-6 py-6"
-        >
-          <StatsCards 
-            stats={stats} 
-            collectionData={collectionData} 
-            loading={loading} 
-          />
-        </motion.div>
-
-
-        {/* Collection Breakdown Section */}
-        <motion.div 
-          variants={itemVariants}
-          className="px-6 py-6"
-        >
-          <CollectionBreakdown 
-            collectionData={collectionData} 
-            loading={loading} 
-          />
-        </motion.div>
-
-        {/* Overdue Collections Section - Only show if there are overdue loans */}
-        {overdueLoans.length > 0 && (
+        {/* Main Content Container - Responsive */}
+        <div className="w-full max-w-7xl mx-auto">
+          {/* Stats Cards */}
           <motion.div 
             variants={itemVariants}
-            className="px-6 py-6"
+            className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
           >
-            <OverdueCollections 
-              overdueLoans={overdueLoans}
-              loading={overdueLoading}
-              error={overdueError}
-              getDaysOverdueColor={getDaysOverdueColor}
-              getPenaltyAmount={getPenaltyAmount}
-              totalOverdueAmount={totalOverdueAmount}
-              totalPenalties={totalPenalties}
+            <StatsCards 
+              stats={stats} 
+              collectionData={collectionData} 
+              loading={loading} 
             />
           </motion.div>
-        )}
 
+          {/* Overdue Collections Section - Only show if there are overdue loans */}
+          {overdueLoans.length > 0 && (
+            <motion.div 
+              variants={itemVariants}
+              className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
+            >
+              <OverdueCollections 
+                overdueLoans={overdueLoans}
+                loading={overdueLoading}
+                error={overdueError}
+                getDaysOverdueColor={getDaysOverdueColor}
+                getPenaltyAmount={getPenaltyAmount}
+                totalOverdueAmount={totalOverdueAmount}
+                totalPenalties={totalPenalties}
+              />
+            </motion.div>
+          )}
 
+          {/* Officer Table */}
+          <motion.div 
+            variants={itemVariants}
+            className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
+          >
+            <OfficerTable 
+              officers={officers}
+              loading={loading}
+              onAssignToClick={handleAssignToClick}
+              onStatusClick={handleStatusClick}
+              onViewDetails={handleAccounterViewDetails}
+              onPaymentProcess={handlePaymentProcess}
+              // onRefresh={refreshData}
+            />
+          </motion.div>
 
-        {/* Officer Table */}
-        <motion.div 
-          variants={itemVariants}
-          className="px-6 py-6"
-        >
-          <OfficerTable 
-            officers={officers}
-            loading={loading}
-            onAssignToClick={handleAssignToClick}
-            onStatusClick={handleStatusClick}
-            onViewDetails={handleAccounterViewDetails}
-            onPaymentProcess={handlePaymentProcess}
-            // onRefresh={refreshData}
-          />
-        </motion.div>
+          {/* User Data Table */}
+          <motion.div 
+            variants={itemVariants}
+            className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
+          >
+            <UserDataTable userType="all"  />
+          </motion.div>
 
-        {/* User Data Table */}
-        <motion.div 
-          variants={itemVariants}
-          className="px-6 py-6"
-        >
-          <UserDataTable userType="all"  />
-        </motion.div>
+          {/* Collection Breakdown Section */}
+          <motion.div 
+            variants={itemVariants}
+            className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
+          >
+            <CollectionBreakdown 
+              collectionData={collectionData} 
+              loading={loading} 
+            />
+          </motion.div>
 
-        {/* Quick Actions */}
-        <motion.div 
-          variants={itemVariants}
-          className="px-6 py-6"
-        >
-          <QuickActions onActionClick={handleQuickAction} />
-        </motion.div>
+          {/* Quick Actions */}
+          <motion.div 
+            variants={itemVariants}
+            className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
+          >
+            <QuickActions onActionClick={handleQuickAction} />
+          </motion.div>
+        </div>
 
         {/* Modals */}
         <AssignModal 

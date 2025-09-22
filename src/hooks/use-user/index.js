@@ -15,11 +15,14 @@ export const useUser = () => {
     },
     enabled: !!token, // Only run query if token exists
     retry: (failureCount, error) => {
-      // Don't retry on auth errors (401, 403)
-      if (error?.response?.status === 401 || error?.response?.status === 403) {
-        // Clear invalid token and redirect to login
-        localStorage.removeItem('token');
-        window.location.href = '/login';
+      // Don't retry on auth errors (401, 403) or 404 (user not found)
+      if (error?.response?.status === 401 || error?.response?.status === 403 || error?.response?.status === 404) {
+        console.warn('User profile not found or authentication failed:', error?.response?.status);
+        // Don't clear token for 404 - might be a different issue
+        if (error?.response?.status === 401 || error?.response?.status === 403) {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        }
         return false;
       }
       return failureCount < 2; // Retry up to 2 times for other errors

@@ -158,8 +158,7 @@ const ManagerNavbar = () => {
     if (path.includes('/manager-dashboard/overdue-loans')) return t('Overdue Loans');
     if (path.includes('/manager-dashboard/saving-account')) return t('Saving Account');
     if (path.includes('/manager-dashboard/officer')) return t('Officer Controls');
-    if (path.includes('/manager-dashboard/weekly-report')) return t('Weekly Report');
-    if (path.includes('/manager-dashboard/daily-report')) return t('Daily Report');
+    if (path.includes('/manager-dashboard/reports')) return t('Reports');
     if (path.includes('/manager-dashboard/payment')) return t('Payment');
     if (path.includes('/manager-dashboard/payment-request')) return t('Payment Request');
     if (path.includes('/manager-dashboard/create-loan-user')) return t('Create Loan User');
@@ -179,8 +178,7 @@ const ManagerNavbar = () => {
     { name: t("Overdue Loans"), path: "/manager-dashboard/overdue-loans" },
     { name: t("Saving Account"), path: "/manager-dashboard/saving-account" },
     { name: t("Officer Controls"), path: "/manager-dashboard/officer" },
-    { name: t("Weekly Report"), path: "/manager-dashboard/weekly-report" },
-    { name: t("Daily Report"), path: "/manager-dashboard/daily-report" }
+    { name: t("Reports"), path: "/manager-dashboard/reports" }
   ];
 
   return (
