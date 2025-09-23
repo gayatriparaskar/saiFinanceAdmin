@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocalTranslation } from "../../hooks/useLocalTranslation";
+import CountdownDisplay from "../../components/Countdown/CountdownDisplay";
 
 import axios from "../../axios";
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -501,9 +502,21 @@ function LoanAccount() {
         Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.emi_day || 0}`} />,
       },
       {
-        Header: t('Remaining Emi'),
-        accessor: "remaining_emi",
-        Cell: ({ value, row: { original } }) => <Cell text={`${original?.active_loan_id?.remaining_emi_days || 120}`} />,
+        Header: t('Remaining Days'),
+        accessor: "remaining_emi_days",
+        Cell: ({ value, row: { original } }) => {
+          const remainingDays = original?.active_loan_id?.remaining_emi_days || 120;
+          return (
+            <CountdownDisplay
+              remainingDays={remainingDays}
+              totalDays={120}
+              size="sm"
+              showProgress={true}
+              showIcon={true}
+            />
+          );
+        },
+        minWidth: 140,
       },
       {
         Header: t('Total Due Amount'),

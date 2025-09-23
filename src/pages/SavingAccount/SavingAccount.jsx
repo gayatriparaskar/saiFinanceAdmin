@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useLocalTranslation } from "../../hooks/useLocalTranslation";
+import CountdownDisplay from "../../components/Countdown/CountdownDisplay";
 
 import axios from "../../axios";
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -564,15 +565,22 @@ function SavingAccount() {
         ),
       },
       {
-        Header: t('Remaining EMI Days'),
+        Header: t('Remaining Days'),
         accessor: "remaining_emi_days",
         Cell: ({ value, row: { original } }) => {
-          const remainingEmiDays = original?.saving_account_id?.remaining_emi_days || 0;
+          const remainingDays = original?.saving_account_id?.remaining_emi_days || 120;
           
-          if (remainingEmiDays === 0) return <Cell text="-" />;
-          
-          return <Cell text={`${remainingEmiDays} days`} />;
+          return (
+            <CountdownDisplay
+              remainingDays={remainingDays}
+              totalDays={120}
+              size="sm"
+              showProgress={true}
+              showIcon={true}
+            />
+          );
         },
+        minWidth: 140,
       },
       {
         Header: t('Officer Alloted'),

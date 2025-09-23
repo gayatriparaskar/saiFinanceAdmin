@@ -154,9 +154,9 @@ const NewNavbar = () => {
   const getCurrentPageName = () => {
     const path = location.pathname;
     if (path.includes('/dash/home')) return t('Home');
-    if (path.includes('/dash/loan-account')) return t('Loan Account');
+    if (path.includes('/dash/loan-accounts')) return t('Loan Account');
     if (path.includes('/dash/overdue-loans')) return t('Overdue Loans');
-    if (path.includes('/dash/saving-account')) return t('Saving Account');
+    if (path.includes('/dash/saving-accounts')) return t('Saving Account');
     if (path.includes('/dash/officer')) return t('Officer Controls');
     if (path.includes('/dash/reports')) return t('Reports');
     if (path.includes('/dash/payment')) return t('Payment');
@@ -169,15 +169,17 @@ const NewNavbar = () => {
     if (path.includes('/dash/view-officer')) return t('View Officer');
     if (path.includes('/dash/add-daily-collection')) return t('Add Collection');
     if (path.includes('/dash/add-Saving-collection')) return t('Add Saving Collection');
+    if (path.includes('/dash/countdown-management')) return t('Countdown Management');
     return t('Dashboard');
   };
 
   const navigationItems = [
     { name: t("Home"), path: "/dash/home" },
-    { name: t("Loan Account"), path: "/dash/loan-account" },
+    { name: t("Loan Account"), path: "/dash/loan-accounts" },
     { name: t("Overdue Loans"), path: "/dash/overdue-loans" },
-    { name: t("Saving Account"), path: "/dash/saving-account" },
+    { name: t("Saving Account"), path: "/dash/saving-accounts" },
     { name: t("Officer Controls"), path: "/dash/officer" },
+    { name: t("Countdown Management"), path: "/dash/countdown-management" },
     { name: t("Reports"), path: "/dash/reports" }
   ];
 
