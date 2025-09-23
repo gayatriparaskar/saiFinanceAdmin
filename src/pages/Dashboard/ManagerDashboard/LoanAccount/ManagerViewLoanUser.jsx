@@ -333,11 +333,11 @@ function ManagerViewLoanUser() {
 
   return (
     <>
-      <OfficerNavbar 
+      {/* <OfficerNavbar 
         officerType={getOfficerType()} 
         officerName={getOfficerName()} 
         pageName="Loan User Details" 
-      />
+      /> */}
       <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-4">
       <section className="md:p-1">
         <div className="py-2">

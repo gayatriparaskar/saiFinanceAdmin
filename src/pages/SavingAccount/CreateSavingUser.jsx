@@ -12,12 +12,13 @@ import {
   Button,
   ModalFooter,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const CreateSavingUser = () => {
   const { t } = useLocalTranslation();
   const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+const navigate = useNavigate();
   const initialFormState = {
     full_name: "",
     phone_number: "",
@@ -193,11 +194,11 @@ const CreateSavingUser = () => {
     }
 
     // Interest Rate validation
-    if (!formData.saving_details.interest_rate) {
-      errors.push(t("Interest Rate is required"));
-    } else if (isNaN(formData.saving_details.interest_rate) || parseFloat(formData.saving_details.interest_rate) <= 0 || parseFloat(formData.saving_details.interest_rate) > 100) {
-      errors.push(t("Interest Rate must be between 0 and 100"));
-    }
+    // if (!formData.saving_details.interest_rate) {
+    //   errors.push(t("Interest Rate is required"));
+    // } else if (isNaN(formData.saving_details.interest_rate) || parseFloat(formData.saving_details.interest_rate) <= 0 || parseFloat(formData.saving_details.interest_rate) > 100) {
+    //   errors.push(t("Interest Rate must be between 0 and 100"));
+    // }
 
     // // EMI Day validation
     // if (!formData.saving_details.emi_day) {
@@ -250,7 +251,8 @@ const CreateSavingUser = () => {
             isClosable: true,
             position: "top",
           });
-          window.location.reload();
+            // Redirect to LoanAccount page after successful submission
+            navigate("/dash/saving-accounts");
         }
       })
       .catch((error) => {

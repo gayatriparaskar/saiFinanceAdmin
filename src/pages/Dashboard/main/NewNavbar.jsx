@@ -169,7 +169,7 @@ const NewNavbar = () => {
     if (path.includes('/dash/view-officer')) return t('View Officer');
     if (path.includes('/dash/add-daily-collection')) return t('Add Collection');
     if (path.includes('/dash/add-Saving-collection')) return t('Add Saving Collection');
-    if (path.includes('/dash/countdown-management')) return t('Countdown Management');
+    // if (path.includes('/dash/countdown-management')) return t('Countdown Management');
     return t('Dashboard');
   };
 
@@ -179,7 +179,7 @@ const NewNavbar = () => {
     { name: t("Overdue Loans"), path: "/dash/overdue-loans" },
     { name: t("Saving Account"), path: "/dash/saving-accounts" },
     { name: t("Officer Controls"), path: "/dash/officer" },
-    { name: t("Countdown Management"), path: "/dash/countdown-management" },
+    // { name: t("Countdown Management"), path: "/dash/countdown-management" },
     { name: t("Reports"), path: "/dash/reports" }
   ];
 

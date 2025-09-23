@@ -718,7 +718,7 @@ function Officer() {
          initial="hidden"
            animate="visible"
            variants={containerVariants}
-                    className="min-h-screen bg-primaryBg flex flex-col pt-10 sm:pt-10"
+                className="min-h-screen bg-primaryBg flex flex-col pt-10 sm:pt-20"
          >
              {/* Fixed Header Section */}
        <motion.div 

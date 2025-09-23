@@ -60,22 +60,22 @@ const CountdownDisplay = ({
       case 'sm':
         return {
           fontSize: 'xs',
-          iconSize: 12,
-          padding: 2,
+          iconSize: 8,
+          padding: 0,
           height: '60px'
         };
       case 'lg':
         return {
           fontSize: 'lg',
-          iconSize: 20,
-          padding: 4,
+          iconSize: 10,
+          padding: 2,
           height: '100px'
         };
       default:
         return {
           fontSize: 'sm',
-          iconSize: 16,
-          padding: 3,
+          iconSize: 8,
+          padding: 1,
           height: '80px'
         };
     }
@@ -91,9 +91,8 @@ const CountdownDisplay = ({
     >
       <Box
         bg={config.bg}
-        border="1px"
-        borderColor={config.borderColor}
-        borderRadius="lg"
+        // borderColor={config.borderColor}
+        // borderRadius="lg"
         p={sizeConfig.padding}
         h={sizeConfig.height}
         position="relative"

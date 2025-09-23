@@ -235,7 +235,7 @@ const CreateLoanUser = () => {
             position: "top",
           });
           // Redirect to LoanAccount page after successful submission
-          navigate("/dash/loan-account");
+          navigate("/dash/loan-accounts");
         }
       })
       .catch((error) => {

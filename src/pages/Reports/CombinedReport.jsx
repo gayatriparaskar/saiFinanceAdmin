@@ -422,7 +422,7 @@ const CombinedReport = () => {
           hidden: { opacity: 0, y: 20 },
           visible: { opacity: 1, y: 0 }
         }}
-        className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-10"
+        className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg pt-20"
       >
         <div className="container mx-auto px-4 py-4">
           {/* Report Type Buttons */}
