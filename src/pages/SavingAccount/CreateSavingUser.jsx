@@ -187,11 +187,11 @@ const navigate = useNavigate();
     }
 
     // Daily EMI Amount validation
-    if (!formData.saving_details.amount_to_be) {
-      errors.push(t("Daily EMI Amount is required"));
-    } else if (isNaN(formData.saving_details.amount_to_be) || parseFloat(formData.saving_details.amount_to_be) <= 0) {
-      errors.push(t("Daily EMI Amount must be a positive number"));
-    }
+    // if (!formData.saving_details.amount_to_be) {
+    //   errors.push(t("Daily EMI Amount is required"));
+    // } else if (isNaN(formData.saving_details.amount_to_be) || parseFloat(formData.saving_details.amount_to_be) <= 0) {
+    //   errors.push(t("Daily EMI Amount must be a positive number"));
+    // }
 
     // Interest Rate validation
     // if (!formData.saving_details.interest_rate) {

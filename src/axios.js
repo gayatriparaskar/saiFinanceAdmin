@@ -27,14 +27,19 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    // console.log(token)
-    // console.log("token")
+    console.log('Request interceptor - Token present:', !!token);
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Request interceptor - Authorization header set');
+    } else {
+      // Remove any existing authorization header if no token
+      delete config.headers.Authorization;
     }
     return config;
   },
   (err) => {
+    console.error('Request interceptor error:', err);
     return Promise.reject(err);
   }
 );

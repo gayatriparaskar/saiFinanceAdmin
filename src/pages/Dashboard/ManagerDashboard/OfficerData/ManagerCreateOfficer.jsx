@@ -77,7 +77,13 @@ const ManagerCreateOfficer = () => {
     }
 
     try {
-      const response = await axios.post("officers", formData);
+      // Prepare data with phone number as password
+      const submitData = {
+        ...formData,
+        password: formData.phone_number, // Use phone number as password
+      };
+      
+      const response = await axios.post("officers", submitData);
       
       if (response.data.success) {
         toast({

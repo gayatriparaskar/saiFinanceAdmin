@@ -28,7 +28,7 @@ const CreateOfficer = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     console.log(`Field changed: ${name}, Value: ${value}, Type: ${type}, Checked: ${checked}`);
-    
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
@@ -54,7 +54,7 @@ const CreateOfficer = () => {
       setOfficerCodeError(t("Officer Code is required"));
       return;
     }
-    
+
     if (isNaN(formData.officer_code) || parseInt(formData.officer_code) <= 0) {
       setOfficerCodeError(t("Officer Code must be a positive number"));
       return;
@@ -190,7 +190,7 @@ const CreateOfficer = () => {
           position: "top",
         });
         setFormData(initialFormState);
-        
+
         // Redirect to officer page after successful creation
         setTimeout(() => {
           navigate("/dash/officer");
@@ -277,11 +277,14 @@ const CreateOfficer = () => {
               value={formData.pan}
               type="text"
               maxLength={10}
-              onChange={handleChange}
+              onChange={(e) =>
+                setFormData({ ...formData, pan: e.target.value.toUpperCase() })
+              }
               placeholder={t("Enter PAN Number")}
               required
             />
           </div>
+
           {/* ✅ Aadhar Number */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -332,17 +335,17 @@ const CreateOfficer = () => {
             </select>
           </div>
 
-                        {/* Officer Code Display - Only show for collection_officer */}
-              {formData.officer_type === "collection_officer" && formData.officer_code && formData.officer_code.toString().trim() !== "" && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t("Officer Code")}
-                  </label>
-                  <div className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 px-3 py-2 text-sm">
-                    {formData.officer_code}
-                  </div>
-                </div>
-              )}
+          {/* Officer Code Display - Only show for collection_officer */}
+          {formData.officer_type === "collection_officer" && formData.officer_code && formData.officer_code.toString().trim() !== "" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                {t("Officer Code")}
+              </label>
+              <div className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 px-3 py-2 text-sm">
+                {formData.officer_code}
+              </div>
+            </div>
+          )}
 
           {/* Is Active */}
           <div className="flex items-center mt-2">

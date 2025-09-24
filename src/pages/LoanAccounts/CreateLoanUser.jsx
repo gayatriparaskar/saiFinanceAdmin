@@ -385,10 +385,34 @@ const CreateLoanUser = () => {
                     }
                     // Prevent non-alphanumeric input for PAN
                     if (key === "pan_no") {
-                      if (!/[A-Za-z0-9]/.test(e.key) && e.key !== "Backspace" && e.key !== "Delete" && e.key !== "Tab" && e.key !== "Enter") {
+                      // sirf allowed keys (letters, numbers, backspace etc.)
+                      if (
+                        !/[A-Za-z0-9]/.test(e.key) &&
+                        e.key !== "Backspace" &&
+                        e.key !== "Delete" &&
+                        e.key !== "Tab" &&
+                        e.key !== "Enter"
+                      ) {
                         e.preventDefault();
                       }
+                    
+                      // agar letter hai toh uppercase me convert karo
+                      if (/[a-z]/.test(e.key)) {
+                        e.preventDefault();
+                        const start = e.target.selectionStart;
+                        const end = e.target.selectionEnd;
+                        const newValue =
+                          e.target.value.substring(0, start) +
+                          e.key.toUpperCase() +
+                          e.target.value.substring(end);
+                    
+                        e.target.value = newValue;
+                    
+                        // cursor sahi jagah set karna
+                        e.target.setSelectionRange(start + 1, start + 1);
+                      }
                     }
+                    
                   }}
                />
              </div>

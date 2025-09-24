@@ -523,12 +523,8 @@ function SavingAccount() {
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
-
-        Header: t('Account Holder'),
+        Header: t('Name'),
         accessor: "full_name",
-
-
-
         Cell: ({ value, row: { original } }) => (
           <>
             <Cell text={`${original?.full_name}`} bold={"bold"} />
@@ -536,19 +532,8 @@ function SavingAccount() {
         ),
       },
       {
-        Header: t('Account Number'),
-        accessor: "account_number",
-        Cell: ({ value, row: { original } }) => (
-          <>
-            <Cell text={`${original?.saving_account_id?.account_number}`} />
-          </>
-        ),
-      },
-      {
-
         Header: t('Current Amount'),
         accessor: "current_amount",
-
         Cell: ({ value, row: { original } }) => (
           <>
             <Cell text={`₹ ${original?.saving_account_id?.current_amount?.toLocaleString() || 0}`} />
@@ -556,34 +541,27 @@ function SavingAccount() {
         ),
       },
       {
-        Header: t('Daily EMI Amount'),
-        accessor: "daily_emi_amount",
+        Header: t('EMI Amount'),
+        accessor: "emi_amount",
         Cell: ({ value, row: { original } }) => (
           <>
-            <Cell text={`₹ ${original?.saving_account_id?.emi_day || 0}`} />
+            <Cell text={`₹ ${original?.saving_account_id?.emi_amount || 0}`} />
           </>
         ),
       },
       {
-        Header: t('Remaining Days'),
+        Header: t('Remaining EMI Days'),
         accessor: "remaining_emi_days",
         Cell: ({ value, row: { original } }) => {
           const remainingDays = original?.saving_account_id?.remaining_emi_days || 120;
           
           return (
-            <CountdownDisplay
-              remainingDays={remainingDays}
-              totalDays={120}
-              size="sm"
-              showProgress={true}
-              showIcon={true}
-            />
+            <Cell text={`${remainingDays} `} />
           );
         },
-        minWidth: 140,
       },
       {
-        Header: t('Officer Alloted'),
+        Header: t('Alloted Officer'),
         accessor: "officer_name",
         Cell: ({ value, row: { original } }) => (
           <>
@@ -592,18 +570,25 @@ function SavingAccount() {
         ),
       },
       {
-
-        Header: t('Total Amount'),
-        accessor: "amount_to_be",
-        Cell: ({ value, row: { original } }) => <Cell text={original?.saving_account_id?.amount_to_be} />,
-
+        Header: t('Start Date'),
+        accessor: "created_on",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
+        ),
       },
       {
-
-        Header: t('Total Due Amount'),
-        accessor: "total_amount",
-        Cell: ({ value, row: { original } }) => <Cell text={original?.saving_account_id?.total_amount} />,
-
+        Header: t('End Date'),
+        accessor: "end_date",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={original?.saving_account_id?.end_date ? dayjs(original.saving_account_id.end_date).format("D MMM, YYYY") : 'N/A'} />
+        ),
+      },
+      {
+        Header: t('Phone Number'),
+        accessor: "phone_number",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={`${original?.phone_number || '-'}`} />
+        ),
       },
       {
         Header: t('Status'),
@@ -636,28 +621,7 @@ function SavingAccount() {
         },
       },
       {
-        Header: t('Date Created', 'Date Created'),
-        accessor: "created_on",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
-        ),
-      },
-      {
-        Header: t('End Date', 'End Date'),
-        accessor: "end_date",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={original?.saving_account_id?.end_date ? dayjs(original.saving_account_id.end_date).format("D MMM, YYYY") : 'N/A'} />
-        ),
-      },
-      {
-        Header: t('Phone', 'Phone'),
-        accessor: "phone_number",
-        Cell: ({ value, row: { original } }) => (
-          <Cell text={`${original?.phone_number || '-'}`} />
-        ),
-      },
-      {
-        Header: t('Action'),
+        Header: t('Actions'),
         accessor: "",
         Cell: ({ value, row: { original } }) => {
           return (
@@ -684,9 +648,6 @@ function SavingAccount() {
                     <MdDelete className="mr-4" />
                     {t('Delete')}
                   </MenuItem>
-                  {/* <MenuItem onClick={onOpen2}>
-                    <HiStatusOnline className="mr-4" /> {t('Status')}
-                  </MenuItem> */}
                 </MenuList>
               </Menu>
             </>

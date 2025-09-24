@@ -21,6 +21,10 @@ const NewLogin = () => {
     let isOfficer = false;
 
     try {
+      // Clear any existing token to ensure fresh login
+      localStorage.removeItem("token");
+      axios.defaults.headers.common['Authorization'] = undefined;
+      
       // Try officer login first (most common for panel users)
       try {
         console.log('Attempting officer login with:', { phone_number: user_name, password });
@@ -29,13 +33,29 @@ const NewLogin = () => {
         console.log('Officer login successful - Response:', response?.data);
       } catch (officerError) {
         console.log('Officer login failed, trying admin login...', officerError.response?.status);
-        // Fallback to admin login
-        try {
-          response = await axios.post("admins/login", { user_name, password });
-          console.log('Admin login successful');
-        } catch (adminError) {
-          console.log('All login attempts failed');
-          throw adminError;
+        
+        // If officer login fails due to network/timeout, try once more
+        if (officerError.code === 'ECONNABORTED' || officerError.message === 'Network Error') {
+          console.log('Retrying officer login due to network issue...');
+          try {
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+            response = await axios.post("officers/login", { phone_number: user_name, password });
+            isOfficer = true;
+            console.log('Officer login successful on retry - Response:', response?.data);
+          } catch (retryError) {
+            console.log('Officer login retry also failed, trying admin login...');
+          }
+        }
+        
+        // If still no success, try admin login
+        if (!response) {
+          try {
+            response = await axios.post("admins/login", { user_name, password });
+            console.log('Admin login successful');
+          } catch (adminError) {
+            console.log('All login attempts failed');
+            throw adminError;
+          }
         }
       }
 
@@ -60,6 +80,9 @@ const NewLogin = () => {
         
         if (accessToken) {
           localStorage.setItem("token", accessToken);
+          
+          // Force axios to pick up the new token immediately
+          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
           
           if (isOfficer) {
             // Store officer info for dashboard routing
