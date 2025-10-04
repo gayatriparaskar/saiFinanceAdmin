@@ -365,7 +365,24 @@ const ManagerSavingAccount = () => {
       Header: t('REMAINING EMI DAYS'),
       accessor: "remaining_emi_days",
       Cell: ({ value, row: { original } }) => {
-        const remainingDays = original?.saving_account_id?.remaining_emi_days;
+        // Calculate remaining days based on current date and account end date
+        const currentDate = new Date();
+        let endDate;
+        
+        if (original?.saving_account_id?.end_date) {
+          endDate = new Date(original.saving_account_id.end_date);
+        } else if (original?.saving_account_id?.created_on) {
+          // Calculate end date as 120 days from created date
+          const createdDate = new Date(original.saving_account_id.created_on);
+          endDate = new Date(createdDate.getTime() + (120 * 24 * 60 * 60 * 1000));
+        } else {
+          // Fallback to 120 days from now
+          endDate = new Date(currentDate.getTime() + (120 * 24 * 60 * 60 * 1000));
+        }
+        
+        const timeDiff = endDate - currentDate;
+        const remainingDays = Math.max(0, Math.ceil(timeDiff / (1000 * 60 * 60 * 24)));
+        
         return (
           <Cell 
             text={remainingDays ? `${remainingDays} days` : t('N/A')} 

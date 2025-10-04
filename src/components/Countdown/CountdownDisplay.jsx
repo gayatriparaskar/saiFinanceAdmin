@@ -9,7 +9,8 @@ const CountdownDisplay = ({
   showProgress = true, 
   size = 'md',
   showIcon = true,
-  variant = 'default' // 'default', 'warning', 'danger', 'success'
+  variant = 'default', // 'default', 'warning', 'danger', 'success'
+  noBackground = false // New prop to remove background colors
 }) => {
   const percentage = totalDays > 0 ? ((totalDays - remainingDays) / totalDays) * 100 : 0;
   const isCompleted = remainingDays <= 0;
@@ -90,7 +91,7 @@ const CountdownDisplay = ({
       transition={{ duration: 0.3 }}
     >
       <Box
-        bg={config.bg}
+        bg={noBackground ? 'transparent' : config.bg}
         // borderColor={config.borderColor}
         // borderRadius="lg"
         p={sizeConfig.padding}
@@ -161,20 +162,22 @@ const CountdownDisplay = ({
         </VStack>
 
         {/* Animated Background Effect */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
-          transition={{ duration: 0.5 }}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: `linear-gradient(45deg, ${config.color}.200, transparent)`,
-            pointerEvents: 'none'
-          }}
-        />
+        {!noBackground && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.1 }}
+            transition={{ duration: 0.5 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: `linear-gradient(45deg, ${config.color}.200, transparent)`,
+              pointerEvents: 'none'
+            }}
+          />
+        )}
       </Box>
     </motion.div>
   );

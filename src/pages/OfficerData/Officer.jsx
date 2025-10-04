@@ -74,35 +74,77 @@ function Officer() {
   const fetchCollectionData = async (period) => {
     try {
       let endpoint = '';
+      let queryParams = {};
+      
       if (period === 'daily') {
         endpoint = 'admins/officerWiseDailyCollections';
+        // For daily, we need to pass today's date
+        const today = new Date().toISOString().split('T')[0];
+        queryParams = { date: today };
       } else if (period === 'weekly') {
         endpoint = 'admins/officerWiseWeeklyCollections';
       } else if (period === 'monthly') {
         endpoint = 'admins/officerWiseMonthlyCollections';
       }
 
-      const response = await axios.get(endpoint);
+      const response = await axios.get(endpoint, { params: queryParams });
       console.log(`📊 ${period} officer collections response:`, response.data);
       
-      const collections = response.data.result?.collections || [];
+      // Handle different response structures from backend
+      let collections = [];
+      if (response.data.result) {
+        if (response.data.result.collections) {
+          collections = response.data.result.collections;
+        } else if (Array.isArray(response.data.result)) {
+          collections = response.data.result;
+        }
+      }
+      
+      console.log(`📊 Processed ${period} collections:`, collections);
       setCollectionData(prev => ({
         ...prev,
         [period]: collections
       }));
     } catch (error) {
       console.error(`Error fetching ${period} collection data:`, error);
+      // Set empty array on error to prevent undefined issues
+      setCollectionData(prev => ({
+        ...prev,
+        [period]: []
+      }));
     }
   };
 
   // Function to get collection amount for an officer
   const getOfficerCollectionAmount = (officerId, period) => {
     const collections = collectionData[period] || [];
-    const officerCollection = collections.find(c => 
-      c.officer_id === officerId || 
-      c.officer_id?.toString() === officerId?.toString()
-    );
-    return officerCollection ? (officerCollection.total_amount || 0) : 0;
+    console.log(`🔍 Getting collection amount for officer ${officerId} (${period}):`, {
+      collections: collections,
+      officerId: officerId,
+      period: period
+    });
+    
+    // Try different ID matching strategies
+    let officerCollection = collections.find(c => c.officer_id === officerId);
+    if (!officerCollection) {
+      // Try string comparison
+      officerCollection = collections.find(c => String(c.officer_id) === String(officerId));
+    }
+    if (!officerCollection) {
+      // Try with _id field
+      officerCollection = collections.find(c => c._id === officerId);
+    }
+    if (!officerCollection) {
+      // Try with ObjectId comparison
+      officerCollection = collections.find(c => c.officer_id?.toString() === officerId?.toString());
+    }
+    
+    console.log(`🔍 Found officer collection:`, officerCollection);
+    
+    const amount = officerCollection ? (officerCollection.total_amount || 0) : 0;
+    console.log(`🔍 Collection amount:`, amount);
+    
+    return amount;
   };
 
   useEffect(() => {

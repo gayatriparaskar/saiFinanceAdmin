@@ -81,7 +81,15 @@ const OfficerTable = ({
       const response = await axios.get(endpoint, { params });
       console.log(`📊 ${period} officer collections response:`, response.data);
       
-      const collections = response.data.result?.collections || [];
+      // Handle different response structures from backend
+      let collections = [];
+      if (response.data.result) {
+        if (response.data.result.collections) {
+          collections = response.data.result.collections;
+        } else if (Array.isArray(response.data.result)) {
+          collections = response.data.result;
+        }
+      }
       
       console.log(`📊 ${period} officer collections:`, collections);
       console.log(`📊 ${period} collections count:`, collections.length);
