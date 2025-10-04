@@ -10,6 +10,8 @@ import OfficerInfo from '../pages/SavingAccount/officerInfo';
 import UserDetailPage from '../pages/UserDetailPage/UserDetailPage';
 import ManagerViewLoanUser from '../pages/Dashboard/ManagerDashboard/LoanAccount/ManagerViewLoanUser';
 import ManagerViewSavingUser from '../pages/Dashboard/ManagerDashboard/SavingAccount/ManagerViewSavingUser';
+import BlockedUsers from '../pages/BlockedUsers/BlockedUsers';
+import InactiveUsers from '../pages/InactiveUsers/InactiveUsers';
 
 const MainRoute = () => {
   const [loading, setLoading] = useState(false);
@@ -159,6 +161,36 @@ const MainRoute = () => {
                 transition={pageTransition}
               >
                 <ManagerViewSavingUser/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/blocked-users' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <BlockedUsers/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/inactive-users' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <InactiveUsers/>
               </motion.div>
             }
           />

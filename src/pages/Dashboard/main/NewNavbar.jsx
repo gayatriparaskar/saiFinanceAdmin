@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoMdLogOut } from "react-icons/io";
 import { useUser } from "../../../hooks/use-user";
@@ -136,6 +136,19 @@ const NewNavbar = () => {
     }
   };
 
+  const dropdownItemVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: (index) => ({
+      opacity: 1,
+      x: 0,
+      transition: {
+        delay: index * 0.05,
+        duration: 0.2,
+        ease: "easeOut"
+      }
+    })
+  };
+
   const mobileMenuVariants = {
     hidden: { 
       opacity: 0, 
@@ -158,6 +171,8 @@ const NewNavbar = () => {
     if (path.includes('/dash/overdue-loans')) return t('Overdue Loans');
     if (path.includes('/dash/saving-accounts')) return t('Saving Account');
     if (path.includes('/dash/officer')) return t('Officer Controls');
+    if (path.includes('/blocked-users')) return t('Blocked Users');
+    if (path.includes('/inactive-users')) return t('Inactive Users');
     if (path.includes('/dash/reports')) return t('Reports');
     if (path.includes('/dash/payment')) return t('Payment');
     if (path.includes('/dash/payment-request')) return t('Payment Request');
@@ -179,7 +194,8 @@ const NewNavbar = () => {
     { name: t("Overdue Loans"), path: "/dash/overdue-loans" },
     { name: t("Saving Account"), path: "/dash/saving-accounts" },
     { name: t("Officer Controls"), path: "/dash/officer" },
-    // { name: t("Countdown Management"), path: "/dash/countdown-management" },
+    { name: t("Blocked Users"), path: "/blocked-users" },
+    { name: t("Inactive Users"), path: "/inactive-users" },
     { name: t("Reports"), path: "/dash/reports" }
   ];
 
@@ -200,7 +216,7 @@ const NewNavbar = () => {
       </motion.div>
 
       {/* Desktop Menu Items */}
-      <ul className="hidden lg:flex items-center space-x-4 xl:space-x-6 font-semibold">
+      <ul className="hidden lg:flex items-center space-x-2 xl:space-x-4 font-semibold overflow-x-auto">
         {navigationItems.map((item, index) => (
           <motion.li
             key={item.name}
@@ -214,7 +230,7 @@ const NewNavbar = () => {
           >
             <Link 
               to={item.path} 
-              className={`relative px-2 sm:px-3 py-2 rounded-lg transition-all duration-300 flex items-center text-sm xl:text-base ${
+              className={`relative px-1 sm:px-2 py-2 rounded-lg transition-all duration-300 flex items-center text-xs xl:text-sm ${
                 isActive(item.path) 
                   ? "text-primary bg-primary/10 font-bold" 
                   : "text-gray-700 hover:text-primary hover:bg-primary/5"
@@ -232,6 +248,7 @@ const NewNavbar = () => {
             </Link>
           </motion.li>
         ))}
+
 
         {/* Payment Controls Dropdown */}
         {/* <motion.li 
@@ -405,6 +422,7 @@ const NewNavbar = () => {
                 </Link>
               </motion.div>
             ))}
+
 
             {/* Mobile Payment Controls */}
             {/* <div className="border-t border-gray-200 pt-3">

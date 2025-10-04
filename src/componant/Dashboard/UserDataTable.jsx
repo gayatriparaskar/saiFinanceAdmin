@@ -54,7 +54,7 @@ import {
   ChevronRightIcon,
   DownloadIcon
 } from '@chakra-ui/icons';
-import { FaSync } from 'react-icons/fa';
+import { FaSync, FaBan, FaUnlock, FaPause, FaPlay } from 'react-icons/fa';
 
 /**
  * UserDataTable Component
@@ -424,6 +424,156 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
     }
   };
 
+  // Handle block user
+  const handleBlockUser = async (user) => {
+    const reason = prompt(t('Enter reason for blocking this user:'));
+    if (!reason || reason.trim() === '') {
+      toast({
+        title: t('Error'),
+        description: t('Block reason is required'),
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post('/admins/block-user', {
+        userId: user._id,
+        blockReason: reason.trim()
+      });
+
+      if (response.data) {
+        toast({
+          title: t('Success'),
+          description: `User ${user.displayName || user.name} has been blocked`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
+        fetchUserData(); // Refresh the data
+      }
+    } catch (error) {
+      console.error('Error blocking user:', error);
+      toast({
+        title: t('Error'),
+        description: error.response?.data?.message || t('Failed to block user'),
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Handle unblock user
+  const handleUnblockUser = async (user) => {
+    if (!window.confirm(t('Are you sure you want to unblock this user?'))) {
+      return;
+    }
+
+    try {
+      const response = await axios.post('/admins/unblock-user', {
+        userId: user._id
+      });
+
+      if (response.data) {
+        toast({
+          title: t('Success'),
+          description: `User ${user.displayName || user.name} has been unblocked`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
+        fetchUserData(); // Refresh the data
+      }
+    } catch (error) {
+      console.error('Error unblocking user:', error);
+      toast({
+        title: t('Error'),
+        description: error.response?.data?.message || t('Failed to unblock user'),
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Handle inactivate user
+  const handleInactivateUser = async (user) => {
+    const reason = prompt(t('Enter reason for inactivating this user:'));
+    if (!reason || reason.trim() === '') {
+      toast({
+        title: t('Error'),
+        description: t('Inactivation reason is required'),
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post('/admins/inactivate-user', {
+        userId: user._id,
+        inactivationReason: reason.trim()
+      });
+
+      if (response.data) {
+        toast({
+          title: t('Success'),
+          description: `User ${user.displayName || user.name} has been inactivated`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
+        fetchUserData(); // Refresh the data
+      }
+    } catch (error) {
+      console.error('Error inactivating user:', error);
+      toast({
+        title: t('Error'),
+        description: error.response?.data?.message || t('Failed to inactivate user'),
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Handle reactivate user
+  const handleReactivateUser = async (user) => {
+    if (!window.confirm(t('Are you sure you want to reactivate this user?'))) {
+      return;
+    }
+
+    try {
+      const response = await axios.post('/admins/reactivate-user', {
+        userId: user._id
+      });
+
+      if (response.data) {
+        toast({
+          title: t('Success'),
+          description: `User ${user.displayName || user.name} has been reactivated`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
+        fetchUserData(); // Refresh the data
+      }
+    } catch (error) {
+      console.error('Error reactivating user:', error);
+      toast({
+        title: t('Error'),
+        description: error.response?.data?.message || t('Failed to reactivate user'),
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
   // Pagination
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -742,6 +892,52 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
                             onClick={() => handleViewDetails(user)}
                           />
                         </Tooltip>
+                        {user.user_type !== 'officer' && (
+                          <>
+                            {user.is_blocked ? (
+                              <Tooltip label={t("Unblock User")}>
+                                <IconButton
+                                  icon={<FaUnlock />}
+                                  size="sm"
+                                  variant="ghost"
+                                  colorScheme="green"
+                                  onClick={() => handleUnblockUser(user)}
+                                />
+                              </Tooltip>
+                            ) : (
+                              <Tooltip label={t("Block User")}>
+                                <IconButton
+                                  icon={<FaBan />}
+                                  size="sm"
+                                  variant="ghost"
+                                  colorScheme="red"
+                                  onClick={() => handleBlockUser(user)}
+                                />
+                              </Tooltip>
+                            )}
+                            {user.is_inactive ? (
+                              <Tooltip label={t("Reactivate User")}>
+                                <IconButton
+                                  icon={<FaPlay />}
+                                  size="sm"
+                                  variant="ghost"
+                                  colorScheme="green"
+                                  onClick={() => handleReactivateUser(user)}
+                                />
+                              </Tooltip>
+                            ) : (
+                              <Tooltip label={t("Inactivate User")}>
+                                <IconButton
+                                  icon={<FaPause />}
+                                  size="sm"
+                                  variant="ghost"
+                                  colorScheme="orange"
+                                  onClick={() => handleInactivateUser(user)}
+                                />
+                              </Tooltip>
+                            )}
+                          </>
+                        )}
                       </HStack>
                     </Td>
                   </Tr>
