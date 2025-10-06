@@ -43,11 +43,15 @@ import {
 
 import { MdEdit, MdDelete } from "react-icons/md";
 import { HiStatusOnline } from "react-icons/hi";
+import { FaBan, FaUnlock, FaPause, FaPlay } from "react-icons/fa";
 
 function LoanAccount() {
   const { t } = useLocalTranslation();
   const [data, setData] = useState([]);
   const [newID, setNewID] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [blockReason, setBlockReason] = useState('');
+  const [inactivationReason, setInactivationReason] = useState('');
   const [totalLoanAmt, setTotalLoanAmt] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
@@ -64,6 +68,10 @@ function LoanAccount() {
   const usersPerPage = 10;
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isBlockOpen, onOpen: onBlockOpen, onClose: onBlockClose } = useDisclosure();
+  const { isOpen: isUnblockOpen, onOpen: onUnblockOpen, onClose: onUnblockClose } = useDisclosure();
+  const { isOpen: isInactivateOpen, onOpen: onInactivateOpen, onClose: onInactivateClose } = useDisclosure();
+  const { isOpen: isReactivateOpen, onOpen: onReactivateOpen, onClose: onReactivateClose } = useDisclosure();
   const cancelRef = React.useRef();
 
   // Fetch collection officers only
@@ -149,6 +157,160 @@ function LoanAccount() {
       setTotalLoanAmt(sum);
     } catch (error) {
       console.error("❌ Error fetching data:", error);
+    }
+  };
+
+  // Block user function
+  const handleBlockUser = async () => {
+    if (!selectedUser || !blockReason.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Please provide a reason for blocking',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post('/admins/block-user', {
+        userId: selectedUser._id,
+        blockReason: blockReason.trim()
+      });
+
+      if (response.data) {
+        toast({
+          title: 'Success',
+          description: `User ${selectedUser.full_name} has been blocked`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
+        onBlockClose();
+        setBlockReason('');
+        setSelectedUser(null);
+        fetchData();
+      }
+    } catch (error) {
+      console.error('Error blocking user:', error);
+      toast({
+        title: 'Error',
+        description: error.response?.data?.message || 'Failed to block user',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Unblock user function
+  const handleUnblockUser = async () => {
+    if (!selectedUser) return;
+
+    try {
+      const response = await axios.post('/admins/unblock-user', {
+        userId: selectedUser._id
+      });
+
+      if (response.data) {
+        toast({
+          title: 'Success',
+          description: `User ${selectedUser.full_name} has been unblocked`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
+        onUnblockClose();
+        setSelectedUser(null);
+        fetchData();
+      }
+    } catch (error) {
+      console.error('Error unblocking user:', error);
+      toast({
+        title: 'Error',
+        description: error.response?.data?.message || 'Failed to unblock user',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Inactivate user function
+  const handleInactivateUser = async () => {
+    if (!selectedUser || !inactivationReason.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Please provide a reason for inactivation',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post('/admins/inactivate-user', {
+        userId: selectedUser._id,
+        inactivationReason: inactivationReason.trim()
+      });
+
+      if (response.data) {
+        toast({
+          title: 'Success',
+          description: `User ${selectedUser.full_name} has been inactivated`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
+        onInactivateClose();
+        setInactivationReason('');
+        setSelectedUser(null);
+        fetchData();
+      }
+    } catch (error) {
+      console.error('Error inactivating user:', error);
+      toast({
+        title: 'Error',
+        description: error.response?.data?.message || 'Failed to inactivate user',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  // Reactivate user function
+  const handleReactivateUser = async () => {
+    if (!selectedUser) return;
+
+    try {
+      const response = await axios.post('/admins/reactivate-user', {
+        userId: selectedUser._id
+      });
+
+      if (response.data) {
+        toast({
+          title: 'Success',
+          description: `User ${selectedUser.full_name} has been reactivated`,
+          status: 'success',
+          duration: 4000,
+          isClosable: true,
+        });
+        onReactivateClose();
+        setSelectedUser(null);
+        fetchData();
+      }
+    } catch (error) {
+      console.error('Error reactivating user:', error);
+      toast({
+        title: 'Error',
+        description: error.response?.data?.message || 'Failed to reactivate user',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     }
   };
 
@@ -632,6 +794,32 @@ function LoanAccount() {
                   <MdDelete className="mr-4" />
                   {t('Delete')}
                 </MenuItem>
+                {original.user_type !== 'officer' && (
+                  <>
+                    {original.is_blocked ? (
+                      <MenuItem onClick={() => { setSelectedUser(original); onUnblockOpen(); }}>
+                        <FaUnlock className="mr-4" />
+                        {t('Unblock User')}
+                      </MenuItem>
+                    ) : (
+                      <MenuItem onClick={() => { setSelectedUser(original); onBlockOpen(); }}>
+                        <FaBan className="mr-4" />
+                        {t('Block User')}
+                      </MenuItem>
+                    )}
+                    {original.is_inactive ? (
+                      <MenuItem onClick={() => { setSelectedUser(original); onReactivateOpen(); }}>
+                        <FaPlay className="mr-4" />
+                        {t('Reactivate User')}
+                      </MenuItem>
+                    ) : (
+                      <MenuItem onClick={() => { setSelectedUser(original); onInactivateOpen(); }}>
+                        <FaPause className="mr-4" />
+                        {t('Inactivate User')}
+                      </MenuItem>
+                    )}
+                  </>
+                )}
                 {/* <MenuItem onClick={onOpen2}>
                   <HiStatusOnline className="mr-4" /> {t('Status')}
                 </MenuItem> */}
@@ -1486,6 +1674,144 @@ function LoanAccount() {
                 ml={3}
               >
                 {t('Change Officer', 'Change Officer')}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      {/* Block User Modal */}
+      <AlertDialog isOpen={isBlockOpen} onClose={onBlockClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              <div className="flex items-center">
+                <FaBan className="text-red-500 mr-2" />
+                {t('Block User')}
+              </div>
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              <div className="space-y-4">
+                <p>
+                  {t('Are you sure you want to block')} <strong>{selectedUser?.full_name}</strong>?
+                </p>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('Reason for blocking')} *
+                  </label>
+                  <textarea
+                    value={blockReason}
+                    onChange={(e) => setBlockReason(e.target.value)}
+                    placeholder={t('Enter reason for blocking this user')}
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    rows={3}
+                  />
+                </div>
+              </div>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button onClick={onBlockClose}>
+                {t('Cancel')}
+              </Button>
+              <Button colorScheme="red" onClick={handleBlockUser} ml={3}>
+                {t('Block User')}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      {/* Unblock User Modal */}
+      <AlertDialog isOpen={isUnblockOpen} onClose={onUnblockClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              <div className="flex items-center">
+                <FaUnlock className="text-green-500 mr-2" />
+                {t('Unblock User')}
+              </div>
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              <p>
+                {t('Are you sure you want to unblock')} <strong>{selectedUser?.full_name}</strong>? 
+                {t('This will allow them to create new accounts again.')}
+              </p>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button onClick={onUnblockClose}>
+                {t('Cancel')}
+              </Button>
+              <Button colorScheme="green" onClick={handleUnblockUser} ml={3}>
+                {t('Unblock User')}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      {/* Inactivate User Modal */}
+      <AlertDialog isOpen={isInactivateOpen} onClose={onInactivateClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              <div className="flex items-center">
+                <FaPause className="text-orange-500 mr-2" />
+                {t('Inactivate User')}
+              </div>
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              <div className="space-y-4">
+                <p>
+                  {t('Are you sure you want to inactivate')} <strong>{selectedUser?.full_name}</strong>?
+                </p>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('Reason for inactivation')} *
+                  </label>
+                  <textarea
+                    value={inactivationReason}
+                    onChange={(e) => setInactivationReason(e.target.value)}
+                    placeholder={t('Enter reason for inactivating this user')}
+                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    rows={3}
+                  />
+                </div>
+              </div>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button onClick={onInactivateClose}>
+                {t('Cancel')}
+              </Button>
+              <Button colorScheme="orange" onClick={handleInactivateUser} ml={3}>
+                {t('Inactivate User')}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
+      {/* Reactivate User Modal */}
+      <AlertDialog isOpen={isReactivateOpen} onClose={onReactivateClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              <div className="flex items-center">
+                <FaPlay className="text-green-500 mr-2" />
+                {t('Reactivate User')}
+              </div>
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              <p>
+                {t('Are you sure you want to reactivate')} <strong>{selectedUser?.full_name}</strong>? 
+                {t('This will allow them to create new accounts again.')}
+              </p>
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button onClick={onReactivateClose}>
+                {t('Cancel')}
+              </Button>
+              <Button colorScheme="green" onClick={handleReactivateUser} ml={3}>
+                {t('Reactivate User')}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
