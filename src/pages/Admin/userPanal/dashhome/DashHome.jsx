@@ -8,8 +8,8 @@ import WeeklyChart from "../../../../componant/Charts/WeeklyChart";
 import PerformanceChart from "../../../../componant/Charts/PerformanceChart";
 import ExpenseSummary from "../../../../componant/Dashboard/ExpenseSummary";
 import axios from "../../../../axios";
-import { handleNetworkError, isNetworkError } from "../../../../utils/errorHandler";
-import { debugNetworkIssues, showNetworkStatus } from "../../../../utils/networkStatus";
+// import { handleNetworkError, isNetworkError } from "../../../../utils/errorHandler";
+// import { debugNetworkIssues, showNetworkStatus } from "../../../../utils/networkStatus";
 
 const DashHome = () => {
   const { t } = useLocalTranslation();
@@ -21,7 +21,7 @@ const DashHome = () => {
   const [dailyCollection, setDailyCollection] = useState(0);
   const [totalLoanAmt, setTotalLoanAmt] = useState(0);
   const [totalCollection, setTotalCollection] = useState(0);
-  const [totalSavings, setTotalSavings] = useState(0);
+  // const [totalSavings, setTotalSavings] = useState(0);
   const [activeSavingsUsers, setActiveSavingsUsers] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [totalSavingAmt,setTotalSavingAmt]= useState(0);

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../../../axios';
-import { FaPlus, FaSearch, FaEye, FaEdit, FaFilter, FaUser, FaPhone, FaEnvelope, FaUserTie, FaUsers } from 'react-icons/fa';
+import { FaPlus, FaSearch, FaEye, FaPhone, FaUserTie, FaUsers } from 'react-icons/fa';
 import {
   Menu,
   MenuButton,
@@ -12,7 +12,7 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
-  InputRightAddon,
+  // InputRightAddon,
   useDisclosure,
   Drawer,
   DrawerBody,
@@ -20,22 +20,22 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
-  DrawerCloseButton,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
+  // DrawerCloseButton,
+  // AlertDialog,
+  // AlertDialogOverlay,
+  // AlertDialogContent,
+  // AlertDialogHeader,
+  // AlertDialogBody,
+  // AlertDialogFooter,
   useToast,
   Select,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  ModalFooter,
+  // Modal,
+  // ModalOverlay,
+  // ModalContent,
+  // ModalHeader,
+  // ModalBody,
+  // ModalCloseButton,
+  // ModalFooter,
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
@@ -59,14 +59,14 @@ const ManagerOfficer = () => {
   const [activeOfficers, setActiveOfficers] = useState(0);
   const [filteredData, setFilteredData] = useState([]);
   const [sortBy, setSortBy] = useState('');
-  const [sortOrder, setSortOrder] = useState('asc');
+  // const [sortOrder, setSortOrder] = useState('asc');
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoadingOfficers, setIsLoadingOfficers] = useState(false);
   const [officers, setOfficers] = useState([]);
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
+  // const cancelRef = React.useRef();
 
   useEffect(() => {
     fetchData();
@@ -105,19 +105,19 @@ const ManagerOfficer = () => {
   };
 
   // Sort functions
-  const getSortDisplayName = (sortKey) => {
-    const sortNames = {
-      'name_a_to_z': 'Name (A to Z)',
-      'name_z_to_a': 'Name (Z to A)',
-      'type_a_to_z': 'Type (A to Z)',
-      'type_z_to_a': 'Type (Z to A)',
-      'status_active': 'Status (Active)',
-      'status_inactive': 'Status (Inactive)',
-      'date_newest': 'Date (Newest)',
-      'date_oldest': 'Date (Oldest)'
-    };
-    return sortNames[sortKey] || sortKey;
-  };
+  // const getSortDisplayName = (sortKey) => {
+  //   const sortNames = {
+  //     'name_a_to_z': 'Name (A to Z)',
+  //     'name_z_to_a': 'Name (Z to A)',
+  //     'type_a_to_z': 'Type (A to Z)',
+  //     'type_z_to_a': 'Type (Z to A)',
+  //     'status_active': 'Status (Active)',
+  //     'status_inactive': 'Status (Inactive)',
+  //     'date_newest': 'Date (Newest)',
+  //     'date_oldest': 'Date (Oldest)'
+  //   };
+  //   return sortNames[sortKey] || sortKey;
+  // };
 
   const handleSort = (sortKey) => {
     setSortBy(sortKey);
@@ -382,14 +382,14 @@ const ManagerOfficer = () => {
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 }
-    }
-  };
+  // const itemVariants = {
+  //   hidden: { opacity: 0, y: 20 },
+  //   visible: {
+  //     opacity: 1,
+  //     y: 0,
+  //     transition: { duration: 0.5 }
+  //   }
+  // };
 
   return (
     <>

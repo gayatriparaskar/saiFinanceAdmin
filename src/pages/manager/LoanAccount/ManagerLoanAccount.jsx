@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
 
 import axios from "../../../../axios";
-import { FaArrowRightLong } from "react-icons/fa6";
-import Correct from "../../../../Images/Vector.png";
-import bgImage from "../../../../Images/Section (2).png";
-import Info from "../../../../Images/ph_info-duotone.png";
+// import { FaArrowRightLong } from "react-icons/fa6";
+// import Correct from "../../../../Images/Vector.png";
+// import bgImage from "../../../../Images/Section (2).png";
+// import Info from "../../../../Images/ph_info-duotone.png";
 import Table from "../../../../componant/Table/Table";
 import Cell from "../../../../componant/Table/cell";
 import {
@@ -38,13 +38,13 @@ import {
   AlertDialogFooter,
   useToast,
   Select,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  ModalFooter,
+  // Modal,
+  // ModalOverlay,
+  // ModalContent,
+  // ModalHeader,
+  // ModalBody,
+  // ModalCloseButton,
+  // ModalFooter,
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
@@ -57,7 +57,7 @@ function ManagerLoanAccount() {
   const { t } = useLocalTranslation();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const [newID, setNewID] = useState(null);
+  // const [newID, setNewID] = useState(null);
   const [totalLoanAmt, setTotalLoanAmt] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
@@ -73,7 +73,7 @@ function ManagerLoanAccount() {
   const [sortOrder, setSortOrder] = useState("asc");
   const usersPerPage = 10;
   const toast = useToast()
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
   // Sort functions

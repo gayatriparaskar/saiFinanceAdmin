@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { 
   formatCurrency, 
   formatDate, 
-  getStatusColor, 
+  // getStatusColor, 
   EXPENSE_STATUSES
 } from '../../services/expenseService';
-import { FiEdit2, FiTrash2, FiCheck, FiX, FiDollarSign, FiEye, FiMoreVertical } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiCheck, FiDollarSign, FiEye, FiMoreVertical } from 'react-icons/fi';
 
 const ExpenseTable = ({ 
   expenses, 

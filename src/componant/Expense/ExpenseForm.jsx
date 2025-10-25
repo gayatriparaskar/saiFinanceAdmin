@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   EXPENSE_CATEGORIES, 
   EXPENSE_PRIORITIES, 
-  formatCurrency 
+  // formatCurrency 
 } from '../../services/expenseService';
 
 const ExpenseForm = ({ 

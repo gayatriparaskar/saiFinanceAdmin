@@ -36,8 +36,8 @@ import {
   HStack,
   useToast,
 } from "@chakra-ui/react";
-import { MdEdit, MdDelete } from "react-icons/md";
-import { HiStatusOnline } from "react-icons/hi";
+// import { MdEdit, MdDelete } from "react-icons/md";
+// import { HiStatusOnline } from "react-icons/hi";
 
 function ViewSavingUser() {
   const { t } = useLocalTranslation();
@@ -46,10 +46,10 @@ function ViewSavingUser() {
   const [transactions, setTransactions] = useState([]);
   console.log(id);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpen2,
-    onOpen: onOpen2,
+    // onOpen: onOpen2,
     onClose: onClose2,
   } = useDisclosure();
   const {
@@ -241,10 +241,10 @@ function ViewSavingUser() {
       });
 
       const totalEMI = records.reduce((sum, r) => sum + (r.amount || 0), 0);
-      const totalPenalty = records.reduce(
-        (sum, r) => sum + (r.total_penalty_amount || 0),
-        0
-      );
+      // const totalPenalty = records.reduce(
+      //   (sum, r) => sum + (r.total_penalty_amount || 0),
+      //   0
+      // );
       startY = doc.lastAutoTable.finalY + 4;
       doc.setFontSize(10);
       doc.text(`Monthly Total Amount: Rs. ${totalEMI}`, 14, startY);

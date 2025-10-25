@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import axios from '../../axios';
@@ -43,18 +43,18 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalFooter,
-  Divider
+  // Divider
 } from '@chakra-ui/react';
 import { 
   SearchIcon, 
   ViewIcon, 
-  EditIcon, 
-  DeleteIcon,
+  // EditIcon, 
+  // DeleteIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  DownloadIcon
+  // DownloadIcon
 } from '@chakra-ui/icons';
-import { FaSync, FaBan, FaUnlock, FaPause, FaPlay } from 'react-icons/fa';
+import { FaSync } from 'react-icons/fa';
 
 /**
  * CustomerTable Component
@@ -63,8 +63,8 @@ import { FaSync, FaBan, FaUnlock, FaPause, FaPlay } from 'react-icons/fa';
  */
 const CustomerTable = ({ timePeriod = 'all' }) => {
   const { t } = useLocalTranslation();
-  const navigate = useNavigate();
-  const toast = useToast();
+  // const navigate = useNavigate();
+  // const toast = useToast();
   
   // State management
   const [customers, setCustomers] = useState([]);

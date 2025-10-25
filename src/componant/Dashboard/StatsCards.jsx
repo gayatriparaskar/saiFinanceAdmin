@@ -5,7 +5,7 @@ import {
   FaMoneyBillWave, 
   FaPiggyBank, 
   FaChartLine,
-  FaUserTie,
+  // FaUserTie,
   FaChevronDown,
   FaHandHoldingUsd
 } from 'react-icons/fa';
@@ -18,7 +18,7 @@ const StatsCards = ({ stats = {}, collectionData = {}, loading = false, onReport
     savingUsers: 0,
     totalActiveUsers: 0
   });
-  const [activeOfficers, setActiveOfficers] = useState(0);
+  // const [activeOfficers, setActiveOfficers] = useState(0);
   const [collections, setCollections] = useState({
     loanCollection: 0,
     savingCollection: 0,

@@ -199,9 +199,9 @@ const ManagerCreateSavingUser = () => {
     }
   };
 
-  const resetForm = () => {
-    setFormData(initialFormState);
-  };
+  // const resetForm = () => {
+  //   setFormData(initialFormState);
+  // };
 
   return (
     <div className="m-6 py-8">

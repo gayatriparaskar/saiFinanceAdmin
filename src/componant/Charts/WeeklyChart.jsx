@@ -25,7 +25,7 @@ const WeeklyChart = ({ title = "Weekly Statistics", data = [] }) => {
       // Default weekly data
       setChartData({
         series: [{
-          name: t('Weekly Amount'),
+          name: ('Weekly Amount'),
           data: [2500, 3200, 2800, 4100, 3600, 3900, 2200]
         }],
         categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

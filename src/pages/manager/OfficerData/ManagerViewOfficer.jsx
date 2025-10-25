@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import axios from "../../../../axios";
 import jsPDF from 'jspdf';
 import autoTable from "jspdf-autotable";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
-import OfficerNavbar from "../../../../components/OfficerNavbar";
+// import OfficerNavbar from "../../../../components/OfficerNavbar";
 import Table from "../../../../componant/Table/Table";
 import Cell from "../../../../componant/Table/cell";
 import {
@@ -15,13 +15,13 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
+  // Modal,
+  // ModalOverlay,
+  // ModalContent,
+  // ModalHeader,
+  // ModalFooter,
+  // ModalBody,
+  // ModalCloseButton,
   useToast,
   Badge,
 } from "@chakra-ui/react";
@@ -37,7 +37,7 @@ function ManagerViewOfficer() {
   const [usersLoading, setUsersLoading] = useState(false);
   const toast = useToast();
   
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Inside your component
 const navigate = useNavigate();
@@ -248,13 +248,13 @@ const columns = React.useMemo(() => [
   };
 
   // Get officer info for navbar
-  const getOfficerType = () => {
-    return localStorage.getItem('officerType') || 'manager';
-  };
+  // const getOfficerType = () => {
+  //   return localStorage.getItem('officerType') || 'manager';
+  // };
 
-  const getOfficerName = () => {
-    return localStorage.getItem('officerName') || 'Manager';
-  };
+  // const getOfficerName = () => {
+  //   return localStorage.getItem('officerName') || 'Manager';
+  // };
 
   if (isLoading) {
     return (

@@ -24,7 +24,7 @@ export const getDailyCash = async (date = null) => {
       }
     });
     return response.data;
-    console.log('Daily cash response:', response.data);
+    // console.log('Daily cash response:', response.data);
   } catch (error) {
     console.error('Error fetching daily cash:', error);
     throw error;

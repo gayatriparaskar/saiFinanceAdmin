@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import axios from '../../axios';
@@ -48,8 +48,8 @@ import {
 import { 
   SearchIcon, 
   ViewIcon, 
-  EditIcon, 
-  DeleteIcon,
+  // EditIcon, 
+  // DeleteIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   DownloadIcon
@@ -83,11 +83,11 @@ const UserDataTable = ({ userType = 'all', onRefresh, timePeriod = 'all' }) => {
   const [typeFilter, setTypeFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showUserDetails, setShowUserDetails] = useState(false);
+  const [selectedUser] = useState(null);
+  // const [showUserDetails, setShowUserDetails] = useState(false);
   
   // Modal state
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose } = useDisclosure();
 
   // Fetch user data
   useEffect(() => {
@@ -95,7 +95,7 @@ const UserDataTable = ({ userType = 'all', onRefresh, timePeriod = 'all' }) => {
   }, [userType]);
 
   // Add state for collection data
-  const [collectionData, setCollectionData] = useState({
+  const [ setCollectionData] = useState({
     loanCollections: new Map(),
     savingCollections: new Map()
   });

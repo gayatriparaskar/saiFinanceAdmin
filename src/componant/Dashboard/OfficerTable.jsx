@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FaUsers, FaDownload, FaEllipsisV, FaEye, FaUserCheck, FaFlag, FaUniversity, FaSync, FaCalendarDay, FaCalendarWeek, FaCalendarAlt } from 'react-icons/fa';
+// import { motion } from 'framer-motion';
+import { FaUsers, FaDownload, FaUserCheck,  FaSync } from 'react-icons/fa';
 import axios from '../../axios';
 import { 
   Card, 
@@ -30,9 +30,9 @@ import {
   useDisclosure,
   Box,
   Text,
-  Divider
+  // Divider
 } from '@chakra-ui/react';
-import { SearchIcon, ViewIcon } from '@chakra-ui/icons';
+import { SearchIcon } from '@chakra-ui/icons';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import { updateOfficerCollectionData } from '../../services/officerService';
 import dayjs from 'dayjs';
@@ -260,9 +260,9 @@ const OfficerTable = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  const toggleDropdown = (officerId) => {
-    setOpenDropdown(openDropdown === officerId ? null : officerId);
-  };
+  // const toggleDropdown = (officerId) => {
+  //   setOpenDropdown(openDropdown === officerId ? null : officerId);
+  // };
 
   const closeDropdown = () => {
     setOpenDropdown(null);
@@ -286,14 +286,14 @@ const OfficerTable = ({
     return `₹${(amount || 0).toLocaleString()}`;
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 }
-    }
-  };
+  // const itemVariants = {
+  //   hidden: { opacity: 0, y: 20 },
+  //   visible: {
+  //     opacity: 1,
+  //     y: 0,
+  //     transition: { duration: 0.5 }
+  //   }
+  // };
 
   // Filter officers
   const filteredOfficers = officers.filter(officer => {

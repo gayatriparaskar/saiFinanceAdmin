@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { motion } from "framer-motion";
-import Home from "../../Home/Home";
+// import Home from "../../Home/Home";
 import LoanAccount from "../../LoanAccounts/LoanAccount";
 import CreateLoanUser from "../../LoanAccounts/CreateLoanUser";
 import ViewLoanUser from "../../LoanAccounts/ViewLoanUser";
@@ -12,7 +12,7 @@ import ViewSavingUser from "../../SavingAccount/ViewSavingUser";
 import AddSavingCollection from "../../SavingAccount/AddSavingCollection";
 import Officer from "../../OfficerData/Officer";
 import CreateOfficer from "../../OfficerData/CreateOfficer";
-import ViewOfficerDetails from "../../OfficerData/ViewOfficerDetails";
+// import ViewOfficerDetails from "../../OfficerData/ViewOfficerDetails";
 import OverdueLoans from "../../LoanAccounts/OverdueLoans";
 import DashHome from "../userPanal/dashhome/DashHome";
 import OfficerInfo from "../../SavingAccount/officerInfo";

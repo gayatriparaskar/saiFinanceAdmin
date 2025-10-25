@@ -1,8 +1,8 @@
 import React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { Link, useParams } from "react-router-dom";
-import OfficerNavbar from "../../../../components/OfficerNavbar";
+// import OfficerNavbar from "../../../../components/OfficerNavbar";
 
 // new for pdf
 
@@ -12,10 +12,10 @@ import groupBy from "lodash/groupBy"; // you need to install lodash
 
 import axios from "../../../../axios";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
-import { FaArrowRightLong } from "react-icons/fa6";
-import Correct from "../../../../Images/Vector.png";
-import bgImage from "../../../../Images/Section (2).png";
-import Info from "../../../../Images/ph_info-duotone.png";
+// import { FaArrowRightLong } from "react-icons/fa6";
+// import Correct from "../../../../Images/Vector.png";
+// import bgImage from "../../../../Images/Section (2).png";
+// import Info from "../../../../Images/ph_info-duotone.png";
 import Table from "../../../../componant/Table/Table";
 import Cell from "../../../../componant/Table/cell";
 import {
@@ -23,15 +23,15 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
-  InputGroup,
-  InputLeftElement,
+  // MenuItemOption,
+  // MenuGroup,
+  // MenuOptionGroup,
+  // MenuDivider,
+  // InputGroup,
+  // InputLeftElement,
   Input,
   Button,
-  InputRightAddon,
+  // InputRightAddon,
   useDisclosure,
   Drawer,
   DrawerBody,
@@ -54,9 +54,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-import { MdEdit } from "react-icons/md";
-import { HiStatusOnline } from "react-icons/hi";
-import { GrOverview } from "react-icons/gr";
+// import { MdEdit } from "react-icons/md";
+// import { HiStatusOnline } from "react-icons/hi";
+// import { GrOverview } from "react-icons/gr";
 function ManagerViewLoanUser() {
   const { t } = useLocalTranslation();
   const { id } = useParams();
@@ -64,12 +64,12 @@ function ManagerViewLoanUser() {
   const [data, setData] = useState([]);
   const [Dailydata, setDailyData] = useState([]);
   const [userdata, setUserData] = useState({});
-  const [newID, setNewID] = useState(null);
+  // const [newID, setNewID] = useState(null);
   console.log(data);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpen2,
-    onOpen: onOpen2,
+    // onOpen: onOpen2,
     onClose: onClose2,
   } = useDisclosure();
   const {
@@ -77,7 +77,7 @@ function ManagerViewLoanUser() {
     onOpen: onDateModalOpen,
     onClose: onDateModalClose,
   } = useDisclosure();
-  const cancelRef = React.useRef();
+  // const cancelRef = React.useRef();
   const btnRef = React.useRef();
   const toast = useToast();
   
@@ -323,13 +323,13 @@ function ManagerViewLoanUser() {
   };
 
   // Get officer info for navbar
-  const getOfficerType = () => {
-    return localStorage.getItem('officerType') || 'manager';
-  };
+  // const getOfficerType = () => {
+  //   return localStorage.getItem('officerType') || 'manager';
+  // };
 
-  const getOfficerName = () => {
-    return localStorage.getItem('officerName') || 'Manager';
-  };
+  // const getOfficerName = () => {
+  //   return localStorage.getItem('officerName') || 'Manager';
+  // };
 
   return (
     <>

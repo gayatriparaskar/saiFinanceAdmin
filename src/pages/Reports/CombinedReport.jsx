@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import OfficerNavbar from '../../components/OfficerNavbar';
+// import OfficerNavbar from '../../components/OfficerNavbar';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import axios from '../../axios';
 import { Card, CardBody } from '@chakra-ui/react';
 import { Text, VStack, HStack, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Badge } from '@chakra-ui/react';
-import { FaUser, FaRupeeSign, FaCalendarAlt } from 'react-icons/fa';
+import { FaUser, FaRupeeSign } from 'react-icons/fa';
 
 const CombinedReport = () => {
   const { t } = useLocalTranslation();

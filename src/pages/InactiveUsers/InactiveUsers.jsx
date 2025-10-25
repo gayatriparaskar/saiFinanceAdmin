@@ -22,12 +22,12 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  Input,
+  // Input,
   Textarea,
   FormControl,
   FormLabel
 } from '@chakra-ui/react';
-import { FaUserTimes, FaUserCheck, FaEye, FaPause, FaPlay } from 'react-icons/fa';
+import { FaUserTimes, FaPause, FaPlay } from 'react-icons/fa';
 import axios from '../../axios';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import Table from '../../componant/Table/Table';
@@ -38,7 +38,7 @@ import NewNavbar from '../Dashboard/main/NewNavbar';
 const InactiveUsers = () => {
   const { t } = useLocalTranslation();
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isReactivateOpen, onOpen: onReactivateOpen, onClose: onReactivateClose } = useDisclosure();
   const { isOpen: isInactivateOpen, onOpen: onInactivateOpen, onClose: onInactivateClose } = useDisclosure();
   

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../../axios";
-import { useToast, Button, Menu, MenuButton, Select } from "@chakra-ui/react";
+import { useToast, Button, Select } from "@chakra-ui/react";
 import { RepeatIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import { useLocalTranslation } from "../../../../hooks/useLocalTranslation";
@@ -183,7 +183,7 @@ const ManagerAddSavingCollection = () => {
       
       // ✅ Redirect to manager page after successful collection
       setTimeout(() => {
-        navigate("/manager-dashboard/view-saving-user/${id}");
+        navigate(`/manager-dashboard/view-saving-user/${id}`);
       }, 2000);
     } catch (err) {
       console.error("API Error:", err);

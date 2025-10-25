@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { formatCurrency, formatDate } from '../../services/expenseService';
+import { formatCurrency } from '../../services/expenseService';
 
 const LedgerView = ({ expenses, loading }) => {
   if (loading) {

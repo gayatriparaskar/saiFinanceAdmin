@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import axios from '../../axios';
-import WeeklyChart from '../../componant/Charts/WeeklyChart';
+// import WeeklyChart from '../../componant/Charts/WeeklyChart';
 import { Card, CardBody } from '@chakra-ui/react';
-import { Text, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Badge } from '@chakra-ui/react';
-import { FaEye, FaUser, FaRupeeSign } from 'react-icons/fa';
+import { Text, Stat, StatLabel, StatNumber, StatHelpText, StatArrow } from '@chakra-ui/react';
+// import { FaEye, FaUser, FaRupeeSign } from 'react-icons/fa';
 import SimpleChart from "../../componant/Charts/SimpleChart";
 
 const WeeklyReport = () => {
@@ -225,62 +225,62 @@ const WeeklyReport = () => {
      }
    };
 
-   const fetchMonthlyOfficersData = async () => {
-     try {
-       console.log('🔄 Fetching monthly officers data...');
+  //  const fetchMonthlyOfficersData = async () => {
+  //    try {
+  //      console.log('🔄 Fetching monthly officers data...');
        
-       let response;
-       try {
-         response = await axios.get('admins/monthlyOfficerCollections');
-         console.log('📊 Monthly officers API response:', response.data);
-       } catch (apiError) {
-         console.warn('⚠️ Monthly officers API failed, trying weekly officers as fallback:', apiError.message);
-         // Fallback to weekly officers if monthly endpoint doesn't exist
-         response = await axios.get('admins/officerCollections');
-         console.log('📊 Weekly officers API response (fallback):', response.data);
-       }
+  //      let response;
+  //      try {
+  //        response = await axios.get('admins/monthlyOfficerCollections');
+  //        console.log('📊 Monthly officers API response:', response.data);
+  //      } catch (apiError) {
+  //        console.warn('⚠️ Monthly officers API failed, trying weekly officers as fallback:', apiError.message);
+  //        // Fallback to weekly officers if monthly endpoint doesn't exist
+  //        response = await axios.get('admins/officerCollections');
+  //        console.log('📊 Weekly officers API response (fallback):', response.data);
+  //      }
        
-       if (response?.data?.result) {
-         const result = response.data.result;
-         console.log('📈 Monthly officers data result structure:', result);
+  //      if (response?.data?.result) {
+  //        const result = response.data.result;
+  //        console.log('📈 Monthly officers data result structure:', result);
          
-         if (Array.isArray(result) && result.length > 0) {
-           console.log('✅ Monthly officer collections data loaded:', result.length, 'officers');
-           setMonthlyUserWiseData(result);
-         } else {
-           console.warn('⚠️ No officer data found in response');
-           setMonthlyUserWiseData([]);
-         }
-       } else {
-         console.warn('⚠️ No result data in monthly officers API response');
-         setMonthlyUserWiseData([]);
-       }
-     } catch (error) {
-       console.error('❌ Error fetching monthly officer collections data:', error);
-       console.error('❌ Error details:', {
-         message: error.message,
-         status: error.response?.status,
-         data: error.response?.data
-       });
-       setMonthlyUserWiseData([]);
-     }
-   };
+  //        if (Array.isArray(result) && result.length > 0) {
+  //          console.log('✅ Monthly officer collections data loaded:', result.length, 'officers');
+  //          setMonthlyUserWiseData(result);
+  //        } else {
+  //          console.warn('⚠️ No officer data found in response');
+  //          setMonthlyUserWiseData([]);
+  //        }
+  //      } else {
+  //        console.warn('⚠️ No result data in monthly officers API response');
+  //        setMonthlyUserWiseData([]);
+  //      }
+  //    } catch (error) {
+  //      console.error('❌ Error fetching monthly officer collections data:', error);
+  //      console.error('❌ Error details:', {
+  //        message: error.message,
+  //        status: error.response?.status,
+  //        data: error.response?.data
+  //      });
+  //      setMonthlyUserWiseData([]);
+  //    }
+  //  };
 
    // Handle view officer details
-   const handleViewOfficerDetails = (officer) => {
-     console.log('🔄 Navigating to officer info page for:', officer._id);
-     console.log('🔄 Officer name:', officer.name);
-     console.log('🔄 Target path:', `/manager-dashboard/view-officer/${officer._id}`);
+  //  const handleViewOfficerDetails = (officer) => {
+  //    console.log('🔄 Navigating to officer info page for:', officer._id);
+  //    console.log('🔄 Officer name:', officer.name);
+  //    console.log('🔄 Target path:', `/manager-dashboard/view-officer/${officer._id}`);
      
-     try {
-       // Use React Router navigation for smoother experience
-       navigate(`/manager-dashboard/view-officer/${officer._id}`);
-     } catch (error) {
-       console.error('❌ Error with React Router navigation:', error);
-       // Fallback to window.location for compatibility
-       window.location.href = `/manager-dashboard/view-officer/${officer._id}`;
-     }
-   };
+  //    try {
+  //      // Use React Router navigation for smoother experience
+  //      navigate(`/manager-dashboard/view-officer/${officer._id}`);
+  //    } catch (error) {
+  //      console.error('❌ Error with React Router navigation:', error);
+  //      // Fallback to window.location for compatibility
+  //      window.location.href = `/manager-dashboard/view-officer/${officer._id}`;
+  //    }
+  //  };
 
   if (loading) {
     return (

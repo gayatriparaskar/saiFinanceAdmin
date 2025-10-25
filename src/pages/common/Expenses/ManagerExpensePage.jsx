@@ -20,15 +20,15 @@ import InsufficientFundsModal from '../../../componant/Expense/InsufficientFunds
 import { 
   getDailyCash, 
   setDailyCash, 
-  getAvailableCash, 
+  // getAvailableCash, 
   checkSufficientCash,
   withdrawCash,
-  getTodayDate,
+  // getTodayDate,
   calculateCashAddedInPeriod
 } from '../../../services/cashManagementService';
 
 const ManagerExpensePage = () => {
-  const { t } = useLocalTranslation();
+  // const { t } = useLocalTranslation();
   const [expenses, setExpenses] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);

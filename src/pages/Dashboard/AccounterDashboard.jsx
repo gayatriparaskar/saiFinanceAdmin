@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
 import OfficerNavbar from '../../components/OfficerNavbar';
 import { useDashboardData } from '../../hooks/useDashboardData';
@@ -22,43 +22,43 @@ import StatusModal from '../../componant/Dashboard/StatusModal';
 import DetailsModal from '../../componant/Dashboard/DetailsModal';
 
 function AccounterDashboard() {
-  const { t } = useLocalTranslation();
+  // const { t } = useLocalTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const [officerName, setOfficerName] = useState('');
-  const [userInfo, setUserInfo] = useState(null);
+  const [ setUserInfo] = useState(null);
   
   // Use custom hooks for data and state management
   const { 
     loading, 
     stats, 
     collectionData, 
-    officerCollections, 
+    // officerCollections, 
     officers, 
     error, 
     refetch 
   } = useDashboardData();
   
   const {
-    editingOfficer,
-    editingData,
+    // editingOfficer,
+    // editingData,
     selectedOfficer,
     showAssignModal,
     showStatusModal,
     showDetailsModal,
-    setEditingData,
+    // setEditingData,
     setShowAssignModal,
     setShowStatusModal,
     setShowDetailsModal,
-    handleEditClick,
+    // handleEditClick,
     handleSaveEdit,
-    handleCancelEdit,
+    // handleCancelEdit,
     handleAssignToClick,
     handleStatusClick,
-    handleViewDetails,
+    // handleViewDetails,
     handleAssignTo,
     handleStatusUpdate,
-    closeModals
+    // closeModals
   } = useOfficerManagement();
 
   // Use overdue collections hook
@@ -237,12 +237,12 @@ Generated on: ${new Date().toLocaleString()}
   };
 
   // Enhanced handlers that work with the custom hook
-  const handleSaveEditWithFeedback = async (officerId) => {
-    const result = await handleSaveEdit(officerId, officers, () => {});
-    if (!result.success) {
-      alert(result.error);
-    }
-  };
+  // const handleSaveEditWithFeedback = async (officerId) => {
+  //   const result = await handleSaveEdit(officerId, officers, () => {});
+  //   if (!result.success) {
+  //     alert(result.error);
+  //   }
+  // };
 
   const handleAssignToWithFeedback = async (assignment) => {
     const result = await handleAssignTo(assignment, officers, () => {});

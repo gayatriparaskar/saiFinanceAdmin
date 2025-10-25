@@ -46,7 +46,7 @@ function NewDashboard() {
 
   // If it's an officer, show their specific dashboard with routing
   if (userType === 'officer') {
-    const officerName = localStorage.getItem('officerName') || 'Officer';
+    // const officerName = localStorage.getItem('officerName') || 'Officer';
     
     switch (officerType) {
       case 'accounter':

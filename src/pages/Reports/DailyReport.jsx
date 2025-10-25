@@ -7,11 +7,11 @@ import { Card, CardBody } from '@chakra-ui/react';
 import { Text, VStack, HStack, Stat, StatLabel, StatNumber, StatHelpText, StatArrow, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Badge } from '@chakra-ui/react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { FaEye, FaUser, FaRupeeSign } from 'react-icons/fa';
+import { FaUser, FaRupeeSign } from 'react-icons/fa';
 
 const DailyReport = () => {
   const { t } = useLocalTranslation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [dailyData, setDailyData] = useState([]);
   const [userWiseData, setUserWiseData] = useState([]);
   const [loading, setLoading] = useState(true);

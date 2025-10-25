@@ -7,12 +7,12 @@ import OfficerTable from '../../../componant/Dashboard/OfficerTable';
 import Modals from './Modals';
 import UserDataTable from '../../../componant/Dashboard/UserDataTable';
 import { updateOfficerCollectionData } from '../../../services/officerService';
-import { getCurrentUserInfo } from '../../../utils/authUtils';
+// import { getCurrentUserInfo } from '../../../utils/authUtils';
 
 const ManagerDashboardContent = () => {
   const navigate = useNavigate();
   const [officers, setOfficers] = useState([]);
-  const [dailyCollections, setDailyCollections] = useState([]);
+  // const [dailyCollections, setDailyCollections] = useState([]);
   const [stats, setStats] = useState({
     totalOfficers: 0,
     activeOfficers: 0,
@@ -43,9 +43,9 @@ const ManagerDashboardContent = () => {
   const [editingOfficer, setEditingOfficer] = useState(null);
   const [editingField, setEditingField] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [officerName, setOfficerName] = useState('');
-  const [assignedCollections, setAssignedCollections] = useState([]);
-  const [showAssignedCollections, setShowAssignedCollections] = useState(false);
+  // const [officerName, setOfficerName] = useState('');
+  // const [assignedCollections, setAssignedCollections] = useState([]);
+  // const [showAssignedCollections, setShowAssignedCollections] = useState(false);
   const [selectedAssignedCollection, setSelectedAssignedCollection] = useState(null);
   const [showReviewModal, setShowReviewModal] = useState(false);
 
@@ -71,7 +71,7 @@ const ManagerDashboardContent = () => {
       
       // Fetch collection statistics
       console.log('📡 Fetching collection statistics...');
-      const [todayStats, weeklyStats, monthlyStats, yearlyStats] = await Promise.allSettled([
+      const [todayStats, monthlyStats, yearlyStats] = await Promise.allSettled([
         axios.get('admins/totalCollectionsToday'),
         axios.get('admins/totalCollectionsWeekly'),
         axios.get('admins/totalCollectionsMonthly'),
@@ -463,10 +463,10 @@ const ManagerDashboardContent = () => {
   };
 
   // Assigned Collections handlers
-  const handleReviewCollection = (assignedCollection) => {
-    setSelectedAssignedCollection(assignedCollection);
-    setShowReviewModal(true);
-  };
+  // const handleReviewCollection = (assignedCollection) => {
+  //   setSelectedAssignedCollection(assignedCollection);
+  //   setShowReviewModal(true);
+  // };
 
   const handleApproveCollection = async (collectionId) => {
     try {
@@ -603,9 +603,9 @@ const ManagerDashboardContent = () => {
             console.log('Payment process changed for officer:', officer.name, 'to:', process);
             
             // Update the officer's payment process
-            const updatedOfficer = await updateOfficerCollectionData(officer._id, {
-              paymentProcess: process
-            });
+            // const updatedOfficer = await updateOfficerCollectionData(officer._id, {
+            //   paymentProcess: process
+            // });
             
             // Update the local officers state
             setOfficers(prevOfficers => 

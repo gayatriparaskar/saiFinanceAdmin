@@ -25,26 +25,26 @@ import {
   Alert,
   AlertIcon,
   useToast,
-  Flex,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  StatArrow,
-  Divider,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Select,
+  // Flex,
+  // Stat,
+  // StatLabel,
+  // StatNumber,
+  // StatHelpText,
+  // StatArrow,
+  // Divider,
+  // Input,
+  // InputGroup,
+  // InputLeftElement,
+  // Select,
   Grid,
   GridItem,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  IconButton,
-  Tooltip
+  // Tabs,
+  // TabList,
+  // TabPanels,
+  // Tab,
+  // TabPanel,
+  // IconButton,
+  // Tooltip
 } from '@chakra-ui/react';
 import { 
   FiArrowLeft, 
@@ -53,12 +53,12 @@ import {
   FiMail, 
   FiMapPin, 
   FiCalendar, 
-  FiDollarSign, 
-  FiTrendingUp,
+  // FiDollarSign, 
+  // FiTrendingUp,
   FiDownload,
   FiRefreshCw,
-  FiSearch,
-  FiFilter
+  // FiSearch,
+  // FiFilter
 } from 'react-icons/fi';
 import { 
   getUserById,
@@ -299,13 +299,13 @@ const UserDetailPage = () => {
     return dayjs(date).format('h:mm A');
   };
 
-  const handleDateFilterChange = (filter) => {
-    setDateFilter(filter);
-    if (filter === 'today') {
-      setSelectedDate(dayjs().format('YYYY-MM-DD'));
-    }
-    // The useEffect will automatically trigger fetchUserDetails when dateFilter changes
-  };
+  // const handleDateFilterChange = (filter) => {
+  //   setDateFilter(filter);
+  //   if (filter === 'today') {
+  //     setSelectedDate(dayjs().format('YYYY-MM-DD'));
+  //   }
+  //   // The useEffect will automatically trigger fetchUserDetails when dateFilter changes
+  // };
 
   const handleExport = () => {
     const allCollections = [...dailyCollections, ...savingCollections];
@@ -391,7 +391,7 @@ const UserDetailPage = () => {
   }
 
   const totalLoanAmount = dailyCollections.reduce((sum, collection) => sum + (collection.amount || 0), 0);
-  const totalSavingAmount = savingCollections.reduce((sum, collection) => sum + (collection.deposit_amount || 0), 0);
+  // const totalSavingAmount = savingCollections.reduce((sum, collection) => sum + (collection.deposit_amount || 0), 0);
   const totalCollections = allCollections.length;
 
   // Get officer info for navbar

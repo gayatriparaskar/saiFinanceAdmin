@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from '../../../../axios';
-import { FaPlus, FaSearch, FaEye, FaEdit, FaFilter, FaPiggyBank } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
 import {
   Menu,
   MenuButton,
@@ -13,13 +13,13 @@ import {
   InputLeftElement,
   Input,
   InputRightAddon,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  ModalFooter,
+  // Modal,
+  // ModalOverlay,
+  // ModalContent,
+  // ModalHeader,
+  // ModalBody,
+  // ModalCloseButton,
+  // ModalFooter,
   Drawer,
   DrawerBody,
   DrawerFooter,
@@ -281,22 +281,22 @@ const ManagerSavingAccount = () => {
     setEditData(null);
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0,
-    }).format(amount || 0);
-  };
+  // const formatCurrency = (amount) => {
+  //   return new Intl.NumberFormat('en-IN', {
+  //     style: 'currency',
+  //     currency: 'INR',
+  //     minimumFractionDigits: 0,
+  //   }).format(amount || 0);
+  // };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'inactive': return 'bg-red-100 text-red-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+  // const getStatusColor = (status) => {
+  //   switch (status) {
+  //     case 'active': return 'bg-green-100 text-green-800';
+  //     case 'inactive': return 'bg-red-100 text-red-800';
+  //     case 'pending': return 'bg-yellow-100 text-yellow-800';
+  //     default: return 'bg-gray-100 text-gray-800';
+  //   }
+  // };
 
   const columns = useMemo(() => [
     {

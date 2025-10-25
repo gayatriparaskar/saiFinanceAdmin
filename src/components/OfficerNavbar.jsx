@@ -3,16 +3,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   FaSignOutAlt, 
-  FaUserCircle, 
-  FaCog,
+  // FaUserCircle, 
+  // FaCog,
   FaHome,
-  FaChevronDown
+  // FaChevronDown
 } from 'react-icons/fa';
 import { 
   HiMenu,
   HiX
 } from 'react-icons/hi';
-import { IoSettings } from 'react-icons/io5';
+// import { IoSettings } from 'react-icons/io5';
 import { FiKey } from 'react-icons/fi';
 import PasswordChangeModal from './PasswordChangeModal';
 import { changeOfficerPassword } from '../services/userService';
@@ -194,18 +194,18 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
   };
 
   // Mobile-specific logout handler
-  const handleMobileLogout = () => {
-    console.log('🔄 Mobile logout initiated...');
+  // const handleMobileLogout = () => {
+  //   console.log('🔄 Mobile logout initiated...');
     
-    // Close mobile menu first
-    closeMobileMenu();
+  //   // Close mobile menu first
+  //   closeMobileMenu();
     
-    // Small delay to ensure menu closes before logout
-    setTimeout(() => {
-      console.log('🔄 Proceeding with mobile logout...');
-      handleLogout();
-    }, 100);
-  };
+  //   // Small delay to ensure menu closes before logout
+  //   setTimeout(() => {
+  //     console.log('🔄 Proceeding with mobile logout...');
+  //     handleLogout();
+  //   }, 100);
+  // };
 
   // Close profile dropdown when clicking outside
   const handleProfileClick = () => {

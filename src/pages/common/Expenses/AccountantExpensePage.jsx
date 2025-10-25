@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useLocalTranslation } from '../../../hooks/useLocalTranslation';
 import { getCurrentUserInfo } from '../../../utils/authUtils';
 import {
-  getAllExpenses,
+  // getAllExpenses,
   createExpense,
   updateExpense,
   deleteExpense,
@@ -22,7 +22,7 @@ import QuickExpenseEntry from '../../../componant/Expense/QuickExpenseEntry';
 import OfficerNavbar from '../../../components/OfficerNavbar';
 
 const AccountantExpensePage = () => {
-  const { t } = useLocalTranslation();
+  // const { t } = useLocalTranslation();
   const [expenses, setExpenses] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -294,10 +294,10 @@ const AccountantExpensePage = () => {
     setShowApprovalModal(true);
   };
 
-  const handleApprovalModalClose = () => {
-    setShowApprovalModal(false);
-    setSelectedExpense(null);
-  };
+  // const handleApprovalModalClose = () => {
+  //   setShowApprovalModal(false);
+  //   setSelectedExpense(null);
+  // };
 
   const handleViewExpense = (expense) => {
     console.log('🔍 Viewing expense:', expense);
@@ -337,68 +337,68 @@ const AccountantExpensePage = () => {
     setInsufficientBalanceData(null);
   };
 
-  const handleApproveExpense = async (expenseId, data) => {
-    try {
-      setFormLoading(true);
-      const response = await approveExpense(expenseId, data);
+  // const handleApproveExpense = async (expenseId, data) => {
+  //   try {
+  //     setFormLoading(true);
+  //     const response = await approveExpense(expenseId, data);
       
-      if (response.success) {
-        setShowApprovalModal(false);
-        fetchExpenses();
-        fetchStats();
-        alert('Expense approved successfully!');
-      } else {
-        alert(response.message || 'Failed to approve expense');
-      }
-    } catch (err) {
-      console.error('Error approving expense:', err);
-      alert('Failed to approve expense. Please try again.');
-    } finally {
-      setFormLoading(false);
-    }
-  };
+  //     if (response.success) {
+  //       setShowApprovalModal(false);
+  //       fetchExpenses();
+  //       fetchStats();
+  //       alert('Expense approved successfully!');
+  //     } else {
+  //       alert(response.message || 'Failed to approve expense');
+  //     }
+  //   } catch (err) {
+  //     console.error('Error approving expense:', err);
+  //     alert('Failed to approve expense. Please try again.');
+  //   } finally {
+  //     setFormLoading(false);
+  //   }
+  // };
 
-  const handleRejectExpense = async (expenseId, data) => {
-    try {
-      setFormLoading(true);
-      const response = await rejectExpense(expenseId, data);
+  // const handleRejectExpense = async (expenseId, data) => {
+  //   try {
+  //     setFormLoading(true);
+  //     const response = await rejectExpense(expenseId, data);
       
-      if (response.success) {
-        setShowApprovalModal(false);
-        fetchExpenses();
-        fetchStats();
-        alert('Expense rejected successfully!');
-      } else {
-        alert(response.message || 'Failed to reject expense');
-      }
-    } catch (err) {
-      console.error('Error rejecting expense:', err);
-      alert('Failed to reject expense. Please try again.');
-    } finally {
-      setFormLoading(false);
-    }
-  };
+  //     if (response.success) {
+  //       setShowApprovalModal(false);
+  //       fetchExpenses();
+  //       fetchStats();
+  //       alert('Expense rejected successfully!');
+  //     } else {
+  //       alert(response.message || 'Failed to reject expense');
+  //     }
+  //   } catch (err) {
+  //     console.error('Error rejecting expense:', err);
+  //     alert('Failed to reject expense. Please try again.');
+  //   } finally {
+  //     setFormLoading(false);
+  //   }
+  // };
 
-  const handleMarkAsPaid = async (expenseId, data) => {
-    try {
-      setFormLoading(true);
-      const response = await markExpenseAsPaid(expenseId, data);
+  // const handleMarkAsPaid = async (expenseId, data) => {
+  //   try {
+  //     setFormLoading(true);
+  //     const response = await markExpenseAsPaid(expenseId, data);
       
-      if (response.success) {
-        setShowApprovalModal(false);
-        fetchExpenses();
-        fetchStats();
-        alert('Expense marked as paid successfully!');
-      } else {
-        alert(response.message || 'Failed to mark expense as paid');
-      }
-    } catch (err) {
-      console.error('Error marking expense as paid:', err);
-      alert('Failed to mark expense as paid. Please try again.');
-    } finally {
-      setFormLoading(false);
-    }
-  };
+  //     if (response.success) {
+  //       setShowApprovalModal(false);
+  //       fetchExpenses();
+  //       fetchStats();
+  //       alert('Expense marked as paid successfully!');
+  //     } else {
+  //       alert(response.message || 'Failed to mark expense as paid');
+  //     }
+  //   } catch (err) {
+  //     console.error('Error marking expense as paid:', err);
+  //     alert('Failed to mark expense as paid. Please try again.');
+  //   } finally {
+  //     setFormLoading(false);
+  //   }
+  // };
 
   const handleCreateExpense = async (expenseData) => {
     try {
@@ -499,41 +499,41 @@ const AccountantExpensePage = () => {
     }
   };
 
-  const handleCurrencyTrackerSubmit = async (withdrawalData) => {
-    try {
-      setFormLoading(true);
+  // const handleCurrencyTrackerSubmit = async (withdrawalData) => {
+  //   try {
+  //     setFormLoading(true);
       
-      const expenseData = {
-        title: `Withdrawal - ${withdrawalData.withdrawal_reason}`,
-        description: `Money withdrawal: ${withdrawalData.withdrawal_reason}`,
-        amount: withdrawalData.total_notes_amount,
-        category: 'personal',
-        expense_type: 'debit',
-        withdrawal_type: withdrawalData.withdrawal_type,
-        withdrawal_reason: withdrawalData.withdrawal_reason,
-        currency_notes: withdrawalData,
-        expense_date: new Date().toISOString().split('T')[0],
-        priority: 'high',
-        status: 'pending'
-      };
+  //     const expenseData = {
+  //       title: `Withdrawal - ${withdrawalData.withdrawal_reason}`,
+  //       description: `Money withdrawal: ${withdrawalData.withdrawal_reason}`,
+  //       amount: withdrawalData.total_notes_amount,
+  //       category: 'personal',
+  //       expense_type: 'debit',
+  //       withdrawal_type: withdrawalData.withdrawal_type,
+  //       withdrawal_reason: withdrawalData.withdrawal_reason,
+  //       currency_notes: withdrawalData,
+  //       expense_date: new Date().toISOString().split('T')[0],
+  //       priority: 'high',
+  //       status: 'pending'
+  //     };
       
-      const response = await createExpense(expenseData);
+  //     const response = await createExpense(expenseData);
       
-      if (response.success) {
-        setShowCurrencyTracker(false);
-        fetchExpenses();
-        fetchStats();
-        alert('Withdrawal recorded successfully!');
-      } else {
-        alert(response.message || 'Failed to record withdrawal');
-      }
-    } catch (err) {
-      console.error('Error recording withdrawal:', err);
-      alert('Failed to record withdrawal. Please try again.');
-    } finally {
-      setFormLoading(false);
-    }
-  };
+  //     if (response.success) {
+  //       setShowCurrencyTracker(false);
+  //       fetchExpenses();
+  //       fetchStats();
+  //       alert('Withdrawal recorded successfully!');
+  //     } else {
+  //       alert(response.message || 'Failed to record withdrawal');
+  //     }
+  //   } catch (err) {
+  //     console.error('Error recording withdrawal:', err);
+  //     alert('Failed to record withdrawal. Please try again.');
+  //   } finally {
+  //     setFormLoading(false);
+  //   }
+  // };
 
   const handleEditClick = (expense) => {
     setEditingExpense(expense);

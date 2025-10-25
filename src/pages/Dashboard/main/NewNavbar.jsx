@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion} from "framer-motion";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { IoMdLogOut } from "react-icons/io";
 import { useUser } from "../../../hooks/use-user";
@@ -136,18 +136,18 @@ const NewNavbar = () => {
     }
   };
 
-  const dropdownItemVariants = {
-    hidden: { opacity: 0, x: -10 },
-    visible: (index) => ({
-      opacity: 1,
-      x: 0,
-      transition: {
-        delay: index * 0.05,
-        duration: 0.2,
-        ease: "easeOut"
-      }
-    })
-  };
+  // const dropdownItemVariants = {
+  //   hidden: { opacity: 0, x: -10 },
+  //   visible: (index) => ({
+  //     opacity: 1,
+  //     x: 0,
+  //     transition: {
+  //       delay: index * 0.05,
+  //       duration: 0.2,
+  //       ease: "easeOut"
+  //     }
+  //   })
+  // };
 
   const mobileMenuVariants = {
     hidden: { 

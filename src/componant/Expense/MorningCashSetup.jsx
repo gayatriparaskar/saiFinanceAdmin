@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiX, FiDollarSign, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
-import { getTodayDate, formatCurrency } from '../../services/cashManagementService';
+import { getTodayDate } from '../../services/cashManagementService';
 
 // Utility to prevent body scroll
 const preventBodyScroll = () => {

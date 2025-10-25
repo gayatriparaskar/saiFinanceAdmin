@@ -27,7 +27,7 @@ function ViewOfficerDetails() {
   const [isEditing, setIsEditing] = useState(false);
   const toast = useToast();
   
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
 
 
 

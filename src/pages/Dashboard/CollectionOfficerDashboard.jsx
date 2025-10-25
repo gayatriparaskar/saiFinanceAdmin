@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLocalTranslation } from '../../hooks/useLocalTranslation';
-import axios from '../../axios';
+// import axios from '../../axios';
 import OfficerNavbar from '../../components/OfficerNavbar';
 import { 
   FaHandHoldingUsd, 
@@ -11,11 +11,11 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
   FaMoneyBillWave,
-  FaBell
+  // FaBell
 } from 'react-icons/fa';
 
 function CollectionOfficerDashboard() {
-  const { t } = useLocalTranslation();
+  // const { t } = useLocalTranslation();
   const [stats, setStats] = useState({
     todayCollections: 0,
     totalCollections: 0,
