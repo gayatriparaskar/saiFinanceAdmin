@@ -3,10 +3,9 @@ import { motion } from 'framer-motion';
 import { 
   formatCurrency, 
   formatDate, 
-  getStatusColor, 
   EXPENSE_STATUSES
 } from '../../services/expenseService';
-import { FiEdit2, FiTrash2, FiCheck, FiX, FiDollarSign, FiEye, FiCalendar, FiUser, FiTag, FiMoreVertical } from 'react-icons/fi';
+import { FiEdit2, FiTrash2, FiCheck, FiDollarSign, FiEye, FiCalendar, FiUser, FiTag, FiMoreVertical } from 'react-icons/fi';
 
 const ExpenseCardView = ({ 
   expenses, 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import ExpenseViewToggle from '../../../componant/Expense/ExpenseViewToggle';
 import ExpenseStats from '../../../componant/Expense/ExpenseStats';
 import { getAllExpenses, getExpenseStats, approveExpense, deleteExpense, getExpensesWithCashData } from '../../../services/expenseService';
