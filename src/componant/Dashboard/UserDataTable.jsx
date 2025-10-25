@@ -68,7 +68,7 @@ import { FaSync, FaBan, FaUnlock, FaPause, FaPlay } from 'react-icons/fa';
  * 
  * @param {string} userType - Type of users to display ('all', 'loan', 'saving', 'officer')
  */
-const UserDataTable = ({ userType = 'all', onRefresh }) => {
+const UserDataTable = ({ userType = 'all', onRefresh, timePeriod = 'all' }) => {
   const { t } = useLocalTranslation();
   const navigate = useNavigate();
   const toast = useToast();
@@ -107,6 +107,7 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
       searchTerm,
       statusFilter,
       typeFilter,
+      timePeriod,
       usersByType: {
         loan: users.filter(u => u.user_type === 'loan').length,
         saving: users.filter(u => u.user_type === 'saving').length,
@@ -116,6 +117,33 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
     });
 
     let filtered = users;
+
+    // Time period filter
+    if (timePeriod !== 'all') {
+      const now = dayjs();
+      let startDate;
+      
+      switch (timePeriod) {
+        case 'daily':
+          startDate = now.startOf('day');
+          break;
+        case 'weekly':
+          startDate = now.startOf('week');
+          break;
+        case 'monthly':
+          startDate = now.startOf('month');
+          break;
+        default:
+          startDate = null;
+      }
+      
+      if (startDate) {
+        filtered = filtered.filter(user => {
+          const userDate = dayjs(user.created_on || user.createdAt);
+          return userDate.isAfter(startDate) || userDate.isSame(startDate, 'day');
+        });
+      }
+    }
 
     // Search filter
     if (searchTerm) {
@@ -148,6 +176,7 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
 
     console.log('🔍 Filtered results:', {
       filteredCount: filtered.length,
+      timePeriod,
       filteredByType: {
         loan: filtered.filter(u => u.user_type === 'loan').length,
         saving: filtered.filter(u => u.user_type === 'saving').length,
@@ -157,7 +186,7 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
 
     setFilteredUsers(filtered);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [users, searchTerm, statusFilter, typeFilter]);
+  }, [users, searchTerm, statusFilter, typeFilter, timePeriod]);
 
   // Fetch collection data for all users
   const fetchCollectionData = async () => {
@@ -760,7 +789,16 @@ const UserDataTable = ({ userType = 'all', onRefresh }) => {
       <Card>
         <CardHeader>
           <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
-            <Heading size="md">{t("All User Data")}</Heading>
+            <Heading size="md">
+              {t("All User Data")}
+              {timePeriod !== 'all' && (
+                <Text as="span" fontSize="sm" color="gray.600" ml={2}>
+                  ({timePeriod === 'daily' && 'Today'}
+                  {timePeriod === 'weekly' && 'This Week'}
+                  {timePeriod === 'monthly' && 'This Month'})
+                </Text>
+              )}
+            </Heading>
             <HStack spacing={2}>
               {onRefresh && (
                 <Button

@@ -74,9 +74,35 @@ export const getCurrentUserInfo = () => {
   const token = localStorage.getItem('token');
   const payload = decodeJWT(token);
   
+  // Get role from multiple sources with fallback
+  const role = payload?.role || 
+               payload?.officerType || 
+               localStorage.getItem('officerType') || 
+               localStorage.getItem('userType') || 
+               null;
+  
+  // Get user ID from multiple sources
+  const userId = payload?.userId || 
+                 payload?.officerId || 
+                 payload?.user_id || 
+                 null;
+  
+  console.log('🔍 getCurrentUserInfo debug:', {
+    token: !!token,
+    payload: payload,
+    localStorage: {
+      officerName: localStorage.getItem('officerName'),
+      officerType: localStorage.getItem('officerType'),
+      userType: localStorage.getItem('userType')
+    },
+    computedRole: role,
+    computedUserId: userId
+  });
+  
   return {
+    userId: userId,
     officerId: payload?.officerId || null,
-    role: payload?.role || payload?.officerType || null,
+    role: role,
     phoneNumber: payload?.phone_number || null,
     officerName: localStorage.getItem('officerName') || null,
     officerType: localStorage.getItem('officerType') || null,

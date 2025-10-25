@@ -18,7 +18,36 @@ const CreateSavingUser = () => {
   const { t } = useLocalTranslation();
   const toast = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
-const navigate = useNavigate();
+  
+  // Debug function to check modal state
+  const handleModalClose = (event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    console.log("Modal close triggered");
+    setIsModalOpen(false);
+  };
+  const navigate = useNavigate();
+
+  // Calculate future amount after 120 days at 5% interest
+  const calculateFutureAmount = (currentAmount, interestRate = 5, days = 120) => {
+    if (!currentAmount || currentAmount <= 0) return 0;
+    
+    // Calculate full 5% interest regardless of time period
+    const interest = currentAmount * (interestRate / 100);
+    const futureAmount = currentAmount + interest;
+    
+    return Math.round(futureAmount * 100) / 100; // Round to 2 decimal places
+  };
+
+  // Calculate interest earned
+  const calculateInterestEarned = (currentAmount, interestRate = 5, days = 120) => {
+    if (!currentAmount || currentAmount <= 0) return 0;
+    
+    const futureAmount = calculateFutureAmount(currentAmount, interestRate, days);
+    return Math.round((futureAmount - currentAmount) * 100) / 100;
+  };
   const initialFormState = {
     full_name: "",
     phone_number: "",
@@ -121,6 +150,36 @@ const navigate = useNavigate();
         saving_details: updatedDetails,
       };
     });
+  };
+
+  // Function to calculate saving details when modal opens
+  const calculateSavingDetails = () => {
+    try {
+      const dailyEmiAmount = parseFloat(formData.saving_details.amount_to_be) || 0;
+      const rate = parseFloat(formData.saving_details.interest_rate) || 0;
+      const emi_day = 120; // Fixed at 120 days
+
+      const total_amount = dailyEmiAmount * emi_day;
+      const total_interest_pay = (total_amount * rate * 4) / 100; // 4 months interest
+      const emi_amount = dailyEmiAmount;
+
+      return {
+        amount_to_be: dailyEmiAmount,
+        total_amount: Math.ceil(total_amount),
+        emi_day: emi_day,
+        emi_amount: Math.ceil(emi_amount),
+        total_interest_pay: Math.ceil(total_interest_pay),
+      };
+    } catch (error) {
+      console.error("Error in calculateSavingDetails:", error);
+      return {
+        amount_to_be: 0,
+        total_amount: 0,
+        emi_day: 120,
+        emi_amount: 0,
+        total_interest_pay: 0,
+      };
+    }
   };
 
   const handleSubmit = (e) => {
@@ -310,7 +369,10 @@ const navigate = useNavigate();
           </div> */}
 
           <div className="mt-4">
-            <Button colorScheme="teal" onClick={() => setIsModalOpen(true)}>
+            <Button colorScheme="teal" onClick={() => {
+              console.log("Opening modal, current state:", isModalOpen);
+              setIsModalOpen(true);
+            }}>
               {t("Generate Details", "Generate Details")}
             </Button>
           </div>
@@ -421,44 +483,70 @@ const navigate = useNavigate();
       </form>
 
       {/* Modal for Saving Details */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} isCentered>
+      <Modal 
+        key={isModalOpen ? 'open' : 'closed'}
+        isOpen={isModalOpen} 
+        onClose={handleModalClose} 
+        isCentered 
+        size="lg"
+        closeOnOverlayClick={true}
+      >
         <ModalOverlay />
-        <ModalContent maxW="md" mx={4}>
-          <ModalHeader textAlign="center">Saving Calculation Details</ModalHeader>
-          <ModalCloseButton />
+        <ModalContent>
+          <ModalHeader>
+            Saving Calculation Details
+          </ModalHeader>
+          <ModalCloseButton onClick={handleModalClose} />
           <ModalBody>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <strong>Amount To Be:</strong>
-                <span className="text-blue-600 font-semibold">
-                  ₹{formData.saving_details.amount_to_be || 0}
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <strong>Total Amount:</strong>
-                <span className="text-green-600 font-semibold">
-                  ₹{formData.saving_details.total_amount || 0}
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <strong>EMI Day:</strong>
-                <span className="text-purple-600 font-semibold">
-                  {formData.saving_details.emi_day || 120} days
-                </span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <strong>EMI Amount:</strong>
-                <span className="text-orange-600 font-semibold">
-                  ₹{formData.saving_details.emi_amount || 0}
-                </span>
-              </div>
+            <div className="space-y-2">
+              {(() => {
+                const calculatedDetails = calculateSavingDetails();
+                if (!calculatedDetails) {
+                  return <div>No calculation data available</div>;
+                }
+                const totalAmount = calculatedDetails.total_amount || 0;
+                const futureAmount = calculateFutureAmount(totalAmount);
+                const interestEarned = calculateInterestEarned(totalAmount);
+                const interestRate = 5;
+                const days = 120;
+                
+                return (
+                  <>
+                    {/* Basic Saving Details */}
+                    <div className="text-left">
+                      <div className="mb-2"><strong>Daily EMI Amount:</strong> ₹{calculatedDetails.amount_to_be}</div>
+                      <div className="mb-2"><strong>Interest Rate:</strong> {interestRate}%</div>
+                      <div className="mb-2"><strong>Total Amount:</strong> ₹{calculatedDetails.total_amount}</div>
+                      <div className="mb-2"><strong>Interest Earned:</strong> ₹{interestEarned.toLocaleString()}</div>
+                      <div className="mb-2"><strong>Final Amount:</strong> ₹{futureAmount.toLocaleString()}</div>
+                      <div className="mb-2"><strong>Daily EMI:</strong> ₹{calculatedDetails.emi_amount}</div>
+                    </div>
+                    
+                    {/* Duration Details */}
+                    <div className="border-t pt-3 mt-3">
+                      <div className="text-left">
+                        <div className="mb-2"><strong>Saving Start Date:</strong> {new Date().toLocaleDateString()}</div>
+                        <div className="mb-2"><strong>Saving End Date:</strong> {new Date(Date.now() + (days * 24 * 60 * 60 * 1000)).toLocaleDateString()}</div>
+                        <div className="mb-2"><strong>Saving Duration:</strong> {days} days ({Math.round(days/30)} months)</div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </ModalBody>
-          <ModalFooter justifyContent="center" gap={4}>
-            <Button onClick={() => setIsModalOpen(false)} colorScheme="red" variant="outline">
+          <ModalFooter>
+            <Button 
+              onClick={handleModalClose} 
+              colorScheme="red" 
+              variant="outline"
+            >
               Cancel
             </Button>
-            <Button onClick={() => setIsModalOpen(false)} colorScheme="green">
+            <Button 
+              onClick={handleModalClose} 
+              colorScheme="green"
+            >
               OK
             </Button>
           </ModalFooter>

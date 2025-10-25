@@ -173,162 +173,113 @@ const NewLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primaryBg via-white to-secondaryBg flex items-center justify-center p-2 sm:p-4 overflow-hidden">
-      <div className="w-full max-w-4xl lg:max-w-5xl bg-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl overflow-hidden border border-gray-100 h-auto min-h-[500px] sm:h-[500px]">
-        <div className="flex flex-col lg:flex-row h-full">
-          {/* Left Side - Image */}
-          <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primaryDark relative overflow-hidden">
-            <div className="absolute inset-0 bg-black bg-opacity-10"></div>
-            <div className="relative z-10 flex flex-col items-center justify-center p-6 lg:p-8 text-white h-full">
-              <Link className="mb-4 lg:mb-6 transition-transform hover:scale-105" to="/">
-                <img className="w-28 lg:w-36 h-auto drop-shadow-lg" src={LogoDark} alt="Logo" />
-              </Link>
-              <div className="w-4/5 max-w-sm flex-1 flex items-center">
-                <img className="w-full h-auto drop-shadow-xl" src={HomeImage} alt="Secure Login" />
-              </div>
-              <div className="text-center">
-                <h3 className="text-lg lg:text-xl font-bold mb-1">Welcome Back!</h3>
-                <p className="text-primaryLight opacity-90 text-xs lg:text-sm">Secure access to your financial dashboard</p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-teal-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-teal-200">
+        <div className="p-8">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <Link className="inline-block transition-transform hover:scale-105" to="/">
+              <img className="w-16 h-16 mx-auto" src={LogoDark} alt="Logo" />
+            </Link>
+            <h1 className="text-2xl font-bold text-teal-800 mt-4">Sai Finance</h1>
+            <p className="text-teal-600 text-sm">Sign in to your account</p>
           </div>
+          {/* Form Section */}
 
-          {/* Right Side - Login Form */}
-          <div className="w-full lg:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
-            <div className="max-w-sm mx-auto w-full">
-              {/* Mobile Logo */}
-              <div className="lg:hidden text-center mb-4 sm:mb-6">
-                <Link className="inline-block transition-transform hover:scale-105" to="/">
-                  <img className="w-20 sm:w-24 h-auto" src={LogoDark} alt="Logo" />
-                </Link>
-              </div>
+          {error && (
+            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm font-medium">{error}</p>
+            </div>
+          )}
 
-              <div className="text-center lg:text-left mb-4 sm:mb-6">
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 mb-1">
-                  Sign In
-                </h2>
-                <p className="text-gray-600 text-xs sm:text-sm">
-                  Access your Sai Finance dashboard
-                </p>
-              </div>
-
-              {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-600 text-sm font-medium">{error}</p>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-teal-700 mb-2">
+                Email Address / Phone Number
+              </label>
+              <div className="relative">
+                <input
+                  name="email"
+                  placeholder="Enter your email or phone number"
+                  value={user_name}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-teal-300 rounded-lg bg-teal-50 text-gray-800 placeholder-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300"
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                  </svg>
                 </div>
-              )}
-
-              <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
-                <div className="space-y-1">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Email Address / Phone Number
-                  </label>
-                  <div className="relative">
-                    <input
-                      name="email"
-                      placeholder="Enter your email or phone number"
-                      value={user_name}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required
-                      className="w-full px-3 py-2 sm:py-2.5 lg:py-3 border-2 border-gray-200 rounded-lg bg-gray-50 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white transition-all duration-300 text-sm"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="w-full px-3 py-2 sm:py-2.5 lg:py-3 border-2 border-gray-200 rounded-lg bg-gray-50 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-primary focus:bg-white transition-all duration-300 text-sm"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primary text-white font-semibold py-2.5 sm:py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2 text-sm"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <svg
-                          className="animate-spin h-4 w-4 text-white"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v8H4z"
-                          ></path>
-                        </svg>
-                        <span>Signing In...</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
-                        </svg>
-                        <span>Sign In</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
-
-              {/* Footer */}
-              <div className="mt-4 sm:mt-6 text-center">
-                <p className="text-xs text-gray-500">
-                  Secure login powered by Sai Finance
-                </p>
-                
-                {/* Debug Test Button */}
-                {/* <button
-                  type="button"
-                  onClick={async () => {
-                    try {
-                      console.log('Testing officer endpoint...');
-                      const testResponse = await axios.get('officers/health');
-                      console.log('Officer endpoint test successful:', testResponse.data);
-                      alert('Officer endpoint is working!');
-                    } catch (error) {
-                      console.error('Officer endpoint test failed:', error);
-                      alert('Officer endpoint test failed: ' + error.message);
-                    }
-                  }}
-                  className="mt-2 text-xs text-blue-500 hover:text-blue-700 underline"
-                >
-                  Test Officer Endpoint
-                </button> */}
               </div>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-teal-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-teal-300 rounded-lg bg-teal-50 text-gray-800 placeholder-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300"
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg className="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8H4z"
+                    ></path>
+                  </svg>
+                  <span>Signing In...</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                  </svg>
+                  <span>Sign In</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="mt-6 text-center">
+            <p className="text-xs text-teal-500">
+              Secure login powered by Sai Finance
+            </p>
           </div>
         </div>
       </div>

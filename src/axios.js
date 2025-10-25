@@ -2,12 +2,12 @@ import axios from "axios";
 
 // Primary API endpoint - Using localhost for development
 const API_BASE_URL = "https://saifinancebackend.onrender.com/api/";
-// const API_BASE_URL = "http://localhost:3001/api/";
+// const API_BASE_URL = "http://localhost:5000/api/";
 
 // Fallback endpoints in order of preference
 const FALLBACK_ENDPOINTS = [
+  // "http://localhost:5000/api/",
   "https://saifinancebackend.onrender.com/api/",
-  // "http://localhost:3001/api/",
   // "https://api.learn2ern.com/api/",
   // "https://learn2earn-alpha.vercel.app/"
 ];

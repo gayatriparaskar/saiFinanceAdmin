@@ -68,6 +68,8 @@ export const translations = {
     'Loan Account': 'Loan Account',
     'Saving Account': 'Saving Account',
     'Officer Controls': 'Officer Controls',
+    'Overdue Loans': 'Overdue Loans',
+    'Expenses': 'Expenses',
     'Payment Controls': 'Payment Controls',
     'Payment': 'Payment',
     'Payment Request': 'Payment Request',

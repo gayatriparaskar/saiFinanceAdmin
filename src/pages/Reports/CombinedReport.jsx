@@ -414,6 +414,39 @@ const CombinedReport = () => {
 
   return (
     <>
+      <style>
+        {`
+          .scrollbar-thin {
+            scrollbar-width: thin;
+          }
+          .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+          }
+          .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 3px;
+          }
+          .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+          }
+          .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+          }
+          .table-container {
+            max-height: 70vh;
+            overflow-y: auto;
+          }
+          .table-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+        `}
+      </style>
       {/* <OfficerNavbar officerType="accounter" officerName={officerName} pageName="Reports" /> */}
       <motion.div
         initial="hidden"
@@ -620,80 +653,82 @@ const CombinedReport = () => {
             </h2>
             
             {userWiseData.length > 0 ? (
-              <TableContainer>
-                <Table variant="simple" size="sm">
-                  <Thead>
-                    <Tr>
-                      <Th className="text-gray-700 font-bold">{t('User Name')}</Th>
-                      <Th className="text-gray-700 font-bold">{t('Phone')}</Th>
-                      <Th className="text-gray-700 font-bold">{t('Type')}</Th>
-                      <Th className="text-gray-700 font-bold">{t('Officer')}</Th>
-                      <Th className="text-gray-700 font-bold">{t('Loan/Saving')}</Th>
-                      <Th className="text-gray-700 font-bold">{t('Current Amount')}</Th>
-                      <Th className="text-gray-700 font-bold">
-                        {t('Period Collection')} 
-                        <span className="text-xs text-gray-500 ml-1">
-                          ({activeReport === 'daily' ? 'Today' : activeReport === 'weekly' ? 'This Week' : 'This Month'})
-                        </span>
-                      </Th>
-                      <Th className="text-gray-700 font-bold">{t('Status')}</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {userWiseData.map((user, index) => (
-                      <Tr key={user._id || index} className="hover:bg-gray-50">
-                        <Td className="font-medium text-gray-800">
-                          <div className="flex items-center space-x-2">
-                            <FaUser className="text-blue-500" />
-                            <span>{user.name || user.username || 'N/A'}</span>
-                          </div>
-                        </Td>
-                        <Td className="text-gray-600">{user.phone || 'N/A'}</Td>
-                        <Td>
-                          <Badge 
-                            colorScheme={user.userType === 'loan' ? 'blue' : user.userType === 'saving' ? 'green' : 'gray'}
-                            variant="subtle"
-                          >
-                            {user.userType === 'loan' ? t('Loan') : user.userType === 'saving' ? t('Saving') : t('User')}
-                          </Badge>
-                        </Td>
-                        <Td className="text-gray-600">{user.officerName || 'N/A'}</Td>
-                        <Td className="text-green-600 font-semibold">
-                          <div className="flex items-center space-x-1">
-                            <FaRupeeSign className="text-green-500" />
-                            <span>₹{(user.loanAmount || 0).toLocaleString()}</span>
-                          </div>
-                        </Td>
-                        <Td className="text-blue-600 font-semibold">
-                          <div className="flex items-center space-x-1">
-                            <FaRupeeSign className="text-blue-500" />
-                            <span>₹{(user.paidAmount || 0).toLocaleString()}</span>
-                          </div>
-                        </Td>
-                        <Td className="text-purple-600 font-bold">
-                          <div className="flex items-center space-x-1">
-                            <FaRupeeSign className="text-purple-500" />
-                            <span>₹{(user.collectionTotal || 0).toLocaleString()}</span>
-                            {user.collectionTotal > 0 && (
-                              <span className="text-xs text-green-600 ml-1">
-                                ✓
-                              </span>
-                            )}
-                          </div>
-                        </Td>
-                        <Td>
-                          <Badge 
-                            colorScheme={user.status === 'active' ? 'green' : 'red'}
-                            variant="subtle"
-                          >
-                            {user.status || 'N/A'}
-                          </Badge>
-                        </Td>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <TableContainer className="table-container scrollbar-thin">
+                  <Table variant="simple" size="sm">
+                    <Thead className="table-header">
+                      <Tr>
+                        <Th className="text-gray-700 font-bold bg-white">{t('User Name')}</Th>
+                        <Th className="text-gray-700 font-bold bg-white">{t('Phone')}</Th>
+                        <Th className="text-gray-700 font-bold bg-white">{t('Type')}</Th>
+                        <Th className="text-gray-700 font-bold bg-white">{t('Officer')}</Th>
+                        <Th className="text-gray-700 font-bold bg-white">{t('Loan/Saving')}</Th>
+                        <Th className="text-gray-700 font-bold bg-white">{t('Current Amount')}</Th>
+                        <Th className="text-gray-700 font-bold bg-white">
+                          {t('Period Collection')} 
+                          <span className="text-xs text-gray-500 ml-1">
+                            ({activeReport === 'daily' ? 'Today' : activeReport === 'weekly' ? 'This Week' : 'This Month'})
+                          </span>
+                        </Th>
+                        <Th className="text-gray-700 font-bold bg-white">{t('Status')}</Th>
                       </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </TableContainer>
+                    </Thead>
+                    <Tbody>
+                      {userWiseData.map((user, index) => (
+                        <Tr key={user._id || index} className="hover:bg-gray-50">
+                          <Td className="font-medium text-gray-800">
+                            <div className="flex items-center space-x-2">
+                              <FaUser className="text-blue-500" />
+                              <span>{user.name || user.username || 'N/A'}</span>
+                            </div>
+                          </Td>
+                          <Td className="text-gray-600">{user.phone || 'N/A'}</Td>
+                          <Td>
+                            <Badge 
+                              colorScheme={user.userType === 'loan' ? 'blue' : user.userType === 'saving' ? 'green' : 'gray'}
+                              variant="subtle"
+                            >
+                              {user.userType === 'loan' ? t('Loan') : user.userType === 'saving' ? t('Saving') : t('User')}
+                            </Badge>
+                          </Td>
+                          <Td className="text-gray-600">{user.officerName || 'N/A'}</Td>
+                          <Td className="text-green-600 font-semibold">
+                            <div className="flex items-center space-x-1">
+                              <FaRupeeSign className="text-green-500" />
+                              <span>₹{(user.loanAmount || 0).toLocaleString()}</span>
+                            </div>
+                          </Td>
+                          <Td className="text-blue-600 font-semibold">
+                            <div className="flex items-center space-x-1">
+                              <FaRupeeSign className="text-blue-500" />
+                              <span>₹{(user.paidAmount || 0).toLocaleString()}</span>
+                            </div>
+                          </Td>
+                          <Td className="text-purple-600 font-bold">
+                            <div className="flex items-center space-x-1">
+                              <FaRupeeSign className="text-purple-500" />
+                              <span>₹{(user.collectionTotal || 0).toLocaleString()}</span>
+                              {user.collectionTotal > 0 && (
+                                <span className="text-xs text-green-600 ml-1">
+                                  ✓
+                                </span>
+                              )}
+                            </div>
+                          </Td>
+                          <Td>
+                            <Badge 
+                              colorScheme={user.status === 'active' ? 'green' : 'red'}
+                              variant="subtle"
+                            >
+                              {user.status || 'N/A'}
+                            </Badge>
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </div>
             ) : (
               <div className="text-center py-12">
                 <Text className="text-gray-500 text-lg">

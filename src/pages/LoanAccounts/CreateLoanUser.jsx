@@ -19,6 +19,7 @@ const CreateLoanUser = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialFormState = {
     full_name: "",
@@ -127,6 +128,7 @@ const CreateLoanUser = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     // Comprehensive form validation
     const errors = [];
@@ -217,6 +219,7 @@ const CreateLoanUser = () => {
         isClosable: true,
         position: "top",
       });
+      setIsLoading(false);
       return;
     }
 
@@ -237,6 +240,7 @@ const CreateLoanUser = () => {
           // Redirect to LoanAccount page after successful submission
           navigate("/dash/loan-accounts");
         }
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("API Error:", error);
@@ -248,6 +252,7 @@ const CreateLoanUser = () => {
           isClosable: true,
           position: "top",
         });
+        setIsLoading(false);
       });
   };
 
@@ -449,9 +454,21 @@ const CreateLoanUser = () => {
         <div className="flex justify-end mt-6">
           <button
             type="submit"
-            className="px-4 py-2 bg-primaryDark text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none"
+            disabled={isLoading}
+            className={`px-4 py-2 text-white font-medium rounded-md focus:outline-none ${
+              isLoading 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-primaryDark hover:bg-indigo-700'
+            }`}
           >
-            {t("Submit Loan User")}
+            {isLoading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                {t("Creating...")}
+              </div>
+            ) : (
+              t("Submit Loan User")
+            )}
           </button>
         </div>
       </form>

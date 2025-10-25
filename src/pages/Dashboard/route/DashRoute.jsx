@@ -19,7 +19,6 @@ import OfficerInfo from "../../SavingAccount/officerInfo";
 import WeeklyReport from "../../Reports/WeeklyReport";
 import DailyReport from "../../Reports/DailyReport";
 import CombinedReport from "../../Reports/CombinedReport";
-import CountdownManagement from "../../Admin/CountdownManagement";
 
 const pageTransition = {
   initial: { opacity: 0, x: -20 },
@@ -186,14 +185,6 @@ const DashRoute = () => {
         element={
           <motion.div {...pageTransition}>
             <Officer />
-          </motion.div>
-        }
-      />
-      <Route
-        path="/countdown-management"
-        element={
-          <motion.div {...pageTransition}>
-            <CountdownManagement />
           </motion.div>
         }
       />

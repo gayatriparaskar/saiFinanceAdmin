@@ -24,6 +24,7 @@ import ManagerCreateOfficer from './OfficerData/ManagerCreateOfficer';
 import WeeklyReport from '../../Reports/WeeklyReport';
 import DailyReport from '../../Reports/DailyReport';
 import CombinedReport from '../../Reports/CombinedReport';
+import ManagerExpensePage from '../../common/Expenses/ManagerExpensePage';
 
 const pageTransition = {
   initial: { opacity: 0, x: -20 },
@@ -181,6 +182,16 @@ const ManagerLayout = () => {
             element={
               <motion.div {...pageTransition}>
                 <ManagerCreateOfficer />
+              </motion.div>
+            }
+          />
+          
+          {/* Expenses Routes */}
+          <Route
+            path="expenses"
+            element={
+              <motion.div {...pageTransition}>
+                <ManagerExpensePage />
               </motion.div>
             }
           />

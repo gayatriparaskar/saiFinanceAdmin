@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   FaSignOutAlt, 
@@ -19,6 +19,7 @@ import { changeOfficerPassword } from '../services/userService';
 
 const OfficerNavbar = ({ officerType, officerName, pageName }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showProfile, setShowProfile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isReportsDropdownOpen, setIsReportsDropdownOpen] = useState(false);
@@ -261,8 +262,8 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
             </div>
           </div>
 
-          {/* Center - Page Name (All Screen Sizes) */}
-          <div className="flex flex-col items-center text-center">
+          {/* Center - Page Name (Mobile Only) */}
+          <div className="md:hidden flex flex-col items-center text-center">
             <h1 className="text-sm font-bold text-gray-800">{pageName || 'Dashboard'}</h1>
             <p className="text-xs text-gray-600">{officerName}</p>
           </div>
@@ -323,7 +324,7 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
               </>
             )}
 
-            {/* Navigation Items - For Accounter (Officer Control + Reports) */}
+            {/* Navigation Items - For Accounter (Officer Control + Expenses + Reports) */}
             {officerType === 'accounter' && (
               <>
                 <button
@@ -331,7 +332,11 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                     console.log('👥 Officer Control button clicked');
                     navigate('/accounter-dashboard/officer-controls');
                   }}
-                  className="px-4 py-2 text-sm font-medium bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
+                  className={`px-4 py-2 text-sm font-medium transition-colors flex items-center space-x-2 rounded-lg ${
+                    location.pathname.includes('/officer-controls') 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
                 >
                   <span className="text-lg">👥</span>
                   <span>Officer Control</span>
@@ -339,10 +344,44 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                 
                 <button
                   onClick={() => {
+                    console.log('💰 Expenses button clicked');
+                    navigate('/accountant-expenses');
+                  }}
+                  className={`px-4 py-2 text-sm font-medium transition-colors flex items-center space-x-2 rounded-lg ${
+                    location.pathname.includes('/accountant-expenses') 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className="text-lg">💰</span>
+                  <span>Expenses</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    console.log('👥 Customers button clicked');
+                    navigate('/accounter-dashboard/customers');
+                  }}
+                  className={`px-4 py-2 text-sm font-medium transition-colors flex items-center space-x-2 rounded-lg ${
+                    location.pathname.includes('/customers') 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className="text-lg">👥</span>
+                  <span>Customers</span>
+                </button>
+                
+                <button
+                  onClick={() => {
                     console.log('📊 Reports button clicked');
                     navigate('/accounter-dashboard/reports');
                   }}
-                  className="px-4 py-2 text-sm font-medium bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center space-x-2 shadow-md hover:shadow-lg"
+                  className={`px-4 py-2 text-sm font-medium transition-colors flex items-center space-x-2 rounded-lg ${
+                    location.pathname.includes('/reports') 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
                 >
                   <span className="text-lg">📊</span>
                   <span>Reports</span>
@@ -537,7 +576,7 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
               </>
             )}
 
-            {/* Mobile Navigation Items - For Accounter (Officer Control + Reports) */}
+            {/* Mobile Navigation Items - For Accounter (Officer Control + Expenses + Reports) */}
             {officerType === 'accounter' && (
               <>
                 <button
@@ -546,10 +585,46 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                     navigate('/accounter-dashboard/officer-controls');
                     closeMobileMenu();
                   }}
-                  className="w-full flex items-center space-x-4 p-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
+                  className={`w-full flex items-center space-x-4 p-4 transition-colors rounded-lg ${
+                    location.pathname.includes('/officer-controls') 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
                 >
                   <span className="text-xl">👥</span>
                   <span className="font-medium">Officer Control</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    console.log('💰 Mobile Expenses button clicked');
+                    navigate('/accountant-expenses');
+                    closeMobileMenu();
+                  }}
+                  className={`w-full flex items-center space-x-4 p-4 transition-colors rounded-lg ${
+                    location.pathname.includes('/accountant-expenses') 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className="text-xl">💰</span>
+                  <span className="font-medium">Expenses</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    console.log('👥 Mobile Customers button clicked');
+                    navigate('/accounter-dashboard/customers');
+                    closeMobileMenu();
+                  }}
+                  className={`w-full flex items-center space-x-4 p-4 transition-colors rounded-lg ${
+                    location.pathname.includes('/customers') 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <span className="text-xl">👥</span>
+                  <span className="font-medium">Customers</span>
                 </button>
                 
                 <button
@@ -558,7 +633,11 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
                     navigate('/accounter-dashboard/reports');
                     closeMobileMenu();
                   }}
-                  className="w-full flex items-center space-x-4 p-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors shadow-md hover:shadow-lg"
+                  className={`w-full flex items-center space-x-4 p-4 transition-colors rounded-lg ${
+                    location.pathname.includes('/reports') 
+                      ? 'bg-blue-500 text-white' 
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
                 >
                   <span className="text-xl">📊</span>
                   <span className="font-medium">Reports</span>

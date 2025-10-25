@@ -178,6 +178,7 @@ const ManagerNavbar = () => {
     { name: t("Overdue Loans"), path: "/manager-dashboard/overdue-loans" },
     { name: t("Saving Account"), path: "/manager-dashboard/saving-account" },
     { name: t("Officer Controls"), path: "/manager-dashboard/officer" },
+    { name: t("Expenses"), path: "/manager-dashboard/expenses" },
     { name: t("Reports"), path: "/manager-dashboard/reports" }
   ];
 

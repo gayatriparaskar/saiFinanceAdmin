@@ -171,7 +171,7 @@ const NewNavbar = () => {
     if (path.includes('/dash/overdue-loans')) return t('Overdue Loans');
     if (path.includes('/dash/saving-accounts')) return t('Saving Account');
     if (path.includes('/dash/officer')) return t('Officer Controls');
-    if (path.includes('/blocked-users')) return t('Blocked Users');
+    if (path.includes('/expenses')) return t('Expenses');
     if (path.includes('/inactive-users')) return t('Inactive Users');
     if (path.includes('/dash/reports')) return t('Reports');
     if (path.includes('/dash/payment')) return t('Payment');
@@ -194,7 +194,7 @@ const NewNavbar = () => {
     { name: t("Overdue Loans"), path: "/dash/overdue-loans" },
     { name: t("Saving Account"), path: "/dash/saving-accounts" },
     { name: t("Officer Controls"), path: "/dash/officer" },
-    { name: t("Blocked Users"), path: "/blocked-users" },
+    { name: t("Expenses"), path: "/expenses" },
     { name: t("Inactive Users"), path: "/inactive-users" },
     { name: t("Reports"), path: "/dash/reports" }
   ];

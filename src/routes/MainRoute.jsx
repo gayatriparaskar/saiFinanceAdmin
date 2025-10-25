@@ -12,6 +12,9 @@ import ManagerViewLoanUser from '../pages/Dashboard/ManagerDashboard/LoanAccount
 import ManagerViewSavingUser from '../pages/Dashboard/ManagerDashboard/SavingAccount/ManagerViewSavingUser';
 import BlockedUsers from '../pages/BlockedUsers/BlockedUsers';
 import InactiveUsers from '../pages/InactiveUsers/InactiveUsers';
+import AccountantExpensePage from '../pages/common/Expenses/AccountantExpensePage';
+import ExpenseManagement from '../pages/admin/ExpenseManagement';
+import CustomerPage from '../pages/accountant/CustomerPage';
 
 const MainRoute = () => {
   const [loading, setLoading] = useState(false);
@@ -203,8 +206,7 @@ const MainRoute = () => {
                 animate="in"
                 exit="out"
                 variants={pageVariants}
-                transi
-                solve itemIDtion={pageTransition}
+                transition={pageTransition}
               >
                 <NewDashboard/>
               </motion.div>
@@ -242,6 +244,21 @@ const MainRoute = () => {
           />
 
           <Route 
+            path='/accounter-dashboard/customers' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <CustomerPage/>
+              </motion.div>
+            }
+          />
+
+          <Route 
             path='/accounter-dashboard/*' 
             element={
               <motion.div
@@ -252,6 +269,36 @@ const MainRoute = () => {
                 transition={pageTransition}
               >
                 <AccounterDashboard/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/accountant-expenses' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <AccountantExpensePage/>
+              </motion.div>
+            }
+          />
+
+          <Route 
+            path='/expenses' 
+            element={
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <ExpenseManagement/>
               </motion.div>
             }
           />
