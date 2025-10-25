@@ -43,7 +43,7 @@ const ManagerDashboardContent = () => {
   const [editingOfficer, setEditingOfficer] = useState(null);
   const [editingField, setEditingField] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [officerName, setOfficerName] = useState('');
+  const [officerName, setOfficerName] = useState('');
   // const [assignedCollections, setAssignedCollections] = useState([]);
   // const [showAssignedCollections, setShowAssignedCollections] = useState(false);
   const [selectedAssignedCollection, setSelectedAssignedCollection] = useState(null);

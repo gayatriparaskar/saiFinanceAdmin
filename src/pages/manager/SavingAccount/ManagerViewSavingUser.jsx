@@ -37,7 +37,6 @@ import {
   FormLabel,
   Select,
   useToast,
-  Table as ChakraTable,
   Thead,
   Tbody,
   Tr,
