@@ -29,6 +29,8 @@ const NewLogin = () => {
       try {
         console.log('Attempting officer login with:', { phone_number: user_name, password });
         response = await axios.post("officers/login", { phone_number: user_name, password });
+        console.log("officer login response", response);
+        
         isOfficer = true;
         console.log('Officer login successful - Response:', response?.data);
       } catch (officerError) {
