@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import ExpenseViewToggle from '../../componant/Expense/ExpenseViewToggle';
-import ExpenseStats from '../../componant/Expense/ExpenseStats';
-import { getAllExpenses, getExpenseStats, approveExpense, deleteExpense, getExpensesWithCashData } from '../../services/expenseService';
-import { getCurrentUserInfo } from '../../utils/authUtils';
-import { getDailyCash } from '../../services/cashManagementService';
+import ExpenseViewToggle from '../../../componant/Expense/ExpenseViewToggle';
+import ExpenseStats from '../../../componant/Expense/ExpenseStats';
+import { getAllExpenses, getExpenseStats, approveExpense, deleteExpense, getExpensesWithCashData } from '../../../services/expenseService';
+import { getCurrentUserInfo } from '../../../utils/authUtils';
+import { getDailyCash } from '../../../services/cashManagementService';
 import { FiPlus, FiRefreshCw, FiAlertCircle } from 'react-icons/fi';
-import NewNavbar from '../Dashboard/main/NewNavbar';
+import NewNavbar from '../../Dashboard/main/NewNavbar';
 
 const ExpenseManagement = () => {
   const [expenses, setExpenses] = useState([]);
