@@ -19,7 +19,7 @@ import OfficerInfo from "../../common/SavingAccounts/officerInfo";
 import WeeklyReport from "../../common/Reports/WeeklyReport";
 import DailyReport from "../../common/Reports/DailyReport";
 import CombinedReport from "../../common/Reports/CombinedReport";
-import ExpenseManagement from "../expenses/expensesManagement.jsx";
+import ExpenseManagement from "../../admin/expenses/expensesManagement";
 import ManagerExpensePage from "../../common/Expenses/ManagerExpensePage";
 import AccountantExpensePage from "../../common/Expenses/AccountantExpensePage";
 import InactiveUsers from "../InactiveUsers";
