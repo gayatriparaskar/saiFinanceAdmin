@@ -13,7 +13,7 @@ import ManagerViewSavingUser from '../pages/Dashboard/ManagerDashboard/SavingAcc
 import BlockedUsers from '../pages/BlockedUsers/BlockedUsers';
 import InactiveUsers from '../pages/InactiveUsers/InactiveUsers';
 import AccountantExpensePage from '../pages/common/Expenses/AccountantExpensePage';
-import ExpenseManagement from '../pages/admin/ExpenseManagement';
+import ExpenseManagement from '../pages/admin/ExpenseManagement.jsx';
 import CustomerPage from '../pages/accountant/CustomerPage';
 
 const MainRoute = () => {
