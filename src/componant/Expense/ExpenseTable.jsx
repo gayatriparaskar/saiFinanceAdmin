@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  formatCurrency, 
-  formatDate, 
+import {
+  formatCurrency,
+  formatDate,
   // getStatusColor, 
   EXPENSE_STATUSES
 } from '../../services/expenseService';
 import { FiEdit2, FiTrash2, FiCheck, FiDollarSign, FiEye, FiMoreVertical } from 'react-icons/fi';
 
-const ExpenseTable = ({ 
-  expenses, 
-  loading, 
-  onEdit, 
-  onDelete, 
-  onApprove, 
-  onReject, 
+const ExpenseTable = ({
+  expenses,
+  loading,
+  onEdit,
+  onDelete,
+  onApprove,
+  onReject,
   onMarkPaid,
   onView,
   userRole,
-  currentUserId 
+  currentUserId
 }) => {
   const [sortField, setSortField] = useState('created_on');
   const [sortOrder, setSortOrder] = useState('desc');
@@ -72,12 +72,12 @@ const ExpenseTable = ({
       statusMatch: filterStatus === 'all' || expense.status === filterStatus,
       categoryMatch: filterCategory === 'all' || expense.category === filterCategory
     });
-    
+
     if (filterStatus !== 'all' && expense.status !== filterStatus) return false;
     if (filterCategory !== 'all' && expense.category !== filterCategory) return false;
     return true;
   });
-  
+
   console.log('🔍 Filtering results:', {
     totalExpenses: expenses.length,
     filteredExpenses: filteredExpenses.length,
@@ -96,16 +96,16 @@ const ExpenseTable = ({
       expenseId: expense._id,
       expenseTitle: expense.title
     });
-    
+
     // For managers: can edit their own expenses (both pending and paid)
     // For admin: can edit any expense
     // TEMPORARY: Allow all managers to edit any expense for testing
-    const canEditResult = (userRole === 'manager') || 
-                         (userRole === 'admin') ||
-                         (userRole === 'manager' && 
-                          expense.created_by?._id === currentUserId &&
-                          (expense.status === 'paid' || expense.status === 'pending'));
-    
+    const canEditResult = (userRole === 'manager') ||
+      (userRole === 'admin') ||
+      (userRole === 'manager' &&
+        expense.created_by?._id === currentUserId &&
+        (expense.status === 'paid' || expense.status === 'pending'));
+
     console.log('🔍 canEdit result:', canEditResult);
     return canEditResult;
   };
@@ -116,7 +116,7 @@ const ExpenseTable = ({
       expenseTitle: expense.title,
       isAdmin: userRole === 'admin'
     });
-    
+
     const canDeleteResult = userRole === 'admin';
     console.log('🔍 canDelete result:', canDeleteResult);
     return canDeleteResult;
@@ -130,7 +130,7 @@ const ExpenseTable = ({
       isAdmin: userRole === 'admin',
       isApproved: expense.status === 'approved'
     });
-    
+
     const canApproveResult = userRole === 'admin' && expense.status === 'paid';
     console.log('🔍 canApprove result:', canApproveResult);
     return canApproveResult;
@@ -210,7 +210,7 @@ const ExpenseTable = ({
               ))}
             </select>
           </div>
-          
+
           <div className="flex-1">
             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Category</label>
             <select
@@ -233,189 +233,40 @@ const ExpenseTable = ({
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full border border-gray-200 rounded-lg text-sm">
+          <thead className="bg-gray-100 text-gray-700 text-center">
             <tr>
-              <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('title')}
-              >
-                Title {getSortIcon('title')}
-              </th>
-              <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('amount')}
-              >
-                Amount {getSortIcon('amount')}
-              </th>
-              <th 
-                className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('category')}
-              >
-                Category {getSortIcon('category')}
-              </th>
-              <th 
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('status')}
-              >
-                Status {getSortIcon('status')}
-              </th>
-              <th 
-                className="hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('expense_date')}
-              >
-                Date {getSortIcon('expense_date')}
-              </th>
-              <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Created By
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
+              <th className="px-4 py-2 w-1/6 font-medium">Title</th>
+              <th className="px-4 py-2 w-1/6 font-medium text-right">Amount</th>
+              <th className="px-4 py-2 w-1/6 font-medium">Category</th>
+              <th className="px-4 py-2 w-1/6 font-medium text-center">Status</th>
+              <th className="px-4 py-2 w-1/6 font-medium text-center">Date</th>
+              <th className="px-4 py-2 w-1/6 font-medium">Created By</th>
+              <th className="px-4 py-2 w-1/12 font-medium text-center">Actions</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {sortedExpenses.map((expense) => {
-              console.log('🔍 Expense data:', {
-                id: expense._id,
-                title: expense.title,
-                created_by: expense.created_by,
-                status: expense.status
-              });
-              return (
-              <motion.tr
-                key={expense._id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="hover:bg-gray-50"
-              >
-                <td className="px-6 py-4">
-                  <div className="text-sm font-medium text-gray-900">
-                    {expense.title}
-                  </div>
-                  {expense.description && (
-                    <div className="text-xs text-gray-500 truncate max-w-xs">
-                      {expense.description}
-                    </div>
-                  )}
-                  <div className="sm:hidden mt-1">
-                    <div className="text-xs text-gray-500">
-                      {formatCurrency(expense.amount)} • {expense.category.replace('_', ' ')}
-                    </div>
-                  </div>
-                </td>
-                <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
-                    {formatCurrency(expense.amount)}
-                  </div>
-                </td>
-                <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900 capitalize">
-                    {expense.category.replace('_', ' ')}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {getStatusBadge(expense.status)}
-                </td>
-                <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(expense.expense_date)}
-                </td>
-                <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {expense.created_by?.name || 'Unknown'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div className="relative dropdown-container">
-                    <button
-                      onClick={() => toggleDropdown(expense._id)}
-                      className="inline-flex items-center px-2 py-1 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors duration-200"
-                      title="Actions"
-                    >
-                      <FiMoreVertical className="w-4 h-4" />
-                    </button>
-                    
-                    {openDropdown === expense._id && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
-                        <div className="py-1">
-                          {/* View option - always visible */}
-                          <button
-                            onClick={() => {
-                              onView && onView(expense);
-                              closeDropdown();
-                            }}
-                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          >
-                            <FiEye className="w-4 h-4 mr-3" />
-                            View
-                          </button>
-                          
-                          {/* Edit option */}
-                          {canEdit(expense) && (
-                            <button
-                              onClick={() => {
-                                console.log('🔍 Edit button clicked for expense:', expense);
-                                onEdit(expense);
-                                closeDropdown();
-                              }}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              <FiEdit2 className="w-4 h-4 mr-3" />
-                              Edit
-                            </button>
-                          )}
-                          
-                          {/* Approve option */}
-                          {canApprove(expense) && (
-                            <button
-                              onClick={() => {
-                                onApprove(expense);
-                                closeDropdown();
-                              }}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              <FiCheck className="w-4 h-4 mr-3" />
-                              Approve
-                            </button>
-                          )}
-                          
-                          
-                          {/* Mark as Paid option */}
-                          {canMarkPaid(expense) && (
-                            <button
-                              onClick={() => {
-                                onMarkPaid(expense);
-                                closeDropdown();
-                              }}
-                              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                              <FiDollarSign className="w-4 h-4 mr-3" />
-                              Mark as Paid
-                            </button>
-                          )}
-                          
-                          {/* Delete option */}
-                          {canDelete(expense) && (
-                            <button
-                              onClick={() => {
-                                onDelete(expense);
-                                closeDropdown();
-                              }}
-                              className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                            >
-                              <FiTrash2 className="w-4 h-4 mr-3" />
-                              Delete
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </td>
-              </motion.tr>
-              );
-            })}
+          <tbody className="text-gray-700">
+            <tr className="border-t hover:bg-gray-50 transition">
+              <td className="px-4 py-3">Tea</td>
+              <td className="px-4 py-3 text-right">₹100.00</td>
+              <td className="px-4 py-3">Personal</td>
+              <td className="px-4 py-3 text-center">
+                <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs font-semibold">
+                  Paid
+                </span>
+              </td>
+              <td className="px-4 py-3 text-center">17 Oct 2025</td>
+              <td className="px-4 py-3">Prem</td>
+              <td className="px-4 py-3 text-center">
+                <button className="text-gray-600 hover:text-blue-500">
+                  ⋮
+                </button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
+
 
       {sortedExpenses.length === 0 && (
         <div className="text-center py-6 sm:py-8">
