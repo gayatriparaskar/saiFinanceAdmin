@@ -193,6 +193,16 @@ const ExpenseForm = ({
     }));
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      const original = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = original;
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -200,7 +210,7 @@ const ExpenseForm = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-[10000] p-4 pt-20 sm:pt-28 overscroll-contain"
       onClick={onClose}
     >
       <motion.div
@@ -516,7 +526,9 @@ const ExpenseForm = ({
                       <input
                         type="number"
                         min="0"
+                        step="1"
                         value={formData.currency_notes[note.key]}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => {
                           const value = parseInt(e.target.value) || 0;
                           setFormData(prev => ({
@@ -526,6 +538,17 @@ const ExpenseForm = ({
                               [note.key]: value
                             }
                           }));
+                        }}
+                        onBlur={(e) => {
+                          if (e.target.value === '') {
+                            setFormData(prev => ({
+                              ...prev,
+                              currency_notes: {
+                                ...prev.currency_notes,
+                                [note.key]: 0
+                              }
+                            }));
+                          }
                         }}
                         className="w-16 px-2 py-1 border border-gray-300 rounded text-center text-sm"
                       />
