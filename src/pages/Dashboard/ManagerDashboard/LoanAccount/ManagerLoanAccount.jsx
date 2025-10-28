@@ -493,16 +493,16 @@ function ManagerLoanAccount() {
       Header: t('DATE CREATED'),
       accessor: "created_on",
       Cell: ({ value, row: { original } }) => (
-        <Cell text={original?.active_loan_id?.created_on ? dayjs(original.active_loan_id.created_on).format('DD MMM, YYYY h:mm A') : t('N/A')} />
+        <Cell text={original?.active_loan_id?.created_on ? dayjs(original.active_loan_id.created_on).format('DD MMM, YYYY') : t('N/A')} />
       ),
     },
-    {
-      Header: t('END DATE'),
-      accessor: "end_date",
-      Cell: ({ value, row: { original } }) => (
-        <Cell text={original?.active_loan_id?.end_date ? dayjs(original.active_loan_id.end_date).format('DD MMM, YYYY') : t('N/A')} />
-      ),
-    },
+       {
+        Header: t('Penalty'),
+        accessor: "penalty",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={`₹${original?.active_loan_id?.total_penalty_amount || 0}`} />
+        ),
+      },
     {
       Header: t('PHONE'),
       accessor: "phone_number",

@@ -294,6 +294,47 @@ const AccountantExpensePage = () => {
     setShowApprovalModal(true);
   };
 
+  const handleApproveExpense = async (expense) => {
+    try {
+      // Optimistic UI: update local state immediately
+      setExpenses(prev => prev.map(e => e._id === expense._id ? { ...e, status: 'approved' } : e));
+      setStats(prev => prev ? {
+        ...prev,
+        counts: { ...(prev.counts || {}), approved: (prev.counts?.approved || 0) + (expense.status !== 'approved' ? 1 : 0) },
+        amounts: { ...(prev.amounts || {}), approved: (prev.amounts?.approved || 0) + (expense.status !== 'approved' ? (expense.amount || 0) : 0) }
+      } : prev);
+
+      // API sync
+      await approveExpense(expense._id);
+      fetchStats();
+    } catch (err) {
+      console.error('Error approving expense (accountant):', err);
+      // Revert by refetching
+      fetchExpenses();
+      alert('Failed to approve expense');
+    }
+  };
+
+  const handleMarkPaidExpense = async (expense) => {
+    try {
+      // Optimistic UI
+      setExpenses(prev => prev.map(e => e._id === expense._id ? { ...e, status: 'paid' } : e));
+      setStats(prev => prev ? {
+        ...prev,
+        counts: { ...(prev.counts || {}), paid: (prev.counts?.paid || 0) + (expense.status !== 'paid' ? 1 : 0) },
+        amounts: { ...(prev.amounts || {}), paid: (prev.amounts?.paid || 0) + (expense.status !== 'paid' ? (expense.amount || 0) : 0) }
+      } : prev);
+
+      // API sync
+      await markExpenseAsPaid(expense._id);
+      fetchStats();
+    } catch (err) {
+      console.error('Error marking paid (accountant):', err);
+      fetchExpenses();
+      alert('Failed to mark as paid');
+    }
+  };
+
   // const handleApprovalModalClose = () => {
   //   setShowApprovalModal(false);
   //   setSelectedExpense(null);
@@ -1050,11 +1091,11 @@ const AccountantExpensePage = () => {
               loading={loading}
               onEdit={handleEditClick}
               onDelete={handleDeleteExpense}
-              onApprove={handleApprovalClick}
+              onApprove={handleApproveExpense}
               onReject={handleApprovalClick}
-              onMarkPaid={handleApprovalClick}
+              onMarkPaid={handleMarkPaidExpense}
               onView={handleViewExpense}
-              userRole={userInfo?.role}
+              userRole="admin"
               currentUserId={userInfo?.userId}
             />
           ) : (

@@ -68,7 +68,7 @@ const ManagerExpensePage = () => {
     approvedAmount: 0,
     paidAmount: 0,
     savingsAmount: 0,
-    dailyBudget: 10000,
+    dailyBudget:0,
     isOverBudget: false,
     overBudgetAmount: 0
   });
@@ -316,14 +316,14 @@ const ManagerExpensePage = () => {
       weekStart.setHours(0, 0, 0, 0);
       
       filteredExpenses = expensesList.filter(exp => {
-        const expDate = new Date(exp.created_at || exp.createdAt);
+        const expDate = new Date(exp.expense_date  || exp.created_on);
         return expDate >= weekStart;
       });
     } else if (period === 'monthly') {
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
       
       filteredExpenses = expensesList.filter(exp => {
-        const expDate = new Date(exp.created_at || exp.createdAt);
+        const expDate = new Date(exp.expense_date || exp.created_on);
         return expDate >= monthStart;
       });
     }

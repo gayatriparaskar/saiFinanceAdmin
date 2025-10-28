@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 import { 
   EXPENSE_CATEGORIES, 
@@ -205,19 +206,22 @@ const ExpenseForm = ({
 
   if (!isOpen) return null;
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-[10000] p-4 pt-20 sm:pt-28 overscroll-contain"
-      onClick={onClose}
-    >
+  return ReactDOM.createPortal(
+    (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className={`fixed inset-0 bg-black bg-opacity-50 flex ${
+          isEditing ? 'items-center' : 'items-start pt-24 sm:pt-32'
+        } justify-center z-[20000] p-4 overscroll-contain`}
+        onClick={onClose}
+      >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[95vh] overflow-y-auto"
+        className={`relative bg-white rounded-lg shadow-xl w-full max-w-2xl ${isEditing ? 'max-h-[95vh]' : 'max-h-[calc(100vh-10rem)]'} overflow-y-auto z-[20001]`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-4 sm:p-6">
@@ -675,6 +679,8 @@ const ExpenseForm = ({
         </div>
       </motion.div>
     </motion.div>
+    ),
+    document.body
   );
 };
 

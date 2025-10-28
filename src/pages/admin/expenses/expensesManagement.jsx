@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import { motion } from 'framer-motion';
 import ExpenseViewToggle from '../../../componant/Expense/ExpenseViewToggle';
 import ExpenseStats from '../../../componant/Expense/ExpenseStats';
-import { getAllExpenses, getExpenseStats, approveExpense, deleteExpense, getExpensesWithCashData } from '../../../services/expenseService';
+import { getAllExpenses, getExpenseStats, approveExpense, deleteExpense, getExpensesWithCashData, markExpenseAsPaid } from '../../../services/expenseService';
 import { getCurrentUserInfo } from '../../../utils/authUtils';
 import { getDailyCash } from '../../../services/cashManagementService';
 import { FiPlus, FiRefreshCw, FiAlertCircle } from 'react-icons/fi';
@@ -206,53 +206,26 @@ const ExpenseManagement = () => {
     try {
       console.log('Approving expense:', expense);
 
+      // Optimistic UI update
+      setExpenses(prev => prev.map(exp => exp._id === expense._id ? { ...exp, status: 'approved' } : exp));
+
       if (connectionStatus === 'offline') {
-        // Demo mode - just update local state
-        setExpenses(prev => prev.map(exp =>
-          exp._id === expense._id
-            ? { ...exp, status: 'approved' }
-            : exp
-        ));
         console.log('✅ Expense approved (demo mode)');
         return;
       }
 
       // Real API call
       const response = await approveExpense(expense._id);
-      if (response.success) {
-        // Refresh expenses after approval
-        await handleRefresh();
-        console.log('✅ Expense approved successfully');
-      } else {
+      if (!response.success) {
         console.error('❌ Failed to approve expense:', response.message);
+        // Revert by refetching
+        await handleRefresh();
+      } else {
+        console.log('✅ Expense approved successfully');
       }
     } catch (error) {
       console.error('❌ Error approving expense:', error);
-
-      // Check if it's a permission error
-      if (error.response?.status === 403) {
-        console.warn('⚠️ Backend permission error - implementing admin bypass');
-
-        // Ask user if they want to proceed with admin bypass
-        const proceedWithBypass = window.confirm(
-          'Backend permission error detected. As an admin, would you like to proceed with the approval using admin bypass? This will update the expense status in the local view.'
-        );
-
-        if (proceedWithBypass) {
-          // Admin bypass - update local state
-          setExpenses(prev => prev.map(exp =>
-            exp._id === expense._id
-              ? { ...exp, status: 'approved' }
-              : exp
-          ));
-          console.log('✅ Expense approved using admin bypass');
-
-          // Show success message
-          alert('Expense approved successfully using admin bypass. Note: This change may not be reflected in the backend database.');
-        } else {
-          alert('Approval cancelled. Please contact the system administrator to resolve backend permission issues.');
-        }
-      }
+      await handleRefresh();
     }
   };
 
@@ -265,9 +238,31 @@ const ExpenseManagement = () => {
   //   setEditingExpense(null);
   // };
 
-  const handleMarkPaid = (expense) => {
-    console.log('Mark as paid:', expense);
-    // Implement mark as paid functionality
+  const handleMarkPaid = async (expense) => {
+    try {
+      console.log('Mark as paid:', expense);
+
+      // Optimistic UI update
+      setExpenses(prev => prev.map(exp => exp._id === expense._id ? { ...exp, status: 'paid' } : exp));
+
+      if (connectionStatus === 'offline') {
+        console.log('✅ Expense marked paid (demo mode)');
+        return;
+      }
+
+      // Real API call
+      const response = await markExpenseAsPaid(expense._id);
+      if (!response.success) {
+        console.error('❌ Failed to mark as paid:', response.message);
+        // Revert by refetching
+        await handleRefresh();
+      } else {
+        console.log('✅ Expense marked as paid successfully');
+      }
+    } catch (error) {
+      console.error('❌ Error marking expense paid:', error);
+      await handleRefresh();
+    }
   };
 
   const handleDelete = async (expense) => {

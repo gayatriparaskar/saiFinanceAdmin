@@ -707,7 +707,7 @@ function LoanAccount() {
         Header: t('Start Date'),
         accessor: "created_on",
         Cell: ({ value, row: { original } }) => (
-          <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
+          <Cell text={dayjs(value).format("D MMM, YYYY")} />
         ),
       },
       {

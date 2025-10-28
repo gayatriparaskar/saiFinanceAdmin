@@ -497,12 +497,12 @@ function ManagerLoanAccount() {
       ),
     },
     {
-      Header: t('END DATE'),
-      accessor: "end_date",
-      Cell: ({ value, row: { original } }) => (
-        <Cell text={original?.active_loan_id?.end_date ? dayjs(original.active_loan_id.end_date).format('DD MMM, YYYY') : t('N/A')} />
-      ),
-    },
+        Header: t('Penalty'),
+        accessor: "penalty",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={`₹${original?.active_loan_id?.total_penalty_amount || 0}`} />
+        ),
+      },
     {
       Header: t('PHONE'),
       accessor: "phone_number",

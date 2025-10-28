@@ -26,7 +26,7 @@ function AccounterDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
   const [officerName, setOfficerName] = useState('');
-  const [ setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
   
   // Use custom hooks for data and state management
   const { 

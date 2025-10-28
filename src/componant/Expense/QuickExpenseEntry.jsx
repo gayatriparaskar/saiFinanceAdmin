@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { motion } from 'framer-motion';
 
 const QuickExpenseEntry = ({ isOpen, onClose, onSubmit, loading = false }) => {
@@ -17,9 +18,7 @@ const QuickExpenseEntry = ({ isOpen, onClose, onSubmit, loading = false }) => {
   const commonExpenses = [
     { title: 'Paint', amount: '20', category: 'maintenance' },
     { title: 'Petrol', amount: '80', category: 'travel' },
-    { title: 'Hardware', amount: '1696', category: 'maintenance' },
-    { title: 'Kakaji', amount: '500', category: 'personal' },
-    { title: 'Akshay Kohli (Ad.)', amount: '350', category: 'marketing' }
+    { title: 'Hardware', amount: '1696', category: 'maintenance' }
   ];
 
   const handleSubmit = (e) => {
@@ -58,21 +57,32 @@ const QuickExpenseEntry = ({ isOpen, onClose, onSubmit, loading = false }) => {
     }
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      const original = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = original;
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
+  return ReactDOM.createPortal(
+    (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-[10000] p-4 pt-16 sm:pt-20"
+        onClick={onClose}
+      >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        className="relative bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto z-[10001]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
@@ -233,6 +243,8 @@ const QuickExpenseEntry = ({ isOpen, onClose, onSubmit, loading = false }) => {
         </div>
       </motion.div>
     </motion.div>
+    ),
+    document.body
   );
 };
 

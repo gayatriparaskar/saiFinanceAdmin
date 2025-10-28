@@ -95,7 +95,7 @@ const UserDataTable = ({ userType = 'all', onRefresh, timePeriod = 'all' }) => {
   }, [userType]);
 
   // Add state for collection data
-  const [ setCollectionData] = useState({
+  const [collectionData, setCollectionData] = useState({
     loanCollections: new Map(),
     savingCollections: new Map()
   });
