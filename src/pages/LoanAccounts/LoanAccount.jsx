@@ -779,20 +779,20 @@ function LoanAccount() {
                 <MenuItem onClick={() => { setEditData(original); setIsEditing(true); }}>
                   <MdEdit className="mr-4" /> {t('Edit')}
                 </MenuItem>
-                <MenuItem onClick={() => { 
+                {/* <MenuItem onClick={() => { 
                   setSelectedUserForOfficerChange(original); 
                   setNewOfficerId(original?.officer_id?._id || ""); 
                   setIsOfficerChangeModalOpen(true); 
                 }}>
                   <HiStatusOnline className="mr-4" /> {t('Change Officer')}
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem onClick={() => { setNewID(original._id); onOpen(); }}>
                   <MdDelete className="mr-4" />
                   {t('Delete')}
                 </MenuItem>
                 {original.user_type !== 'officer' && (
                   <>
-                    {original.is_blocked ? (
+                    {/* {original.is_blocked ? (
                       <MenuItem onClick={() => { setSelectedUser(original); onUnblockOpen(); }}>
                         <FaUnlock className="mr-4" />
                         {t('Unblock User')}
@@ -802,7 +802,7 @@ function LoanAccount() {
                         <FaBan className="mr-4" />
                         {t('Block User')}
                       </MenuItem>
-                    )}
+                    )} */}
                     {original.is_inactive ? (
                       <MenuItem onClick={() => { setSelectedUser(original); onReactivateOpen(); }}>
                         <FaPlay className="mr-4" />
@@ -1375,39 +1375,13 @@ function LoanAccount() {
               {/* Officer Selection */}
               <div>
                 <h3 className="text-lg font-semibold mb-3 text-purple">{t('Officer Allocation')}</h3>
-                <div className="w-full">
-                  <Select
-                    placeholder={officers.length === 0 ? 'No officers available' : t('Select Officer', 'Select Officer')}
-                    value={editData?.officer_id?._id || ''}
-                    onChange={(e) =>
-                      setEditData({
-                        ...editData,
-                        officer_id: officers.find(officer => officer._id === e.target.value) || null
-                      })
-                    }
-                    isLoading={isLoadingOfficers}
-                    isDisabled={isLoadingOfficers || officers.length === 0}
-                    size="md"
-                    className="w-full"
-                    maxW="100%"
-                  >
-                    {officers.length === 0 ? (
-                      <option value="" disabled>No officers available</option>
-                    ) : (
-                      officers.map((officer) => (
-                        <option key={officer._id} value={officer._id}>
-                          {officer.name || officer.full_name || 'Unknown Officer'} 
-                          {officer.officer_code && ` (${officer.officer_code})`}
-                        </option>
-                      ))
-                    )}
-                  </Select>
-                  {officers.length === 0 && (
-                    <div className="text-sm text-red-500 mt-1">
-                      No officers found. Please refresh or check officer data.
+                <div>
+                      <div className="w-full border rounded-md px-3 py-2 bg-gray-50 text-gray-700">
+                        {editData?.officer_id?.name ||
+                          editData?.officer_id?.full_name ||
+                          "No Officer Assigned"}
+                      </div>
                     </div>
-                  )}
-                </div>
               </div>
 
               {/* Loan Details */}

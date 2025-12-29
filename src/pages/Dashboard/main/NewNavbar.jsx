@@ -204,15 +204,16 @@ const NewNavbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="w-full flex items-center justify-between px-4 sm:px-6 py-0 shadow-lg fixed top-0 left-0 right-0 z-[99999] bg-white/95 backdrop-blur-md border-b-2 border-primary/10 h-16 sm:h-20"
-    >
+      className="w-full flex items-center justify-between px-3 sm:px-4 py-0 shadow-md fixed top-0 left-0 right-0 z-[99999] bg-white/95 backdrop-blur-md border-b border-primary/10 h-10 sm:h-12"
+      >
       {/* Logo with animation */}
       <motion.div 
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        className="text-xl font-bold text-bggr w-10 sm:w-12 flex items-center"
+        className="text-xl font-bold text-bggr w-8 sm:w-10 flex items-center"
+
       >
-        <img src={Logo} alt="Sai Finance" className="w-full" />
+        <img src={Logo} alt="Sai Finance" className="w-full h-8 w-8" />
       </motion.div>
 
       {/* Desktop Menu Items */}
@@ -318,7 +319,7 @@ const NewNavbar = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => toggleDropdown("language")}
-            className="flex items-center gap-2 text-xs bg-secondary rounded-lg p-1.5 text-white font-bold focus:ring-2 focus:ring-secondary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 text-xs bg-secondary rounded-lg p-1 text-white font-bold focus:ring-2 focus:ring-secondary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             <MdLanguage size={14} />
             <span className="text-xs">{currentLanguage === 'en' ? 'EN' : 'हि'}</span>
@@ -366,7 +367,7 @@ const NewNavbar = () => {
           whileHover={{ scale: 1.05, rotate: 90 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsMenuOpen2(!isMenuOpen2)}
-          className="flex items-center text-sm bg-primary rounded-lg p-1.5 text-white text-lg font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="flex items-center text-sm bg-primary rounded-lg p-1 text-white text-lg font-bold focus:ring-2 focus:ring-primary/50 transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           <IoSettings size={18} />
         </motion.button>
@@ -382,7 +383,7 @@ const NewNavbar = () => {
       <motion.button
         whileTap={{ scale: 0.95 }}
         onClick={toggleMobileMenu}
-        className="lg:hidden flex items-center p-1.5 text-gray-700 hover:text-primary transition-colors duration-200 border border-gray-300 rounded-lg bg-white shadow-sm"
+        className="lg:hidden flex items-center p-1 text-gray-700 hover:text-primary transition-colors duration-200 border border-gray-300 rounded-lg bg-white shadow-sm"
       >
         {isMobileMenuOpen ? (
           <HiX size={20} className="text-primary" />

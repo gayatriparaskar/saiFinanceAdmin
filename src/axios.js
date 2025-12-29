@@ -7,7 +7,7 @@ const API_BASE_URL = "https://saifinancebackend.onrender.com/api/";
 // Fallback endpoints in order of preference
 const FALLBACK_ENDPOINTS = [
   // "http://localhost:5000/api/",
-  "https://saifinancebackend.onrender.com/api/",
+  // "https://saifinancebackend.onrender.com/api/",
   // "https://api.learn2ern.com/api/",
   // "https://learn2earn-alpha.vercel.app/"
 ];

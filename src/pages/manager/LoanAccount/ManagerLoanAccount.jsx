@@ -493,7 +493,7 @@ function ManagerLoanAccount() {
       Header: t('DATE CREATED'),
       accessor: "created_on",
       Cell: ({ value, row: { original } }) => (
-        <Cell text={original?.active_loan_id?.created_on ? dayjs(original.active_loan_id.created_on).format('DD MMM, YYYY h:mm A') : t('N/A')} />
+        <Cell text={original?.active_loan_id?.created_on ? dayjs(original.active_loan_id.created_on).format('DD MMM, YYYY') : t('N/A')} />
       ),
     },
     {

@@ -44,6 +44,10 @@ function ViewSavingUser() {
   const { id } = useParams();
   const [accountData, setAccountData] = useState({});
   const [transactions, setTransactions] = useState([]);
+     const [selectedOfficer, setSelectedOfficer] = useState("");
+      const [assignLoading, setAssignLoading] = useState(false);
+      const [currentOfficer, setCurrentOfficer] = useState("");
+       const [officers, setOfficers] = useState([]);
   console.log(id);
 
   // const { isOpen, onOpen, onClose } = useDisclosure();
@@ -113,6 +117,83 @@ function ViewSavingUser() {
     fetchData();
   }, []);
 
+    useEffect(() => {
+        const fetchOfficers = async () => {
+          try {
+            const res = await axios.get("/officers");
+    
+            const collectionOfficers = (res?.data?.result || []).filter(
+              (officer) => officer.officer_type === "collection_officer"
+            );
+    
+            setOfficers(collectionOfficers);
+            console.log(currentOfficer, "foundOfficer");
+            // ✅ current officer ka object nikaalo
+            if (currentOfficer) {
+              const foundOfficer = collectionOfficers.find(
+                (officer) => officer._id === currentOfficer
+              );
+    
+              setCurrentOfficer(foundOfficer.name || null);
+            }
+          } catch (err) {
+            console.error("Error fetching officers", err);
+          }
+        };
+    
+        fetchOfficers();
+      }, [currentOfficer]);
+    
+      console.log(officers, "officers11");
+    
+      const handleReassignOfficer = async () => {
+        if (!selectedOfficer) {
+          toast({
+            title: "Please select an officer",
+            status: "warning",
+            duration: 3000,
+            isClosable: true,
+          });
+          return;
+        }
+    
+        try {
+          setAssignLoading(true);
+    
+          await axios.put("/officers/reassign-user", {
+            userId: accountData.user_id, // 👈 user id
+            newOfficerId: selectedOfficer,
+          });
+    
+          toast({
+            title: "Officer reassigned successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+    
+          // 🔄 UI update (selected officer name show)
+          const officerObj = officers.find(
+            (officer) => officer._id === selectedOfficer
+          );
+    
+          setAccountData((prev) => ({
+            ...prev,
+            officer_id: officerObj,
+          }));
+        } catch (error) {
+          toast({
+            title: "Failed to reassign officer",
+            description: error?.response?.data?.message || "Something went wrong",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          });
+        } finally {
+          setAssignLoading(false);
+        }
+      };
+  
   const columns = useMemo(
     () => [
       {
@@ -328,7 +409,7 @@ function ViewSavingUser() {
   console.log(accountData, "account data in view");
 
   return (
-    <div className="lg:py-16 lg:pt-24 py-8 pt-20 px-6 bg-primaryBg">
+    <div className="lg:py-16 lg:pt-14 py-8 pt-10 px-6 bg-primaryBg">
       <section className="md:p-1">
         <div className="py-6">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
@@ -353,7 +434,49 @@ function ViewSavingUser() {
                 </h2>
               </div>
             </div>
-
+  <div className="mt-6 max-w-md">
+                              <FormControl>
+                                <FormLabel className="text-purple font-semibold">
+                                  {t(
+                                    "Reassign Collection Officer",
+                                    "Reassign Collection Officer"
+                                  )}
+                                </FormLabel>
+                
+                                <select
+                                  value={currentOfficer}
+                                  onChange={(e) => setSelectedOfficer(e.target.value)}
+                                >
+                                  {/* <option value="">Select Collection Officer</option> */}
+                
+                                  {officers.map((officer) => (
+                                    <option key={officer._id} value={officer._id}>
+                                      {officer.full_name || officer.name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </FormControl>
+                
+                              <Button
+                                mt={3}
+                                colorScheme="purple"
+                                isLoading={assignLoading}
+                                onClick={handleReassignOfficer}
+                              >
+                                Reassign Officer
+                              </Button>
+                
+                              {/* Assigned officer show */}
+                              {accountData?.officer_id && (
+                                <p className="mt-2 text-sm text-green-600">
+                                  Assigned Officer:{" "}
+                                  <b>
+                                    {accountData.officer_id.full_name ||
+                                      accountData.officer_id.name}
+                                  </b>
+                                </p>
+                              )}
+                            </div>
             {/* Buttons Section */}
             <div className="flex flex-col gap-4 w-full lg:w-auto lg:items-end">
               {/* Summary Buttons Row */}

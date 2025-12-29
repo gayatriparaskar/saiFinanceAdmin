@@ -152,7 +152,7 @@ const NewNavbar = () => {
   const mobileMenuVariants = {
     hidden: { 
       opacity: 0, 
-      y: -20,
+      y: -10,
       transition: { duration: 0.3 }
     },
     visible: { 
@@ -204,13 +204,13 @@ const NewNavbar = () => {
       variants={navVariants}
       initial="hidden"
       animate="visible"
-      className="w-full flex items-center justify-between px-4 sm:px-6 py-0 shadow-lg fixed top-0 left-0 right-0 z-[99999] bg-white/95 backdrop-blur-md border-b-2 border-primary/10 h-16 sm:h-20"
+      className="w-full flex items-center justify-between  sm:px-6 py-0 shadow-lg fixed top-0 left-0 right-0 z-[99999] bg-white/95 backdrop-blur-md border-b-2 border-primary/10 h-16 sm:h-20"
     >
       {/* Logo with animation */}
       <motion.div 
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
-        className="text-xl font-bold text-bggr w-10 sm:w-12 flex items-center"
+        className="text-xl font-bold text-bggr w-10 sm:w-12 flex items-center "
       >
         <img src={Logo} alt="Sai Finance" className="w-full" />
       </motion.div>
