@@ -760,7 +760,7 @@ function Officer() {
          initial="hidden"
            animate="visible"
            variants={containerVariants}
-                className="min-h-screen bg-primaryBg flex flex-col pt-10 sm:pt-20"
+                className="min-h-screen bg-primaryBg flex flex-col pt-5 sm:pt-10"
          >
              {/* Fixed Header Section */}
        <motion.div 
@@ -866,7 +866,7 @@ function Officer() {
                     <MenuItem onClick={() => handleBulkStatusChange(true)}>
                       {t('Activate All')}
                     </MenuItem>
-                                         <MenuItem onClick={() => handleBulkStatusChange(false)}>
+                        <MenuItem onClick={() => handleBulkStatusChange(false)}>
                        {t('Deactivate All')}
                      </MenuItem>
                   </MenuList>

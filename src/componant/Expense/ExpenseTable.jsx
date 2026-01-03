@@ -195,7 +195,7 @@ const ExpenseTable = ({
   return (
     <div className="bg-white rounded-lg shadow">
       {/* Filters */}
-      <div className="p-3 sm:p-4 border-b border-gray-200">
+      {/* <div className="p-3 sm:p-4 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <div className="flex-1">
             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -229,7 +229,7 @@ const ExpenseTable = ({
             </select>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Table */}
       <div className="overflow-x-auto">

@@ -48,7 +48,7 @@ const Table = ({
                       <th
                         key={headerKey || cIdx}
                         {...headerProps}
-                        className=" font-bold uppercase text-xs text-gray-900 sticky top-0 z-1 bg-blue-200 text-center border-r border-gray-300 last:border-r-0"
+                        className=" font-bold h-8 uppercase text-xs text-gray-900 sticky top-0 z-1 bg-blue-200 text-center border-r border-gray-300 last:border-r-0"
                       >
                         {column.render("Header")}
                       </th>
@@ -82,7 +82,7 @@ const Table = ({
                           key={cellKey || cIdx}
                           {...cellProps}
 
-                          className="px-4 py-0 text-sm text-center border-r border-gray-100 last:border-r-0"
+                          className="px-4 py-0.5 text-sm text-center border-r border-gray-100 last:border-r-0"
 
                         >
                           {cell.render("Cell", {
