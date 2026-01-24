@@ -271,23 +271,26 @@ const DashHome = () => {
   }, []);
 
   // Fetch daily loan outgoing (same as daily loan collection)
-  useEffect(() => {
-    const fetchDailyLoanOutgoing = async () => {
-      try {
-        const response = await axios.get('admins/totalCollectionsToday');
-        if (response?.data?.result?.loan?.amount !== undefined) {
-          setDailyLoanOutgoing(response.data.result.loan.amount);
-        } else {
-          setDailyLoanOutgoing(0);
-        }
-      } catch (error) {
-        console.error('Error fetching daily loan outgoing:', error);
+useEffect(() => {
+  const fetchDailyLoanOutgoing = async () => {
+    try {
+      const response = await axios.get('admins/todayLoanDisbursements');
+      console.log("Today's loan disbursements:", response.data);
+      
+      if (response?.data?.result?.totalLoanAmount !== undefined) {
+        setDailyLoanOutgoing(response.data.result.totalLoanAmount);
+      } else {
+        console.log("No loan disbursements found for today");
         setDailyLoanOutgoing(0);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching today\'s loan disbursements:', error);
+      setDailyLoanOutgoing(0);
+    }
+  };
 
-    fetchDailyLoanOutgoing();
-  }, []);
+  fetchDailyLoanOutgoing();
+}, []);
 
   // total collection
   // Calculate Total Collection (Loan + Saving)

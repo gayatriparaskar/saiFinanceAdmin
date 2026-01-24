@@ -276,7 +276,7 @@ const DashHome = () => {
     const fetchDailyLoanOutgoing = async () => {
       try {
         const response = await axios.get('admins/totalCollectionsToday');
-        if (response?.data?.result?.loan?.amount !== undefined) {
+        if (response?.data?.result !== undefined) {
           setDailyLoanOutgoing(response.data.result.loan.amount);
         } else {
           setDailyLoanOutgoing(0);

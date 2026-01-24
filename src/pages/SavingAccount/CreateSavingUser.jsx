@@ -230,12 +230,16 @@ const CreateSavingUser = () => {
       errors.push(t("Aadhar Number must be exactly 12 digits"));
     }
 
-    // PAN Number validation (10 characters, alphanumeric)
+    // PAN Number validation (10 characters, alphanumeric, uppercase)
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
     if (!formData.pan_no) {
       errors.push(t("PAN Number is required"));
-    } else if (!panRegex.test(formData.pan_no.toUpperCase())) {
-      errors.push(t("PAN Number must be in correct format (e.g., ABCDE1234F)"));
+    } else {
+      // Convert to uppercase before validation
+      formData.pan_no = formData.pan_no.toUpperCase();
+      if (!panRegex.test(formData.pan_no)) {
+        errors.push(t("PAN Number must be in correct format (e.g., ABCDE1234F)"));
+      }
     }
 
     // Monthly Income validation
@@ -428,18 +432,34 @@ const CreateSavingUser = () => {
                 value={formData[key]}
                 type={key === "dob" ? "date" : "text"}
                 maxLength={
-                  key === "phone_number" ? 10 : key === "aadhar_no" ? 12 : undefined
+                  key === "phone_number" ? 10 : key === "aadhar_no" ? 12 : key === "pan_no" ? 10 : undefined
                 }
                 pattern={
                   key === "phone_number"
                     ? "[0-9]{10}"
                     : key === "aadhar_no"
                     ? "[0-9]{12}"
+                    : key === "pan_no"
+                    ? "[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}"
                     : undefined
                 }
-                required={key === "phone_number" || key === "aadhar_no"}
-                onChange={handleChange}
+                required={key === "phone_number" || key === "aadhar_no" || key === "pan_no"}
+                onChange={(e) => {
+                  if (key === 'pan_no') {
+                    // Convert to uppercase as user types
+                    const upperValue = e.target.value.toUpperCase();
+                    handleChange({
+                      target: {
+                        name: e.target.name,
+                        value: upperValue
+                      }
+                    });
+                  } else {
+                    handleChange(e);
+                  }
+                }}
                 placeholder={fieldLabels[key]}
+                style={key === 'pan_no' ? { textTransform: 'uppercase' } : {}}
               />
             </div>
           ))}
