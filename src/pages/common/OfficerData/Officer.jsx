@@ -544,13 +544,13 @@ const ManagerOfficer = () => {
               </div>
 
               <div className="actions-section flex flex-col sm:flex-row gap-2 sm:gap-3">
-                // Then in the JSX where the "Add New Officer" button is
-                rendered:
+                {/* // Then in the JSX where the "Add New Officer" button is
+                rendered: */}
                 {!isAccounter && (
                   <Button
                     leftIcon={<FaPlus />}
                     colorScheme="blue"
-                    onClick={handleAddNew}
+                    // onClick={handleAddNew}
                     size="sm"
                     className="mb-4"
                   >

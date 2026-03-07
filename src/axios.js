@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // Primary API endpoint - Using localhost for development
-const API_BASE_URL = "https://saifinancebackend.onrender.com/api/";
-// const API_BASE_URL = "http://localhost:5000/api/";
+// const API_BASE_URL = "https://saifinancebackend.onrender.com/api/";
+const API_BASE_URL = "http://localhost:5000/api/";
 
 // Fallback endpoints in order of preference
 const FALLBACK_ENDPOINTS = [
@@ -27,11 +27,9 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    console.log('Request interceptor - Token present:', !!token);
     
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('Request interceptor - Authorization header set');
     } else {
       // Remove any existing authorization header if no token
       delete config.headers.Authorization;
@@ -52,7 +50,6 @@ instance.interceptors.response.use(
   (error) => {
     // Handle authentication errors first
     if (error.response?.status === 401) {
-      console.warn('Authentication failed - redirecting to login');
       localStorage.removeItem('token');
       // Only redirect if not already on login page
       if (window.location.pathname !== '/login') {

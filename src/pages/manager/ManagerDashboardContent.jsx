@@ -222,38 +222,6 @@ const ManagerDashboardContent = () => {
         }
       }
 
-      console.log('📊 Collection Data Summary:', {
-        todayLoan: { count: todayLoanCount, amount: todayLoanAmount },
-        todaySaving: todaySavingData,
-        todayGrandTotal,
-        monthly: { amount: monthlyAmount, count: monthlyCount },
-        yearly: { amount: yearlyAmount, count: yearlyCount },
-        officersCount: officersData.length
-      });
-
-      console.log('📊 Stats object being set:', {
-        totalOfficers: officersData.length,
-        activeOfficers: officersData.filter(officer => officer.is_active || officer.isActive).length,
-        totalCollections: monthlyAmount,
-        todayCollections: todayGrandTotal,
-        totalTransactions: totalTransactions
-      });
-
-      console.log('📊 CollectionData object being set:', {
-        today: {
-          loan: { count: todayLoanCount, amount: todayLoanAmount },
-          saving: todaySavingData,
-          grandTotal: todayGrandTotal
-        },
-        monthly: {
-          totalAmount: monthlyAmount,
-          totalCount: monthlyCount
-        },
-        yearly: {
-          totalAmount: yearlyAmount,
-          totalCount: yearlyCount
-        }
-      });
 
       // Update stats
       setStats({
@@ -309,10 +277,7 @@ const ManagerDashboardContent = () => {
   // Event handlers
   const handleViewOfficerDetails = (officer) => {
     // Navigate to manager view officer page using React Router
-    console.log('🔄 Navigating to manager view officer page for:', officer._id);
-    console.log('🔄 Officer name:', officer.name);
-    console.log('🔄 Target path:', `/manager-dashboard/view-officer/${officer._id}`);
-    
+  
     try {
       // Use React Router navigation for smoother experience
       navigate(`/manager-dashboard/view-officer/${officer._id}`);
@@ -330,7 +295,6 @@ const ManagerDashboardContent = () => {
 
   const handleSaveAmount = async (officerId, field, value) => {
     try {
-      console.log(`💰 Updating ${field} for officer ${officerId} to ${value}`);
       
       // Prepare the update data based on the field
       let updateData = {};
@@ -342,8 +306,6 @@ const ManagerDashboardContent = () => {
       
       // Use the new service function
       const updatedOfficer = await updateOfficerCollectionData(officerId, updateData);
-
-      console.log('✅ Amount updated successfully:', updatedOfficer);
       
       // Update the officer data in the state
       setOfficers(prevOfficers => 
@@ -370,28 +332,15 @@ const ManagerDashboardContent = () => {
 
   const handleAssignToSubmit = async (officer, assignmentType) => {
     try {
-      console.log(`👤 Assigning ${officer.name} to ${assignmentType}`);
-      console.log('📊 Officer data:', officer);
-      console.log('📊 Assignment type:', assignmentType);
-      
+    
       // Use the new service function
       const updatePayload = {
         assignTo: assignmentType
       };
       
-      console.log('📤 Sending update payload:', updatePayload);
       
       const updatedOfficer = await updateOfficerCollectionData(officer._id, updatePayload);
-
-      console.log('✅ Assignment saved successfully:', updatedOfficer);
-      console.log('📊 Updated officer data:', {
-        id: updatedOfficer._id,
-        name: updatedOfficer.name,
-        assignTo: updatedOfficer.assignTo,
-        assignedToManager: updatedOfficer.assignedToManager,
-        assignedToAccounter: updatedOfficer.assignedToAccounter
-      });
-      
+ 
       // Update local state
       setOfficers(prevOfficers => 
         prevOfficers.map(o => 
@@ -405,26 +354,19 @@ const ManagerDashboardContent = () => {
       setShowAssignTo(false);
       setSelectedOfficer(null);
     } catch (error) {
-      console.error('❌ Error saving assignment:', error);
-      console.error('❌ Error details:', {
-        message: error.message,
-        status: error.response?.status,
-        data: error.response?.data
-      });
+     
       alert('Error saving assignment. Please try again.');
     }
   };
 
   const handleStatusSubmit = async (officer, status) => {
     try {
-      console.log(`📊 Updating status for ${officer.name} to ${status}`);
       
       // Use the new service function
       const updatedOfficer = await updateOfficerCollectionData(officer._id, {
         status: status
       });
 
-      console.log('✅ Status updated successfully:', updatedOfficer);
       
       // Update local state
       setOfficers(prevOfficers => 
@@ -444,7 +386,6 @@ const ManagerDashboardContent = () => {
   };
 
   const handleBankAssignmentSubmit = (officer, bank) => {
-    console.log(`🏦 Assigning ${officer.name} to ${bank} bank`);
     alert(`Officer ${officer.name} assigned to ${bank} bank`);
     setShowBankAssignment(false);
   };
@@ -516,7 +457,6 @@ const ManagerDashboardContent = () => {
           collectionData={collectionData} 
           loading={loading}
           onReportTypeChange={(reportType) => {
-            console.log('📊 Report type changed to:', reportType);
             // You can add additional logic here if needed
           }}
         />

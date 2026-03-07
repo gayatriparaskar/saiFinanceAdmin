@@ -318,7 +318,8 @@ function ManagerViewSavingUser() {
       <OfficerNavbar 
         officerType={getOfficerType()} 
         officerName={getOfficerName()} 
-        pageName="Saving User Details" 
+        pageName="Saving User Details"
+        className="pt-32"
       />
       <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-4">
       <section className="md:p-1">

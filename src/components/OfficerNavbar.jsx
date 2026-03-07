@@ -16,7 +16,7 @@ import {
 import { FiKey } from 'react-icons/fi';
 import PasswordChangeModal from './PasswordChangeModal';
 import { changeOfficerPassword } from '../services/userService';
-
+import logo from '../Images/Sai-finance-logo.png';
 const OfficerNavbar = ({ officerType, officerName, pageName }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,15 +32,7 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
   const [passwordChangeError, setPasswordChangeError] = useState('');
   const [passwordChangeSuccess, setPasswordChangeSuccess] = useState('');
   
-  // Debug log for officer name
-  console.log('OfficerNavbar - officerType:', officerType, 'officerName:', officerName);
-  console.log('OfficerNavbar - Props received:', { officerType, officerName, pageName });
-  console.log('OfficerNavbar - Current localStorage:', {
-    token: localStorage.getItem('token'),
-    officerType: localStorage.getItem('officerType'),
-    userType: localStorage.getItem('userType'),
-    officerName: localStorage.getItem('officerName')
-  });
+
 
   const getOfficerTypeColor = (type) => {
     switch (type) {
@@ -69,12 +61,6 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
   };
 
   const handleLogout = () => {
-    console.log('🔄 Logout initiated from OfficerNavbar...');
-    console.log('👤 Current officer type:', officerType);
-    console.log('👤 Current officer name:', officerName);
-    console.log('📍 Current location:', window.location.pathname);
-    console.log('🔄 handleLogout function called successfully');
-    
     try {
       // Clear all stored data
       localStorage.removeItem('token');
@@ -89,32 +75,24 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
       // Close mobile menu if open
       setIsMobileMenuOpen(false);
       setShowProfile(false);
-      
-      // Force a page reload to clear any cached state
-      console.log('🚀 Redirecting to login page...');
-      console.log('🔄 About to redirect to /login');
-      
+          
       // Try multiple redirect methods for better mobile compatibility
       try {
         // Primary method
         window.location.href = '/login';
       } catch (redirectError) {
-        console.error('❌ Error with window.location.href:', redirectError);
         try {
           // Fallback method
           window.location.replace('/login');
         } catch (replaceError) {
-          console.error('❌ Error with window.location.replace:', replaceError);
           try {
             // Alternative method
             document.location.href = '/login';
           } catch (docError) {
-            console.error('❌ Error with document.location.href:', docError);
             // Last resort - try to navigate programmatically
             try {
               navigate('/login');
             } catch (navError) {
-              console.error('❌ Error with navigate:', navError);
               // Final attempt - reload the page
               window.location.reload();
             }
@@ -123,12 +101,10 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
       }
       
     } catch (error) {
-      console.error('❌ Error during logout:', error);
       // Still try to redirect even if there's an error
       try {
         window.location.href = '/login';
       } catch (finalError) {
-        console.error('❌ Final redirect attempt failed:', finalError);
         // Last resort - reload the page
         window.location.reload();
       }
@@ -148,7 +124,6 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
         setPasswordChangeSuccess('');
       }, 2000);
     } catch (error) {
-      console.error('Password change error:', error);
       setPasswordChangeError(
         error.response?.data?.message || 
         error.message || 
@@ -252,7 +227,8 @@ const OfficerNavbar = ({ officerType, officerName, pageName }) => {
               onClick={handleHomeClick}
               className="flex items-center space-x-1 sm:space-x-2 text-primary hover:text-primaryDark transition-colors"
             >
-              <FaHome className="text-lg sm:text-xl" />
+              {/* <FaHome className="text-lg sm:text-xl" /> */}
+              <img src={logo} alt="Sai Finance" className="h-8 w-8" />
               <span className="font-bold text-base sm:text-lg">Sai Finance</span>
             </button>
             <div className="hidden md:block">

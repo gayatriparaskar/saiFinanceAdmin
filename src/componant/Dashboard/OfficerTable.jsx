@@ -79,7 +79,6 @@ const OfficerTable = ({
       }
       
       const response = await axios.get(endpoint, { params });
-      console.log(`📊 ${period} officer collections response:`, response.data);
       
       // Handle different response structures from backend
       let collections = [];
@@ -90,22 +89,7 @@ const OfficerTable = ({
           collections = response.data.result;
         }
       }
-      
-      console.log(`📊 ${period} officer collections:`, collections);
-      console.log(`📊 ${period} collections count:`, collections.length);
-      console.log(`📊 ${period} total amount:`, response.data.result?.totalAmount || 0);
-      
-      // Debug officer IDs in collections
-      if (collections.length > 0) {
-        console.log(`📊 Officer IDs in collections:`, collections.map(c => ({
-          officer_id: c.officer_id,
-          officer_name: c.officer_name,
-          total_amount: c.total_amount
-        })));
-      } else {
-        console.log(`📊 No collections found for ${period}`);
-      }
-      
+        
       setCollectionData(prev => ({
         ...prev,
         [period]: collections
@@ -128,19 +112,7 @@ const OfficerTable = ({
   // Get collection amount for an officer
   const getOfficerCollectionAmount = (officerId, period) => {
     const collections = collectionData[period] || [];
-    console.log(`🔍 Getting collection amount for officer ${officerId} (${period}):`, {
-      collections: collections,
-      officerId: officerId,
-      period: period
-    });
-    
-    // Try different ID matching strategies
-    console.log(`🔍 Trying to match officer ID: ${officerId} (type: ${typeof officerId})`);
-    console.log(`🔍 Available collection officer IDs:`, collections.map(c => ({
-      officer_id: c.officer_id,
-      officer_id_type: typeof c.officer_id,
-      officer_name: c.officer_name
-    })));
+   
     
     let officerCollection = collections.find(c => c.officer_id === officerId);
     if (!officerCollection) {
@@ -155,11 +127,8 @@ const OfficerTable = ({
       // Try with ObjectId comparison
       officerCollection = collections.find(c => c.officer_id?.toString() === officerId?.toString());
     }
-    
-    console.log(`🔍 Found officer collection:`, officerCollection);
-    
+        
     const amount = officerCollection?.total_amount || 0;
-    console.log(`🔍 Collection amount:`, amount);
     
     return amount;
   };
@@ -169,63 +138,15 @@ const OfficerTable = ({
     fetchOfficerCollections(selectedPeriod);
   }, [selectedPeriod]);
 
-  // Test backend endpoint on component mount
-  useEffect(() => {
-    const testBackendEndpoint = async () => {
-      try {
-        console.log('🧪 Testing backend endpoint...');
-        console.log('🧪 Officers data:', officers);
-        console.log('🧪 Officer IDs:', officers.map(o => ({ name: o.name, id: o._id, idType: typeof o._id })));
-        
-        const testResponse = await axios.get('admins/officerWiseDailyCollections', {
-          params: { date: dayjs().format('YYYY-MM-DD') }
-        });
-        console.log('🧪 Backend test response:', testResponse.data);
-        
-        // Also test with a different date (yesterday)
-        const yesterdayResponse = await axios.get('admins/officerWiseDailyCollections', {
-          params: { date: dayjs().subtract(1, 'day').format('YYYY-MM-DD') }
-        });
-        console.log('🧪 Yesterday test response:', yesterdayResponse.data);
-        
-        // Test weekly endpoint
-        const weeklyResponse = await axios.get('admins/officerWiseWeeklyCollections');
-        console.log('🧪 Weekly test response:', weeklyResponse.data);
-        
-        // Test collections data endpoint
-        const testDataResponse = await axios.get('admins/testCollectionsData');
-        console.log('🧪 Test collections data response:', testDataResponse.data);
-        
-        // Test raw collections to see if they have collected_by field
-        const rawCollectionsResponse = await axios.get('dailyCollections');
-        console.log('🧪 Raw collections sample:', rawCollectionsResponse.data?.result?.slice(0, 3));
-        
-        // Test if basic admin endpoint works
-        const basicTestResponse = await axios.get('admins/totalCollectionsToday');
-        console.log('🧪 Basic admin endpoint test:', basicTestResponse.data);
-        
-        // Test simple endpoint without authentication
-        const simpleTestResponse = await axios.get('admins/testSimple');
-        console.log('🧪 Simple test endpoint:', simpleTestResponse.data);
-        
-      } catch (error) {
-        console.error('🧪 Backend test error:', error);
-      }
-    };
-    
-    testBackendEndpoint();
-  }, [officers]);
 
   // Handle status update
   const handleStatusUpdate = async (officerId, newStatus) => {
     try {
-      console.log('🔄 Updating status for officer:', officerId, 'to:', newStatus);
       
       await updateOfficerCollectionData(officerId, {
         status: newStatus
       });
       
-      console.log('✅ Status updated successfully');
       
       toast({
         title: t('Success'),

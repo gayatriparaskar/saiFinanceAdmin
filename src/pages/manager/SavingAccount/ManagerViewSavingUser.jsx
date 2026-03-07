@@ -318,8 +318,9 @@ function ManagerViewSavingUser() {
         officerType={getOfficerType()} 
         officerName={getOfficerName()} 
         pageName="Saving User Details" 
+        className="pt-32"
       />
-      <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-4">
+      <div className="px-2 sm:px-4 lg:px-6 bg-primaryBg pt-48">
       <section className="md:p-1">
         <div className="py-2">
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 sm:gap-6">

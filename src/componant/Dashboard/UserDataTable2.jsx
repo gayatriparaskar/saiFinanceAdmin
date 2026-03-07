@@ -362,13 +362,13 @@ const UserDataTable = ({ userType = 'all', onRefresh, timePeriod = 'all' }) => {
     // Navigate based on user type - use manager dashboard routes for consistency
     if (user.user_type === 'loan' || user.user_type === 'both') {
       // For loan users or users with both accounts, navigate to manager loan user page
-      navigate(`/manager-dashboard/view-loan-user/${user._id}`);
+      navigate(`/view-loan-user/${user._id}`);
     } else if (user.user_type === 'saving') {
       // For saving users, navigate to manager saving user page
-      navigate(`/manager-dashboard/view-saving-user/${user._id}`);
+      navigate(`/view-saving-user/${user._id}`);
     } else if (user.user_type === 'officer') {
       // For officers, navigate to officer view page
-      navigate(`/manager-dashboard/view-officer/${user._id}`);
+      navigate(`/view-officer/${user._id}`);
     } else {
       // Default fallback for other user types
       navigate(`/view-user/${user._id}`);

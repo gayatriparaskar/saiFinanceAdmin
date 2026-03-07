@@ -14,7 +14,7 @@ import DashRoute from './route/DashRoute';
 import StatsCards from '../../componant/Dashboard/StatsCards';
 import CollectionBreakdown from '../../componant/Dashboard/CollectionBreakdown';
 import OfficerTable from '../../componant/Dashboard/OfficerTable';
-import UserDataTable from '../../componant/Dashboard/UserDataTable';
+import UserDataTable from '../../componant/Dashboard/UserDataTable2';
 import QuickActions from '../../componant/Dashboard/QuickActions';
 import OverdueCollections from '../../componant/Dashboard/OverdueCollections';
 import AssignModal from '../../componant/Dashboard/AssignModal';
@@ -117,6 +117,8 @@ function AccounterDashboard() {
     if (path.includes('/daily-report')) return 'Daily Report';
     if (path.includes('/weekly-report')) return 'Weekly Report';
     if (path.includes('/view-officer/')) return 'Officer Details';
+    if (path.includes('/view-loan-user/')) return 'Loan User Details';
+    if (path.includes('/view-saving-user/')) return 'Saving User Details';
     return 'Accounter Dashboard';
   };
 
@@ -335,6 +337,7 @@ Generated on: ${new Date().toLocaleString()}
   if (currentPath.includes('/daily-report') || currentPath.includes('/weekly-report') || 
       currentPath.includes('/loan-accounts') || currentPath.includes('/saving-accounts') || 
       currentPath.includes('/overdue-loans') || currentPath.includes('/view-officer/') ||
+      currentPath.includes('/view-loan-user/') || currentPath.includes('/view-saving-user/') ||
       currentPath.includes('/officer-controls') || currentPath.includes('/reports')) {
     
     console.log('🔍 AccounterDashboard - Rendering DashRoute for path:', currentPath);

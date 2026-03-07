@@ -1,12 +1,12 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { motion } from "framer-motion";
-import CustomerPage from "../CustomerPage";
-import Officer from "../../common/OfficerData/Officer";
-import AccountantExpensePage from "../../common/Expenses/AccountantExpensePage";
-import AccounterViewLoanUser from "../../Dashboard/AccounterDashboard/LoanAccount/AccounterViewLoanUser";
-import AccounterViewSavingUser from "../../Dashboard/AccounterDashboard/SavingAccount/AccounterViewSavingUser";
-import AccounterViewOfficer from "../../Dashboard/AccounterDashboard/OfficerData/AccounterViewOfficer";
+import CustomerPage from "../../../accountant/CustomerPage";
+import Officer from "../../../common/OfficerData/Officer";
+import AccountantExpensePage from "../../../common/Expenses/AccountantExpensePage";
+import AccounterViewLoanUser from "../LoanAccount/AccounterViewLoanUser";
+import AccounterViewSavingUser from "../SavingAccount/AccounterViewSavingUser";
+import AccounterViewOfficer from "../OfficerData/AccounterViewOfficer";
 
 const pageTransition = {
   initial: { opacity: 0, x: -20 },

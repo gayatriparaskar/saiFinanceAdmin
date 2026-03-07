@@ -26,10 +26,8 @@ const StatsCards = ({ stats = {}, collectionData = {}, loading = false, onReport
   });
   const [loanOutgoing, setLoanOutgoing] = useState(0);
   const [isLoadingData, setIsLoadingData] = useState(false);
-
-  // Debug logging
-  console.log('🔍 StatsCards - Received collectionData:', collectionData);
-  console.log('🔍 StatsCards - Received stats:', stats);
+  const [activeLoanUsersData,setActiveLoanUSersData]=useState("");
+  const [activeSavingUsersData,setActiveSavingUSersData]=useState("");
 
   const formatCurrency = (amount) => {
     return `₹${(amount || 0).toLocaleString()}`;
@@ -85,11 +83,8 @@ const StatsCards = ({ stats = {}, collectionData = {}, loading = false, onReport
       // Process loan outgoing
       const processedLoanOutgoing = stats.loanOutgoing || 0;
       
-      console.log('🔍 StatsCards - Processed active users:', processedActiveUsers);
-      console.log('🔍 StatsCards - Processed loan outgoing:', processedLoanOutgoing);
-      
       setActiveUsers(processedActiveUsers);
-      setLoanOutgoing(processedLoanOutgoing);
+      // setLoanOutgoing(processedLoanOutgoing);
     }
   }, [stats]);
 
@@ -109,12 +104,8 @@ const StatsCards = ({ stats = {}, collectionData = {}, loading = false, onReport
       const allLoanUsers = usersResponse?.data?.result || [];
       const allSavingUsers = savingUsersResponse?.data?.result || [];
       const allOfficers = officersResponse?.data?.result || [];
-
-      console.log('📊 User data fetched:', {
-        loanUsers: allLoanUsers.length,
-        savingUsers: allSavingUsers.length,
-        officers: allOfficers.length
-      });
+      setActiveLoanUSersData(allLoanUsers.length);
+      setActiveSavingUSersData(allSavingUsers.length);
 
       // Count active users by type
       const loanUsers = allLoanUsers.filter(user => 
@@ -166,12 +157,7 @@ const StatsCards = ({ stats = {}, collectionData = {}, loading = false, onReport
             savingCollection: data.saving?.net || data.totalSavingAmount || 0,
             totalCollection: data.grandTotal || (data.loan?.amount || 0) + (data.saving?.net || 0)
           };
-          
-          console.log(`📊 ${type} collection data from API:`, {
-            rawData: data,
-            processedData: collectionData,
-            note: 'All APIs now include both loan and saving collections'
-          });
+        
         }
       } catch (collectionError) {
         console.warn('⚠️ Could not fetch collection data:', collectionError);
@@ -224,11 +210,6 @@ const StatsCards = ({ stats = {}, collectionData = {}, loading = false, onReport
           // This represents the total amount of loans given out
           setLoanOutgoing(loanStats.loan_amount || 0);
           
-          console.log('📊 Loan outgoing data loaded:', {
-            loanAmount: loanStats.loan_amount,
-            totalAmount: loanStats.total_amount,
-            totalDueAmount: loanStats.total_due_amount
-          });
         }
       } catch (loanError) {
         console.warn('⚠️ Could not fetch loan outgoing data:', loanError);
@@ -348,9 +329,9 @@ const StatsCards = ({ stats = {}, collectionData = {}, loading = false, onReport
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total Active Users</p>
-              <p className="text-3xl font-bold text-blue-600">{activeUsers.totalActiveUsers}</p>
+              <p className="text-3xl font-bold text-blue-600">{activeLoanUsersData+activeSavingUsersData}</p>
               <p className="text-sm text-gray-500">
-                {activeUsers.loanUsers} Loan + {activeUsers.savingUsers} Saving
+                {activeLoanUsersData} Loan + {activeSavingUsersData} Saving
               </p>
             </div>
             <div className="p-3 bg-blue-100 rounded-full">

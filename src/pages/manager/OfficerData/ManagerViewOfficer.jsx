@@ -122,7 +122,7 @@ const columns = React.useMemo(() => [
     Cell: ({ row }) => <Cell text={row.index + 1} />
   },
   {
-    Header: t('USER NAME'),
+    Header: t('OFFICER NAME'),
     accessor: 'name',
     Cell: ({ value }) => <Cell text={value || '-'} />
   },
@@ -166,7 +166,7 @@ const columns = React.useMemo(() => [
   },
   {
     Header: t('CREATED DATE'),
-    accessor: 'createdAt',
+    accessor: 'created_on',
     Cell: ({ value }) => (
       <Cell text={value ? dayjs(value).format('DD MMM, YYYY') : 'N/A'} />
     )
@@ -291,9 +291,9 @@ const columns = React.useMemo(() => [
                     </span>
                   </h2>
                   <h2 className="text-lg font-bold text-purple text-oswald">
-                    {t('Join Date', 'Join Date')}:
+                    {t('Join Dateeee', 'Join Dateeee')}:
                     <span className="ml-2 lg:ml-4">
-                      {officerData?.createdAt ? dayjs(officerData.created_on).format('D MMM, YYYY') : 'N/A'}
+                      {officerData?.created_on ? dayjs(officerData.created_on).format('D MMM, YYYY') : 'N/A'}
                     </span>
                   </h2>
                 </div>

@@ -122,7 +122,7 @@ const columns = React.useMemo(() => [
     Cell: ({ row }) => <Cell text={row.index + 1} />
   },
   {
-    Header: t('USER NAME'),
+    Header: t('OFFICER NAME'),
     accessor: 'name',
     Cell: ({ value }) => <Cell text={value || '-'} />
   },
@@ -131,27 +131,27 @@ const columns = React.useMemo(() => [
     accessor: 'phone_number',
     Cell: ({ value }) => <Cell text={value || '-'} />
   },
-  {
-    Header: t('ACCOUNT TYPE'),
-    accessor: 'account_type',
-    Cell: ({ value, row: { original } }) => {
-      let accountType = 'N/A';
-      if (original.active_loan_id && original.saving_account_id) {
-        accountType = 'both';
-      } else if (original.active_loan_id) {
-        accountType = 'loan';
-      } else if (original.saving_account_id) {
-        accountType = 'saving';
-      }
-      return (
-        <Badge colorScheme={
-          accountType === 'loan' ? 'blue' : accountType === 'saving' ? 'green' : accountType === 'both' ? 'purple' : 'gray'
-        }>
-          {accountType}
-        </Badge>
-      );
-    }
-  },
+  // {
+  //   Header: t('ACCOUNT TYPE'),
+  //   accessor: 'account_type',
+  //   Cell: ({ value, row: { original } }) => {
+  //     let accountType = 'N/A';
+  //     if (original.active_loan_id && original.saving_account_id) {
+  //       accountType = 'both';
+  //     } else if (original.active_loan_id) {
+  //       accountType = 'loan';
+  //     } else if (original.saving_account_id) {
+  //       accountType = 'saving';
+  //     }
+  //     return (
+  //       <Badge colorScheme={
+  //         accountType === 'loan' ? 'blue' : accountType === 'saving' ? 'green' : accountType === 'both' ? 'purple' : 'gray'
+  //       }>
+  //         {accountType}
+  //       </Badge>
+  //     );
+  //   }
+  // },
   {
     Header: t('STATUS'),
     accessor: 'is_deleted',
@@ -166,7 +166,7 @@ const columns = React.useMemo(() => [
   },
   {
     Header: t('CREATED DATE'),
-    accessor: 'createdAt',
+    accessor: 'created_on',
     Cell: ({ value }) => (
       <Cell text={value ? dayjs(value).format('DD MMM, YYYY') : 'N/A'} />
     )
@@ -210,7 +210,7 @@ const columns = React.useMemo(() => [
     doc.text(`Name: ${officerData.name}`, 20, 40);
     doc.text(`Officer Code: ${officerData.officer_code || 'N/A'}`, 20, 50);
     doc.text(`Phone: ${officerData.phone_number}`, 20, 60);
-    doc.text(`Join Date: ${officerData.createdAt ? dayjs(officerData.createdAt).format('DD MMM, YYYY') : 'N/A'}`, 20, 70);
+    doc.text(`Join Date: ${officerData.created_on ? dayjs(officerData.created_on).format('DD MMM, YYYY') : 'N/A'}`, 20, 70);
     doc.text(`Officer Type: ${officerData.officer_type || 'N/A'}`, 20, 80);
     doc.text(`Total Allocated Users: ${allocatedUsers.length}`, 20, 90);
     doc.save(`officer-${officerData.name}-details.pdf`);

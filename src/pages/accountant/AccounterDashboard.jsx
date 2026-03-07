@@ -14,8 +14,7 @@ import DashRoute from './route/DashRoute';
 import StatsCards from '../../componant/Dashboard/StatsCards';
 import CollectionBreakdown from '../../componant/Dashboard/CollectionBreakdown';
 import OfficerTable from '../../componant/Dashboard/OfficerTable';
-import UserDataTable from '../../componant/Dashboard/UserDataTable';
-import RecentUserTable from '../../componant/Dashboard/RecentUserTable';
+import UserDataTable from '../../componant/Dashboard/UserDataTable2';
 import QuickActions from '../../componant/Dashboard/QuickActions';
 import OverdueCollections from '../../componant/Dashboard/OverdueCollections';
 import AssignModal from '../../componant/Dashboard/AssignModal';
@@ -331,10 +330,6 @@ Generated on: ${new Date().toLocaleString()}
   }
 
   const currentPath = location.pathname;
-  
-  console.log('🔍 AccounterDashboard - Current path:', currentPath);
-  console.log('🔍 AccounterDashboard - Location:', location);
-  console.log('🔍 AccounterDashboard - Path includes /customers:', currentPath.includes('/customers'));
 
   // If we're on a specific route (like daily-report or weekly-report), show the routed content
   if (currentPath.includes('/daily-report') || currentPath.includes('/weekly-report') || 
@@ -344,8 +339,6 @@ Generated on: ${new Date().toLocaleString()}
       currentPath.includes('/accountant-expenses') || currentPath.includes('/expenses') ||
       currentPath.includes('/customers')) {
     
-    console.log('🔍 AccounterDashboard - Rendering DashRoute for path:', currentPath);
-    console.log('🔍 AccounterDashboard - Should show DashRoute instead of main dashboard');
     return (
       <>
         <OfficerNavbar officerType="accounter" officerName={officerName} pageName={getPageName(currentPath)} />
@@ -426,7 +419,7 @@ Generated on: ${new Date().toLocaleString()}
             variants={itemVariants}
             className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
           >
-            <RecentUserTable onRefresh={refetch} />
+            <UserDataTable onRefresh={refetch} />
           </motion.div>
 
           {/* Collection Breakdown Section */}

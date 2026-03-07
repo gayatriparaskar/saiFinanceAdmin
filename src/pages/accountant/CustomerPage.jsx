@@ -7,7 +7,6 @@ import CustomerTable from '../../componant/Dashboard/CustomerTable';
 // import dayjs from 'dayjs';
 
 const CustomerPage = () => {
-  console.log('🔍 CustomerPage component rendered - This should show only customer table');
   // const { t } = useLocalTranslation();
   const [officerName, setOfficerName] = useState('');
   const [userInfo, setUserInfo] = useState(null);
@@ -28,11 +27,6 @@ const CustomerPage = () => {
     }
   }, []);
 
-  // Handle time period change
-  // const handleTimePeriodChange = (period) => {
-  //   setTimePeriod(period);
-  //   console.log('📊 Time period changed to:', period);
-  // };
 
   const containerVariants = {
     hidden: { opacity: 0 },
