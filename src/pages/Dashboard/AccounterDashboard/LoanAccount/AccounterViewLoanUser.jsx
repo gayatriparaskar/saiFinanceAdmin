@@ -110,6 +110,11 @@ function AccounterViewLoanUser() {
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
+       {
+        Header: t('Account No.'),
+        accessor: "account_number",
+        Cell: ({ value, row: { original } }) => <Cell text={original?.active_loan_id?.account_number} />,
+      },
       {
         Header: t('Date', 'Date'),
         accessor: "created_on",
@@ -158,6 +163,7 @@ function AccounterViewLoanUser() {
       doc.setFontSize(13);
       let y = 30;
       doc.text(`Name: ${userName}`, 14, y);
+      doc.text(`Account No. :${userdata.active_loan_id.account_number}`)
       doc.text(`End Date: ${endDate}`, pageWidth / 2 + 10, y);
       y += 7;
       doc.text(`Start Date: ${startDate}`, 14, y);
@@ -256,6 +262,10 @@ function AccounterViewLoanUser() {
                       <div>
                         <Text fontWeight="bold">Name:</Text>
                         <Text>{userdata?.full_name || "-"}</Text>
+                      </div>
+                      <div>
+                        <Text fontWeight="bold">Account No. :</Text>
+                        <Text>{userdata?.active_loan_id.account_number || "-"}</Text>
                       </div>
                       <div>
                         <Text fontWeight="bold">Email:</Text>

@@ -47,6 +47,7 @@ import {
   ModalFooter,
   FormControl,
   FormLabel,
+  Toast,
 } from "@chakra-ui/react";
 
 import { MdEdit } from "react-icons/md";
@@ -69,6 +70,8 @@ function ManagerLoanAccount() {
   const [isOfficerChangeModalOpen, setIsOfficerChangeModalOpen] = useState(false);
   const [selectedUserForOfficerChange, setSelectedUserForOfficerChange] = useState(null);
   const [newOfficerId, setNewOfficerId] = useState("");
+  const [penaltyDisabled, setPenaltyDisabled] = useState(false);
+  const [penaltyInfo, setPenaltyInfo] = useState(null);
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const usersPerPage = 10;
@@ -203,7 +206,32 @@ function ManagerLoanAccount() {
   useEffect(() => {
     fetchData();
     fetchOfficers();
+    checkPenaltyStatus();
   }, []);
+
+  // Check if penalty already applied today
+  const checkPenaltyStatus = async () => {
+    try {
+      const response = await axios.get("/bulk-penalty/penalty-status");
+      if (response?.data) {
+        const { penaltyApplied, appliedBy, appliedTime, appliedDate } = response.data;
+        setPenaltyDisabled(penaltyApplied);
+        if (penaltyApplied) {
+          setPenaltyInfo({
+            appliedBy,
+            appliedTime,
+            appliedDate
+          });
+          Toast('Panelty already Applied')
+          console.log(`🔍 Penalty status: Already applied today by ${appliedBy} at ${appliedTime}`);
+        } else {
+          console.log(`🔍 Penalty status: No penalty applied today`);
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error checking penalty status:", error);
+    }
+  };
 
   useEffect(() => {
     let result = data;
@@ -386,6 +414,107 @@ function ManagerLoanAccount() {
         duration: 3000,
         isClosable: true,
       });
+      fetchData();
+      setIsOfficerChangeModalOpen(false);
+      setSelectedUserForOfficerChange(null);
+      setNewOfficerId("");
+    }
+  };
+
+  const handleAddPenalty = async (user) => {
+    try {
+      const response = await axios.post(`/dailyCollections`, {
+        user_id: user._id,
+        addPenaltyFlag: true,
+        penaltyType: "percentage",
+        penaltyValue: 5, // 5% penalty
+        collected_officer_code: "MANAGER"
+      });
+
+      if (response?.data) {
+        toast({
+          title: "Penalty added successfully",
+          description: `Penalty of 5% has been applied to ${user.full_name}'s loan`,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        // Refresh data
+        fetchData();
+      }
+    } catch (error) {
+      console.error("Error adding penalty:", error);
+      toast({
+        title: "Error adding penalty",
+        description: error.response?.data?.message || "Something went wrong",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleApplyPenaltyToAll = async () => {
+    try {
+      const response = await axios.post(`/bulk-penalty/apply-bulk-penalty`, {
+        // No body needed for bulk penalty
+      });
+
+      if (response?.data?.success) {
+        const result = response.data.result;
+        const successUsers = result.users_penalized.filter(user => user.success);
+        const errorUsers = result.users_penalized.filter(user => user.error);
+        
+        // Show success messages
+        if (successUsers.length > 0) {
+          successUsers.forEach(user => {
+            toast({
+              title: ` Penalty Applied to ${user.user_name}`,
+              description: `₹${user.penalty_applied} applied by ${user.applied_by} at ${user.applied_time}`,
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            });
+          });
+        }
+        
+        // Show error/duplicate messages
+        if (errorUsers.length > 0) {
+          errorUsers.forEach(user => {
+            toast({
+              title: ` ${user.user_name}`,
+              description: user.reason,
+              status: "warning",
+              duration: 5000,
+              isClosable: true,
+            });
+          });
+        }
+        
+        // Overall summary
+        toast({
+          title: "Penalty Process Completed",
+          description: `Applied to ${successUsers.length} users, ${errorUsers.length} already had penalties`,
+          status: "info",
+          duration: 4000,
+          isClosable: true,
+        });
+        
+        // Refresh data
+        fetchData();
+        
+        // Update penalty status
+        checkPenaltyStatus();
+      }
+    } catch (error) {
+      console.error("Error applying penalty to all:", error);
+      toast({
+        title: "Error applying penalty to all",
+        description: error.response?.data?.message || "Something went wrong",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
     }
   };
 
@@ -399,6 +528,11 @@ function ManagerLoanAccount() {
       Header: t('ACCOUNT HOLDER'),
       accessor: "full_name",
       Cell: ({ value }) => <Cell text={value || t('N/A')} />,
+    },
+    {
+      Header: t('Account No.'),
+      accessor: "account_number",
+      Cell: ({ value, row: { original } }) => <Cell text={original?.active_loan_id?.account_number} />,
     },
     {
       Header: t('Officer Alloted'),
@@ -486,7 +620,7 @@ function ManagerLoanAccount() {
       Header: t('TOTAL DUE AMOUNT'),
       accessor: "total_due_amount",
       Cell: ({ value, row: { original } }) => (
-        <Cell text={`Rs. ${original?.active_loan_id?.total_due_amount || 0}`} />
+        <Cell text={`Rs. ${original?.active_loan_id?.total_due_amount + original?.active_loan_id?.total_penalty_amount || 0}`} />
       ),
     },
     {
@@ -620,13 +754,13 @@ function ManagerLoanAccount() {
               {/* Stats Section */}
                  <motion.div
                    variants={itemVariants}
-                   className="flex gap-2 stats-section"
+                   className="flex flex-col sm:flex-row gap-2 stats-section"
                  >
                    <Menu>
                      <MenuButton
                        as={Button}
                        colorScheme="blue"
-                       className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       className="bg-primary hover:bg-primaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 w-full sm:w-auto"
                        fontWeight={700}
                      >
                        <span className="hidden sm:inline">{t('Total Loan Outgoing')} : ₹ {totalLoanAmt.toLocaleString()}</span>
@@ -637,7 +771,7 @@ function ManagerLoanAccount() {
                      <MenuButton
                        as={Button}
                        colorScheme="purple"
-                       className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+                       className="bg-secondary hover:bg-secondaryDark text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 w-full sm:w-auto"
                        fontWeight={700}
                      >
                        <span className="hidden sm:inline">{t('Total Active User')} : {data.length}</span>
@@ -649,7 +783,7 @@ function ManagerLoanAccount() {
                    {/* Search Section */}
                 <motion.div
                   variants={itemVariants}
-                  className="w-84 search-section"
+                  className="w-full sm:w-84 search-section order-3 sm:order-2"
                 >
                   <InputGroup borderRadius={5} size="sm">
                     <InputLeftElement pointerEvents="none" />
@@ -679,13 +813,13 @@ function ManagerLoanAccount() {
                  {/* Actions Section */}
                  <motion.div
                    variants={itemVariants}
-                   className="flex gap-2 actions-section"
+                   className="flex flex-col sm:flex-row gap-2 actions-section order-2 sm:order-3 w-full sm:w-auto"
                  >
                    <Menu>
                      <MenuButton
                        as={Button}
                        colorScheme="gray"
-                       className="bg-gray-600 hover:bg-gray-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2 rounded-lg shadow-md font-medium"
+                       className="bg-gray-600 hover:bg-gray-700 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2 rounded-lg shadow-md font-medium w-full sm:w-auto"
                        rightIcon={<span className="text-xs">▼</span>}
                      >
                        <span className="hidden sm:inline">📊 {t('Sort By', 'Sort By')}</span>
@@ -784,6 +918,17 @@ function ManagerLoanAccount() {
                      <span className="hidden sm:inline">{t('Refresh Data', 'Refresh Data')}</span>
                      <span className="sm:hidden">Refresh</span>
                    </Button>
+                   <Button
+                    colorScheme="red"
+                    className="bg-red-500 hover:bg-red-600 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 mr-2"
+                    onClick={handleApplyPenaltyToAll}
+                    isDisabled={penaltyDisabled}
+                    title={penaltyDisabled ? `Penalty already applied today by ${penaltyInfo?.appliedBy} at ${penaltyInfo?.appliedTime}` : "Apply penalty to all non-payers"}
+                  >
+                    <span className="hidden sm:inline">{t('Add Panelty', 'Add Panelty')}</span>
+                    <span className="sm:hidden">Add Panelty</span>
+                    {penaltyDisabled && " ✅"}
+                  </Button>
                 
                  </motion.div>
              </motion.div>
@@ -793,9 +938,9 @@ function ManagerLoanAccount() {
       {/* Table */}
       <motion.div
         variants={itemVariants}
-        className="max-w-7xl mx-auto px-4 pb-6"
+        className="w-full px-4 pb-6"
       >
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden w-full">
           <Table
             data={paginatedData}
             columns={columns}

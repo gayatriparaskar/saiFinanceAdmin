@@ -267,24 +267,34 @@ function ManagerViewSavingUser() {
       accessor: 'sr_no',
       Cell: ({ row }) => <Cell text={row.index + 1} />
     },
+  {
+        Header: t('Account Number'),
+        accessor: "account_number",
+        Cell: ({ value, row: { original } }) => (
+          <Cell text={original?.saving_account_id?.account_number} />
+        ),
+      },
     {
       Header: t('DATE'),
       accessor: 'created_on',
       Cell: ({ value }) => <Cell text={dayjs(value).format('DD MMM, YYYY h:mm A')} />
     },
     {
-      Header: t('EMI AMOUNT/DAY'),
+      Header: t('Deposite Amount'),
       accessor: 'deposit_amount',
       Cell: ({ value, row: { original } }) => {
         // Show deposit amount if it exists, otherwise show withdraw amount
-        const amount = original.deposit_amount || original.withdraw_amount || 0;
+        const amount = original.deposit_amount || 0;
         return <Cell text={`Rs. ${amount}`} />
       }
     },
     {
-      Header: t('PENALTY AMOUNT'),
-      accessor: 'penalty_amount',
-      Cell: ({ value }) => <Cell text={`Rs. ${value || 0}`} />
+      Header: t('Withdraw AMOUNT'),
+      accessor: 'withdraw_amount',
+      Cell: ({ value, row: { original } }) => {
+        const amount = original?.withdraw_amount || 0;
+        return <Cell text={`Rs. ${amount}`} />
+      }
     },
     {
       Header: t('COLLECTED BY'),
@@ -420,7 +430,7 @@ function ManagerViewSavingUser() {
                   px={4}
                   minW="120px"
                   className="w-full text-sm"
-                  onClick={() => window.location.href = `/manager-dashboard/manager-add-saving-collection/${accountData._id}`}
+                  onClick={() => window.location.href = `/manager-dashboard/manager-add-saving-collection/${accountData.user_id}`}
                 >
                   {t('Add Amount', 'Add Amount')}
                 </Button>

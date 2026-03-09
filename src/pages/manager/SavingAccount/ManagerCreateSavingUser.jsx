@@ -31,7 +31,7 @@ const ManagerCreateSavingUser = () => {
   };
 
   // Calculate future amount after 120 days at 5% interest
-  const calculateFutureAmount = (currentAmount, interestRate = 5, days = 120) => {
+  const calculateFutureAmount = (currentAmount, interestRate = 3, days = 120) => {
     if (!currentAmount || currentAmount <= 0) return 0;
     
     // Calculate full 5% interest regardless of time period
@@ -42,7 +42,7 @@ const ManagerCreateSavingUser = () => {
   };
 
   // Calculate interest earned
-  const calculateInterestEarned = (currentAmount, interestRate = 5, days = 120) => {
+  const calculateInterestEarned = (currentAmount, interestRate = 3, days = 120) => {
     if (!currentAmount || currentAmount <= 0) return 0;
     
     const futureAmount = calculateFutureAmount(currentAmount, interestRate, days);
@@ -334,7 +334,7 @@ const ManagerCreateSavingUser = () => {
                 const totalAmount = calculatedDetails.total_amount || 0;
                 const futureAmount = calculateFutureAmount(totalAmount);
                 const interestEarned = calculateInterestEarned(totalAmount);
-                const interestRate = 5;
+                const interestRate = 3;
                 const days = 120;
                 
                 return (
@@ -350,13 +350,22 @@ const ManagerCreateSavingUser = () => {
                     </div>
                     
                     {/* Duration Details */}
-                    <div className="border-t pt-3 mt-3">
-                      <div className="text-left">
-                        <div className="mb-2"><strong>Saving Start Date:</strong> {new Date().toLocaleDateString()}</div>
-                        <div className="mb-2"><strong>Saving End Date:</strong> {new Date(Date.now() + (days * 24 * 60 * 60 * 1000)).toLocaleDateString()}</div>
-                        <div className="mb-2"><strong>Saving Duration:</strong> {days} days ({Math.round(days/30)} months)</div>
-                      </div>
-                    </div>
+                   <div className="border-t pt-3 mt-3">
+  <div className="text-left">
+    <div className="mb-2">
+      <strong>Saving Start Date:</strong> {new Date().toLocaleDateString("en-GB")}
+    </div>
+
+    <div className="mb-2">
+      <strong>Saving End Date:</strong>{" "}
+      {new Date(Date.now() + (days * 24 * 60 * 60 * 1000)).toLocaleDateString("en-GB")}
+    </div>
+
+    <div className="mb-2">
+      <strong>Saving Duration:</strong> {days} days ({Math.round(days / 30)} months)
+    </div>
+  </div>
+</div>
                   </>
                 );
               })()}

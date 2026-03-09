@@ -607,6 +607,11 @@ function LoanAccount() {
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
+        Header: t('Account No.'),
+        accessor: "account_number",
+        Cell: ({ value, row: { original } }) => <Cell text={original?.active_loan_id?.account_number} />,
+      },
+      {
         Header: t('Name'),
         accessor: "full_name",
         Cell: ({ value, row: { original } }) => (

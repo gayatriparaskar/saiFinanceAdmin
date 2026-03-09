@@ -267,6 +267,18 @@ function ManagerViewSavingUser() {
       Cell: ({ row }) => <Cell text={row.index + 1} />
     },
     {
+      Header: t('Account Number'),
+      accessor: "account_number",
+      Cell: ({ value, row: { original } }) => (
+        <Cell text={original?.saving_account_id?.account_number} />
+      ),
+    },
+    {
+      Header: t('Account Number'),
+      accessor: 'account_number',
+      Cell: ({ value }) => <Cell text={value} />
+    },
+    {
       Header: t('DATE'),
       accessor: 'created_on',
       Cell: ({ value }) => <Cell text={dayjs(value).format('DD MMM, YYYY h:mm A')} />
@@ -419,7 +431,7 @@ function ManagerViewSavingUser() {
                   px={4}
                   minW="120px"
                   className="w-full text-sm"
-                  onClick={() => window.location.href = `/manager-dashboard/manager-add-saving-collection/${accountData._id}`}
+                  onClick={() => window.location.href = `/manager-dashboard/manager-add-saving-collection/${accountData.user_id}`}
                 >
                   {t('Add Amount', 'Add Amount')}
                 </Button>

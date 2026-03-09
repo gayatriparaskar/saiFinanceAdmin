@@ -515,11 +515,11 @@ const CreateLoanUser = () => {
             <hr className="my-3" />
             <p>
               <strong>{t("Loan Start Date", "Loan Start Date")}:</strong>{" "}
-              {new Date().toLocaleDateString()}
+              {new Date().toLocaleDateString("en-GB")}
             </p>
             <p>
               <strong>{t("Loan End Date", "Loan End Date")}:</strong>{" "}
-              {new Date(Date.now() + 120 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+              {new Date(Date.now() + 120 * 24 * 60 * 60 * 1000).toLocaleDateString("en-GB")}
             </p>
             <p>
               <strong>{t("Loan Duration", "Loan Duration")}:</strong>{" "}

@@ -707,6 +707,11 @@ function SavingAccount() {
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
+       {
+        Header: t('Account No.'),
+        accessor: "account_number",
+        Cell: ({ value, row: { original } }) => <Cell text={original?.account_number} />,
+      },
       {
         Header: t('Name'),
         accessor: "full_name",

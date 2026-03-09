@@ -39,6 +39,7 @@ import {
   AlertDialogFooter,
   useToast,
   Select,
+  Toast,
 } from "@chakra-ui/react";
 
 import { MdEdit, MdDelete } from "react-icons/md";
@@ -58,6 +59,8 @@ function LoanAccount() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editData, setEditData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [penaltyDisabled, setPenaltyDisabled] = useState(false);
+  const [penaltyInfo, setPenaltyInfo] = useState(null);
   const [officers, setOfficers] = useState([]);
   const [isLoadingOfficers, setIsLoadingOfficers] = useState(false);
   const [isOfficerChangeModalOpen, setIsOfficerChangeModalOpen] = useState(false);
@@ -316,9 +319,77 @@ function LoanAccount() {
 
   useEffect(() => {
     fetchData();
-    fetchOfficers(); // Fetch officers when component mounts
+    fetchOfficers();
+    checkPenaltyStatus();
   }, []);
 
+
+  // Check if penalty already applied today
+  const checkPenaltyStatus = async () => {
+    try {
+      const response = await axios.get("/bulk-penalty/penalty-status");
+      if (response?.data) {
+        const { penaltyApplied, appliedBy, appliedTime, appliedDate } = response.data;
+        setPenaltyDisabled(penaltyApplied);
+        if (penaltyApplied) {
+          setPenaltyInfo({
+            appliedBy,
+            appliedTime,
+            appliedDate
+          });
+          Toast('Panelty Already Applied')
+          console.log(`🔍 Penalty status: Already applied today by ${appliedBy} at ${appliedTime}`);
+        } else {
+          console.log(`🔍 Penalty status: No penalty applied today`);
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error checking penalty status:", error);
+    }
+  };
+const handleApplyPenaltyToAll = async () => {
+  try {
+    const response = await axios.post(`/bulk-penalty/apply-bulk-penalty`);
+
+    if (response?.data?.success) {
+      const result = response.data.result;
+
+      const successUsers = result.users_penalized.filter((u) => u.success);
+      const errorUsers = result.users_penalized.filter((u) => u.error);
+
+      successUsers.forEach((user) => {
+        toast({
+          title: `Penalty Applied to ${user.user_name}`,
+          description: `₹${user.penalty_applied}`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+
+      errorUsers.forEach((user) => {
+        toast({
+          title: user.user_name,
+          description: user.reason,
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+
+      fetchData();
+      checkPenaltyStatus();
+    }
+  } catch (error) {
+    toast({
+      title: "Error applying penalty",
+      description: error.response?.data?.message || "Something went wrong",
+      status: "error",
+      duration: 4000,
+      isClosable: true,
+    });
+  }
+};
   useEffect(() => {
     let result = data;
     
@@ -367,36 +438,37 @@ function LoanAccount() {
     setCurrentPage(1);
   }, [searchTerm, data, sortBy, sortOrder]);
 
-  const handleDelete = () => {
-    axios
-      .delete(`users/${newID}`)
-      .then((res) => {
-        if (res.data) {
-          toast({
-            title: `Success! User has been deleted successfully`,
+const handleDelete = async () => {
+  try {
+    const response = await axios.delete(`users/${newID}`);
 
-            status: "success",
-            duration: 4000,
-            isClosable: true,
-            position:"top"
-          });
-          // Update state without reload
-          setData((prev) => prev.filter((item) => item._id !== newID));
-          setFilteredData((prev) => prev.filter((item) => item._id !== newID));
-          onClose(); // Close the alert dialog
-        }
-      })
-      .catch((err) => {
-        toast({
-          title: `Something Went Wrong!`,
-          
-          status: "error",
-          duration: 4000,
-          isClosable: true,
-        });
+    if (response?.data) {
+      toast({
+        title: "Success! User has been deleted successfully",
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+        position: "top",
       });
-  };
 
+      // Update state without reload
+      setData((prev) => prev.filter((item) => item._id !== newID));
+      setFilteredData((prev) => prev.filter((item) => item._id !== newID));
+
+      onClose();
+    }
+  } catch (error) {
+    console.error("Delete Error:", error);
+
+    toast({
+      title: "Something Went Wrong!",
+      description: error.response?.data?.message || "Error deleting user",
+      status: "error",
+      duration: 4000,
+      isClosable: true,
+    });
+  }
+};
   const handleEditSave = async () => {
     try {
       // Validate required fields
@@ -607,6 +679,11 @@ function LoanAccount() {
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
       {
+        Header: t('Account No.'),
+        accessor: "account_number",
+        Cell: ({ value, row: { original } }) => <Cell text={original?.active_loan_id?.account_number} />,
+      },
+      {
         Header: t('Name'),
         accessor: "full_name",
         Cell: ({ value, row: { original } }) => (
@@ -701,7 +778,7 @@ function LoanAccount() {
       {
         Header: t('Total Due Amount'),
         accessor: "total_due_amount",
-        Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.total_due_amount}`} />,
+        Cell: ({ value, row: { original } }) => <Cell text={`Rs. ${original?.active_loan_id?.total_due_amount + original?.active_loan_id?.total_penalty_amount}`} />,
       },
       {
         Header: t('Start Date'),
@@ -1243,6 +1320,19 @@ function LoanAccount() {
                      <span className="hidden sm:inline">{t('Refresh Data', 'Refresh Data')}</span>
                      <span className="sm:hidden">Refresh</span>
                    </Button>
+
+                
+                   <Button
+                    colorScheme="red"
+                    className="bg-red-500 hover:bg-red-600 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 mr-2"
+                    onClick={handleApplyPenaltyToAll}
+                    isDisabled={penaltyDisabled}
+                    title={penaltyDisabled ? `Penalty already applied today by ${penaltyInfo?.appliedBy} at ${penaltyInfo?.appliedTime}` : "Apply penalty to all non-payers"}
+                  >
+                    <span className="hidden sm:inline">{t('Panelty Button', 'Panelty Button')}</span>
+                    <span className="sm:hidden"> Apply Penalty all</span>
+                    {penaltyDisabled && " ✅"}
+                  </Button>
                 
                  </motion.div>
              </motion.div>

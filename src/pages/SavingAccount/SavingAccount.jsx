@@ -460,10 +460,20 @@ function SavingAccount() {
     if (searchTerm.trim() !== "") {
       result = data.filter(
         (user) =>
+          // Search by full name
           user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.saving_account_id?.account_number
-            ?.toString()
-            .includes(searchTerm)
+          // Search by account number (multiple possible paths)
+          user.saving_account_id?.account_number?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.account_number?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+          // Search by phone number
+          user.phone_number?.toString().includes(searchTerm) ||
+          user.user_id?.phone_number?.toString().includes(searchTerm) ||
+          // Search by email
+          user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.user_id?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          // Search by shop name
+          user.shop_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.user_id?.shop_name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -716,6 +726,13 @@ function SavingAccount() {
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
+      {
+            Header: t('Account Number'),
+            accessor: "account_number",
+            Cell: ({ value, row: { original } }) => (
+              <Cell text={original?.saving_account_id?.account_number} />
+            ),
+          },
       {
         Header: t("Name"),
         accessor: "full_name",

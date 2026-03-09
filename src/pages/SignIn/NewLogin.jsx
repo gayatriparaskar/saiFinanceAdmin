@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "../../axios";
 
 import LogoDark from "../../Images/Sai-removebg-preview.png";
-import MobileLoginImage from "../../Images/loginImage3.jpg";
+import MobileLoginImage from "../../Images/loginImage4.png";
 
 const NewLogin = () => {
   const navigate = useNavigate();
@@ -191,7 +191,7 @@ const NewLogin = () => {
 
         {/* Right Side - Login Form */}
         <div className="w-full lg:w-1/2 xl:w-2/5 max-w-md">
-          <div className="bg-gray-50 rounded-2xl shadow-xl border border-blue-200 p-6 sm:p-8">
+          <div className="bg-white-50 rounded-2xl shadow-xl p-6 sm:p-8">
             {/* Logo */}
             <div className="text-center mb-6 sm:mb-8">
               <Link className="inline-block transition-transform hover:scale-105" to="/">
@@ -210,7 +210,7 @@ const NewLogin = () => {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-blue-700 mb-2">
+              <label className="block text-sm font-medium text-blue-700 mb-2 transition-transform hover:scale-105">
                 Email Address / Phone Number
               </label>
               <div className="relative">
@@ -220,10 +220,10 @@ const NewLogin = () => {
                   value={user_name}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-blue-600 rounded-lg bg-teal-50 text-gray-800 placeholder-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300"
+                  className="w-full px-4 py-3 bg-blue-50 border border-blue-600 rounded-lg  text-gray-800  focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-blue-400 hover:text-blue-600 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
                   </svg>
                 </div>
@@ -241,7 +241,7 @@ const NewLogin = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-blue-300 rounded-lg bg-blue-50 text-gray-800 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                  className="w-full px-4 py-3 border border-blue-300 rounded-lg bg-blue-100 text-gray-800 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                   <button

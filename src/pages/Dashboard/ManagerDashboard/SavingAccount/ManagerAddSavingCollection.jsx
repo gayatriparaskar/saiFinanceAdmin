@@ -183,7 +183,7 @@ const ManagerAddSavingCollection = () => {
       
       // ✅ Redirect to manager page after successful collection
       setTimeout(() => {
-        navigate("/manager-dashboard/view-saving-user/${id}");
+        navigate(`/manager-dashboard/view-saving-user/${id}`);
       }, 2000);
     } catch (err) {
       console.error("API Error:", err);
@@ -392,7 +392,7 @@ const ManagerAddSavingCollection = () => {
                     </p>
                     <p className="text-xs text-red-500">
                       {t('Total amount deducted from savings:', 'Total amount deducted from savings:')} ₹{(
-                        Number(formData.withdraw_amount) +
+                        Number(formData.withdraw_amount) -
                         formData.withdraw_amount * 0.03
                       ).toFixed(2)}
                     </p>

@@ -81,7 +81,8 @@ function ViewSavingUser() {
         console.log(res.data.account, "account data");
         if (res?.data?.account) {
           console.log(res, "account data");
-          setAccountData(res.data.account);
+          setAccountData(res.data.account || []);
+          setTransactions(res.data.result || []);
           console.log(res.data, "account data");
         }
       })
@@ -98,24 +99,10 @@ function ViewSavingUser() {
       });
   }, [id]);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await axios.get(
-          `/savingDailyCollections/getAllSavings`
-        );
-        if (response) {
-          setTransactions(response?.data?.result || []);
-          console.log(response);
-        }
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-        // Set fallback data
-        setTransactions([]);
-      }
-    }
-    fetchData();
-  }, []);
+
+  const filteredTransactions = useMemo(() => {
+  return transactions.filter((item) => item.account_id === id);
+}, [transactions, id]);
 
     useEffect(() => {
         const fetchOfficers = async () => {
@@ -194,38 +181,50 @@ function ViewSavingUser() {
         }
       };
   
-  const columns = useMemo(
-    () => [
-      {
-        Header: t("Sr No.", "Sr No."),
-        accessor: "srNo",
-        Cell: ({ row: { index } }) => <Cell text={index + 1} />,
-      },
-      {
-        Header: t("Date", "Date"),
-        accessor: "created_on",
-        Cell: ({ value }) => (
-          <Cell text={dayjs(value).format("D MMM, YYYY h:mm A")} />
-        ),
-      },
-      {
-        Header: t("Total Amount/Day", "Total Amount/Day"),
-        accessor: "deposit_amount",
-        Cell: ({ value }) => <Cell text={`Rs. ${value}`} />,
-      },
-      {
-        Header: t("Withdraw Amount", "Withdraw Amount"),
-        accessor: "withdraw_amount",
-        Cell: ({ value }) => <Cell text={`Rs. ${value}`} />,
-      },
-      {
-        Header: t("Collected By", "Collected By"),
-        accessor: "collected_officer_name",
-        Cell: ({ value }) => <Cell text={value || "-"} bold="bold" />,
-      },
-    ],
-    []
-  );
+const columns = useMemo(() => [
+  {
+    Header: "Account Number",
+    accessor: "account_number",
+    Cell: ({ value, row: { original } }) => (
+      <Cell text={original?.account_number} />
+    ),
+  },
+  {
+    Header: "User Name",
+    accessor: "user_name",
+    Cell: ({ value }) => <Cell text={value} />
+  },
+  {
+    Header: "Phone",
+    accessor: "phone_number",
+    Cell: ({ value }) => <Cell text={value} />
+  },
+  {
+    Header: "Daily Amount",
+    accessor: "amount_to_be",
+    Cell: ({ value }) => <Cell text={`Rs. ${value}`} />
+  },
+  {
+    Header: "Total Amount",
+    accessor: "total_amount",
+    Cell: ({ value }) => <Cell text={`Rs. ${value}`} />
+  },
+  {
+    Header: "Current Amount",
+    accessor: "current_amount",
+    Cell: ({ value }) => <Cell text={`Rs. ${value}`} />
+  },
+  {
+    Header: "Total Withdrawal",
+    accessor: "total_withdrawal",
+    Cell: ({ value }) => <Cell text={`Rs. ${value}`} />
+  },
+  {
+    Header: "End Date",
+    accessor: "end_date",
+    Cell: ({ value }) => <Cell text={dayjs(value).format("DD/MM/YYYY")} />
+  }
+], []);
 
   const generatePDF = (customStartDate = null, customEndDate = null) => {
     const doc = new jsPDF();
@@ -259,6 +258,7 @@ function ViewSavingUser() {
     let y = 30;
     // Use English text in PDF to avoid font rendering issues
     doc.text(`Name: ${userName}`, 14, y);
+    doc.text( `Account Number :${accountData?.account_number}`)
     doc.text(`End Date: ${endDate}`, pageWidth / 2 + 10, y);
     y += 7;
     doc.text(`Start Date: ${startDate}`, 14, y);
@@ -419,6 +419,10 @@ function ViewSavingUser() {
                 {t("Full Name", "Full Name")}:{" "}
                 <span className="ml-2 lg:ml-4 text-base sm:text-lg">{accountData?.user_id?.full_name}</span>
               </h2>
+                            <h2 className="text-lg sm:text-xl font-bold text-purple text-oswald">
+                {t('Account Number', 'Account Number')}: <span className="ml-2 lg:ml-4 text-base sm:text-lg">{accountData?.account_number}</span>
+              </h2>
+
               <div className="flex flex-col lg:flex-row gap-4 lg:gap-20">
                 <h2 className="text-lg font-bold text-purple">
                   {t("Start Date", "Start Date")}:{" "}
@@ -552,7 +556,16 @@ function ViewSavingUser() {
           </Drawer>
 
           <div className="mt-2 overflow-x-auto scrollbar-hide">
-            <Table data={transactions} columns={columns} />
+            <Table
+  data={[
+    {
+      ...accountData,
+      user_name: accountData?.user_id?.full_name,
+      phone_number: accountData?.user_id?.phone_number
+    }
+  ]}
+  columns={columns}
+/>
           </div>
         </div>
       </section>

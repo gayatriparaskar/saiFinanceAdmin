@@ -19,7 +19,7 @@ const ManagerCreateSavingUser = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Debug function to check modal state
   const handleModalClose = (event) => {
     if (event) {
@@ -31,41 +31,53 @@ const ManagerCreateSavingUser = () => {
   };
 
   // Calculate future amount after 120 days at 5% interest
-  const calculateFutureAmount = (currentAmount, interestRate = 5, days = 120) => {
+  const calculateFutureAmount = (
+    currentAmount,
+    interestRate = 3,
+    days = 120,
+  ) => {
     if (!currentAmount || currentAmount <= 0) return 0;
-    
+
     // Calculate full 5% interest regardless of time period
     const interest = currentAmount * (interestRate / 100);
     const futureAmount = currentAmount + interest;
-    
+
     return Math.round(futureAmount * 100) / 100; // Round to 2 decimal places
   };
 
   // Calculate interest earned
-  const calculateInterestEarned = (currentAmount, interestRate = 5, days = 120) => {
+  const calculateInterestEarned = (
+    currentAmount,
+    interestRate = 3,
+    days = 120,
+  ) => {
     if (!currentAmount || currentAmount <= 0) return 0;
-    
-    const futureAmount = calculateFutureAmount(currentAmount, interestRate, days);
+
+    const futureAmount = calculateFutureAmount(
+      currentAmount,
+      interestRate,
+      days,
+    );
     return Math.round((futureAmount - currentAmount) * 100) / 100;
   };
 
-      const initialFormState = {
-        full_name: "",
-        phone_number: "",
-        dob: "",
-        address: "",
-        aadhar_no: "",
-        pan_no: "",
-        monthly_income: "",
-        officer_id: "",
-        saving_details: {
-          amount_to_be: 0, // This will be the daily EMI amount
-          interest_rate: "0", // Default interest rate
-          emi_day: 120, // Fixed at 120 days
-          emi_amount: 0,
-          total_amount: 0,
-        },
-      };
+  const initialFormState = {
+    full_name: "",
+    phone_number: "",
+    dob: "",
+    address: "",
+    aadhar_no: "",
+    pan_no: "",
+    monthly_income: "",
+    officer_id: "",
+    saving_details: {
+      amount_to_be: 0, // This will be the daily EMI amount
+      interest_rate: "0", // Default interest rate
+      emi_day: 120, // Fixed at 120 days
+      emi_amount: 0,
+      total_amount: 0,
+    },
+  };
 
   const fieldLabels = {
     full_name: t("Full Name", "Full Name"),
@@ -98,7 +110,7 @@ const ManagerCreateSavingUser = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (name.startsWith("saving_details.")) {
       const fieldName = name.split(".")[1];
       setFormData((prevData) => ({
@@ -116,31 +128,31 @@ const ManagerCreateSavingUser = () => {
     }
   };
 
-      const calculateSavingDetails = () => {
-        try {
-          const { amount_to_be } = formData.saving_details;
-          const dailyEmiAmount = parseFloat(amount_to_be) || 0;
-          const emi_day = 120; // Fixed at 120 days
+  const calculateSavingDetails = () => {
+    try {
+      const { amount_to_be } = formData.saving_details;
+      const dailyEmiAmount = parseFloat(amount_to_be) || 0;
+      const emi_day = 120; // Fixed at 120 days
 
-          const total_amount = dailyEmiAmount * emi_day;
-          const emi_amount = dailyEmiAmount;
-          
-          return {
-            amount_to_be: dailyEmiAmount,
-            total_amount: Math.ceil(total_amount),
-            emi_day: emi_day,
-            emi_amount: Math.ceil(emi_amount),
-          };
-        } catch (error) {
-          console.error("Error in calculateSavingDetails:", error);
-          return {
-            amount_to_be: 0,
-            total_amount: 0,
-            emi_day: 120,
-            emi_amount: 0,
-          };
-        }
+      const total_amount = dailyEmiAmount * emi_day;
+      const emi_amount = dailyEmiAmount;
+
+      return {
+        amount_to_be: dailyEmiAmount,
+        total_amount: Math.ceil(total_amount),
+        emi_day: emi_day,
+        emi_amount: Math.ceil(emi_amount),
       };
+    } catch (error) {
+      console.error("Error in calculateSavingDetails:", error);
+      return {
+        amount_to_be: 0,
+        total_amount: 0,
+        emi_day: 120,
+        emi_amount: 0,
+      };
+    }
+  };
 
   useEffect(() => {
     calculateSavingDetails();
@@ -168,7 +180,7 @@ const ManagerCreateSavingUser = () => {
       };
 
       const response = await axios.post("admins/createAccountUser", payload);
-      
+
       if (response.data) {
         toast({
           title: t("Success! Saving User Created"),
@@ -177,9 +189,9 @@ const ManagerCreateSavingUser = () => {
           isClosable: true,
           position: "top",
         });
-        
+
         setFormData(initialFormState);
-        
+
         // Redirect to saving accounts page after successful creation
         setTimeout(() => {
           navigate("/manager-dashboard/saving-account");
@@ -231,10 +243,10 @@ const ManagerCreateSavingUser = () => {
               {t("This will be the daily payment amount for 120 days")}
             </p>
           </div>
-          
+
           <div className="mt-4">
-            <Button 
-              colorScheme="teal" 
+            <Button
+              colorScheme="teal"
               onClick={() => setIsModalOpen(true)}
               size="sm"
             >
@@ -245,7 +257,9 @@ const ManagerCreateSavingUser = () => {
 
         <hr className="my-4" />
 
-        <h4 className="text-lg font-bold mt-6 text-center">{t("Personal Details")}</h4>
+        <h4 className="text-lg font-bold mt-6 text-center">
+          {t("Personal Details")}
+        </h4>
         <div className="grid grid-cols-3 gap-4 text-start">
           {Object.keys(fieldLabels).map((key) => (
             <div key={key}>
@@ -258,14 +272,18 @@ const ManagerCreateSavingUser = () => {
                 value={formData[key]}
                 type={key === "dob" ? "date" : "text"}
                 maxLength={
-                  key === "phone_number" ? 10 : key === "aadhar_no" ? 12 : undefined
+                  key === "phone_number"
+                    ? 10
+                    : key === "aadhar_no"
+                      ? 12
+                      : undefined
                 }
                 pattern={
                   key === "phone_number"
                     ? "[0-9]{10}"
                     : key === "aadhar_no"
-                    ? "[0-9]{12}"
-                    : undefined
+                      ? "[0-9]{12}"
+                      : undefined
                 }
                 required={key === "phone_number" || key === "aadhar_no"}
                 onChange={handleChange}
@@ -291,11 +309,11 @@ const ManagerCreateSavingUser = () => {
               ))}
             </select>
             <p className="text-xs text-gray-500 mt-1">
-              {t("Showing")} {officers.length} {t("collection officer(s) for account assignment")}
+              {t("Showing")} {officers.length}{" "}
+              {t("collection officer(s) for account assignment")}
             </p>
           </div>
         </div>
-
 
         <div className="flex justify-center mt-8">
           <Button
@@ -311,19 +329,17 @@ const ManagerCreateSavingUser = () => {
       </form>
 
       {/* Modal for Saving Details */}
-      <Modal 
-        key={isModalOpen ? 'open' : 'closed'}
-        isOpen={isModalOpen} 
-        onClose={handleModalClose} 
-        isCentered 
+      <Modal
+        key={isModalOpen ? "open" : "closed"}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        isCentered
         size="lg"
         closeOnOverlayClick={true}
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>
-            Saving Calculation Details
-          </ModalHeader>
+          <ModalHeader>Saving Calculation Details</ModalHeader>
           <ModalCloseButton onClick={handleModalClose} />
           <ModalBody>
             <div className="space-y-2">
@@ -335,27 +351,57 @@ const ManagerCreateSavingUser = () => {
                 const totalAmount = calculatedDetails.total_amount || 0;
                 const futureAmount = calculateFutureAmount(totalAmount);
                 const interestEarned = calculateInterestEarned(totalAmount);
-                const interestRate = 5;
+                const interestRate = 3;
                 const days = 120;
-                
+
                 return (
                   <>
                     {/* Basic Saving Details */}
                     <div className="text-left">
-                      <div className="mb-2"><strong>Daily EMI Amount:</strong> ₹{calculatedDetails.amount_to_be}</div>
-                      <div className="mb-2"><strong>Interest Rate:</strong> {interestRate}%</div>
-                      <div className="mb-2"><strong>Total Amount:</strong> ₹{calculatedDetails.total_amount}</div>
-                      <div className="mb-2"><strong>Interest Earned:</strong> ₹{interestEarned.toLocaleString()}</div>
-                      <div className="mb-2"><strong>Final Amount:</strong> ₹{futureAmount.toLocaleString()}</div>
-                      <div className="mb-2"><strong>Daily EMI:</strong> ₹{calculatedDetails.emi_amount}</div>
+                      <div className="mb-2">
+                        <strong>Daily EMI Amount:</strong> ₹
+                        {calculatedDetails.amount_to_be}
+                      </div>
+                      <div className="mb-2">
+                        <strong>Interest Rate:</strong> {interestRate}%
+                      </div>
+                      <div className="mb-2">
+                        <strong>Total Amount:</strong> ₹
+                        {calculatedDetails.total_amount}
+                      </div>
+                      <div className="mb-2">
+                        <strong>Interest Earned:</strong> ₹
+                        {interestEarned.toLocaleString()}
+                      </div>
+                      <div className="mb-2">
+                        <strong>Final Amount:</strong> ₹
+                        {futureAmount.toLocaleString()}
+                      </div>
+                      <div className="mb-2">
+                        <strong>Daily EMI:</strong> ₹
+                        {calculatedDetails.emi_amount}
+                      </div>
                     </div>
-                    
+
                     {/* Duration Details */}
                     <div className="border-t pt-3 mt-3">
                       <div className="text-left">
-                        <div className="mb-2"><strong>Saving Start Date:</strong> {new Date().toLocaleDateString()}</div>
-                        <div className="mb-2"><strong>Saving End Date:</strong> {new Date(Date.now() + (days * 24 * 60 * 60 * 1000)).toLocaleDateString()}</div>
-                        <div className="mb-2"><strong>Saving Duration:</strong> {days} days ({Math.round(days/30)} months)</div>
+                        <div className="mb-2">
+                          <strong>Saving Start Date:</strong>{" "}
+                          {new Date().toLocaleDateString("en-GB")}
+                        </div>
+
+                        <div className="mb-2">
+                          <strong>Saving End Date:</strong>{" "}
+                          {new Date(
+                            Date.now() + days * 24 * 60 * 60 * 1000,
+                          ).toLocaleDateString("en-GB")}
+                        </div>
+
+                        <div className="mb-2">
+                          <strong>Saving Duration:</strong> {days} days (
+                          {Math.round(days / 30)} months)
+                        </div>
                       </div>
                     </div>
                   </>
@@ -364,17 +410,14 @@ const ManagerCreateSavingUser = () => {
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button 
-              onClick={handleModalClose} 
-              colorScheme="red" 
+            <Button
+              onClick={handleModalClose}
+              colorScheme="red"
               variant="outline"
             >
               Cancel
             </Button>
-            <Button 
-              onClick={handleModalClose} 
-              colorScheme="green"
-            >
+            <Button onClick={handleModalClose} colorScheme="green">
               OK
             </Button>
           </ModalFooter>

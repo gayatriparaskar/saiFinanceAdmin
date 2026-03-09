@@ -304,6 +304,13 @@ const ManagerSavingAccount = () => {
       accessor: "srNo",
       Cell: ({ row }) => startIndex + row.index + 1,
     },
+   {
+      Header: t('Account Number'),
+      accessor: "account_number",
+      Cell: ({ value, row: { original } }) => (
+        <Cell text={original?.saving_account_id?.account_number} />
+      ),
+    },
     {
       Header: t('ACCOUNT HOLDER'),
       accessor: "full_name",
@@ -814,9 +821,9 @@ const ManagerSavingAccount = () => {
       {/* Table */}
       <motion.div
         variants={itemVariants}
-        className="max-w-7xl mx-auto px-2 sm:px-4 pb-6"
+        className="w-full mx-auto px-2 sm:px-4 pb-6"
       >
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden table-container">
+        <div className="bg-white w-full rounded-lg shadow-lg overflow-hidden ">
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>

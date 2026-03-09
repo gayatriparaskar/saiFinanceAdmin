@@ -396,7 +396,7 @@ const AddSavingCollection = () => {
                     </p>
                     <p className="text-xs text-red-500">
                       {t('Total amount deducted from savings:', 'Total amount deducted from savings:')} ₹{(
-                        Number(formData.withdraw_amount) +
+                        Number(formData.withdraw_amount) -
                         formData.withdraw_amount * 0.03
                       ).toFixed(2)}
                     </p>

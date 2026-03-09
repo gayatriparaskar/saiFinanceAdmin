@@ -338,6 +338,9 @@ function ViewSavingUser() {
                 {t("Full Name", "Full Name")}:{" "}
                 <span className="ml-2 lg:ml-4 text-base sm:text-lg">{accountData?.user_id?.full_name}</span>
               </h2>
+                <h2 className="text-lg sm:text-xl font-bold text-purple text-oswald">
+                {t('Account Number', 'Account Number')}: <span className="ml-2 lg:ml-4 text-base sm:text-lg">{accountData?.account_number}</span>
+              </h2>
               <div className="flex flex-col lg:flex-row gap-4 lg:gap-20">
                 <h2 className="text-lg font-bold text-purple">
                   {t("Start Date", "Start Date")}:{" "}

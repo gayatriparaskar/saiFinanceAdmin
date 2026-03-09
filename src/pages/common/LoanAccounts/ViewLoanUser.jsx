@@ -243,6 +243,7 @@ function ViewLoanUser() {
     // Use English text in PDF to avoid font rendering issues
     doc.text(`Name: ${userName}`, 14, y);
     doc.text(`End Date: ${endDate}`, pageWidth / 2 + 10, y);
+    doc.text(`Account Number: ${userdata?.active_loan_id?.account_number}`, 14, y + 7);
     y += 7;
     doc.text(`Start Date: ${startDate}`, 14, y);
     doc.text(`Total Due: Rs. ${due}`, pageWidth / 2 + 10, y);
@@ -376,6 +377,9 @@ function ViewLoanUser() {
             <div className="flex flex-col gap-4 text-start w-full lg:w-auto">
               <h2 className="text-lg sm:text-xl font-bold text-purple text-oswald">
                 {t('Name', 'Name')}: <span className="ml-2 lg:ml-4 text-base sm:text-lg">{userdata?.full_name}</span>
+              </h2>
+              <h2 className="text-lg sm:text-xl font-bold text-purple text-oswald">
+                {t('Account Number', 'Account Number')}: <span className="ml-2 lg:ml-4 text-base sm:text-lg">{userdata?.active_loan_id?.account_number}</span>
               </h2>
               <div className="flex flex-col lg:flex-row gap-4 lg:gap-20">
                 <h2 className="text-lg font-bold text-purple text-oswald">

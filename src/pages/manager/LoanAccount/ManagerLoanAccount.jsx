@@ -395,6 +395,11 @@ function ManagerLoanAccount() {
       accessor: "srNo",
       Cell: ({ row }) => startIndex + row.index + 1,
     },
+     {
+        Header: t('Account No.'),
+        accessor: "account_number",
+        Cell: ({ value, row: { original } }) => <Cell text={original?.active_loan_id?.account_number} />,
+      },
     {
       Header: t('ACCOUNT HOLDER'),
       accessor: "full_name",
@@ -793,9 +798,9 @@ function ManagerLoanAccount() {
       {/* Table */}
       <motion.div
         variants={itemVariants}
-        className="max-w-7xl mx-auto px-4 pb-6"
+        className="w-full mx-auto px-4 pb-6"
       >
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white w-full rounded-lg shadow-lg overflow-hidden">
           <Table
             data={paginatedData}
             columns={columns}

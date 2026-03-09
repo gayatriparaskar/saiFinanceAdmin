@@ -123,6 +123,11 @@ function AccounterViewSavingUser() {
         accessor: "srNo",
         Cell: ({ value, row: { index } }) => <Cell text={index + 1} />,
       },
+       {
+    Header: "Account Number",
+    accessor: "account_number",
+    Cell: ({ value }) => <Cell text={value} />
+  },
       {
         Header: t('Date', 'Date'),
         accessor: "created_on",
