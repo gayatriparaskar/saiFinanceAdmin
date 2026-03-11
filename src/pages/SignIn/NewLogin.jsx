@@ -29,7 +29,7 @@ const NewLogin = () => {
       // Try officer login first (most common for panel users)
       try {
         console.log('Attempting officer login with:', { phone_number: user_name, password });
-        response = await axios.post("officers/login", { phone_number: user_name, password });
+        response = await axios.post("/login", { phone_number: user_name, password });
         console.log("officer login response", response);
         
         isOfficer = true;
