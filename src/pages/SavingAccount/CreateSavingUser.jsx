@@ -31,7 +31,7 @@ const CreateSavingUser = () => {
   const navigate = useNavigate();
 
   // Calculate future amount after 120 days at 5% interest
-  const calculateFutureAmount = (currentAmount, interestRate = 3, days = 120) => {
+  const calculateFutureAmount = (currentAmount, interestRate = 3, days = 365) => {
     if (!currentAmount || currentAmount <= 0) return 0;
     
     // Calculate full 5% interest regardless of time period
@@ -42,7 +42,7 @@ const CreateSavingUser = () => {
   };
 
   // Calculate interest earned
-  const calculateInterestEarned = (currentAmount, interestRate = 3, days = 120) => {
+  const calculateInterestEarned = (currentAmount, interestRate = 3, days = 365) => {
     if (!currentAmount || currentAmount <= 0) return 0;
     
     const futureAmount = calculateFutureAmount(currentAmount, interestRate, days);
@@ -60,7 +60,7 @@ const CreateSavingUser = () => {
     saving_details: {
       amount_to_be: 0, // This will be the daily EMI amount
       interest_rate: "0",
-      emi_day: 120, // Fixed at 120 days
+      emi_day: 365, // Fixed at 120 days
       emi_amount: 0,
       total_interest_pay: 0,
       total_amount: 0,
@@ -125,7 +125,7 @@ const CreateSavingUser = () => {
       ) {
         const dailyEmiAmount = parseFloat(updatedDetails.amount_to_be) || 0; // This is the daily EMI
         const rate = parseFloat(updatedDetails.interest_rate) || 0;
-        const emi_day = 120; // Fixed at 120 days
+        const emi_day = 365; // Fixed at 120 days
 
         // For simple saving account:
         // - amount_to_be = daily EMI amount
@@ -157,7 +157,7 @@ const CreateSavingUser = () => {
     try {
       const dailyEmiAmount = parseFloat(formData.saving_details.amount_to_be) || 0;
       const rate = parseFloat(formData.saving_details.interest_rate) || 0;
-      const emi_day = 120; // Fixed at 120 days
+      const emi_day = 365; // Fixed at 120 days
 
       const total_amount = dailyEmiAmount * emi_day;
       const total_interest_pay = (total_amount * rate * 4) / 100; // 4 months interest
@@ -175,7 +175,7 @@ const CreateSavingUser = () => {
       return {
         amount_to_be: 0,
         total_amount: 0,
-        emi_day: 120,
+        emi_day: 365,
         emi_amount: 0,
         total_interest_pay: 0,
       };
@@ -355,7 +355,7 @@ const CreateSavingUser = () => {
               placeholder="Daily EMI Amount"
             />
             <p className="text-xs text-gray-500 mt-1">
-              {t("This will be the daily payment amount for 120 days")}
+              {t("This will be the daily payment amount for 365 days")}
             </p>
           </div>
           {/* <div>
@@ -528,7 +528,7 @@ const CreateSavingUser = () => {
                 const futureAmount = calculateFutureAmount(totalAmount);
                 const interestEarned = calculateInterestEarned(totalAmount);
                 const interestRate = 3;
-                const days = 120;
+                const days = 365;
                 
                 return (
                   <>
