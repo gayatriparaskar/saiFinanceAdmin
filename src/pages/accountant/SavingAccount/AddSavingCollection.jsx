@@ -153,7 +153,7 @@ const AddSavingCollection = () => {
       // 👉 3% extra deduction logic (user jitna withdraw karega usse +3% saving se cut hoga)
       const withdrawAmount = parseFloat(formData.withdraw_amount);
       const threePercent = (withdrawAmount * 3) / 100;
-      const totalDeduction = withdrawAmount + threePercent;
+      const totalDeduction = withdrawAmount - threePercent;
 
       payload = {
         ...payload,

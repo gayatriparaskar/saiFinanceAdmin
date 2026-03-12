@@ -34,7 +34,7 @@ const ManagerCreateSavingUser = () => {
   const calculateFutureAmount = (
     currentAmount,
     interestRate = 3,
-    days = 120,
+    days = 365,
   ) => {
     if (!currentAmount || currentAmount <= 0) return 0;
 
@@ -49,7 +49,7 @@ const ManagerCreateSavingUser = () => {
   const calculateInterestEarned = (
     currentAmount,
     interestRate = 3,
-    days = 120,
+    days = 365,
   ) => {
     if (!currentAmount || currentAmount <= 0) return 0;
 
@@ -73,7 +73,7 @@ const ManagerCreateSavingUser = () => {
     saving_details: {
       amount_to_be: 0, // This will be the daily EMI amount
       interest_rate: "0", // Default interest rate
-      emi_day: 120, // Fixed at 120 days
+      emi_day: 365, // Fixed at 120 days
       emi_amount: 0,
       total_amount: 0,
     },
@@ -132,7 +132,7 @@ const ManagerCreateSavingUser = () => {
     try {
       const { amount_to_be } = formData.saving_details;
       const dailyEmiAmount = parseFloat(amount_to_be) || 0;
-      const emi_day = 120; // Fixed at 120 days
+      const emi_day = 365; // Fixed at 120 days
 
       const total_amount = dailyEmiAmount * emi_day;
       const emi_amount = dailyEmiAmount;
@@ -148,7 +148,7 @@ const ManagerCreateSavingUser = () => {
       return {
         amount_to_be: 0,
         total_amount: 0,
-        emi_day: 120,
+        emi_day: 365,
         emi_amount: 0,
       };
     }
@@ -240,7 +240,7 @@ const ManagerCreateSavingUser = () => {
               placeholder="Daily EMI Amount"
             />
             <p className="text-xs text-gray-500 mt-1">
-              {t("This will be the daily payment amount for 120 days")}
+              {t("This will be the daily payment amount for 365 days")}
             </p>
           </div>
 
@@ -352,7 +352,7 @@ const ManagerCreateSavingUser = () => {
                 const futureAmount = calculateFutureAmount(totalAmount);
                 const interestEarned = calculateInterestEarned(totalAmount);
                 const interestRate = 3;
-                const days = 120;
+                const days = 365;
 
                 return (
                   <>

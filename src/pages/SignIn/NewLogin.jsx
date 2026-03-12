@@ -7,8 +7,9 @@ import MobileLoginImage from "../../Images/loginImage4.png";
 
 const NewLogin = () => {
   const navigate = useNavigate();
-  const [user_name, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [user_name, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,162 +19,56 @@ const NewLogin = () => {
     setLoading(true);
     setError("");
 
-    let response;
-    let isOfficer = false;
-
     try {
-      // Clear any existing token to ensure fresh login
-      localStorage.removeItem("token");
-      axios.defaults.headers.common['Authorization'] = undefined;
-      
-      // Try officer login first (most common for panel users)
-      try {
-        console.log('Attempting officer login with:', { phone_number: user_name, password });
-        response = await axios.post("/login", { phone_number: user_name, password });
-        console.log("officer login response", response);
-        
-        isOfficer = true;
-        console.log('Officer login successful - Response:', response?.data);
-      } catch (officerError) {
-        console.log('Officer login failed, trying admin login...', officerError.response?.status);
-        
-        // If officer login fails due to network/timeout, try once more
-        if (officerError.code === 'ECONNABORTED' || officerError.message === 'Network Error') {
-          console.log('Retrying officer login due to network issue...');
-          try {
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
-            response = await axios.post("officers/login", { phone_number: user_name, password });
-            isOfficer = true;
-            console.log('Officer login successful on retry - Response:', response?.data);
-          } catch (retryError) {
-            console.log('Officer login retry also failed, trying admin login...');
-          }
-        }
-        
-        // If still no success, try admin login
-        if (!response) {
-          try {
-            response = await axios.post("admins/login", { user_name, password });
-            console.log('Admin login successful');
-          } catch (adminError) {
-            console.log('All login attempts failed');
-            throw adminError;
-          }
+      const res = await axios.post(
+        '/admins/login',
+        { user_name, password }
+      );
+
+      const { accessToken} = res.data;
+      const{role} = res.data.result;
+      const { name } = res.data.result
+      const {officer_type} = res.data.result
+
+      if (accessToken) {
+        // Save token
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("role", role);
+        localStorage.setItem("officerType", officer_type);
+        localStorage.setItem("userName", name || "User");
+
+        // Set axios header
+        axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+
+        // Redirect based on role
+        switch (role || officer_type) {
+          case "manager":
+            navigate("/manager-dashboard");
+            break;
+
+          case "accounter":
+            navigate("/accounter-dashboard");
+            break;
+
+          case "collection_officer":
+            navigate("/collection-dashboard");
+            break;
+
+          default:
+            navigate("/dash");
         }
       }
-
-      // Check if we have a successful response
-      console.log('Checking response structure:', response?.data);
-      
-      if (response && response.data) {
-        // Normalize accessToken from different response shapes
-        let accessToken;
-        let officerData;
-        if (isOfficer && response.data?.result) {
-          // successResponse shape
-          accessToken = response.data.result?.accessToken;
-          officerData = response.data.result;
-        } else if (response.data?.accessToken) {
-          accessToken = response.data.accessToken;
-          officerData = response.data;
-        } else if (response.data?.token) {
-          accessToken = response.data.token;
-          officerData = response.data;
-        }
-        
-        if (accessToken) {
-          localStorage.setItem("token", accessToken);
-          
-          // Force axios to pick up the new token immediately
-          axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-          
-          if (isOfficer) {
-            // Store officer info for dashboard routing
-            localStorage.setItem("officerType", officerData.officer_type);
-            localStorage.setItem("userType", "officer");
-            
-            // Store officer name and other details for display
-            if (officerData.name) {
-              localStorage.setItem("officerName", officerData.name);
-            } else if (officerData.first_name && officerData.name) {
-              localStorage.setItem("officerName", `${officerData.name} ${officerData.name}`);
-            } else if (officerData.phone_number) {
-              localStorage.setItem("officerName", officerData.phone_number);
-            } else {
-              localStorage.setItem("officerName", "Officer");
-            }
-            
-            console.log('Officer login successful, redirecting to:', officerData.officer_type);
-            console.log('Officer data:', officerData);
-            
-            // Redirect based on officer type
-            console.log('Attempting redirect for officer type:', officerData.officer_type);
-            
-            // Small delay to ensure state is set
-            setTimeout(() => {
-              try {
-                switch (officerData.officer_type) {
-                  case "manager":
-                    console.log('Redirecting to manager dashboard...');
-                    navigate("/manager-dashboard");
-                    break;
-                  case "accounter":
-                    console.log('Redirecting to accounter dashboard...');
-                    navigate("/accounter-dashboard");
-                    break;
-                  case "collection_officer":
-                    console.log('Redirecting to collection dashboard...');
-                    navigate("/collection-dashboard");
-                    break;
-                  default:
-                    console.log('Unknown officer type:', officerData.officer_type, 'redirecting to default dashboard');
-                    navigate("/dash");
-                }
-              } catch (redirectError) {
-                console.error('Redirect error:', redirectError);
-                // Fallback to window.location
-                try {
-                  window.location.href = `/${officerData.officer_type === 'collection_officer' ? 'collection' : officerData.officer_type}-dashboard`;
-                } catch (fallbackError) {
-                  console.error('Fallback redirect also failed:', fallbackError);
-                  setError("Login successful but redirect failed. Please navigate manually.");
-                }
-              }
-            }, 100);
-          } else {
-            localStorage.setItem("userType", "admin");
-            console.log('Admin login successful, redirecting to admin dashboard');
-            window.location.replace("/dash/home");
-          }
-        } else {
-          console.log('No access token found in response');
-          console.log('Response data structure:', response.data);
-          setError(isOfficer
-            ? "Login failed. For officer accounts, use phone number as password if not set."
-            : "Login failed: No access token received");
-        }
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setError("Invalid username or password");
       } else {
-        console.log('Invalid response structure');
-        setError("Login failed: Invalid response from server");
-      }
-    } catch (error) {
-      console.error('Final login error:', error);
-
-      if (error.isNetworkError) {
-        setError("Network error: Please check your internet connection and try again.");
-      } else if (error.response?.status === 401) {
-        setError("Invalid username/phone number or password. Please try again.");
-      } else if (error.response?.status === 404) {
-        setError("Login service not available. Please contact support.");
-      } else if (error.isTimeout) {
-        setError("Request timeout. Please try again.");
-      } else {
-        setError("Login failed. Please try again later.");
+        setError("Login failed. Please try again.");
       }
     } finally {
       setLoading(false);
     }
-  };
+  
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-100 flex items-center justify-center p-4">
@@ -316,5 +211,6 @@ const NewLogin = () => {
     </div>
   );
 };
+
 
 export default NewLogin;
